@@ -1,0 +1,85 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+        <servlet-name>ParentalControl</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.ing3nia.parentalcontrol.services.child</param-value>
+        </init-param>
+         <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ParentalControl</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <servlet>
+        <servlet-name>ParentalControlInit</servlet-name>
+        <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+        <init-param>
+            <param-name>com.sun.jersey.config.property.packages</param-name>
+            <param-value>com.ing3nia.parentalcontrol.services</param-value>
+        </init-param>
+         <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ParentalControlInit</servlet-name>
+        <url-pattern>/resources/*</url-pattern>
+    </servlet-mapping>
+<!--OnPositive Tools-->
+<servlet>
+		<servlet-name>baseViewerServlet</servlet-name>
+		<servlet-class>com.onpositive.gae.tools.servlets.BaseViewerServlet
+		</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>baseViewerServlet</servlet-name>
+		<url-pattern>/appwrench/baseviewer</url-pattern>
+	</servlet-mapping>
+<servlet>
+		<servlet-name>SessionAuth</servlet-name>
+		<servlet-class>com.onpositive.auth.AuthServlet</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>SessionAuth</servlet-name>
+		<url-pattern>/appwrench/auth</url-pattern>
+	</servlet-mapping>
+<servlet>
+		<servlet-name>QueueHandler</servlet-name>
+		<servlet-class>com.onpositive.gae.tools.servlets.QueueHandlerServlet
+		</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>QueueHandler</servlet-name>
+		<url-pattern>/appwrench/queuehandler</url-pattern>
+	</servlet-mapping>
+<security-constraint>
+		<web-resource-collection>
+			<url-pattern>/appwrench/queuehandler</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+<servlet>
+		<servlet-name>profilerConsoleServlet</servlet-name>
+		<servlet-class>com.onpositive.gae.tools.servlets.ConsoleServlet
+		</servlet-class>
+	</servlet>
+<servlet-mapping>
+		<servlet-name>profilerConsoleServlet</servlet-name>
+		<url-pattern>/appwrench/console</url-pattern>
+	</servlet-mapping>
+<servlet>
+<servlet-name>SessionAuth</servlet-name>
+<servlet-class>com.onpositive.auth.AuthServlet</servlet-class>
+</servlet>
+<servlet-mapping>
+<servlet-name>SessionAuth</servlet-name>
+<url-pattern>/appwrench/auth</url-pattern>
+</servlet-mapping>
+</web-app>
