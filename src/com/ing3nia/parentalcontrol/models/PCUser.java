@@ -23,6 +23,10 @@ import com.google.appengine.api.datastore.Key;
  */
 @PersistenceCapable
 public class PCUser {
+	
+	public PCUser(){
+	}
+	
 	/**
 	 * Unique key that identifies the user.
 	 */
@@ -53,7 +57,7 @@ public class PCUser {
 	 * 
 	 */
 	@Persistent
-	private Email email;
+	private String email;
 	
 	/**
 	 * 
@@ -61,12 +65,8 @@ public class PCUser {
 	@Persistent
 	private String name;
 
-	public PCUser() {
-		super();
-	}
-
 	public PCUser(Key key, String username, String password,
-			ArrayList<PCSmartphone> smartphones, Email email, String name) {
+			ArrayList<PCSmartphone> smartphones, String email, String name) {
 		super();
 		this.key = key;
 		this.username = username;
@@ -76,11 +76,11 @@ public class PCUser {
 		this.name = name;
 	}
 
-	public Email getEmail() {
+	public String getEmail() {
 		return email;
 	}
 
-	public void setEmail(Email email) {
+	public void setEmail(String email) {
 		this.email = email;
 	}
 

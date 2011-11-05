@@ -29,32 +29,30 @@ public class PCSession {
     private Key key;
 	
 	/**
-	 * 
+	 * Represents a unique session identifier assigned when logged in
 	 */
 	@Persistent
-	private String coockieId;
+	private String cookieId;
 	
 	/**
 	 * Represents the user that opened and is using the session.
 	 */
-	private PCUser user;
+	private Key user;
 	
 	/**
 	 * Specifies the date of the last update made to the session.
 	 */
 	private Date lastUpdate;
 
-	public PCSession() {
-		super();
-	}
-
-	public PCSession(Key key, String coockieId, PCUser user, Date lastUpdate) {
+	public PCSession(Key key, String cookieId, Key user, Date lastUpdate) {
 		super();
 		this.key = key;
-		this.coockieId = coockieId;
+		this.cookieId = cookieId;
 		this.user = user;
 		this.lastUpdate = lastUpdate;
 	}
+	
+	public PCSession(){}
 
 	public Key getKey() {
 		return key;
@@ -64,19 +62,19 @@ public class PCSession {
 		this.key = key;
 	}
 
-	public String getCoockieId() {
-		return coockieId;
+	public String getCookieId() {
+		return cookieId;
 	}
 
-	public void setCoockieId(String coockieId) {
-		this.coockieId = coockieId;
+	public void setCookieId(String cookieId) {
+		this.cookieId = cookieId;
 	}
 
-	public PCUser getUser() {
+	public Key getUser() {
 		return user;
 	}
 
-	public void setUser(PCUser user) {
+	public void setUser(Key user) {
 		this.user = user;
 	}
 

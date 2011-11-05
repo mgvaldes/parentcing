@@ -80,7 +80,6 @@ public class AlertResource {
 				pcNotification.setType(notification.getType());
 				pcNotification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(notification.getType()));
 				pcNotification.setDate(formatter.parse(notification.getDate()));
-				pcNotification.setSmatphone(savedSmartphone);
 				
 				notifications.add(pcNotification);
 			}

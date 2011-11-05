@@ -45,14 +45,6 @@ public class PCNotification {
 	 * 
 	 */
 	private int type;
-	
-	/**
-	 * Represents the smartphone that will receive a specific
-	 * notification.
-	 */
-	@Persistent
-	private PCSmartphone smatphone;
-
 	public PCNotification() {
 		super();
 	}
@@ -64,7 +56,6 @@ public class PCNotification {
 		this.message = message;
 		this.date = date;
 		this.type = type;
-		this.smatphone = smatphone;
 	}
 
 	public Key getKey() {
@@ -99,11 +90,4 @@ public class PCNotification {
 		this.type = type;
 	}
 
-	public PCSmartphone getSmatphone() {
-		return smatphone;
-	}
-
-	public void setSmatphone(PCSmartphone smatphone) {
-		this.smatphone = smatphone;
-	}
 }

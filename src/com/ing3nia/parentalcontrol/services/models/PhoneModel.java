@@ -38,12 +38,12 @@ public class PhoneModel {
 		PCPhone phone = new PCPhone();
 		
 		phone.setType(this.type);
-		phone.setPhoneNumber(new PhoneNumber(this.phoneNumber));
+		phone.setPhoneNumber(this.phoneNumber);
 		
 		return phone;
 	}
 	
 	public static PhoneModel convertToPhoneModel(PCPhone phone) {
-		return new PhoneModel(phone.getType(), phone.getPhoneNumber().getNumber());
+		return new PhoneModel(phone.getType(), phone.getPhoneNumber());
 	}
 }

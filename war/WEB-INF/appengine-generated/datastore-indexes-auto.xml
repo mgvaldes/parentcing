@@ -1,23 +1,8 @@
-<!-- Indices written at Wed, 2 Nov 2011 01:19:30 UTC -->
+<!-- Indices written at Fri, 4 Nov 2011 05:53:34 UTC -->
 
 <datastore-indexes>
 
-    <!-- Used 3 times in query history -->
-    <datastore-index kind="PCAddress" ancestor="true" source="auto">
-        <property name="addresses_INTEGER_IDX" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 3 times in query history -->
-    <datastore-index kind="PCIM" ancestor="true" source="auto">
-        <property name="im_INTEGER_IDX" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 3 times in query history -->
-    <datastore-index kind="PCOrganization" ancestor="true" source="auto">
-        <property name="organizations_INTEGER_IDX" direction="asc"/>
-    </datastore-index>
-
-    <!-- Used 3 times in query history -->
+    <!-- Used 2 times in query history -->
     <datastore-index kind="PCPhone" ancestor="true" source="auto">
         <property name="phones_INTEGER_IDX" direction="asc"/>
     </datastore-index>
