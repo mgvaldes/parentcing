@@ -1,5 +1,7 @@
 package com.ing3nia.parentalcontrol.services.models;
 
+import java.util.ArrayList;
+
 import com.google.appengine.api.datastore.PhoneNumber;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 
@@ -38,12 +40,25 @@ public class PhoneModel {
 		PCPhone phone = new PCPhone();
 		
 		phone.setType(this.type);
-		phone.setPhoneNumber(new PhoneNumber(this.phoneNumber));
+		phone.setPhoneNumber(this.phoneNumber);
 		
 		return phone;
 	}
 	
 	public static PhoneModel convertToPhoneModel(PCPhone phone) {
-		return new PhoneModel(phone.getType(), phone.getPhoneNumber().getNumber());
+		return new PhoneModel(phone.getType(), phone.getPhoneNumber());
+	}
+	
+	public boolean checkPhonePresent(ArrayList<PCPhone> phones) {
+		boolean present = false;
+		
+		for (PCPhone phone : phones) {
+			if ((phone.getType() == this.type) && phone.getPhoneNumber().equals(this.phoneNumber)) {
+				present = true;
+				break;
+			}
+		}
+		
+		return present;
 	}
 }

@@ -119,6 +119,12 @@ public class PCSmartphone {
 	@Persistent
 	private Key application;
 	
+	@Persistent
+	private ArrayList<Key> notifications;
+	
+	@Persistent
+	private ArrayList<PCContact> originalContacts;
+	
 	public PCSmartphone() {
 		super();
 	}
@@ -130,7 +136,8 @@ public class PCSmartphone {
 			ArrayList<Key> deletedEmergencyNumbers,
 			ArrayList<PCRoute> routes, ArrayList<PCProperty> properties,
 			PCModification modification, ArrayList<PCRule> rules, String name,
-			PCDevice device, String serialNumber, Key application) {
+			PCDevice device, String serialNumber, Key application, ArrayList<Key> notifications,
+			ArrayList<PCContact> originalContacts) {
 		super();
 		this.key = key;
 		this.location = location;
@@ -146,6 +153,8 @@ public class PCSmartphone {
 		this.device = device;
 		this.serialNumber = serialNumber;
 		this.application = application;
+		this.notifications = notifications;
+		this.originalContacts = originalContacts;
 	}
 
 //	public PCSmartphone(Key key, GeoPt location,
@@ -297,5 +306,21 @@ public class PCSmartphone {
 
 	public void setApplication(Key application) {
 		this.application = application;
+	}
+
+	public ArrayList<Key> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(ArrayList<Key> notifications) {
+		this.notifications = notifications;
+	}
+
+	public ArrayList<PCContact> getOriginalContacts() {
+		return originalContacts;
+	}
+
+	public void setOriginalContacts(ArrayList<PCContact> originalContacts) {
+		this.originalContacts = originalContacts;
 	}
 }

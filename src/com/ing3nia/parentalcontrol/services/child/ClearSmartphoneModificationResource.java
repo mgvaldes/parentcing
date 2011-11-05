@@ -21,7 +21,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.models.ClearSmartphoneModificationModel;
 import com.ing3nia.parentalcontrol.services.models.ModificationModel;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneIdModel;
+import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("cl-sph-mod")

@@ -116,6 +116,7 @@ public class RegisterSmartphoneResource {
 		
 	    query.setFilter("username == usernameParam && password == passwordParam");
 	    query.declareParameters("String usernameParam, String passwordParam");
+	    query.setRange(0, 1);
 	    
 	    try {
 	    	logger.info("[Register Smartphone Service] Ejecutando query para buscar usuario.");

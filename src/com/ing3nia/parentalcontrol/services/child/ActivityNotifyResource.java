@@ -1,8 +1,6 @@
 package com.ing3nia.parentalcontrol.services.child;
 
 import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
@@ -10,7 +8,6 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,18 +19,19 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCNotification;
+import com.ing3nia.parentalcontrol.models.PCRoute;
+import com.ing3nia.parentalcontrol.models.PCServiceStatistics;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
-import com.ing3nia.parentalcontrol.models.utils.PCNotificationTypeId;
+import com.ing3nia.parentalcontrol.services.models.ActivityNotifyModel;
 import com.ing3nia.parentalcontrol.services.models.AlertModel;
 import com.ing3nia.parentalcontrol.services.models.NotificationModel;
+import com.ing3nia.parentalcontrol.services.models.ServiceStatisticsModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
-@Path("alert")
-public class AlertResource {
-
-	private static Logger logger = Logger.getLogger(AlertResource.class.getName());
+public class ActivityNotifyResource {
+	private static Logger logger = Logger.getLogger(ActivityNotifyResource.class.getName());
 	
-	public AlertResource() {
+	public ActivityNotifyResource() {
 		logger.addHandler(new ConsoleHandler());
 	}
 	
@@ -45,10 +43,10 @@ public class AlertResource {
 		Type bodyType = new TypeToken<AlertModel>(){}.getType();
 		
 		logger.info("[Alert Service] Parseando par‡metros de entrada.");
-		AlertModel alertModel = jsonParser.fromJson(body, bodyType);
-
-		saveNotifications(alertModel);
+		ActivityNotifyModel activityNotifyModel = jsonParser.fromJson(body, bodyType);
 		
+		processActivityNotify(activityNotifyModel);
+
 		JsonObject jsonObjectStatus = new JsonObject();
 		
 		jsonObjectStatus.addProperty("code", "00");
@@ -60,37 +58,37 @@ public class AlertResource {
 		return rbuilder.build();
 	}
 	
-	public void saveNotifications(AlertModel alertModel) {
+	public void processActivityNotify(ActivityNotifyModel activityNotifyModel) {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		logger.info("[Alert Service] Convirtiendo id : " + alertModel.getId() + " de smartphone a Key.");
-		Key smartphoneKey = KeyFactory.stringToKey(alertModel.getId());
+		logger.info("[Activity Notify Service] Convirtiendo id : " + activityNotifyModel.getId() + " de smartphone a Key.");
+		Key smartphoneKey = KeyFactory.stringToKey(activityNotifyModel.getId());
 		
-		logger.info("[Alert Service] Buscando smartphone en base de datos.");
+		logger.info("[Activity Notify Service] Buscando smartphone en base de datos.");
 		PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 		
-		PCNotification pcNotification;
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-		ArrayList<PCNotification> notifications = new ArrayList<PCNotification>();
+		ArrayList<PCRoute> newRoutes = savedSmartphone.getRoutes();
+		newRoutes.add(activityNotifyModel.getRoute().convertToPCRoute());
+		savedSmartphone.setRoutes(newRoutes);
 		
-		for (NotificationModel notification : alertModel.getAlerts()) {
-			try {
-				pcNotification = new PCNotification();
-				pcNotification.setType(notification.getType());
-				pcNotification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(notification.getType()));
-				pcNotification.setDate(formatter.parse(notification.getDate()));
-				//pcNotification.setSmatphone(savedSmartphone);
-				
-				notifications.add(pcNotification);
-			}
-			catch (ParseException ex) {
-				//TODO manejar excepcion y error.
-			}
-			finally {
-				pm.close();
-			}
+		ArrayList<NotificationModel> notifications = activityNotifyModel.getAlerts();
+		PCNotification notification;
+		ArrayList<Key> newNotifications = savedSmartphone.getNotifications();
+		
+		for (NotificationModel notif : notifications) {
+			notification = notif.convertToPCNotification();
+			NotificationModel.savePCNotification(notification);
+			newNotifications.add(notification.getKey());
 		}
 		
-		pm.makePersistentAll(notifications);
+		savedSmartphone.setNotifications(newNotifications);
+		
+		ArrayList<ServiceStatisticsModel> stats = activityNotifyModel.getSyncStat();
+		PCServiceStatistics stat;
+		
+		for (ServiceStatisticsModel s : stats) {
+			stat = s.convertToPCServiceStatistics();
+			ServiceStatisticsModel.savePCServiceStatistics(stat);
+		}
 	}
 }

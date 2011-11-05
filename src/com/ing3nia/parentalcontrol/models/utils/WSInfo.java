@@ -41,4 +41,16 @@ public enum WSInfo {
 	public void setUri(String uri) {
 		this.uri = uri;
 	}
+	
+	public static String getWSName(String code) {
+		WSInfo[] infos = WSInfo.values();
+		
+		for (WSInfo i : infos) {
+			if (i.getCode().equals(code)) {
+				return i.toString();
+			}
+		}
+		
+		return "";
+	}
 }

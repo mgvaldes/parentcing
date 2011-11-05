@@ -6,9 +6,11 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
@@ -19,7 +21,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneIdModel;
+import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
@@ -32,18 +34,13 @@ public class TotalSynchronizationResource {
 		logger.addHandler(new ConsoleHandler());
 	}
 	
-	//{'id':'aglub19hcHBfaWRyHgsSBlBDVXNlchgFDAsSDFBDU21hcnRwaG9uZRgzDA'}
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response doPost(String body) {		
+	public Response doGet(@QueryParam(value = "id") final String id) {
 		Gson jsonParser = new Gson();
-		Type bodyType = new TypeToken<SmartphoneIdModel>(){}.getType();
-		
-		logger.info("[Total Synchronization Service] Parseando par‡metros de entrada.");
-		SmartphoneIdModel smartphoneId = jsonParser.fromJson(body, bodyType);
 
-		SmartphoneModel smartphone = getSmartphone(smartphoneId.getId());
+		logger.info("[Total Synchronization Service] Buscando smartphone asociado a id: " + id);
+		SmartphoneModel smartphone = getSmartphone(id);
 		
 		JsonObject jsonObjectStatus = new JsonObject();
 		

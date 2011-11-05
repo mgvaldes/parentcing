@@ -77,6 +77,7 @@ public class SmartphoneIdRequestResource {
 		
 	    query.setFilter("serialNumber == serialNumberParam");
 	    query.declareParameters("String serialNumberParam");
+	    query.setRange(0, 1);
 	    
 	    try {
 	    	logger.info("[Smartphone Id Request Service] Ejecutando query para buscar smartphone.");

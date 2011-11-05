@@ -35,13 +35,13 @@ public class PCPhone {
 	/**
 	 * Contains the specific phone number.
 	 */
-	private PhoneNumber phoneNumber;
+	private String phoneNumber;
 
 	public PCPhone() {
 		super();
 	}
 
-	public PCPhone(Key key, int type, PhoneNumber phoneNumber) {
+	public PCPhone(int type, String phoneNumber) {
 		super();
 		this.key = key;
 		this.type = type;
@@ -64,11 +64,11 @@ public class PCPhone {
 		this.type = type;
 	}
 
-	public PhoneNumber getPhoneNumber() {
+	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-	public void setPhoneNumber(PhoneNumber phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 }

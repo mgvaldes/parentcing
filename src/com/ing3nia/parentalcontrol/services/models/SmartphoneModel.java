@@ -17,6 +17,8 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class SmartphoneModel {
+	private String id;
+	
 	private LocationModel location;
 	
 	private ArrayList<ContactModel> activeContacts;
@@ -47,7 +49,7 @@ public class SmartphoneModel {
 		super();
 	}
 
-	public SmartphoneModel(LocationModel location,
+	public SmartphoneModel(String id, LocationModel location,
 			ArrayList<ContactModel> activeContacts, String name,
 			DeviceModel device, String serialNumber, String appVersion,
 			ArrayList<ContactModel> inactiveContacts,
@@ -56,6 +58,7 @@ public class SmartphoneModel {
 			ArrayList<RouteModel> routes, ArrayList<PropertyModel> properties,
 			ModificationModel modification, ArrayList<RuleModel> rules) {
 		super();
+		this.id = id;
 		this.location = location;
 		this.activeContacts = activeContacts;
 		this.name = name;
@@ -69,6 +72,14 @@ public class SmartphoneModel {
 		this.properties = properties;
 		this.modification = modification;
 		this.rules = rules;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public LocationModel getLocation() {
@@ -211,8 +222,6 @@ public class SmartphoneModel {
 		SmartphoneModel smartphoneModel = new SmartphoneModel();
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		//smartphoneModel.setLocation(new LocationModel(String.valueOf(savedSmartphone.getLocation().getLatitude()), String.valueOf(savedSmartphone.getLocation().getLongitude())));
-		
 		ArrayList<PCContact> pcActiveContacts = (ArrayList<PCContact>)pm.getObjectsById(savedSmartphone.getActiveContacts());
 		ArrayList<ContactModel> activeContacts = new ArrayList<ContactModel>();
 		
@@ -240,23 +249,6 @@ public class SmartphoneModel {
 		
 		smartphoneModel.setAddedEmergencyNumbers(addedEmergencyNumbers);
 		
-		ArrayList<PCEmergencyNumber> pcDeletedEmergencyNumbers = (ArrayList<PCEmergencyNumber>)pm.getObjectsById(savedSmartphone.getDeletedEmergencyNumbers());
-		ArrayList<EmergencyNumberModel> deletedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
-		
-		for (PCEmergencyNumber emergencyNumber : pcDeletedEmergencyNumbers) {
-			deletedEmergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(emergencyNumber));
-		}
-		
-		smartphoneModel.setDeletedEmergencyNumbers(deletedEmergencyNumbers);
-		
-//		ArrayList<RouteModel> routes = new ArrayList<RouteModel>();
-//		
-//		for (PCRoute route : savedSmartphone.getRoutes()) {
-//			routes.add(RouteModel.convertToRouteModel(route));
-//		}
-//		
-//		smartphoneModel.setRoutes(routes);
-		
 		ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
 		
 		for (PCProperty property : savedSmartphone.getProperties()) {
@@ -264,7 +256,6 @@ public class SmartphoneModel {
 		}
 		
 		smartphoneModel.setProperties(properties);
-		//smartphoneModel.setModification(ModificationModel.convertToModificationModel(savedSmartphone.getModification()));
 		
 		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
 		

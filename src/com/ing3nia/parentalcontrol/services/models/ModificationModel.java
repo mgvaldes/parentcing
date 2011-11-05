@@ -10,14 +10,15 @@ import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRule;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ModificationModel {
 	private String key;
 	
-	private ArrayList<ContactModel> activeContacts;
+	private ArrayList<SimpleContactModel> activeContacts;
 	
-	private ArrayList<ContactModel> inactiveContacts;
+	private ArrayList<SimpleContactModel> inactiveContacts;
 	
 	private ArrayList<PropertyModel> properties;
 	
@@ -31,8 +32,8 @@ public class ModificationModel {
 		super();
 	}
 
-	public ModificationModel(String key, ArrayList<ContactModel> activeContacts,
-			ArrayList<ContactModel> inactiveContacts,
+	public ModificationModel(String key, ArrayList<SimpleContactModel> activeContacts,
+			ArrayList<SimpleContactModel> inactiveContacts,
 			ArrayList<PropertyModel> properties, ArrayList<RuleModel> rules,
 			ArrayList<EmergencyNumberModel> addedEmergencyNumbers,
 			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers) {
@@ -54,19 +55,19 @@ public class ModificationModel {
 		this.key = key;
 	}
 
-	public ArrayList<ContactModel> getActiveContacts() {
+	public ArrayList<SimpleContactModel> getActiveContacts() {
 		return activeContacts;
 	}
 
-	public void setActiveContacts(ArrayList<ContactModel> activeContacts) {
+	public void setActiveContacts(ArrayList<SimpleContactModel> activeContacts) {
 		this.activeContacts = activeContacts;
 	}
 
-	public ArrayList<ContactModel> getInactiveContacts() {
+	public ArrayList<SimpleContactModel> getInactiveContacts() {
 		return inactiveContacts;
 	}
 
-	public void setInactiveContacts(ArrayList<ContactModel> inactiveContacts) {
+	public void setInactiveContacts(ArrayList<SimpleContactModel> inactiveContacts) {
 		this.inactiveContacts = inactiveContacts;
 	}
 
@@ -110,20 +111,20 @@ public class ModificationModel {
 		
 		modificationModel.setKey(KeyFactory.keyToString(modification.getKey()));
 		
-		ArrayList<PCContact> pcActiveContacts = (ArrayList<PCContact>)pm.getObjectsById(modification.getActiveContacts());
-		ArrayList<ContactModel> activeContacts = new ArrayList<ContactModel>();
+		ArrayList<PCSimpleContact> pcActiveContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(modification.getActiveContacts());
+		ArrayList<SimpleContactModel> activeContacts = new ArrayList<SimpleContactModel>();
 		
-		for (PCContact contact : pcActiveContacts) {
-			activeContacts.add(ContactModel.convertToContactModel(contact));
+		for (PCSimpleContact contact : pcActiveContacts) {
+			activeContacts.add(SimpleContactModel.convertToSimpleContactModel(contact));
 		}
 		
 		modificationModel.setActiveContacts(activeContacts);
 		
-		ArrayList<PCContact> pcInactiveContacts = (ArrayList<PCContact>)pm.getObjectsById(modification.getInactiveContacts());
-		ArrayList<ContactModel> inactiveContacts = new ArrayList<ContactModel>();
+		ArrayList<PCSimpleContact> pcInactiveContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(modification.getInactiveContacts());
+		ArrayList<SimpleContactModel> inactiveContacts = new ArrayList<SimpleContactModel>();
 		
-		for (PCContact contact : pcInactiveContacts) {
-			inactiveContacts.add(ContactModel.convertToContactModel(contact));
+		for (PCSimpleContact contact : pcInactiveContacts) {
+			inactiveContacts.add(SimpleContactModel.convertToSimpleContactModel(contact));
 		}
 		
 		modificationModel.setInactiveContacts(inactiveContacts);
@@ -161,6 +162,8 @@ public class ModificationModel {
 		}
 		
 		modificationModel.setRules(rules);
+		
+		pm.close();
 		
 		return modificationModel;
 	}

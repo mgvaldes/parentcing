@@ -85,7 +85,7 @@ public class PCProperty {
 		return id;
 	}
 
-	public void setId(int ind) {
+	public void setId(int id) {
 		this.id = id;
 	}
 

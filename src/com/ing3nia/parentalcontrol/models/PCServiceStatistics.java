@@ -29,13 +29,16 @@ public class PCServiceStatistics {
     private Key key;
 	
 	@Persistent
-	private String service;
+	private String serviceName;
+	
+	@Persistent
+	private String serviceCode;
 	
 	@Persistent
 	private Date date;
 	
 	@Persistent
-	private PCUser user;
+	private Key smartphone;
 	
 	@Persistent
 	private PCWSStatus status;
@@ -44,14 +47,15 @@ public class PCServiceStatistics {
 		super();
 	}
 
-	public PCServiceStatistics(Key key, String service, Date date, PCUser user,
-			PCWSStatus status) {
+	public PCServiceStatistics(Key key, String serviceName, Date date, Key smartphone,
+			PCWSStatus status, String serviceCode) {
 		super();
 		this.key = key;
-		this.service = service;
+		this.serviceName = serviceName;
 		this.date = date;
-		this.user = user;
+		this.smartphone = smartphone;
 		this.status = status;
+		this.serviceCode = serviceCode;
 	}
 
 	public PCWSStatus getStatus() {
@@ -70,12 +74,12 @@ public class PCServiceStatistics {
 		this.key = key;
 	}
 
-	public String getService() {
-		return service;
+	public String getServiceName() {
+		return serviceName;
 	}
 
-	public void setService(String service) {
-		this.service = service;
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 
 	public Date getDate() {
@@ -86,11 +90,19 @@ public class PCServiceStatistics {
 		this.date = date;
 	}
 
-	public PCUser getUser() {
-		return user;
+	public Key getSmartphone() {
+		return smartphone;
 	}
 
-	public void setUser(PCUser user) {
-		this.user = user;
+	public void setSmartphone(Key smartphone) {
+		this.smartphone = smartphone;
+	}
+
+	public String getServiceCode() {
+		return serviceCode;
+	}
+
+	public void setServiceCode(String serviceCode) {
+		this.serviceCode = serviceCode;
 	}
 }
