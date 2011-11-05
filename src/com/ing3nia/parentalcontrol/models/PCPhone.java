@@ -43,7 +43,6 @@ public class PCPhone {
 
 	public PCPhone(int type, String phoneNumber) {
 		super();
-		this.key = key;
 		this.type = type;
 		this.phoneNumber = phoneNumber;
 	}

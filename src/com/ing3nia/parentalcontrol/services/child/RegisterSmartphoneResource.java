@@ -47,7 +47,7 @@ public class RegisterSmartphoneResource {
 		Gson jsonParser = new Gson();
 		Type bodyType = new TypeToken<RegisterSmartphoneModel>(){}.getType();
 		
-		String registeredSmartphoneKey = "Hola! ";
+		String registeredSmartphoneKey = null;
 		
 		logger.info("[Register Smartphone Service] Parseando par‡metros de entrada.");
 		RegisterSmartphoneModel registerSmartphone = jsonParser.fromJson(body, bodyType);

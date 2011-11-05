@@ -92,6 +92,10 @@ public class ContactModel {
 	public Key savePCContact(PersistenceManager pm) {
 		Key contactKey = null;
 		PCContact pcContact = this.convertToPCContact();
+<<<<<<< HEAD
+=======
+		//System.out.println("Holaaaaaa!: " + pcContact.getFirstName() + " " + pcContact.getLastName() + " numeros: " + pcContact.getPhones().get(0).getPhoneNumber().getNumber());
+>>>>>>> 32fe3e75765a428f38435f47b91af58b3eaf5a4d
 		pm.makePersistent(pcContact);
 		contactKey = pcContact.getKey();
 		

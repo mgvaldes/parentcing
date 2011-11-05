@@ -96,6 +96,12 @@ public class PCSmartphone {
 	private ArrayList<PCRule> rules;
 	
 	/**
+	 * Represents a collection of notifications sent to the smartphone
+	 */
+	@Persistent
+	private ArrayList<Key> notifications;
+	
+	/**
 	 * Specifies the name associated to a smartphone.
 	 */
 	@Persistent
@@ -235,6 +241,8 @@ public class PCSmartphone {
 //		this.emergencyNumbers = emergencyNumbers;
 //	}
 
+	
+	
 	public ArrayList<Key> getAddedEmergencyNumbers() {
 		return addedEmergencyNumbers;
 	}
@@ -272,9 +280,14 @@ public class PCSmartphone {
 		return modification;
 	}
 
+	public ArrayList<Key> getNotifications() {
+		return notifications;
+	}
+	
 	public void setModification(PCModification modification) {
 		this.modification = modification;
 	}
+
 
 	public ArrayList<PCRule> getRules() {
 		return rules;
@@ -315,7 +328,7 @@ public class PCSmartphone {
 	public void setNotifications(ArrayList<Key> notifications) {
 		this.notifications = notifications;
 	}
-
+	
 	public ArrayList<PCContact> getOriginalContacts() {
 		return originalContacts;
 	}
