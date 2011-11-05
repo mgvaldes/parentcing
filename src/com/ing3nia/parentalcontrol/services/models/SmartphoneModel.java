@@ -1,10 +1,12 @@
 package com.ing3nia.parentalcontrol.services.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.gson.JsonObject;
 
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
@@ -13,7 +15,10 @@ import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCRule;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class SmartphoneModel {
@@ -188,21 +193,21 @@ public class SmartphoneModel {
 		this.appVersion = appVersion;
 	}
 
-	public PCSmartphone convertToPCSmartphone() {
+	public PCSmartphone convertToPCSmartphone() throws SessionQueryException {
 		PCSmartphone smartphone = new PCSmartphone();
 		
-		smartphone.setLocation(this.location.convertToGeoPt());
+		ArrayList<Key> pcActiveContacts = new ArrayList<Key>();
+		ArrayList<PCContact> pcOriginalContacts = new ArrayList<PCContact>();
 		
-		ArrayList<Key> pcContact = new ArrayList<Key>();
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		for (ContactModel contact : this.activeContacts) {
-			pcContact.add(contact.savePCContact(pm));
+			pcOriginalContacts.add(contact.convertToPCContact());
+			pcActiveContacts.addAll(contact.saveAsPCSimpleContact(pm));
 		}
 		
-		pm.close();
-		
-		smartphone.setActiveContacts(pcContact);
+		smartphone.setLocation(this.location.convertToGeoPt());
+		smartphone.setActiveContacts(pcActiveContacts);
 		smartphone.setInactiveContacts(new ArrayList<Key>());
 		smartphone.setAddedEmergencyNumbers(new ArrayList<Key>());
 		smartphone.setDeletedEmergencyNumbers(new ArrayList<Key>());
@@ -210,68 +215,88 @@ public class SmartphoneModel {
 		smartphone.setProperties(new ArrayList<PCProperty>());
 		smartphone.setModification(new PCModification());
 		smartphone.setRules(new ArrayList<PCRule>());
-		smartphone.setDevice(this.device.convertToPCDevice());
-		smartphone.setApplication(ApplicationModel.findPCApplicationByAppVersion(this.appVersion));
-		smartphone.setSerialNumber(this.serialNumber);
+		smartphone.setNotifications(new ArrayList<Key>());
 		smartphone.setName(this.name);
+		smartphone.setDevice(this.device.convertToPCDevice());
+		smartphone.setSerialNumber(this.serialNumber);
+		smartphone.setApplication(ApplicationModel.findPCApplicationByAppVersion(this.appVersion, pm));
+		smartphone.setOriginalContacts(pcOriginalContacts);
+		
+		pm.close();
 		
 		return smartphone;
 	}
 	
-	public static SmartphoneModel convertToSmartphoneModel(PCSmartphone savedSmartphone) {
+	public static SmartphoneModel convertToSmartphoneModel(PCSmartphone savedSmartphone, PersistenceManager pm) throws SessionQueryException {
 		SmartphoneModel smartphoneModel = new SmartphoneModel();
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		ArrayList<PCContact> pcActiveContacts = (ArrayList<PCContact>)pm.getObjectsById(savedSmartphone.getActiveContacts());
-		ArrayList<ContactModel> activeContacts = new ArrayList<ContactModel>();
-		
-		for (PCContact contact : pcActiveContacts) {
-			activeContacts.add(ContactModel.convertToContactModel(contact));
-		}
-		
-		smartphoneModel.setActiveContacts(activeContacts);
-		
-		ArrayList<PCContact> pcInactiveContacts = (ArrayList<PCContact>)pm.getObjectsById(savedSmartphone.getInactiveContacts());
-		ArrayList<ContactModel> inactiveContacts = new ArrayList<ContactModel>();
-		
-		for (PCContact contact : pcInactiveContacts) {
-			inactiveContacts.add(ContactModel.convertToContactModel(contact));
-		}
-		
-		smartphoneModel.setInactiveContacts(inactiveContacts);
-		
-		ArrayList<PCEmergencyNumber> pcAddedEmergencyNumbers = (ArrayList<PCEmergencyNumber>)pm.getObjectsById(savedSmartphone.getAddedEmergencyNumbers());
-		ArrayList<EmergencyNumberModel> addedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
-		
-		for (PCEmergencyNumber emergencyNumber : pcAddedEmergencyNumbers) {
-			addedEmergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(emergencyNumber));
-		}
-		
-		smartphoneModel.setAddedEmergencyNumbers(addedEmergencyNumbers);
-		
-		ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
-		
-		for (PCProperty property : savedSmartphone.getProperties()) {
-			properties.add(PropertyModel.convertToPropertyModel(property));
-		}
-		
-		smartphoneModel.setProperties(properties);
-		
-		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
-		
-		for (PCRule rule : savedSmartphone.getRules()) {
-			rules.add(RuleModel.convertToRuleModel(rule));
-		}
-		
-		smartphoneModel.setRules(rules);
-		smartphoneModel.setDevice(DeviceModel.convertToDeviceModel(savedSmartphone.getDevice()));
-		
-		PCApplication application = (PCApplication)pm.getObjectById(PCApplication.class, savedSmartphone.getApplication());
-		
-		smartphoneModel.setAppVersion(application.getAppInfo().getAppVersion());
-		smartphoneModel.setSerialNumber(savedSmartphone.getSerialNumber());
-		smartphoneModel.setName(savedSmartphone.getName());
+//		try {
+//			ArrayList<PCSimpleContact> pcActiveContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(savedSmartphone.getActiveContacts());
+//			ArrayList<SimpleContactModel> activeContactsList = new ArrayList<SimpleContactModel>();
+//			HashMap<String, ArrayList<PhoneModel>> auxContactsHashMap = new HashMap<String, ArrayList<PhoneModel>>(); 
+//			
+//			for (PCSimpleContact contact : pcActiveContacts) {
+//				activeContacts.add(SimpleContactModel.convertToSimpleContactModel(contact));
+//			}
+//			
+//			smartphoneModel.setActiveContacts(activeContacts);
+//			
+//			ArrayList<PCContact> pcInactiveContacts = (ArrayList<PCContact>)pm.getObjectsById(savedSmartphone.getInactiveContacts());
+//			ArrayList<ContactModel> inactiveContacts = new ArrayList<ContactModel>();
+//			
+//			for (PCContact contact : pcInactiveContacts) {
+//				inactiveContacts.add(ContactModel.convertToContactModel(contact));
+//			}
+//			
+//			smartphoneModel.setInactiveContacts(inactiveContacts);
+//			
+//			ArrayList<PCEmergencyNumber> pcAddedEmergencyNumbers = (ArrayList<PCEmergencyNumber>)pm.getObjectsById(savedSmartphone.getAddedEmergencyNumbers());
+//			ArrayList<EmergencyNumberModel> addedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
+//			
+//			for (PCEmergencyNumber emergencyNumber : pcAddedEmergencyNumbers) {
+//				addedEmergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(emergencyNumber));
+//			}
+//			
+//			smartphoneModel.setAddedEmergencyNumbers(addedEmergencyNumbers);
+//			
+//			ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
+//			
+//			for (PCProperty property : savedSmartphone.getProperties()) {
+//				properties.add(PropertyModel.convertToPropertyModel(property));
+//			}
+//			
+//			smartphoneModel.setProperties(properties);
+//			
+//			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+//			
+//			for (PCRule rule : savedSmartphone.getRules()) {
+//				rules.add(RuleModel.convertToRuleModel(rule));
+//			}
+//			
+//			smartphoneModel.setRules(rules);
+//			smartphoneModel.setDevice(DeviceModel.convertToDeviceModel(savedSmartphone.getDevice()));
+//			
+//			PCApplication application = (PCApplication)pm.getObjectById(PCApplication.class, savedSmartphone.getApplication());
+//			
+//			smartphoneModel.setAppVersion(application.getAppInfo().getAppVersion());
+//			smartphoneModel.setSerialNumber(savedSmartphone.getSerialNumber());
+//			smartphoneModel.setName(savedSmartphone.getName());
+//		}
+//		catch (Exception ex) {
+//	    	ModelLogger.logger.info("[Total Synchronization Service] An error ocurred while finding smartphone info en DB " + ex.getMessage());
+//	    	
+//			throw new SessionQueryException();
+//	    }
 		
 		return smartphoneModel;
+	}
+	
+	/**
+	 * Returns the smartphone info as a json object
+	 */
+	public JsonObject getSmartphoneAsJson(){
+		JsonObject smartphone = new JsonObject();
+		
+		return smartphone;
 	}
 }

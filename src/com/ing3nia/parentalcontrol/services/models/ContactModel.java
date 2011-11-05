@@ -9,6 +9,7 @@ import com.ing3nia.parentalcontrol.models.PCAddress;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCOrganization;
 import com.ing3nia.parentalcontrol.models.PCPhone;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ContactModel {
@@ -89,14 +90,17 @@ public class ContactModel {
 		this.organizations = organizations;
 	}
 	
-	public Key savePCContact(PersistenceManager pm) {
-		Key contactKey = null;
-		PCContact pcContact = this.convertToPCContact();
-
-		pm.makePersistent(pcContact);
-		contactKey = pcContact.getKey();
+	public ArrayList<Key> saveAsPCSimpleContact(PersistenceManager pm) {
+		ArrayList<Key> contactKeys = new ArrayList<Key>();
+		PCSimpleContact pcSimpleContact;
 		
-		return contactKey;
+		for (PhoneModel phone : this.phones) {
+			pcSimpleContact = new PCSimpleContact(this.firstName, this.lastName, phone.convertToPCPhone());
+			pm.makePersistent(pcSimpleContact);
+			contactKeys.add(pcSimpleContact.getKey());
+		}
+		
+		return contactKeys;
 	}
 	
 	public PCContact convertToPCContact() {

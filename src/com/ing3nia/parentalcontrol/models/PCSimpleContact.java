@@ -1,7 +1,5 @@
 package com.ing3nia.parentalcontrol.models;
 
-import java.util.ArrayList;
-
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;

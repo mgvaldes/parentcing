@@ -1,27 +1,26 @@
 package com.ing3nia.parentalcontrol.services.child;
 
-import java.lang.reflect.Type;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
+
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
+
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneSerialModel;
+import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("sph-id-req")
@@ -34,69 +33,76 @@ public class SmartphoneIdRequestResource {
 	}
 	
 	//{'serial':'AX1-BBMPA2'}
-	@POST
-	@Consumes(MediaType.APPLICATION_JSON)
+	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response doPost(String body) {		
-		Gson jsonParser = new Gson();
-		Type bodyType = new TypeToken<SmartphoneSerialModel>(){}.getType();
+	public Response doPost(@QueryParam(value = "serial") final String serial) {		
+		String smartphoneKey = null;
+		ResponseBuilder rbuilder;
 		
-		String smartphoneKey = "";
+		try {
+			smartphoneKey = getSmartphoneKey(serial);
+		}
+		catch (SessionQueryException ex) {
+			logger.warning("[Smartphone Id Request Service] An error ocurred while searching for smartphone. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (IllegalArgumentException ex) {
+			logger.warning("[Smartphone Id Request Service] An error ocurred while converting the smartohone Key to String. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 		
-		logger.info("[Smartphone Id Request Service] Parseando par‡metros de entrada.");
-		SmartphoneSerialModel smartphoneSerial = jsonParser.fromJson(body, bodyType);
-
-		smartphoneKey = getSmartphoneKey(smartphoneSerial.getSerial());
-		
-		JsonObject jsonObjectStatus = new JsonObject();
-		
-		if (smartphoneKey != null) {
-			jsonObjectStatus.addProperty("code", "00");
-			jsonObjectStatus.addProperty("verbose", "OK");
-			jsonObjectStatus.addProperty("msg", "OK");
-			jsonObjectStatus.addProperty("id", smartphoneKey);
+		if (smartphoneKey == null) {
+			logger.info("[Smartphone Id Request Service] No smartohone found for the provided key");
+			
+			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
 		else {
-			jsonObjectStatus.addProperty("code", "01");
-			jsonObjectStatus.addProperty("verbose", "INVALID_PHONE_SERIAL");
-			jsonObjectStatus.addProperty("msg", "The supplied unique id is not valid");
+			logger.info("[Smartphone Id Request Service] Ok Response. Smartphone id succesfully requested.");
+			
+			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+			okResponse.addProperty("id", smartphoneKey);
+			
+			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
-		
-		ResponseBuilder rbuilder = Response.ok(jsonObjectStatus.toString(), MediaType.APPLICATION_JSON);
-		
-		return rbuilder.build();
 	}
 	
-	public String getSmartphoneKey(String serial) {
+	public String getSmartphoneKey(String serial) throws SessionQueryException, IllegalArgumentException {
 		String smartphoneKey = null;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		logger.info("[Smartphone Id Request Service] Iniciando bœsqueda de smartphone registrado con serial: " + serial);
+		logger.info("[Smartphone Id Request Service] Searching for smartphone registered with serial: " + serial);
 
-		Query query = pm.newQuery(PCSmartphone.class);
-		
+		Query query = pm.newQuery(PCSmartphone.class);		
 	    query.setFilter("serialNumber == serialNumberParam");
 	    query.declareParameters("String serialNumberParam");
 	    query.setRange(0, 1);
 	    
 	    try {
-	    	logger.info("[Smartphone Id Request Service] Ejecutando query para buscar smartphone.");
-	    	
 	    	List<PCSmartphone> result = (List<PCSmartphone>)query.execute(serial);
 	    	
-	    	Iterator iter = result.iterator();
-	    		    	
-	    	if (iter.hasNext()) {
-	    		PCSmartphone smartphone = (PCSmartphone)iter.next();
-	    		smartphoneKey = KeyFactory.keyToString(smartphone.getKey());
+	    	if (!result.isEmpty()) {
+	    		smartphoneKey = KeyFactory.keyToString(result.get(0).getKey());
+	    	}
+	    	else {
+	    		smartphoneKey = null;
 	    	}
 	    }
 	    catch (IllegalArgumentException ex) {
-			//TODO manejar exception y error
+			throw ex;
 		}
-	    finally {
-	    	pm.close();
+	    catch (Exception ex) {
+	    	logger.info("[Smartphone Id Request Service] An error ocurred while finding the PCSmartphone by serial " + ex.getMessage());
+	    	
+			throw new SessionQueryException();
 	    }
+
+	    pm.close();
 	    
 	    return smartphoneKey;
 	}
