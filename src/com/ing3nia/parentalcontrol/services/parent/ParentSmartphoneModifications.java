@@ -44,7 +44,7 @@ import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
  * @version 1.0
  *
  */
-@Path("smartphone-grl")
+@Path("parent-mod")
 public class ParentSmartphoneModifications {
 	
 	private static final Logger logger = Logger

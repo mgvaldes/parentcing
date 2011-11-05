@@ -126,9 +126,6 @@ public class PCSmartphone {
 	private Key application;
 	
 	@Persistent
-	private ArrayList<Key> notifications;
-	
-	@Persistent
 	private ArrayList<PCContact> originalContacts;
 	
 	public PCSmartphone() {
@@ -278,10 +275,6 @@ public class PCSmartphone {
 
 	public PCModification getModification() {
 		return modification;
-	}
-
-	public ArrayList<Key> getNotifications() {
-		return notifications;
 	}
 	
 	public void setModification(PCModification modification) {
