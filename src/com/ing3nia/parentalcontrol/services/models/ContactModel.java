@@ -13,6 +13,8 @@ import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ContactModel {
+	private String keyId;
+	
 	private String firstName;
 	
 	private String lastName;
@@ -29,6 +31,20 @@ public class ContactModel {
 		super();
 	}
 
+	public ContactModel(String keyId, String firstName, String lastName,
+			ArrayList<PhoneModel> phones, ArrayList<String> emails,
+			ArrayList<AddressModel> addresses,
+			ArrayList<OrganizationModel> organizations) {
+		super();
+		this.keyId = keyId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phones = phones;
+		this.emails = emails;
+		this.addresses = addresses;
+		this.organizations = organizations;
+	}
+	
 	public ContactModel(String firstName, String lastName,
 			ArrayList<PhoneModel> phones) {
 		super();
@@ -98,16 +114,35 @@ public class ContactModel {
 		this.organizations = organizations;
 	}
 	
-	public ArrayList<Key> saveAsPCSimpleContact(PersistenceManager pm) {
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
+	public ArrayList<Key> saveAsPCSimpleContact() {
 		ArrayList<Key> contactKeys = new ArrayList<Key>();
 		PCSimpleContact pcSimpleContact;
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		ArrayList<PCSimpleContact> pscList = new ArrayList<PCSimpleContact>();
 		
 		for (PhoneModel phone : this.phones) {
+
 			pcSimpleContact = new PCSimpleContact(this.firstName, this.lastName, phone.convertToPCPhone());
-			pm.makePersistent(pcSimpleContact);
-			contactKeys.add(pcSimpleContact.getKey());
+			//pm.makePersistent(pcSimpleContact);
+			//contactKeys.add(pcSimpleContact.getKey());
+			pscList.add(pcSimpleContact);
+		}
+		pm.makePersistentAll(pscList);
+		
+		// getting ans saving keys from every simple contact
+		for(PCSimpleContact psc : pscList){
+			contactKeys.add(psc.getKey());
 		}
 		
+		pm.close();
 		return contactKeys;
 	}
 	

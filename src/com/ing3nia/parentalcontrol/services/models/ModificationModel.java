@@ -16,6 +16,8 @@ import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 public class ModificationModel {
 	private String key;
 	
+	private String smartphoneName;
+	
 	private ArrayList<SimpleContactModel> activeContacts;
 	
 	private ArrayList<SimpleContactModel> inactiveContacts;
@@ -32,6 +34,22 @@ public class ModificationModel {
 		super();
 	}
 
+	public ModificationModel(String key, String smartphoneName, ArrayList<SimpleContactModel> activeContacts,
+			ArrayList<SimpleContactModel> inactiveContacts,
+			ArrayList<PropertyModel> properties, ArrayList<RuleModel> rules,
+			ArrayList<EmergencyNumberModel> addedEmergencyNumbers,
+			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers) {
+		super();
+		this.key = key;
+		this.activeContacts = activeContacts;
+		this.inactiveContacts = inactiveContacts;
+		this.properties = properties;
+		this.rules = rules;
+		this.addedEmergencyNumbers = addedEmergencyNumbers;
+		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
+		this.smartphoneName = smartphoneName;
+	}
+	
 	public ModificationModel(String key, ArrayList<SimpleContactModel> activeContacts,
 			ArrayList<SimpleContactModel> inactiveContacts,
 			ArrayList<PropertyModel> properties, ArrayList<RuleModel> rules,
@@ -105,6 +123,14 @@ public class ModificationModel {
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
 	}
 	
+	public String getSmartphoneName() {
+		return smartphoneName;
+	}
+
+	public void setSmartphoneName(String smartphoneName) {
+		this.smartphoneName = smartphoneName;
+	}
+
 	public static ModificationModel convertToModificationModel(PCModification modification) {
 		ModificationModel modificationModel = new ModificationModel();
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();

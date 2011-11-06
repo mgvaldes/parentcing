@@ -101,6 +101,7 @@ public class SmartphoneUtils {
 		for(Key contactKey : smartphone.getInactiveContacts()){
 			JsonObject contactJson = new JsonObject();
 			PCContact contact = (PCContact)pm.getObjectById(PCContact.class, contactKey);
+			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
 			contactJson.addProperty("fname",contact.getFirstName());
 			contactJson.addProperty("lname", contact.getLastName());
 			
@@ -121,6 +122,7 @@ public class SmartphoneUtils {
 		for(Key contactKey : smartphone.getActiveContacts()){
 			JsonObject contactJson = new JsonObject();
 			PCContact contact = (PCContact)pm.getObjectById(PCContact.class, contactKey);
+			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
 			contactJson.addProperty("fname",contact.getFirstName());
 			contactJson.addProperty("lname", contact.getLastName());
 			
@@ -141,6 +143,7 @@ public class SmartphoneUtils {
 		for(Key contactKey : smartphone.getAddedEmergencyNumbers()){
 			JsonObject contactJson = new JsonObject();
 			PCEmergencyNumber contact = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, contactKey);
+			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
 			contactJson.addProperty("ctry",contact.getCountry());
 			contactJson.addProperty("desc", contact.getDescription());
 			contactJson.addProperty("num", contact.getNumber().getNumber());
@@ -155,6 +158,7 @@ public class SmartphoneUtils {
 		for(Key contactKey : smartphone.getDeletedEmergencyNumbers()){
 			JsonObject contactJson = new JsonObject();
 			PCEmergencyNumber contact = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, contactKey);
+			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
 			contactJson.addProperty("ctry",contact.getCountry());
 			contactJson.addProperty("desc", contact.getDescription());
 			contactJson.addProperty("num", contact.getNumber().getNumber());

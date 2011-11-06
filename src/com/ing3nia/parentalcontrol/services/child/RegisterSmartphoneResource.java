@@ -122,18 +122,22 @@ public class RegisterSmartphoneResource {
 	    query.setRange(0, 1);
 	    
     	logger.info("[Register Smartphone Service] Encrypting password in MD5.");
-    	String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());
     	
-    	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), registerSmartphoneModel.getPass());
-    	//user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);
+    	//String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());    	
+    	String encryptedPass = registerSmartphoneModel.getPass();
+    	
+    	logger.info("[Register Smartphone Service] Finding PCUser with usr, pass: "+registerSmartphoneModel.getUsr()+" "+encryptedPass+" from: "+registerSmartphoneModel.getPass());
+    	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);
     	
     	if (user == null) {
     		return null;
     	}
     	else {
-    		logger.info("[Register Smartphone Service] Creating and saving PCSmartphone with input smartphone info.");
+    		logger.info("[Register Smartphone Service] Creating PCSmartphone with input smartphone info.");
     		
     		PCSmartphone newSmartphone = registerSmartphoneModel.getSmartphone().convertToPCSmartphone();    		
+    		
+    		logger.info("[Register Smartphone Service] Saving PCSmartphone with input smartphone info.");
     		pm.makePersistent(newSmartphone);
     		
     		logger.info("[Register Smartphone Service] Assigning new smartphone to user.");

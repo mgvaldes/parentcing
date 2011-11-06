@@ -23,10 +23,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCSession;
+import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.ModificationModel;
+import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
 import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
@@ -58,11 +61,80 @@ public class ParentSmartphoneModifications {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	/**
-	 * Processes the modifications made by father phone
+	 * Processes the modifications made by the parent
 	 */
 	public Response post(String msg) {
 		String responseMsg = "";
-		ResponseBuilder rbuilder = Response.ok(responseMsg.toString(), MediaType.APPLICATION_JSON);
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PCSession session = null;
+		ResponseBuilder rbuilder = null;
+		Gson gson = new Gson();
+		
+		logger.info("[Parent Modifications] Parsing modifications request message");
+		//parsing json message from request
+		Type modificationType = new TypeToken<ParentModificationsModel>(){}.getType();
+		ParentModificationsModel mt;
+		try{
+		logger.info("[Parent Modifications] Transforming json object "+msg);
+		 mt = gson.fromJson(msg, modificationType);
+		}catch(Exception e){
+			logger.warning("[Parent Modifications] ModificationsModel couldn't be created from message "+WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		
+		String cookie;
+		String smartphoneId;
+		if(mt.getCid()!=null && mt.getSmid()!=null){
+			cookie = mt.getCid();
+			smartphoneId = mt.getSmid();
+		}else{
+			logger.warning("[Parent Modifications] The modifications parameters are not valid "+WSStatus.INVALID_DATA.getMsg());
+			rbuilder = Response.ok(WSStatus.INVALID_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		
+		logger.info("[Parent Modifications] Finding user session from cookie");
+		try {
+			 session = SessionUtils.getPCSessionFromCookie(pm, cookie);
+		} catch (SessionQueryException e) {
+			logger.warning("[Parent Modifications] No session exists for the given cookie. "+e.getMessage());
+			rbuilder = Response.ok(WSStatus.NONEXISTING_SESSION.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		
+		//TODO verify if session is active
+		
+		logger.info("[Parent Modifications] Session found. Getting User from session");
+		PCUser user = pm.getObjectById(PCUser.class, session.getUser());
+		
+		if(user==null){
+			logger.severe("[Parent Modifications] No user associated with a valid session");
+			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		pm.close();
+		pm = ServiceUtils.PMF.getPersistenceManager();
+		
+		//TODO check if smartphone corresponds to USER
+		
+		// get smartphone from provided key
+		logger.info("[Parent Modifications] Obtaining smartphone from provided key "+smartphoneId);
+		PCSmartphone smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneId));
+		if(smartphone == null){
+			logger.severe("[Parent Modifications] No smartphone found from the given key "+smartphoneId);
+			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		pm.close();
+	
+		logger.info("EVERYTHING IS VALID: USER + SMARTPHONE: "+user.getName()+" "+smartphone.getName());
+		rbuilder = Response.ok(responseMsg.toString(), MediaType.APPLICATION_JSON);
 		return rbuilder.build();
 	}
 }
+
+
+
+
+

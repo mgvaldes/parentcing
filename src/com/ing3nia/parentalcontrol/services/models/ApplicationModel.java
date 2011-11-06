@@ -32,5 +32,6 @@ public class ApplicationModel {
     	else {
     		throw new SessionQueryException();
     	}
+
 	}
 }

@@ -24,6 +24,8 @@ import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class SmartphoneModel {
+	private String keyId;
+	
 	private String id;
 	
 	private LocationModel location;
@@ -194,8 +196,17 @@ public class SmartphoneModel {
 	public void setAppVersion(String appVersion) {
 		this.appVersion = appVersion;
 	}
-	
+
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 	public PCSmartphone convertToPCSmartphone() throws SessionQueryException {
+
 		PCSmartphone smartphone = new PCSmartphone();
 		ArrayList<Key> pcActiveContacts = new ArrayList<Key>();
 		ArrayList<PCContact> pcOriginalContacts = new ArrayList<PCContact>();
@@ -203,7 +214,7 @@ public class SmartphoneModel {
 
 		for (ContactModel contact : this.activeContacts) {
 			pcOriginalContacts.add(contact.convertToPCContact());
-			pcActiveContacts.addAll(contact.saveAsPCSimpleContact(pm));
+			pcActiveContacts.addAll(contact.saveAsPCSimpleContact());
 		}
 
 		smartphone.setLocation(this.location.convertToGeoPt());

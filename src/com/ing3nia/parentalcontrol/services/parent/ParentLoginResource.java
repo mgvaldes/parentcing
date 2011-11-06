@@ -73,7 +73,7 @@ public class ParentLoginResource {
 	public Response post(String msg) {
 		
 		logger.info("[Parent Login] Processing login request");
-		
+	
 		//creating global variables
 		Gson gson = new Gson();
 		ResponseBuilder rbuilder;

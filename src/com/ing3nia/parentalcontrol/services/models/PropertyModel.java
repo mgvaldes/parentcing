@@ -5,6 +5,9 @@ import java.util.Date;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 
 public class PropertyModel {
+	
+	private String keyId;
+	
 	private String description;
 	
 	private String value;
@@ -17,6 +20,16 @@ public class PropertyModel {
 		super();
 	}
 
+	public PropertyModel(String keyId, String description, String value, int id,
+			Date creationDate) {
+		super();
+		this.keyId = keyId;
+		this.description = description;
+		this.value = value;
+		this.id = id;
+		this.creationDate = creationDate;
+	}
+	
 	public PropertyModel(String description, String value, int id,
 			Date creationDate) {
 		super();
@@ -58,6 +71,15 @@ public class PropertyModel {
 		this.creationDate = creationDate;
 	}
 	
+	
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 	public static PropertyModel convertToPropertyModel(PCProperty property) {
 		return new PropertyModel(property.getDescription(), property.getValue(), property.getId(), property.getCreationDate());
 	}
