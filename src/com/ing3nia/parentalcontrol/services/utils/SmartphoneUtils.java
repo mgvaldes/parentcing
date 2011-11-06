@@ -108,13 +108,11 @@ public class SmartphoneUtils {
 			
 			JsonArray contactNumsJson = new JsonArray();
 			
+			PCSimpleContact simpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, contactKey);
+			PCPhone p = (PCPhone)pm.getObjectById(PCPhone.class, simpleContact.getPhone());
+			JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
+			contactNumsJson.add(prim);
 			
-			ArrayList<PCPhone> phones = (ArrayList<PCPhone>)pm.getObjectById(contact.getPhones());
-
-			for(PCPhone p : phones){
-				JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
-				contactNumsJson.add(prim);
-			}
 			contactJson.add("nums", contactNumsJson);
 			inactiveArray.add(contactJson);
 		}
@@ -132,13 +130,6 @@ public class SmartphoneUtils {
 			
 			JsonArray contactNumsJson = new JsonArray();
 			
-			/*
-			ArrayList<PCPhone> phones = (ArrayList<PCPhone>)pm.getObjectById(contact.get);
-			ArrayList<PCPhone> phones = contact.getPhones();
-			for(PCPhone p : phones){
-				JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
-				contactNumsJson.add(prim);
-			}*/
 			PCSimpleContact simpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, contactKey);
 			PCPhone p = (PCPhone)pm.getObjectById(PCPhone.class, simpleContact.getPhone());
 			JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());

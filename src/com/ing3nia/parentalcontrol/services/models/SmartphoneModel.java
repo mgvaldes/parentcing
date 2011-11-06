@@ -14,6 +14,7 @@ import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
+import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCRule;
@@ -22,6 +23,7 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.sun.org.apache.bcel.internal.classfile.PMGClass;
 
 public class SmartphoneModel {
 	private String keyId;
@@ -239,23 +241,30 @@ public class SmartphoneModel {
 
 	}
 
-	public static ArrayList<ContactModel> convertContacts(ArrayList<PCSimpleContact> pcContacts) {
+	public static ArrayList<ContactModel> convertContacts(
+			ArrayList<PCSimpleContact> pcContacts) {
 		ArrayList<ContactModel> contactsList = new ArrayList<ContactModel>();
 		HashMap<String, ArrayList<PhoneModel>> auxContactsHashMap = new HashMap<String, ArrayList<PhoneModel>>();
 		String contactName;
 		ArrayList<PhoneModel> auxPhoneList;
-		
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+
 		for (PCSimpleContact contact : pcContacts) {
 			contactName = contact.getFirstName() + "|" + contact.getLastName();
-			
+
 			if (auxContactsHashMap.containsKey(contactName)) {
 				auxPhoneList = auxContactsHashMap.get(contactName);
-				auxPhoneList.add(PhoneModel.convertToPhoneModel(contact.getPhone()));
+
+				PCPhone pcphone = (PCPhone) pm.getObjectById(PCPhone.class,
+						contact.getPhone());
+				auxPhoneList.add(PhoneModel.convertToPhoneModel(pcphone));
 				auxContactsHashMap.put(contactName, auxPhoneList);
-			}
-			else {
+			} else {
 				auxPhoneList = new ArrayList<PhoneModel>();
-				auxPhoneList.add(PhoneModel.convertToPhoneModel(contact.getPhone()));
+
+				PCPhone pcphone = (PCPhone) pm.getObjectById(PCPhone.class,
+						contact.getPhone());
+				auxPhoneList.add(PhoneModel.convertToPhoneModel(pcphone));
 				auxContactsHashMap.put(contactName, auxPhoneList);
 			}
 		}

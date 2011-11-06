@@ -126,9 +126,11 @@ public class ParentSmartphoneModifications {
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
 		}
+		
+		
+		
 		pm.close();
-	
-		logger.info("EVERYTHING IS VALID: USER + SMARTPHONE: "+user.getName()+" "+smartphone.getName());
+
 		rbuilder = Response.ok(responseMsg.toString(), MediaType.APPLICATION_JSON);
 		return rbuilder.build();
 	}
