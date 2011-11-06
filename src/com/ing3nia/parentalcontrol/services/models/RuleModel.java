@@ -7,6 +7,8 @@ import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCRule;
 
 public class RuleModel {
+	private String keyId;
+	
 	private Date startDate;
 	
 	private Date endDate;
@@ -19,6 +21,17 @@ public class RuleModel {
 		super();
 	}
 
+	public RuleModel(String keyId, Date startDate, Date endDate,
+			ArrayList<FunctionalityModel> disabledFunctionalities,
+			Date creationDate) {
+		super();
+		this.keyId = keyId;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.disabledFunctionalities = disabledFunctionalities;
+		this.creationDate = creationDate;
+	}
+	
 	public RuleModel(Date startDate, Date endDate,
 			ArrayList<FunctionalityModel> disabledFunctionalities,
 			Date creationDate) {
@@ -62,6 +75,16 @@ public class RuleModel {
 		this.creationDate = creationDate;
 	}
 	
+	
+	
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 	public static RuleModel convertToRuleModel(PCRule rule) {
 		RuleModel ruleModel = new RuleModel();
 		

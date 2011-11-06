@@ -17,6 +17,8 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class SmartphoneModel {
+	private String keyId;
+	
 	private String id;
 	
 	private LocationModel location;
@@ -186,6 +188,14 @@ public class SmartphoneModel {
 
 	public void setAppVersion(String appVersion) {
 		this.appVersion = appVersion;
+	}
+
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
 	}
 
 	public PCSmartphone convertToPCSmartphone() {

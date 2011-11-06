@@ -12,6 +12,8 @@ import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ContactModel {
+	private String keyId;
+	
 	private String firstName;
 	
 	private String lastName;
@@ -28,6 +30,20 @@ public class ContactModel {
 		super();
 	}
 
+	public ContactModel(String keyId, String firstName, String lastName,
+			ArrayList<PhoneModel> phones, ArrayList<String> emails,
+			ArrayList<AddressModel> addresses,
+			ArrayList<OrganizationModel> organizations) {
+		super();
+		this.keyId = keyId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phones = phones;
+		this.emails = emails;
+		this.addresses = addresses;
+		this.organizations = organizations;
+	}
+	
 	public ContactModel(String firstName, String lastName,
 			ArrayList<PhoneModel> phones, ArrayList<String> emails,
 			ArrayList<AddressModel> addresses,
@@ -89,6 +105,14 @@ public class ContactModel {
 		this.organizations = organizations;
 	}
 	
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 	public Key savePCContact(PersistenceManager pm) {
 		Key contactKey = null;
 		PCContact pcContact = this.convertToPCContact();

@@ -7,6 +7,9 @@ import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 
 public class SimpleContactModel {
+	
+	private String keyId;
+
 	private String firstName;
 	
 	private String lastName;
@@ -17,6 +20,15 @@ public class SimpleContactModel {
 		super();
 	}
 
+	public SimpleContactModel(String keyId, String firstName, String lastName,
+			ArrayList<PhoneModel> phones) {
+		super();
+		this.keyId = keyId;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phones = phones;
+	}
+	
 	public SimpleContactModel(String firstName, String lastName,
 			ArrayList<PhoneModel> phones) {
 		super();
@@ -49,6 +61,14 @@ public class SimpleContactModel {
 		this.phones = phones;
 	}
 	
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 	public static SimpleContactModel convertToSimpleContactModel(PCSimpleContact savedContact) {
 		SimpleContactModel contact = new SimpleContactModel();
 		

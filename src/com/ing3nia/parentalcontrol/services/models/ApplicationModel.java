@@ -32,7 +32,6 @@ public class ApplicationModel {
 	    	logger.info("[ApplicationModel] Ejecutando query para buscar PCApplication con appVersion: " + appVersion);
 	    	
 	    	List<PCApplication> result = (List<PCApplication>)query.execute(appVersion);
-	    	
 	    	Iterator iter = result.iterator();
 	    		    	
 	    	if (iter.hasNext()) {
@@ -42,7 +41,6 @@ public class ApplicationModel {
 	    finally {
 	    	pm.close();
 	    }
-		
 	    return application.getKey();
 	}
 }

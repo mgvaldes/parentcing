@@ -4,6 +4,8 @@ import com.google.appengine.api.datastore.PhoneNumber;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 
 public class EmergencyNumberModel {
+	private String keyId;
+	
 	private String country;
 	
 	private String number;
@@ -14,6 +16,15 @@ public class EmergencyNumberModel {
 		super();
 	}
 
+	public EmergencyNumberModel(String keyId, String country, String number,
+			String description) {
+		super();
+		this.keyId = keyId;
+		this.country = country;
+		this.number = number;
+		this.description = description;
+	}
+	
 	public EmergencyNumberModel(String country, String number,
 			String description) {
 		super();
@@ -46,6 +57,14 @@ public class EmergencyNumberModel {
 		this.description = description;
 	}
 	
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 	public static EmergencyNumberModel convertToEmergencyNumberModel(PCEmergencyNumber emergencyNumber) {
 		return new EmergencyNumberModel(emergencyNumber.getCountry(), emergencyNumber.getNumber().getNumber(), emergencyNumber.getDescription());
 	}
