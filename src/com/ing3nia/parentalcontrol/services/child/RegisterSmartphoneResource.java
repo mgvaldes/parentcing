@@ -27,8 +27,13 @@ import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
+import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
+import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 
 @Path("reg-sph")
 public class RegisterSmartphoneResource {
@@ -48,110 +53,101 @@ public class RegisterSmartphoneResource {
 		Type bodyType = new TypeToken<RegisterSmartphoneModel>(){}.getType();
 		
 		String registeredSmartphoneKey = null;
+		ResponseBuilder rbuilder;
+		RegisterSmartphoneModel registerSmartphone;
 		
-		logger.info("[Register Smartphone Service] Parseando par‡metros de entrada.");
-		RegisterSmartphoneModel registerSmartphone = jsonParser.fromJson(body, bodyType);
+		logger.info("[Register Smartphone Service] Parsing input parameters.");
+		
+		try {
+			registerSmartphone = jsonParser.fromJson(body, bodyType);
+		}
+		catch (Exception e) {
+			logger.warning("[Register Smartphone Service] RegisterSmartphoneModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 
-		registeredSmartphoneKey = checkUserCredentialsAndRegisterSmartphone(registerSmartphone);
+		try {
+			registeredSmartphoneKey = checkUserCredentialsAndRegisterSmartphone(registerSmartphone);
+		} 
+		catch (EncodingException e) {
+			logger.severe("[Register Smartphone Service] An error occurred when encrypting the supplied password");
+			
+			rbuilder = Response.ok(WSStatus.INVALID_PASSWORD_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (SessionQueryException ex) {
+			logger.warning("[Register Smartphone Service] An error ocurred while searching for username and password or searching for application. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (IllegalArgumentException ex) {
+			logger.warning("[Register Smartphone Service] An error ocurred while converting the smartohone Key to String. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 		
-		JsonObject jsonObjectStatus = new JsonObject();
-		
-		if (registeredSmartphoneKey != null) {
-			jsonObjectStatus.addProperty("code", "00");
-			jsonObjectStatus.addProperty("verbose", "OK");
-			jsonObjectStatus.addProperty("msg", "OK");
-			jsonObjectStatus.addProperty("id", registeredSmartphoneKey);
+		if (registeredSmartphoneKey == null) {
+			logger.info("[Register Smartphone Service] No user exists for the provided credentials");
+			
+			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
 		else {
-			jsonObjectStatus.addProperty("code", "01");
-			jsonObjectStatus.addProperty("verbose", "INVALID_PHONE_SERIAL");
-			jsonObjectStatus.addProperty("msg", "The supplied unique id is not valid");
-		}
-		
-		ResponseBuilder rbuilder = Response.ok(jsonObjectStatus.toString(), MediaType.APPLICATION_JSON);
-		
-		return rbuilder.build();
+			logger.info("[Register Smartphone Service] Ok Response. User succesfully registered smartphone.");
+			
+			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+			okResponse.addProperty("id", registeredSmartphoneKey);
+			
+			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}		
 	}
 	
-	@GET
-	public String doGet() {
-		Key key = KeyFactory.stringToKey("aglub19hcHBfaWRyHgsSBlBDVXNlchgFDAsSDFBDU21hcnRwaG9uZRhEDA");
+	public String checkUserCredentialsAndRegisterSmartphone(RegisterSmartphoneModel registerSmartphoneModel) throws EncodingException, SessionQueryException, IllegalArgumentException {
+		logger.info("[Register Smartphone Service] Veryfing if a user with the given username and password exists.");
 		
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
-		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, key);
-		
-		if (smart.getActiveContacts() == null) {
-			return "NULL";
-		}
-		else {
-			PCContact newContact = new PCContact();
-			newContact.setFirstName("Conejo");
-			newContact.setLastName("Remay");
-			
-			pm.makePersistent(newContact);
-			
-			ArrayList<Key> contacts = smart.getActiveContacts();
-			contacts.add(newContact.getKey());
-			
-			smart.setActiveContacts(contacts);
-			
-			pm.close();
-			
-			return "YES";
-		}
-		
-	}
-	
-	public String checkUserCredentialsAndRegisterSmartphone(RegisterSmartphoneModel registerSmartphoneModel) {
 		PCUser user = null;
 		String registeredSmartphoneKey = null;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager(); 
-		
-		logger.info("[Register Smartphone Service] Validando usuario y password del usuario.");
-
 		Query query = pm.newQuery(PCUser.class);
 		
-		logger.info("[Register Smartphone Service] Aplicando filtro de bœsqueda para buscar usuario con nombre de usuario: " + registerSmartphoneModel.getUsr() + " y password: " + registerSmartphoneModel.getPass());
+		logger.info("[Register Smartphone Service] Applying filters to look for user with username: " + registerSmartphoneModel.getUsr() + " and password: " + registerSmartphoneModel.getPass());
 		
 	    query.setFilter("username == usernameParam && password == passwordParam");
 	    query.declareParameters("String usernameParam, String passwordParam");
 	    query.setRange(0, 1);
 	    
-	    try {
-	    	logger.info("[Register Smartphone Service] Ejecutando query para buscar usuario.");
+    	logger.info("[Register Smartphone Service] Encrypting password in MD5.");
+    	String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());
+    	
+    	logger.info("[Register Smartphone Service] Finding PCUser with usr, pass: "+registerSmartphoneModel.getUsr()+" "+encryptedPass+" from: "+registerSmartphoneModel.getPass());
+    	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);
+    	
+    	if (user == null) {
+    		return null;
+    	}
+    	else {
+    		logger.info("[Register Smartphone Service] Creating PCSmartphone with input smartphone info.");
+    		
+    		PCSmartphone newSmartphone = registerSmartphoneModel.getSmartphone().convertToPCSmartphone();    		
+    		
+    		logger.info("[Register Smartphone Service] Saving PCSmartphone with input smartphone info.");
+    		pm.makePersistent(newSmartphone);
+    		
+    		logger.info("[Register Smartphone Service] Assigning new smartphone to user.");
+    		
+    		ArrayList<PCSmartphone> userSmartphones = user.getSmartphones();
+    		userSmartphones.add(newSmartphone);    		
+    		user.setSmartphones(userSmartphones);
+    		
+    		registeredSmartphoneKey = KeyFactory.keyToString(newSmartphone.getKey());
+    	}
 	    	
-	    	List<PCUser> result = (List<PCUser>)query.execute(registerSmartphoneModel.getUsr(), registerSmartphoneModel.getPass());
-	    	
-	    	Iterator iter = result.iterator();
-	    		    	
-	    	if (iter.hasNext()) {
-	    		user = (PCUser)iter.next();
-	    		
-	    		logger.info("[Register Smartphone Service] Creando y guardando PCSmartphone a partir de datos enviados por el usuario.");
-	    		
-	    		PCSmartphone newSmartphone = registerSmartphoneModel.getSmartphone().convertToPCSmartphone();
-	    		
-	    		pm.makePersistent(newSmartphone);
-	    		
-	    		logger.info("[Register Smartphone Service] Asignando nuevo smartphone a usuario.");
-	    		
-	    		ArrayList<PCSmartphone> userSmartphones = user.getSmartphones();
-	    		userSmartphones.add(newSmartphone);
-	    		
-	    		user.setSmartphones(userSmartphones);
-	    		
-	    		try {
-	    			registeredSmartphoneKey = KeyFactory.keyToString(newSmartphone.getKey());
-	    		}
-	    		catch (IllegalArgumentException ex) {
-	    			//TODO manejar exception y error
-	    		}	    		
-	    	}
-	    }
-	    finally {
-	    	pm.close();
-	    }
+    	pm.close();
 	    
 	    return registeredSmartphoneKey;
 	}

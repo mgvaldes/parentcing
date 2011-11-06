@@ -19,7 +19,7 @@ import com.google.gson.JsonObject;
  */
 public enum WSStatus {
 	OK("00", "OK", "OK"),
-	INVALID_PHONE_ID("01", "INVALID_PHONE_ID", "The supplied unique id is not valid"),
+	INVALID_ID("01", "INVALID_PHONE_ID", "The supplied unique id is not valid"),
 	NONEXISTING_USER("09","NONEXISTING_USER","The supplied credentials do not match with any existing user"),
 	PREEXISTING_USER("10","PREEXISTING_USER_CREDENTIALS","The supplied username and/or email already exists"),
 	INVALID_PASSWORD("11","INVALID_SUPPLIED_PASSWORD","The supplied password does not correspond to the given user"),
@@ -63,7 +63,7 @@ public enum WSStatus {
 	    
 	    try {
 	    	List<PCWSStatus> result = (List<PCWSStatus>)query.execute(code);
-	    	Iterator iter = result.iterator();
+	    	Iterator<PCWSStatus> iter = result.iterator();
 	    	
 	    	status = (PCWSStatus)iter.next();
 	    }

@@ -9,6 +9,7 @@ import com.ing3nia.parentalcontrol.models.PCAddress;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCOrganization;
 import com.ing3nia.parentalcontrol.models.PCPhone;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ContactModel {
@@ -113,14 +114,28 @@ public class ContactModel {
 		this.keyId = keyId;
 	}
 
-	public Key savePCContact(PersistenceManager pm) {
-		Key contactKey = null;
-		PCContact pcContact = this.convertToPCContact();
-
-		pm.makePersistent(pcContact);
-		contactKey = pcContact.getKey();
+	public ArrayList<Key> saveAsPCSimpleContact() {
+		ArrayList<Key> contactKeys = new ArrayList<Key>();
+		PCSimpleContact pcSimpleContact;
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		ArrayList<PCSimpleContact> pscList = new ArrayList<PCSimpleContact>();
 		
-		return contactKey;
+		for (PhoneModel phone : this.phones) {
+
+			pcSimpleContact = new PCSimpleContact(this.firstName, this.lastName, phone.convertToPCPhone());
+			//pm.makePersistent(pcSimpleContact);
+			//contactKeys.add(pcSimpleContact.getKey());
+			pscList.add(pcSimpleContact);
+		}
+		pm.makePersistentAll(pscList);
+		
+		// getting ans saving keys from every simple contact
+		for(PCSimpleContact psc : pscList){
+			contactKeys.add(psc.getKey());
+		}
+		
+		pm.close();
+		return contactKeys;
 	}
 	
 	public PCContact convertToPCContact() {

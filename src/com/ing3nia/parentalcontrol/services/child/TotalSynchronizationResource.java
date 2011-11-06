@@ -21,6 +21,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
@@ -37,42 +39,63 @@ public class TotalSynchronizationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response doGet(@QueryParam(value = "id") final String id) {
-		Gson jsonParser = new Gson();
+		ResponseBuilder rbuilder;
 
 		logger.info("[Total Synchronization Service] Buscando smartphone asociado a id: " + id);
-		SmartphoneModel smartphone = getSmartphone(id);
+		SmartphoneModel smartphone = null;
 		
-		JsonObject jsonObjectStatus = new JsonObject();
-		
-		if (smartphone != null) {
-			Type responseType = new TypeToken<SmartphoneModel>(){}.getType();			
+		try {
+			smartphone = getSmartphone(id);
+		}
+		catch (SessionQueryException ex) {
+			logger.warning("[Total Synchronization Service] An error ocurred while searching for smartphone. " + ex.getMessage());
 			
-			jsonObjectStatus.addProperty("code", "00");
-			jsonObjectStatus.addProperty("verbose", "OK");
-			jsonObjectStatus.addProperty("msg", "OK");
-			jsonObjectStatus.addProperty("smartphone", jsonParser.toJson(smartphone, responseType));
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		
+		if (smartphone == null) {
+			logger.info("[Total Synchronization Service] No smartphone exists for the provided key.");
+			
+			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
 		else {
-			jsonObjectStatus.addProperty("code", "01");
-			jsonObjectStatus.addProperty("verbose", "INVALID_PHONE_SERIAL");
-			jsonObjectStatus.addProperty("msg", "The supplied unique id is not valid");
+			logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
+			
+			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+			okResponse.add("smartphone", smartphone.getSmartphoneAsJson());
+			
+			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
-		
-		ResponseBuilder rbuilder = Response.ok(jsonObjectStatus.toString(), MediaType.APPLICATION_JSON);
-		
-		return rbuilder.build();
 	}
 	
-	public SmartphoneModel getSmartphone(String id) {
+	public SmartphoneModel getSmartphone(String id) throws SessionQueryException, IllegalArgumentException {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		SmartphoneModel smartphoneModel = null;
 		
-		logger.info("[Total Synchronization Service] Convirtiendo id : " + id + " de smartphone a Key.");
-		Key smartphoneKey = KeyFactory.stringToKey(id);
+		try {
+			logger.info("[Total Synchronization Service] Converting smartphone id: " + id + " to Key.");
+			Key smartphoneKey = KeyFactory.stringToKey(id);
+			
+			logger.info("[Total Synchronization Service] Searching for PCSmartphone by key.");
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
+			
+			logger.info("[Total Synchronization Service] Converting PCSmartphone en SmartphoneModel.");
+			smartphoneModel = SmartphoneModel.convertToSmartphoneModel(savedSmartphone, pm);
+		}
+		catch (IllegalArgumentException ex) {
+			throw ex;
+		}
+		catch (Exception ex) {
+	    	logger.info("[Total Synchronization Service] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());
+	    	
+			throw new SessionQueryException();
+	    }
 		
-		logger.info("[Total Synchronization Service] Buscando smartphone en base de datos.");
-		PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
+		pm.close();		
 		
-		logger.info("[Total Synchronization Service] Convirtiendo PCSmartphone en SmartphoneModel.");
-		return SmartphoneModel.convertToSmartphoneModel(savedSmartphone);
+		return smartphoneModel;
 	}
 }
