@@ -2,10 +2,13 @@ package com.ing3nia.parentalcontrol.services.models;
 
 import java.util.ArrayList;
 
+<<<<<<< HEAD
 import javax.jdo.PersistenceManager;
 
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCPhone;
+=======
+>>>>>>> f1952d81aad0cdc01f87e996c1d72c221b0e09a3
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
