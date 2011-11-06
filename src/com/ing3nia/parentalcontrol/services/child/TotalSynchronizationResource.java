@@ -1,13 +1,10 @@
 package com.ing3nia.parentalcontrol.services.child;
 
-import java.lang.reflect.Type;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -17,13 +14,10 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
@@ -54,21 +48,13 @@ public class TotalSynchronizationResource {
 			return rbuilder.build();
 		}
 		
-		if (smartphone == null) {
-			logger.info("[Total Synchronization Service] No smartphone exists for the provided key.");
-			
-			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			return rbuilder.build();
-		}
-		else {
-			logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
-			
-			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
-			okResponse.add("smartphone", smartphone.getSmartphoneAsJson());
-			
-			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
-			return rbuilder.build();
-		}
+		logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
+		
+		JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+		okResponse.add("smartphone", smartphone.getSmartphoneAsJson());
+		
+		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+		return rbuilder.build();
 	}
 	
 	public SmartphoneModel getSmartphone(String id) throws SessionQueryException, IllegalArgumentException {

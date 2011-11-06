@@ -30,6 +30,14 @@ public class ContactModel {
 	}
 
 	public ContactModel(String firstName, String lastName,
+			ArrayList<PhoneModel> phones) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phones = phones;
+	}
+	
+	public ContactModel(String firstName, String lastName,
 			ArrayList<PhoneModel> phones, ArrayList<String> emails,
 			ArrayList<AddressModel> addresses,
 			ArrayList<OrganizationModel> organizations) {

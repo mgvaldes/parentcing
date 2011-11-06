@@ -80,7 +80,7 @@ public class SessionUtils {
 				return null;
 			}
 		} catch (Exception e) {
-			logger.info("[SessionUtils] An error ocurred while finding the PCUser by username and password"+ e.getMessage());
+			logger.info("[SessionUtils] An error ocurred while finding the PCUser by username and password "+ e.getMessage());
 			throw new SessionQueryException();
 		}  
 	}

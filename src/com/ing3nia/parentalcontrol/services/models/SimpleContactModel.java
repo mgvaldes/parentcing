@@ -2,8 +2,6 @@ package com.ing3nia.parentalcontrol.services.models;
 
 import java.util.ArrayList;
 
-import com.ing3nia.parentalcontrol.models.PCContact;
-import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 
 public class SimpleContactModel {

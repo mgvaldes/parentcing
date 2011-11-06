@@ -124,7 +124,8 @@ public class RegisterSmartphoneResource {
     	logger.info("[Register Smartphone Service] Encrypting password in MD5.");
     	String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());
     	
-    	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);
+    	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), registerSmartphoneModel.getPass());
+    	//user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);
     	
     	if (user == null) {
     		return null;
