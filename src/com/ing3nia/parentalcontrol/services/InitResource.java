@@ -9,7 +9,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.Key;
+import com.ing3nia.parentalcontrol.models.PCActivityStatistics;
 import com.ing3nia.parentalcontrol.models.PCApplication;
+import com.ing3nia.parentalcontrol.models.PCContact;
+import com.ing3nia.parentalcontrol.models.PCPhone;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
+import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCApplication.PCAppInfo;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCDevice.PCOs;
@@ -27,33 +33,33 @@ public class InitResource {
 	
 	@GET
 	public Response doGet() {
-		PCApplication application = new PCApplication();
 
-		PCAppInfo appInfo = new PCAppInfo();
-		appInfo.setAppUrl("");
-		appInfo.setAppVersion("1.0.0");
-		appInfo.setPublishDate(Calendar.getInstance().getTime());
-		application.setAppInfo(appInfo);
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PCSmartphone smart = new PCSmartphone();
+		ArrayList<Key> active = new ArrayList<Key>();
+		PCSimpleContact pcsimple = new PCSimpleContact();
 		
-		application.setAvailableFunctionalities(new ArrayList<PCFunctionality>());
+		PCPhone phone = new PCPhone();
+		phone.setPhoneNumber("5552");
+		phone.setType(1);
+		pm.makePersistent(phone);
 		
-		PCDevice device = new PCDevice();
-		device.setModel("");
+		pcsimple.setFirstName("Juan2");
+		pcsimple.setLastName("Final2");
+		pcsimple.setPhone(phone.getKey());
 		
-		PCOs os = new PCOs();
-		os.setOsType("Blackberry");
-		os.setId(PCOsTypeId.getOsIdFromType("Blackberry"));
-		device.setOs(os);
+
+		pm.makePersistent(pcsimple);
 		
-		device.setVersion("4.5");
-		application.setDevice(device);
+		active.add(pcsimple.getKey());
+		smart.setActiveContacts(active);
+		smart.setName("AVERSMART");
+		pm.makePersistent(smart);
+
+		pm.close();
 		
-		try {
-            pm.makePersistent(application);
-        } 
-		finally {
-            pm.close();
-        }
+		//createDummyApplication();
+		
 //		ArrayList<PCPhone> phones = new ArrayList<PCPhone>();
 //		
 //		PCPhone phone = new PCPhone();
@@ -83,5 +89,36 @@ public class InitResource {
 		ResponseBuilder rbuilder = Response.ok();
 		
 		return rbuilder.build();
+	}
+	
+	public void createDummyApplication(){
+		PCApplication application = new PCApplication();
+
+		PCAppInfo appInfo = new PCAppInfo();
+		appInfo.setAppUrl("");
+		appInfo.setAppVersion("1.0.0");
+		appInfo.setPublishDate(Calendar.getInstance().getTime());
+		application.setAppInfo(appInfo);
+		
+		application.setAvailableFunctionalities(new ArrayList<PCFunctionality>());
+		
+		PCDevice device = new PCDevice();
+		device.setModel("");
+		
+		PCOs os = new PCOs();
+		os.setOsType("Blackberry");
+		os.setId(PCOsTypeId.getOsIdFromType("Blackberry"));
+		device.setOs(os);
+		
+		device.setVersion("4.5");
+		application.setDevice(device);
+		
+		try {
+            pm.makePersistent(application);
+        } 
+		finally {
+            pm.close();
+        }
+		
 	}
 }

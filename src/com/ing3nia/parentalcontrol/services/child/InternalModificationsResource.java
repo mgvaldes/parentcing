@@ -179,8 +179,13 @@ public class InternalModificationsResource {
 					isInactive = isInactiveContact(mc.getFirstName(), mc.getLastName(), p.getPhoneNumber(), savedInactiveContacts, modification);
 					
 					if (!isInactive) {
-						phone = new PCPhone(p.getType(), p.getPhoneNumber());
-						newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), phone);
+						phone = new PCPhone();
+						phone.setType(p.getType());
+						phone.setPhoneNumber(p.getPhoneNumber());
+						pm.makePersistent(phone);
+						
+						newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), phone.getKey());
+						newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), null);
 						
 						pm.makePersistent(newContact);
 						

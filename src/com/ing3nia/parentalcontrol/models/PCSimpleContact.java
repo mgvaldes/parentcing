@@ -23,14 +23,15 @@ public class PCSimpleContact {
 	private String lastName;
 	
 	@Persistent
-	private PCPhone phone;
+	//key references PCPhone
+	private Key phone;
 
 	public PCSimpleContact() {
 		super();
 	}
 
 	public PCSimpleContact(String firstName, String lastName,
-			PCPhone phone) {
+			Key phone) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -61,11 +62,11 @@ public class PCSimpleContact {
 		this.lastName = lastName;
 	}
 
-	public PCPhone getPhone() {
+	public Key getPhone() {
 		return phone;
 	}
 
-	public void setPhone(PCPhone phone) {
+	public void setPhone(Key phone) {
 		this.phone = phone;
 	}
 }

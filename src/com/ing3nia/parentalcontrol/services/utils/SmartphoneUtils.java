@@ -17,6 +17,7 @@ import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRule;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 
@@ -106,7 +107,10 @@ public class SmartphoneUtils {
 			contactJson.addProperty("lname", contact.getLastName());
 			
 			JsonArray contactNumsJson = new JsonArray();
-			ArrayList<PCPhone> phones = contact.getPhones();
+			
+			
+			ArrayList<PCPhone> phones = (ArrayList<PCPhone>)pm.getObjectById(contact.getPhones());
+
 			for(PCPhone p : phones){
 				JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
 				contactNumsJson.add(prim);
@@ -121,17 +125,25 @@ public class SmartphoneUtils {
 		
 		for(Key contactKey : smartphone.getActiveContacts()){
 			JsonObject contactJson = new JsonObject();
-			PCContact contact = (PCContact)pm.getObjectById(PCContact.class, contactKey);
+			PCSimpleContact contact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, contactKey);
 			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
 			contactJson.addProperty("fname",contact.getFirstName());
 			contactJson.addProperty("lname", contact.getLastName());
 			
 			JsonArray contactNumsJson = new JsonArray();
+			
+			/*
+			ArrayList<PCPhone> phones = (ArrayList<PCPhone>)pm.getObjectById(contact.get);
 			ArrayList<PCPhone> phones = contact.getPhones();
 			for(PCPhone p : phones){
 				JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
 				contactNumsJson.add(prim);
-			}
+			}*/
+			PCSimpleContact simpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, contactKey);
+			PCPhone p = (PCPhone)pm.getObjectById(PCPhone.class, simpleContact.getPhone());
+			JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
+			contactNumsJson.add(prim);
+			
 			contactJson.add("nums", contactNumsJson);
 			inactiveArray.add(contactJson);
 		}

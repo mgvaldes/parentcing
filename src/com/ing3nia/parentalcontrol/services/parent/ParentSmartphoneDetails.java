@@ -95,7 +95,14 @@ public class ParentSmartphoneDetails {
 		
 		// get smartphone from provided key
 		logger.info("[Parent Smartphone Details] Obtaining smartphone from provided key "+smid);
-		PCSmartphone smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smid));
+		PCSmartphone smartphone;
+		try{
+			 smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smid));
+		} catch(IllegalArgumentException e){
+			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		
 		if(smartphone == null){
 			logger.severe("[Parent Smartphone Details] No smartphone found from the given key "+smid);
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);

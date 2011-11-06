@@ -31,6 +31,8 @@ import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
+import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
@@ -126,6 +128,7 @@ public class RegisterSmartphoneResource {
     	
     	logger.info("[Register Smartphone Service] Finding PCUser with usr, pass: "+registerSmartphoneModel.getUsr()+" "+encryptedPass+" from: "+registerSmartphoneModel.getPass());
     	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);
+    	
     	
     	if (user == null) {
     		return null;

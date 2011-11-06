@@ -43,9 +43,10 @@ public class PCContact {
 	
 	/**
 	 * Represents a collection of numbers of a specific contact. 
+	 * Key references PCPhone
 	 */
 	@Persistent
-	private ArrayList<PCPhone> phones;
+	private ArrayList<Key> phones;
 	
 	/**
 	 * Represents a collection of emails of a specific contact.
@@ -124,7 +125,7 @@ public class PCContact {
 	}
 
 	public PCContact(Key key, String firstName, String lastName,
-			ArrayList<PCPhone> phones, ArrayList<String> emails,
+			ArrayList<Key> phones, ArrayList<String> emails,
 			ArrayList<PCAddress> addresses,
 			ArrayList<PCOrganization> organizations, String nickname,
 			String imageUrl, String pin, String googleTalk, Date birthday,
@@ -245,11 +246,11 @@ public class PCContact {
 		this.lastName = lastName;
 	}
 
-	public ArrayList<PCPhone> getPhones() {
+	public ArrayList<Key> getPhones() {
 		return phones;
 	}
 
-	public void setPhones(ArrayList<PCPhone> phones) {
+	public void setPhones(ArrayList<Key> phones) {
 		this.phones = phones;
 	}
 

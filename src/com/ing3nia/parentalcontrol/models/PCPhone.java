@@ -29,19 +29,22 @@ public class PCPhone {
 	/**
 	 * Specifies the type of the phone number.
 	 */
+	@Persistent
 	private int type;
 	
 	/**
 	 * Contains the specific phone number.
 	 */
+	@Persistent
 	private String phoneNumber;
 
 	public PCPhone() {
 		super();
 	}
 
-	public PCPhone(int type, String phoneNumber) {
+	public PCPhone(Key key, int type, String phoneNumber) {
 		super();
+		this.key = key;
 		this.type = type;
 		this.phoneNumber = phoneNumber;
 	}

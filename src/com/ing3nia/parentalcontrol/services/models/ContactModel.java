@@ -121,15 +121,16 @@ public class ContactModel {
 		ArrayList<PCSimpleContact> pscList = new ArrayList<PCSimpleContact>();
 		
 		for (PhoneModel phone : this.phones) {
+			
+			PCPhone pcphone = phone.convertToPCPhone();
+			pm.makePersistent(pcphone);
 
-			pcSimpleContact = new PCSimpleContact(this.firstName, this.lastName, phone.convertToPCPhone());
-			//pm.makePersistent(pcSimpleContact);
-			//contactKeys.add(pcSimpleContact.getKey());
+			pcSimpleContact = new PCSimpleContact(this.firstName, this.lastName, pcphone.getKey());
 			pscList.add(pcSimpleContact);
 		}
 		pm.makePersistentAll(pscList);
-		
-		// getting ans saving keys from every simple contact
+
+		// getting and saving keys from every simple contact
 		for(PCSimpleContact psc : pscList){
 			contactKeys.add(psc.getKey());
 		}
@@ -144,11 +145,16 @@ public class ContactModel {
 		contact.setFirstName(this.firstName);
 		contact.setLastName(this.lastName);
 		
-		ArrayList<PCPhone> pcPhones = new ArrayList<PCPhone>();
+		//key to PCPhone
+		ArrayList<Key> pcPhones = new ArrayList<Key>();
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		if (this.phones != null) {
 			for (PhoneModel phone : this.phones) {
-				pcPhones.add(phone.convertToPCPhone());
+				PCPhone pcphone = phone.convertToPCPhone();
+				pm.makePersistent(pcphone);
+				pcPhones.add(pcphone.getKey());
+				//pcPhones.add(phone.convertToPCPhone());
 			}
 		}
 		
@@ -179,14 +185,17 @@ public class ContactModel {
 	}
 	
 	public static ContactModel convertToContactModel(PCContact savedContact) {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		
 		ContactModel contact = new ContactModel();
 		
 		contact.setFirstName(savedContact.getFirstName());
 		contact.setLastName(savedContact.getLastName());
 		
 		ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
+		ArrayList<PCPhone>  pcphoneList = (ArrayList<PCPhone>)pm.getObjectsById(savedContact.getPhones());
 		
-		for (PCPhone phone : savedContact.getPhones()) {
+		for (PCPhone phone : pcphoneList) {
 			phones.add(PhoneModel.convertToPhoneModel(phone));
 		}
 		
