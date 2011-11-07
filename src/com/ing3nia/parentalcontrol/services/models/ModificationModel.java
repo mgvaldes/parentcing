@@ -30,6 +30,8 @@ public class ModificationModel {
 	private ArrayList<EmergencyNumberModel> addedEmergencyNumbers;
 	
 	private ArrayList<EmergencyNumberModel> deletedEmergencyNumbers;
+	
+	private ArrayList<String> deletedRules;
 
 	public ModificationModel() {
 		super();
@@ -39,7 +41,7 @@ public class ModificationModel {
 			ArrayList<SimpleContactModel> inactiveContacts,
 			ArrayList<PropertyModel> properties, ArrayList<RuleModel> rules,
 			ArrayList<EmergencyNumberModel> addedEmergencyNumbers,
-			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers) {
+			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers, ArrayList<String> deletedRules) {
 		super();
 		this.key = key;
 		this.activeContacts = activeContacts;
@@ -49,13 +51,14 @@ public class ModificationModel {
 		this.addedEmergencyNumbers = addedEmergencyNumbers;
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
 		this.smartphoneName = smartphoneName;
+		this.deletedRules = deletedRules;
 	}
 	
 	public ModificationModel(String key, ArrayList<SimpleContactModel> activeContacts,
 			ArrayList<SimpleContactModel> inactiveContacts,
 			ArrayList<PropertyModel> properties, ArrayList<RuleModel> rules,
 			ArrayList<EmergencyNumberModel> addedEmergencyNumbers,
-			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers) {
+			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers, ArrayList<String> deletedRules) {
 		super();
 		this.key = key;
 		this.activeContacts = activeContacts;
@@ -64,6 +67,7 @@ public class ModificationModel {
 		this.rules = rules;
 		this.addedEmergencyNumbers = addedEmergencyNumbers;
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
+		this.deletedRules = deletedRules;
 	}
 
 	public String getKey() {
@@ -130,6 +134,14 @@ public class ModificationModel {
 
 	public void setSmartphoneName(String smartphoneName) {
 		this.smartphoneName = smartphoneName;
+	}
+
+	public ArrayList<String> getDeletedRules() {
+		return deletedRules;
+	}
+
+	public void setDeletedRules(ArrayList<String> deletedRules) {
+		this.deletedRules = deletedRules;
 	}
 
 	public static ModificationModel convertToModificationModel(PCModification modification) throws IllegalArgumentException, SessionQueryException {
@@ -212,6 +224,7 @@ public class ModificationModel {
 			}
 			
 			modificationModel.setRules(rules);
+			modificationModel.setDeletedRules(modification.getDeletedRules());
 		} 		
 		catch (IllegalArgumentException ex) {
 			throw ex;
