@@ -175,15 +175,16 @@ public class ModificationModel {
 		
 		ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
 		
-		for (PCProperty property : modification.getProperties()) {
+		ArrayList<PCProperty> propertyList = (ArrayList<PCProperty>)pm.getObjectById(modification.getProperties());
+		for (PCProperty property : propertyList) {
 			properties.add(PropertyModel.convertToPropertyModel(property));
 		}
 		
 		modificationModel.setProperties(properties);
 		
 		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
-		
-		for (PCRule rule : modification.getRules()) {
+		ArrayList<PCRule> rulesList = (ArrayList<PCRule>)pm.getObjectById(modification.getRules());
+		for (PCRule rule : rulesList) {
 			rules.add(RuleModel.convertToRuleModel(rule));
 		}
 		

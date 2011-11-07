@@ -47,16 +47,18 @@ public class PCModification {
 	/**
 	 * Represents a collection of properties to be applied to the a specific
 	 * smartphone.
+	 * Key references PCProperty
 	 */
 	@Persistent
-	private ArrayList<PCProperty> properties;
+	private ArrayList<Key> properties;
 	
 	/**
 	 * Represents a collection of rules to be applied to the a specific
 	 * smartphone. 
+	 * Key references PCRule
 	 */
 	@Persistent
-	private ArrayList<PCRule> rules;
+	private ArrayList<Key> rules;
 	
 	/**
 	 * Represents a collection of emergency numbers added to a
@@ -79,7 +81,7 @@ public class PCModification {
 
 	public PCModification(Key key, ArrayList<Key> activeContacts,
 			ArrayList<Key> inactiveContacts,
-			ArrayList<PCProperty> properties, ArrayList<PCRule> rules,
+			ArrayList<Key> properties, ArrayList<Key> rules,
 			ArrayList<Key> addedEmergencyNumbers,
 			ArrayList<Key> deletedEmergencyNumbers) {
 		super();
@@ -135,19 +137,19 @@ public class PCModification {
 //		this.contacts = contacts;
 //	}
 
-	public ArrayList<PCProperty> getProperties() {
+	public ArrayList<Key> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(ArrayList<PCProperty> properties) {
+	public void setProperties(ArrayList<Key> properties) {
 		this.properties = properties;
 	}
 
-	public ArrayList<PCRule> getRules() {
+	public ArrayList<Key> getRules() {
 		return rules;
 	}
 
-	public void setRules(ArrayList<PCRule> rules) {
+	public void setRules(ArrayList<Key> rules) {
 		this.rules = rules;
 	}
 
