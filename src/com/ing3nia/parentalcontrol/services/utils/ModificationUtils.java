@@ -2,9 +2,12 @@ package com.ing3nia.parentalcontrol.services.utils;
 
 import java.util.ArrayList;
 
+import javax.jdo.PersistenceManager;
+
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.models.PCModification;
+import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.services.models.ModificationModel;
@@ -146,10 +149,33 @@ public class ModificationUtils {
 			}
 		}
 		
-		for(PropertyModel propmodel : modifications.getProperties()){
-			
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		
+		// parsing property modifications
+		for (PropertyModel propmodel : modifications.getProperties()) {
+			PCProperty property = pm.getObjectById(PCProperty.class,
+					KeyFactory.stringToKey(propmodel.getKeyId()));
+			property.setValue(propmodel.getValue());
 		}
+		
+		// parsing property modifications
+		for (PropertyModel propmodel : modifications.getProperties()) {
+			PCProperty property = pm.getObjectById(PCProperty.class,
+					KeyFactory.stringToKey(propmodel.getKeyId()));
+			property.setValue(propmodel.getValue());
+		}
+		
+		// parsing property modifications
+		for (PropertyModel propmodel : modifications.getProperties()) {
+			PCProperty property = pm.getObjectById(PCProperty.class,
+					KeyFactory.stringToKey(propmodel.getKeyId()));
+			property.setValue(propmodel.getValue());
+		}
+		
+		
+		
 
+		pm.close();
 	}
 	
 }
