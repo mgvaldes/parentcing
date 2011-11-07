@@ -24,6 +24,7 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
+import com.ing3nia.parentalcontrol.services.exceptions.MissingParameterException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
@@ -101,7 +102,7 @@ public class RegisterSmartphoneResource {
 		}		
 	}
 	
-	public String checkUserCredentialsAndRegisterSmartphone(RegisterSmartphoneModel registerSmartphoneModel) throws EncodingException, SessionQueryException, IllegalArgumentException {
+	public String checkUserCredentialsAndRegisterSmartphone(RegisterSmartphoneModel registerSmartphoneModel) throws EncodingException, SessionQueryException, IllegalArgumentException, MissingParameterException {
 		logger.info("[Register Smartphone Service] Veryfing if a user with the given username and password exists.");
 		
 		PCUser user = null;
@@ -117,12 +118,11 @@ public class RegisterSmartphoneResource {
 	    
     	logger.info("[Register Smartphone Service] Encrypting password in MD5.");
     	
-    	//String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());    	
+    	//String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());
     	String encryptedPass = registerSmartphoneModel.getPass();
     	
-    	logger.info("[Register Smartphone Service] Finding PCUser with usr, pass: "+registerSmartphoneModel.getUsr()+" "+encryptedPass+" from: "+registerSmartphoneModel.getPass());
+		logger.info("[Register Smartphone Service] Finding PCUser with usr, pass: " + registerSmartphoneModel.getUsr() + " "+encryptedPass+" from: " + registerSmartphoneModel.getPass());
     	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);
-    	
     	
     	if (user == null) {
     		return null;
@@ -146,6 +146,6 @@ public class RegisterSmartphoneResource {
 	    	
     	pm.close();
 	    
-	    return registeredSmartphoneKey;
+	    return registeredSmartphoneKey;    	   	
 	}
 }

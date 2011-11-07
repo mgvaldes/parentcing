@@ -22,6 +22,8 @@ import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCServiceStatistics;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ActivityNotifyModel;
 import com.ing3nia.parentalcontrol.services.models.AlertModel;
 import com.ing3nia.parentalcontrol.services.models.NotificationModel;
@@ -42,53 +44,86 @@ public class ActivityNotifyResource {
 		Gson jsonParser = new Gson();
 		Type bodyType = new TypeToken<AlertModel>(){}.getType();
 		
-		logger.info("[Alert Service] Parseando par‡metros de entrada.");
-		ActivityNotifyModel activityNotifyModel = jsonParser.fromJson(body, bodyType);
+		ActivityNotifyModel activityNotifyModel;
+		ResponseBuilder rbuilder;
 		
-		processActivityNotify(activityNotifyModel);
-
-		JsonObject jsonObjectStatus = new JsonObject();
+		logger.info("[Activity Notify Service] Parsing input parameters.");
 		
-		jsonObjectStatus.addProperty("code", "00");
-		jsonObjectStatus.addProperty("verbose", "OK");
-		jsonObjectStatus.addProperty("msg", "OK");
-		
-		ResponseBuilder rbuilder = Response.ok(jsonObjectStatus.toString(), MediaType.APPLICATION_JSON);
-		
-		return rbuilder.build();
-	}
-	
-	public void processActivityNotify(ActivityNotifyModel activityNotifyModel) {
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
-		logger.info("[Activity Notify Service] Convirtiendo id : " + activityNotifyModel.getId() + " de smartphone a Key.");
-		Key smartphoneKey = KeyFactory.stringToKey(activityNotifyModel.getId());
-		
-		logger.info("[Activity Notify Service] Buscando smartphone en base de datos.");
-		PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
-		
-		ArrayList<PCRoute> newRoutes = savedSmartphone.getRoutes();
-		newRoutes.add(activityNotifyModel.getRoute().convertToPCRoute());
-		savedSmartphone.setRoutes(newRoutes);
-		
-		ArrayList<NotificationModel> notifications = activityNotifyModel.getAlerts();
-		PCNotification notification;
-		ArrayList<Key> newNotifications = savedSmartphone.getNotifications();
-		
-		for (NotificationModel notif : notifications) {
-			notification = notif.convertToPCNotification();
-			NotificationModel.savePCNotification(notification);
-			newNotifications.add(notification.getKey());
+		try {
+			activityNotifyModel = jsonParser.fromJson(body, bodyType);			
+		}
+		catch (Exception e) {
+			logger.warning("[Activity Notify Service] ActivityNotifyModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
 		
-		savedSmartphone.setNotifications(newNotifications);
+		try {
+			processActivityNotify(activityNotifyModel);
+
+			logger.info("[Activity Notify Service] Ok Response. Notifications saved succesfully.");
+			
+			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+			
+			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (IllegalArgumentException ex) {
+			logger.warning("[Activity Notify Service] An error ocurred while converting a Key to String. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (Exception ex) {
+			logger.warning("[Activity Notify Service] An error ocurred while finding the PCSmartphone by key or adding PCNotification. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+	}
+	
+	public void processActivityNotify(ActivityNotifyModel activityNotifyModel) throws SessionQueryException, IllegalArgumentException {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		ArrayList<ServiceStatisticsModel> stats = activityNotifyModel.getSyncStat();
-		PCServiceStatistics stat;
-		
-		for (ServiceStatisticsModel s : stats) {
-			stat = s.convertToPCServiceStatistics();
-			ServiceStatisticsModel.savePCServiceStatistics(stat);
+		try {
+			logger.info("[Activity Notify Service] Convirtiendo id : " + activityNotifyModel.getId() + " de smartphone a Key.");
+			Key smartphoneKey = KeyFactory.stringToKey(activityNotifyModel.getId());
+			
+			logger.info("[Activity Notify Service] Buscando smartphone en base de datos.");
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
+			
+			ArrayList<PCRoute> newRoutes = savedSmartphone.getRoutes();
+			newRoutes.add(activityNotifyModel.getRoute().convertToPCRoute());
+			savedSmartphone.setRoutes(newRoutes);
+			
+			ArrayList<NotificationModel> notifications = activityNotifyModel.getAlerts();
+			PCNotification notification;
+			ArrayList<Key> newNotifications = savedSmartphone.getNotifications();
+			
+			for (NotificationModel notif : notifications) {
+				notification = notif.convertToPCNotification();
+				NotificationModel.savePCNotification(notification);
+				newNotifications.add(notification.getKey());
+			}
+			
+			savedSmartphone.setNotifications(newNotifications);
+			
+			ArrayList<ServiceStatisticsModel> stats = activityNotifyModel.getSyncStat();
+			PCServiceStatistics stat;
+			
+			for (ServiceStatisticsModel s : stats) {
+				stat = s.convertToPCServiceStatistics();
+				ServiceStatisticsModel.savePCServiceStatistics(stat);
+			}
+		}
+		catch (IllegalArgumentException ex) {
+			throw ex;
+		}
+		catch (Exception ex) {
+	    	logger.info("[Activity Notify Service] An error ocurred while finding the PCSmartphone by key or saving PCNotification or PCServiceStatistics " + ex.getMessage());
+	    	
+			throw new SessionQueryException();
 		}
 	}
 }

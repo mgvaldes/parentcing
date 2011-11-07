@@ -2,13 +2,10 @@ package com.ing3nia.parentalcontrol.services.child;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,20 +19,17 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
-import com.ing3nia.parentalcontrol.services.models.AlertModel;
-import com.ing3nia.parentalcontrol.services.models.ContactModel;
+import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.services.models.InternalModificationsModel;
-import com.ing3nia.parentalcontrol.services.models.ModificationModel;
 import com.ing3nia.parentalcontrol.services.models.PhoneModel;
 import com.ing3nia.parentalcontrol.services.models.SimpleContactModel;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("int-mod")
@@ -54,38 +48,78 @@ public class InternalModificationsResource {
 		Gson jsonParser = new Gson();
 		Type bodyType = new TypeToken<InternalModificationsModel>(){}.getType();
 		
-		logger.info("[Internal Modifications Service] Parseando par‡metros de entrada.");
-		InternalModificationsModel internalModsModel = jsonParser.fromJson(body, bodyType);
+		ResponseBuilder rbuilder;
+		InternalModificationsModel internalModsModel;
 		
-		saveInternalModifications(internalModsModel);
-
-		JsonObject jsonObjectStatus = new JsonObject();
+		logger.info("[Internal Modifications Service] Parsing input parameters.");
 		
-		jsonObjectStatus.addProperty("code", "00");
-		jsonObjectStatus.addProperty("verbose", "OK");
-		jsonObjectStatus.addProperty("msg", "OK");
+		try {
+			internalModsModel = jsonParser.fromJson(body, bodyType);
+		}
+		catch (Exception e) {
+			logger.warning("[Internal Modifications Service] InternalModificationsModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 		
-		ResponseBuilder rbuilder = Response.ok(jsonObjectStatus.toString(), MediaType.APPLICATION_JSON);
-		
-		return rbuilder.build();
+		try {
+			saveInternalModifications(internalModsModel);
+			
+			logger.info("[Internal Modifications Service] Ok Response. Modifications handled succesfully.");
+			
+			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+			
+			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (IllegalArgumentException ex) {
+			logger.warning("[Internal Modifications Service] An error ocurred while converting a Key to String. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (SessionQueryException ex) {
+			logger.warning("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key or adding contact. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 	}
 	
-	public void saveInternalModifications(InternalModificationsModel internalModsModel) {
+	public void saveInternalModifications(InternalModificationsModel internalModsModel) throws SessionQueryException, IllegalArgumentException {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		logger.info("[Internal Modifications Service] Convirtiendo id : " + internalModsModel.getId() + " de smartphone a Key.");
-		Key smartphoneKey = KeyFactory.stringToKey(internalModsModel.getId());
-		
-		logger.info("[Internal Modifications Service] Buscando smartphone en base de datos.");
-		PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
-		
-		savedSmartphone.setLocation(internalModsModel.getLocation().convertToGeoPt());
-		
-		checkAddedContacts(internalModsModel.getModification().getActiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), savedSmartphone.getModification());
-		checkDeletedContacts(internalModsModel.getModification().getInactiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), savedSmartphone.getModification());
-		checkDeletedEmergencyNumbers(internalModsModel.getModification().getDeletedEmergencyNumbers(), savedSmartphone.getAddedEmergencyNumbers(), savedSmartphone.getModification());
-		
-		pm.close();
+		try {
+			logger.info("[Internal Modifications Service] Converting id: " + internalModsModel.getId() + " of smartphone to Key.");
+			Key smartphoneKey = KeyFactory.stringToKey(internalModsModel.getId());
+			
+			logger.info("[Internal Modifications Service] Searching for smartphone in DB.");
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
+			
+			savedSmartphone.setLocation(internalModsModel.getLocation().convertToGeoPt());
+			
+			PCModification modification = savedSmartphone.getModification();
+			
+			if (modification == null) {
+				modification = new PCModification();
+				savedSmartphone.setModification(modification);
+			}
+			
+			checkAddedContacts(internalModsModel.getModification().getActiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);
+			checkDeletedContacts(internalModsModel.getModification().getInactiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);
+			checkDeletedEmergencyNumbers(internalModsModel.getModification().getDeletedEmergencyNumbers(), savedSmartphone.getAddedEmergencyNumbers(), modification);
+			
+			pm.close();
+		}
+		catch (IllegalArgumentException ex) {
+			throw ex;
+		}
+		catch (Exception ex) {
+	    	logger.info("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());
+	    	
+			throw new SessionQueryException();
+	    }		
 	}
 	
 	public void checkDeletedEmergencyNumbers(ArrayList<EmergencyNumberModel> internalModDeletedEmergencyNumbers, ArrayList<Key> savedAddedEmergencyNumbers, PCModification modification) {
@@ -121,6 +155,11 @@ public class InternalModificationsResource {
 				
 				if (specialCase) {
 					ArrayList<Key> modActiveContacts = modification.getActiveContacts();
+					
+					if (modActiveContacts == null) {
+						modActiveContacts = new ArrayList<Key>();
+					}
+					
 					modActiveContacts.add(c.getKey());
 					
 					modification.setActiveContacts(modActiveContacts);
@@ -148,6 +187,11 @@ public class InternalModificationsResource {
 				isInactive = true;
 				
 				modInactiveContacts = modification.getInactiveContacts();
+				
+				if (modInactiveContacts == null) {
+					modInactiveContacts = new ArrayList<Key>();
+				}
+				
 				modInactiveContacts.add(c.getKey());
 				
 				modification.setInactiveContacts(modInactiveContacts);
@@ -173,19 +217,34 @@ public class InternalModificationsResource {
 			phones = mc.getPhones();
 			
 			for (PhoneModel p : phones) {
+				//------------------------------------------------------------
+				// Checking if contact added by child already exists in  
+				// smartphone active contact list. Passing false to 
+				// isActiveContact beacuse it's only necessary to check if 
+				// the contact is active.
+				//------------------------------------------------------------
 				isActive = isActiveContact(mc.getFirstName(), mc.getLastName(), p.getPhoneNumber(), savedActiveContacts, modification, false);
-				
+								
 				if (!isActive) {
+					//------------------------------------------------------------
+					// Contact is not active. Checking if contact added by child 
+					// already exists in smartphone inactive contact list. If it's
+					// inactive the contact is added to the inactive contact list
+					// of the modifiction passed as parameter.
+					//------------------------------------------------------------
 					isInactive = isInactiveContact(mc.getFirstName(), mc.getLastName(), p.getPhoneNumber(), savedInactiveContacts, modification);
 					
 					if (!isInactive) {
+						//------------------------------------------------------------
+						// Contact is not active and neither inactive. Adding new    
+						// contact to smartphone's active contact list.
+						//------------------------------------------------------------
 						phone = new PCPhone();
 						phone.setType(p.getType());
 						phone.setPhoneNumber(p.getPhoneNumber());
 						pm.makePersistent(phone);
 						
 						newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), phone.getKey());
-						//newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), null);
 						
 						pm.makePersistent(newContact);
 						
@@ -208,6 +267,13 @@ public class InternalModificationsResource {
 			phones = mc.getPhones();
 			
 			for (PhoneModel p : phones) {
+				//------------------------------------------------------------
+				// Checking if contact added by child already exists in  
+				// smartphone active contact list. Passing true to 
+				// isActiveContact beacuse if the contact is active it's 
+				// necessary to add the contact to the modification active
+				// contact list.
+				//------------------------------------------------------------
 				isActiveContact(mc.getFirstName(), mc.getLastName(), p.getPhoneNumber(), savedActiveContacts, modification, true);
 			}
 		}
