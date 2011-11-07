@@ -134,7 +134,7 @@ public class SmartphoneUtils {
 			contactNumsJson.add(prim);
 			
 			contactJson.add("nums", contactNumsJson);
-			inactiveArray.add(contactJson);
+			activeArray.add(contactJson);
 		}
 		detailsJson.add("active_cts", activeArray);
 		
@@ -164,7 +164,7 @@ public class SmartphoneUtils {
 			contactJson.addProperty("desc", contact.getDescription());
 			contactJson.addProperty("num", contact.getNumber().getNumber());
 			
-			emergencyArray.add(contactJson);
+			emergencyDeletedArray.add(contactJson);
 		}
 		detailsJson.add("del_em_nums", emergencyDeletedArray);
 		
@@ -197,7 +197,7 @@ public class SmartphoneUtils {
 				ruleJson.addProperty("end", rule.getEndDate().toString());
 
 				JsonArray funcArray = new JsonArray();
-				ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectById(rule.getDisabledFunctionalities());
+				ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectsById(rule.getDisabledFunctionalities());
 				for (PCFunctionality func : disabledFuncionalities) {
 					funcArray.add(new JsonPrimitive(func.getId()));
 				}

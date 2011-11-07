@@ -102,7 +102,7 @@ public class RegisterSmartphoneResource {
 		}		
 	}
 	
-	public String checkUserCredentialsAndRegisterSmartphone(RegisterSmartphoneModel registerSmartphoneModel) throws EncodingException, SessionQueryException, IllegalArgumentException, MissingParameterException {
+	public String checkUserCredentialsAndRegisterSmartphone(RegisterSmartphoneModel registerSmartphoneModel) throws EncodingException, SessionQueryException, IllegalArgumentException {
 		logger.info("[Register Smartphone Service] Veryfing if a user with the given username and password exists.");
 		
 		PCUser user = null;
