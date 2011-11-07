@@ -75,6 +75,12 @@ public class PCModification {
 	@Persistent
 	private ArrayList<Key> deletedEmergencyNumbers;
 
+	/**
+	 * Represents a collection of reference keys as string of deleted rules 
+	 */
+	@Persistent
+	private ArrayList<String>  deletedRules;
+	
 	public PCModification() {
 		super();
 	}
@@ -178,4 +184,14 @@ public class PCModification {
 			ArrayList<Key> deletedEmergencyNumbers) {
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
 	}
+
+	public ArrayList<String> getDeletedRules() {
+		return deletedRules;
+	}
+
+	public void setDeletedRules(ArrayList<String> deletedRules) {
+		this.deletedRules = deletedRules;
+	}
+	
+	
 }
