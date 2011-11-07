@@ -185,7 +185,7 @@ public class InternalModificationsResource {
 						pm.makePersistent(phone);
 						
 						newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), phone.getKey());
-						newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), null);
+						//newContact = new PCSimpleContact(mc.getFirstName(), mc.getLastName(), null);
 						
 						pm.makePersistent(newContact);
 						

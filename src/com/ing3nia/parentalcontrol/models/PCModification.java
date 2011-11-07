@@ -47,16 +47,18 @@ public class PCModification {
 	/**
 	 * Represents a collection of properties to be applied to the a specific
 	 * smartphone.
+	 * Key references PCProperty
 	 */
 	@Persistent
-	private ArrayList<PCProperty> properties;
+	private ArrayList<Key> properties;
 	
 	/**
 	 * Represents a collection of rules to be applied to the a specific
 	 * smartphone. 
+	 * Key references PCRule
 	 */
 	@Persistent
-	private ArrayList<PCRule> rules;
+	private ArrayList<Key> rules;
 	
 	/**
 	 * Represents a collection of emergency numbers added to a
@@ -73,13 +75,19 @@ public class PCModification {
 	@Persistent
 	private ArrayList<Key> deletedEmergencyNumbers;
 
+	/**
+	 * Represents a collection of reference keys as string of deleted rules 
+	 */
+	@Persistent
+	private ArrayList<String>  deletedRules;
+	
 	public PCModification() {
 		super();
 	}
 
 	public PCModification(Key key, ArrayList<Key> activeContacts,
 			ArrayList<Key> inactiveContacts,
-			ArrayList<PCProperty> properties, ArrayList<PCRule> rules,
+			ArrayList<Key> properties, ArrayList<Key> rules,
 			ArrayList<Key> addedEmergencyNumbers,
 			ArrayList<Key> deletedEmergencyNumbers) {
 		super();
@@ -135,19 +143,19 @@ public class PCModification {
 //		this.contacts = contacts;
 //	}
 
-	public ArrayList<PCProperty> getProperties() {
+	public ArrayList<Key> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(ArrayList<PCProperty> properties) {
+	public void setProperties(ArrayList<Key> properties) {
 		this.properties = properties;
 	}
 
-	public ArrayList<PCRule> getRules() {
+	public ArrayList<Key> getRules() {
 		return rules;
 	}
 
-	public void setRules(ArrayList<PCRule> rules) {
+	public void setRules(ArrayList<Key> rules) {
 		this.rules = rules;
 	}
 
@@ -176,4 +184,14 @@ public class PCModification {
 			ArrayList<Key> deletedEmergencyNumbers) {
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
 	}
+
+	public ArrayList<String> getDeletedRules() {
+		return deletedRules;
+	}
+
+	public void setDeletedRules(ArrayList<String> deletedRules) {
+		this.deletedRules = deletedRules;
+	}
+	
+	
 }
