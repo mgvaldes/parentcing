@@ -197,7 +197,8 @@ public class SmartphoneUtils {
 				ruleJson.addProperty("end", rule.getEndDate().toString());
 
 				JsonArray funcArray = new JsonArray();
-				for (PCFunctionality func : rule.getDisabledFunctionalities()) {
+				ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectById(rule.getDisabledFunctionalities());
+				for (PCFunctionality func : disabledFuncionalities) {
 					funcArray.add(new JsonPrimitive(func.getId()));
 				}
 				ruleJson.add("func", funcArray);

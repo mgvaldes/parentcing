@@ -27,11 +27,13 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
+import com.ing3nia.parentalcontrol.services.exceptions.ModificationParsingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ModificationModel;
 import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
 import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
+import com.ing3nia.parentalcontrol.services.utils.ModificationUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
@@ -127,7 +129,22 @@ public class ParentSmartphoneModifications {
 			return rbuilder.build();
 		}
 		
+		logger.info("[Parent Modifications] Getting Modifications");
+		ModificationModel modifications = mt.getModifications();
+		if(modifications == null){
+			logger.info("[Parent Modifications] Modifications are null, no change to commit");
+			rbuilder = Response.ok(WSStatus.OK.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 		
+		logger.info("[Parent Modifications] Processing Parent Modifications");
+		try {
+			ModificationUtils.ProcessParentModifications(smartphone, modifications);
+		} catch (ModificationParsingException e) {
+			logger.severe("[Parent Modifications] An error occurred when processing modifications "+e.getMessage());
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 		
 		pm.close();
 

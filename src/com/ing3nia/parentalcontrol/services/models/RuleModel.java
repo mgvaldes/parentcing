@@ -4,8 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.jdo.PersistenceManager;
+
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCRule;
+import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class RuleModel {
 	private String keyId;
@@ -15,6 +18,8 @@ public class RuleModel {
 	private String endDate;
 	
 	private ArrayList<Integer> disabledFunctionalities;
+	
+	private String creationDate;
 
 	public RuleModel() {
 		super();
@@ -69,6 +74,15 @@ public class RuleModel {
 	public void setKeyId(String keyId) {
 		this.keyId = keyId;
 	}
+	
+
+	public String getCreationDate() {
+		return creationDate;
+	}
+
+	public void setCreationDate(String creationDate) {
+		this.creationDate = creationDate;
+	}
 
 	public static RuleModel convertToRuleModel(PCRule rule) {
 		RuleModel ruleModel = new RuleModel();
@@ -79,7 +93,9 @@ public class RuleModel {
 		
 		ArrayList<Integer> disabledFunctionalityModels = new ArrayList<Integer>();
 		
-		for (PCFunctionality functionality : rule.getDisabledFunctionalities()) {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectById(rule.getDisabledFunctionalities());
+		for (PCFunctionality functionality : disabledFuncionalities) {
 			disabledFunctionalityModels.add(functionality.getId());
 		}
 		
