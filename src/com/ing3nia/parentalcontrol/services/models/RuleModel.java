@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.services.models;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -9,73 +10,57 @@ import com.ing3nia.parentalcontrol.models.PCRule;
 public class RuleModel {
 	private String keyId;
 	
-	private Date startDate;
+	private String startDate;
 	
-	private Date endDate;
+	private String endDate;
 	
-	private ArrayList<FunctionalityModel> disabledFunctionalities;
-
-	private Date creationDate;
+	private ArrayList<Integer> disabledFunctionalities;
 
 	public RuleModel() {
 		super();
 	}
 
-	public RuleModel(String keyId, Date startDate, Date endDate,
-			ArrayList<FunctionalityModel> disabledFunctionalities,
-			Date creationDate) {
+	public RuleModel(String keyId, String startDate, String endDate,
+			ArrayList<Integer> disabledFunctionalities) {
 		super();
 		this.keyId = keyId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.disabledFunctionalities = disabledFunctionalities;
-		this.creationDate = creationDate;
 	}
 	
-	public RuleModel(Date startDate, Date endDate,
-			ArrayList<FunctionalityModel> disabledFunctionalities,
-			Date creationDate) {
+	public RuleModel(String startDate, String endDate,
+			ArrayList<Integer> disabledFunctionalities) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.disabledFunctionalities = disabledFunctionalities;
-		this.creationDate = creationDate;
 	}
 
-	public Date getStartDate() {
+	public String getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(Date startDate) {
+	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
-	public Date getEndDate() {
+	public String getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(Date endDate) {
+	public void setEndDate(String endDate) {
 		this.endDate = endDate;
 	}
 
-	public ArrayList<FunctionalityModel> getDisabledFunctionalities() {
+	public ArrayList<Integer> getDisabledFunctionalities() {
 		return disabledFunctionalities;
 	}
 
 	public void setDisabledFunctionalities(
-			ArrayList<FunctionalityModel> disabledFunctionalities) {
+			ArrayList<Integer> disabledFunctionalities) {
 		this.disabledFunctionalities = disabledFunctionalities;
 	}
-
-	public Date getCreationDate() {
-		return creationDate;
-	}
-
-	public void setCreationDate(Date creationDate) {
-		this.creationDate = creationDate;
-	}
-	
-	
 	
 	public String getKeyId() {
 		return keyId;
@@ -87,18 +72,18 @@ public class RuleModel {
 
 	public static RuleModel convertToRuleModel(PCRule rule) {
 		RuleModel ruleModel = new RuleModel();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
 		
-		ruleModel.setStartDate(rule.getStartDate());
-		ruleModel.setEndDate(rule.getEndDate());
+		ruleModel.setStartDate(formatter.format(rule.getStartDate()));
+		ruleModel.setEndDate(formatter.format(rule.getEndDate()));
 		
-		ArrayList<FunctionalityModel> disabledFunctionalityModels = new ArrayList<FunctionalityModel>();
+		ArrayList<Integer> disabledFunctionalityModels = new ArrayList<Integer>();
 		
 		for (PCFunctionality functionality : rule.getDisabledFunctionalities()) {
-			disabledFunctionalityModels.add(FunctionalityModel.convertToFunctionalityModel(functionality));
+			disabledFunctionalityModels.add(functionality.getId());
 		}
 		
 		ruleModel.setDisabledFunctionalities(disabledFunctionalityModels);
-		ruleModel.setCreationDate(rule.getCreationDate());
 		
 		return ruleModel;
 	}

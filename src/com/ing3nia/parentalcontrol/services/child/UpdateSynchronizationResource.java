@@ -10,7 +10,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -24,6 +23,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ModificationModel;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
@@ -40,27 +41,29 @@ public class UpdateSynchronizationResource {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response doGet(@QueryParam(value = "id") final String id) {
-		ModificationModel modification = getSmartphoneModification(id);
+		ResponseBuilder rbuilder;
+
+		logger.info("[Total Synchronization Service] Buscando smartphone asociado a id: " + id);
+		ModificationModel modification = null;
+		
+		try {
+			modification = getSmartphoneModification(id);
+		}
+		catch (SessionQueryException ex) {
+			logger.warning("[Total Synchronization Service] An error ocurred while searching for smartphone. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		
+		logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
 		
 		Gson jsonParser = new Gson();
-		JsonObject jsonObjectStatus = new JsonObject();
+		Type responseType = new TypeToken<ModificationModel>(){}.getType();
+		JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+		okResponse.addProperty("modification", jsonParser.toJson(modification, responseType));
 		
-		if (modification != null) {
-			Type responseType = new TypeToken<ModificationModel>(){}.getType();			
-			
-			jsonObjectStatus.addProperty("code", "00");
-			jsonObjectStatus.addProperty("verbose", "OK");
-			jsonObjectStatus.addProperty("msg", "OK");
-			jsonObjectStatus.addProperty("modification", jsonParser.toJson(modification, responseType));
-		}
-		else {
-			jsonObjectStatus.addProperty("code", "01");
-			jsonObjectStatus.addProperty("verbose", "INVALID_PHONE_SERIAL");
-			jsonObjectStatus.addProperty("msg", "The supplied unique id is not valid");
-		}
-		
-		ResponseBuilder rbuilder = Response.ok(jsonObjectStatus.toString(), MediaType.APPLICATION_JSON);
-		
+		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
 		return rbuilder.build();
 	}
 	
@@ -72,66 +75,113 @@ public class UpdateSynchronizationResource {
 		Gson jsonParser = new Gson();
 		Type bodyType = new TypeToken<SmartphoneModificationIdModel>(){}.getType();
 		
-		logger.info("[Update Synchronization Service] Parseando par‡metros de entrada.");
-		SmartphoneModificationIdModel smartphoneModificationId = jsonParser.fromJson(body, bodyType);
+		SmartphoneModificationIdModel smartphoneModificationId;
+		ResponseBuilder rbuilder;
 		
-		boolean smartphoneModificationFound = updateSmartphoneModification(smartphoneModificationId);
-
-		JsonObject jsonObjectStatus = new JsonObject();
+		logger.info("[Update Synchronization Service] Parsing input parameters.");
+		
+		try {
+			smartphoneModificationId = jsonParser.fromJson(body, bodyType);
+		}
+		catch (Exception e) {
+			logger.warning("[Update Synchronization Service] SmartphoneModificationIdModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		
+		boolean smartphoneModificationFound;
+		
+		try {
+			smartphoneModificationFound = updateSmartphoneModification(smartphoneModificationId);
+		}
+		catch (IllegalArgumentException ex) {
+			logger.warning("[Update Synchronization Service] An error ocurred while converting a Key to String. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
+		catch (SessionQueryException ex) {
+			logger.warning("[Update Synchronization Service] An error ocurred while finding the PCSmartphone by key or deleting PCModification. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 		
 		if (smartphoneModificationFound) {
-			jsonObjectStatus.addProperty("code", "00");
-			jsonObjectStatus.addProperty("verbose", "OK");
-			jsonObjectStatus.addProperty("msg", "OK");			
+			logger.info("[Update Synchronization Service] Ok Response. User succesfully deleted modification.");
+			
+			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+			
+			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
 		else {
-			jsonObjectStatus.addProperty("code", "01");
-			jsonObjectStatus.addProperty("verbose", "INVALID_PHONE_SERIAL");
-			jsonObjectStatus.addProperty("msg", "The supplied unique id is not valid");
+			logger.warning("[Update Synchronization Service] An error ocurred while finding the PCSmartphone by key or deleting PCModification");
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
 		}
-		
-		ResponseBuilder rbuilder = Response.ok(jsonObjectStatus.toString(), MediaType.APPLICATION_JSON);
-		
-		return rbuilder.build();
 	}
 	
-	public boolean updateSmartphoneModification(SmartphoneModificationIdModel smartphoneModIdModel) {
+	public boolean updateSmartphoneModification(SmartphoneModificationIdModel smartphoneModIdModel) throws SessionQueryException, IllegalArgumentException {
 		boolean found = false;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		logger.info("[Update Synchronization Service] Convirtiendo id : " + smartphoneModIdModel.getId() + " de smartphone a Key.");
-		Key smartphoneKey = KeyFactory.stringToKey(smartphoneModIdModel.getId());
-		
-		logger.info("[Update Synchronization Service] Buscando smartphone en base de datos.");
-		PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
-		
-		if (savedSmartphone.getModification() != null) {
-			logger.info("[Update Synchronization Service] Convirtiendo modKey : " + smartphoneModIdModel.getModKey() + " de smartphone a Key.");
-			Key modificationKey = KeyFactory.stringToKey(smartphoneModIdModel.getModKey());
+		try {
+			logger.info("[Update Synchronization Service] Convirtiendo id : " + smartphoneModIdModel.getId() + " de smartphone a Key.");
+			Key smartphoneKey = KeyFactory.stringToKey(smartphoneModIdModel.getId());
 			
-			if (modificationKey.equals(savedSmartphone.getModification().getKey())) {
-				found = true;
+			logger.info("[Update Synchronization Service] Buscando smartphone en base de datos.");
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
+			
+			if (savedSmartphone.getModification() != null) {
+				logger.info("[Update Synchronization Service] Convirtiendo modKey : " + smartphoneModIdModel.getModKey() + " de smartphone a Key.");
+				Key modificationKey = KeyFactory.stringToKey(smartphoneModIdModel.getModKey());
 				
-				pm.deletePersistent(savedSmartphone.getModification());
-				pm.close();
+				if (modificationKey.equals(savedSmartphone.getModification().getKey())) {
+					found = true;
+					
+					pm.deletePersistent(savedSmartphone.getModification());				
+				}
 			}
 		}
+		catch (IllegalArgumentException ex) {
+			throw ex;
+		}
+		catch (Exception ex) {
+	    	logger.info("[Update Synchronization Service] An error ocurred while finding the PCSmartphone by key or deleting PCModification " + ex.getMessage());
+	    	
+			throw new SessionQueryException();
+	    }
+		
+		pm.close();
 		
 		return found;
 	}
 	
-	public ModificationModel getSmartphoneModification(String id) {
+	public ModificationModel getSmartphoneModification(String id) throws SessionQueryException, IllegalArgumentException {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		logger.info("[Update Synchronization Service] Convirtiendo id : " + id + " de smartphone a Key.");
-		Key smartphoneKey = KeyFactory.stringToKey(id);
-		
-		logger.info("[Update Synchronization Service] Buscando smartphone en base de datos.");
-		PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
-		
-		pm.close();
-		
-		logger.info("[Update Synchronization Service] Convirtiendo PCModification en ModificationModel.");
-		return ModificationModel.convertToModificationModel(savedSmartphone.getModification());
+		try {
+			logger.info("[Update Synchronization Service] Converting id : " + id + " of smartphone to Key.");
+			Key smartphoneKey = KeyFactory.stringToKey(id);
+			
+			logger.info("[Update Synchronization Service] Searching for smartphone in DB.");
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
+			
+			pm.close();
+			
+			logger.info("[Update Synchronization Service] Converting PCModification en ModificationModel.");
+			return ModificationModel.convertToModificationModel(savedSmartphone.getModification());
+		}
+		catch (IllegalArgumentException ex) {
+			throw ex;
+		}
+		catch (Exception ex) {
+	    	logger.info("[Update Synchronization Service] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());
+	    	
+			throw new SessionQueryException();
+	    }
 	}
 }
