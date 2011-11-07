@@ -34,9 +34,10 @@ public class PCRule {
 	/**
 	 * Represents a collection of functionalities that are going to 
 	 * be disabled between the startDate and the endDate.
+	 * Key references PCFunctionalities
 	 */
 	@Persistent
-	private ArrayList<PCFunctionality> disabledFunctionalities;
+	private ArrayList<Key> disabledFunctionalities;
 	
 	/**
 	 * Represents the creation date of a specific rule.
@@ -49,7 +50,7 @@ public class PCRule {
 	}
 
 	public PCRule(Key key, Date startDate, Date endDate,
-			ArrayList<PCFunctionality> disabledFunctionalities,
+			ArrayList<Key> disabledFunctionalities,
 			Date creationDate) {
 		super();
 		this.key = key;
@@ -83,12 +84,12 @@ public class PCRule {
 		this.endDate = endDate;
 	}
 
-	public ArrayList<PCFunctionality> getDisabledFunctionalities() {
+	public ArrayList<Key> getDisabledFunctionalities() {
 		return disabledFunctionalities;
 	}
 
 	public void setDisabledFunctionalities(
-			ArrayList<PCFunctionality> disabledFunctionalities) {
+			ArrayList<Key> disabledFunctionalities) {
 		this.disabledFunctionalities = disabledFunctionalities;
 	}
 
