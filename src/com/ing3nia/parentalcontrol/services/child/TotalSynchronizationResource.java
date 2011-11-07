@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.services.child;
 
+import java.lang.reflect.Type;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
@@ -15,11 +16,15 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
@@ -53,7 +58,11 @@ public class TotalSynchronizationResource {
 		logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
 		
 		JsonObject okResponse = WSStatus.OK.getStatusAsJson();
-		okResponse.add("smartphone", smartphone.getSmartphoneAsJson());
+		Gson jsonBuilder = new Gson();
+		JsonParser jsonParser = new JsonParser();
+		Type type = new TypeToken<SmartphoneModel>(){}.getType();
+		JsonObject smartphoneObject = (JsonObject)jsonParser.parse(jsonBuilder.toJson(smartphone, type));
+		okResponse.add("smartphone", smartphoneObject);
 		
 		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
 		return rbuilder.build();

@@ -2,6 +2,7 @@ package com.ing3nia.parentalcontrol.services;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.jdo.PersistenceManager;
 import javax.ws.rs.GET;
@@ -9,6 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
+
+import org.datanucleus.store.mapped.expression.ArrayLiteral;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -19,12 +22,14 @@ import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
+import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCApplication.PCAppInfo;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCDevice.PCOs;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
+import com.ing3nia.parentalcontrol.models.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.models.utils.PCOsTypeId;
 import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -42,38 +47,57 @@ public class InitResource {
 	public Response doGet() {
 
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-//		PCModification mod = new PCModification();
-//		ArrayList<Key> active = new ArrayList<Key>();
-//		
-//		PCPhone phone = new PCPhone();
-//		phone.setPhoneNumber("5552");
-//		phone.setType(1);
-//		pm.makePersistent(phone);
-//		
-//		PCSimpleContact pcsimple = new PCSimpleContact();
-//		pcsimple.setFirstName("Juan2");
-//		pcsimple.setLastName("Final2");
-//		pcsimple.setPhone(phone.getKey());		
-//		pm.makePersistent(pcsimple);
-//		
-//		active.add(pcsimple.getKey());
-//		mod.setActiveContacts(active);
-//		
-//		PCProperty prop = new PCProperty();
-//		prop.setCreationDate(Calendar.getInstance().getTime());
-//		prop.setDescription("SPEED_LIMIT");
-//		prop.setId(PCPropertyType.SPEED_LIMIT);	
-//		prop.setValue("80");
-//		
-//		ArrayList<PCProperty> props = new ArrayList<PCProperty>();
-//		props.add(prop);
-//		mod.setProperties(props);
-//		
-//		pm.makePersistent(mod);
-		Key modKey = KeyFactory.stringToKey("aglub19hcHBfaWRyFAsSDlBDTW9kaWZpY2F0aW9uGAsM");
-		PCModification modification = (PCModification)pm.getObjectById(PCModification.class, modKey);
-		pm.deletePersistent(modification);
+		
+		Key smartKey = KeyFactory.stringToKey("aglub19hcHBfaWRyHgsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRgyDA");
+		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
 
+		ArrayList<Key> inactive = smart.getInactiveContacts();
+		
+		PCPhone phone = new PCPhone();
+		phone.setPhoneNumber("04267336220");
+		phone.setType(1);
+		pm.makePersistent(phone);
+		
+		PCSimpleContact pcsimple = new PCSimpleContact();
+		pcsimple.setFirstName("Maria");
+		pcsimple.setLastName("Elena");
+		pcsimple.setPhone(phone.getKey());		
+		pm.makePersistent(pcsimple);
+		
+		inactive.add(pcsimple.getKey());
+		smart.setInactiveContacts(inactive);
+		
+		PCProperty prop = new PCProperty();
+		prop.setCreationDate(Calendar.getInstance().getTime());
+		prop.setDescription("SPEED_LIMIT");
+		prop.setId(PCPropertyType.SPEED_LIMIT);	
+		prop.setValue("80");
+		
+		ArrayList<PCProperty> props = smart.getProperties();
+		
+		props.add(prop);
+		smart.setProperties(props);
+		
+		PCFunctionality func = new PCFunctionality();
+		func.setDescription("BROWSER_ACCESS");
+		func.setId(FunctionalityTypeId.BROWSER_ACCESS_ID);
+		
+		pm.makePersistent(func);
+		
+		ArrayList<Key> funcs = new ArrayList<Key>();
+		funcs.add(func.getKey());
+		
+		PCRule rule = new PCRule();
+		Date date = Calendar.getInstance().getTime();
+		rule.setCreationDate(date);
+		rule.setDisabledFunctionalities(funcs);
+		rule.setEndDate(date);
+		rule.setStartDate(date);
+		
+		ArrayList<PCRule> rules = smart.getRules();
+		rules.add(rule);
+		smart.setRules(rules);
+		
 		pm.close();
 		
 		//createDummyApplication();
