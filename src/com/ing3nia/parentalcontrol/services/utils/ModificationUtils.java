@@ -41,7 +41,7 @@ public class ModificationUtils {
 	 * Processes the modifications made by the parent user on a child smartphone
 	 * @throws ModificationParsingException 
 	 */
-	public static void ProcessParentModifications(PCSmartphone pcsmartphone, ModificationModel modifications) throws ModificationParsingException{
+	public static void ProcessParentModifications(PersistenceManager pm, PCSmartphone pcsmartphone, ModificationModel modifications) throws ModificationParsingException{
 		PCModification pcmodification = pcsmartphone.getModification();
 		Logger logger = ModelLogger.logger;
 
@@ -49,7 +49,7 @@ public class ModificationUtils {
 		if (pcmodification == null) {
 			try {
 				logger.info("[ParentModifications] Create new parent modification");
-				createNewParentModification(pcsmartphone, modifications);
+				createNewParentModification(pm, pcsmartphone, modifications);
 			} catch (ModificationParsingException e) {
 				logger.severe("[ParentModifications] New modification could not be created ");
 				throw e;
@@ -57,7 +57,7 @@ public class ModificationUtils {
 		} else {
 			try {
 				logger.info("[ParentModifications] Updating parent modification");
-				updateParentModification(pcsmartphone, pcmodification, modifications);
+				updateParentModification(pm, pcsmartphone, pcmodification, modifications);
 			} catch (ModificationParsingException e) {
 				logger.severe("[ParentModifications] Modification could not be updated ");
 				throw e;
@@ -65,12 +65,12 @@ public class ModificationUtils {
 		}
 	}
 	
-	private static void createNewParentModification(PCSmartphone pcSmartphone, ModificationModel modifications) throws ModificationParsingException{
+	private static void createNewParentModification(PersistenceManager pm, PCSmartphone pcSmartphone, ModificationModel modifications) throws ModificationParsingException{
 		PCModification pcmodification = new PCModification();
-		updateParentModification(pcSmartphone, pcmodification, modifications);
+		updateParentModification(pm, pcSmartphone, pcmodification, modifications);
 	}
 	
-	private static void updateParentModification(PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications) throws ModificationParsingException{
+	private static void updateParentModification(PersistenceManager pm, PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications) throws ModificationParsingException{
 		
 		Logger logger = ModelLogger.logger;
 		
@@ -81,7 +81,7 @@ public class ModificationUtils {
 		ArrayList<EmergencyNumberModel> deletedEmergencyNumbers = modifications.getDeletedEmergencyNumbers();
 		ArrayList<PropertyModel> properties = modifications.getProperties();
 		ArrayList<RuleModel> rules = modifications.getRules();
-		
+		ArrayList<String> deletedRules = modifications.getDeletedRules();
 		
 		ArrayList<Key> pcModActiveContacts = pcmodification.getActiveContacts();
 		ArrayList<Key> pcModInactiveContacts = pcmodification.getInactiveContacts();
@@ -89,6 +89,7 @@ public class ModificationUtils {
 		ArrayList<Key> pcModDeletedEmergencyNumbers = pcmodification.getDeletedEmergencyNumbers();
 		ArrayList<Key> pcModProperties = pcmodification.getProperties();
 		ArrayList<Key> pcModRules = pcmodification.getRules();
+		ArrayList<String> pcDeletedRules = pcmodification.getDeletedRules();
 		
 		if(smartphoneName != null){
 			pcsmartphone.setName(smartphoneName);
@@ -97,41 +98,62 @@ public class ModificationUtils {
 		// setting to empty lists null modification attributes
 		if (activeContacts == null) {
 			modifications.setActiveContacts(new ArrayList<SimpleContactModel>());
+			activeContacts = modifications.getActiveContacts();
 		}
 		if (inactiveContacts == null){
 			modifications.setInactiveContacts(new ArrayList<SimpleContactModel>());
+			inactiveContacts = modifications.getInactiveContacts();
 		}
 		if (addedEmergencyNumbers == null){
 			modifications.setAddedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			addedEmergencyNumbers = modifications.getAddedEmergencyNumbers();
 		}
 		if (deletedEmergencyNumbers == null){
 			modifications.setDeletedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			deletedEmergencyNumbers = modifications.getDeletedEmergencyNumbers();
 		}
 		if (properties == null){
 			modifications.setProperties(new ArrayList<PropertyModel>());
+			properties = modifications.getProperties();
 		}
 		if (rules == null){
 			modifications.setRules(new ArrayList<RuleModel>());
+			rules = modifications.getRules();
+		}
+		
+		if(deletedRules == null){
+			modifications.setDeletedRules(new ArrayList<String>());
+			deletedRules = modifications.getDeletedRules();
 		}
 		
 		// setting to empty lists null PCModification attributes
 		if (pcModActiveContacts == null) {
 			pcmodification.setActiveContacts(new ArrayList<Key>());
+			pcModActiveContacts = pcmodification.getActiveContacts();
 		}
 		if (pcModInactiveContacts == null){
 			pcmodification.setInactiveContacts(new ArrayList<Key>());
+			pcModInactiveContacts = pcmodification.getInactiveContacts();
 		}
 		if (pcModAddedEmergencyNumbers == null){
 			pcmodification.setAddedEmergencyNumbers(new ArrayList<Key>());
+			pcModAddedEmergencyNumbers = pcmodification.getAddedEmergencyNumbers();
 		}
 		if (pcModDeletedEmergencyNumbers == null){
 			pcmodification.setDeletedEmergencyNumbers(new ArrayList<Key>());
+			pcModDeletedEmergencyNumbers = pcmodification.getDeletedEmergencyNumbers();
 		}
 		if (pcModProperties == null){
 			pcmodification.setProperties(new ArrayList<Key>());
+			pcModProperties = pcmodification.getProperties();
 		}
 		if (pcModRules == null){
 			pcmodification.setRules(new ArrayList<Key>());
+			pcModRules = pcmodification.getRules();
+		}
+		if(pcDeletedRules == null){
+			pcmodification.setDeletedRules(new ArrayList<String>());
+			pcDeletedRules = pcmodification.getDeletedRules();
 		}
 
 		logger.info("[ParentModifications] Adding active contacts modifications");
@@ -142,7 +164,9 @@ public class ModificationUtils {
 			// remove contact from inactive and add to active in smartphone
 			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
 			pcsmartphone.getInactiveContacts().remove(contactKey);
-			pcsmartphone.getActiveContacts().add(contactKey);
+			if(!pcsmartphone.getActiveContacts().contains(contactKey)){
+				pcsmartphone.getActiveContacts().add(contactKey);
+			}
 
 			// check if active contact existed in modification, if inactive
 			// then remove
@@ -167,7 +191,9 @@ public class ModificationUtils {
 			// remove contact from active and add to inactive in smartphone
 			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
 			pcsmartphone.getActiveContacts().remove(contactKey);
-			pcsmartphone.getInactiveContacts().add(contactKey);
+			if(!pcsmartphone.getInactiveContacts().contains(contactKey)){
+				pcsmartphone.getInactiveContacts().add(contactKey);
+			}
 
 			// check if inactive contact existed in modification, if active
 			// then remove it and add it to inactive, otherwise add it to
@@ -196,7 +222,9 @@ public class ModificationUtils {
 			Key emergencyKey = KeyFactory.stringToKey(emergencyContact
 					.getKeyId());
 			pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
-			pcsmartphone.getActiveContacts().add(emergencyKey);
+			if(!pcsmartphone.getActiveContacts().contains(emergencyKey)){
+				pcsmartphone.getActiveContacts().add(emergencyKey);
+			}
 
 			// check if added emergency contact existed in modification, if
 			// deleted
@@ -223,7 +251,9 @@ public class ModificationUtils {
 			Key emergencyKey = KeyFactory.stringToKey(emergencyContact
 					.getKeyId());
 			pcsmartphone.getAddedEmergencyNumbers().remove(emergencyKey);
-			pcsmartphone.getDeletedEmergencyNumbers().add(emergencyKey);
+			if(!pcsmartphone.getDeletedEmergencyNumbers().contains(emergencyKey)){
+				pcsmartphone.getDeletedEmergencyNumbers().add(emergencyKey);
+			}
 
 			// check if emergency contact existed in modification, if added
 			// then remove it and add it to deleted, otherwise add it to deleted
@@ -238,10 +268,7 @@ public class ModificationUtils {
 				modDeletedEmergency.add(emergencyKey);
 			}
 		}
-		
-		
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
+			
 		// parsing property modifications
 		logger.info("[ParentModifications] Adding properties modifications");
 		for (PropertyModel propmodel : modifications.getProperties()) {
@@ -295,11 +322,17 @@ public class ModificationUtils {
 			ArrayList<Key> newDisabledFuncionalities = getNewFuncionalitiesAsKeys(pm, ruleModel);
 			rule.setDisabledFunctionalities(newDisabledFuncionalities);
 		}
-			
+		
+		// adding deleted rules
+		logger.info("[ParentModifications] Setting deleted rules");
+		for(String deletedRuleId : modifications.getDeletedRules()){
+			if(!pcDeletedRules.contains(deletedRuleId)){
+				pcDeletedRules.add(deletedRuleId);
+			}
+		}
+		
 		pm.makePersistent(pcsmartphone);
 		pm.makePersistent(pcmodification);
-		pm.close();
-	
 	
 	}
 	

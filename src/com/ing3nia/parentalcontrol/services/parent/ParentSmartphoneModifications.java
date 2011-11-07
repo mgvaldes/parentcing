@@ -116,13 +116,14 @@ public class ParentSmartphoneModifications {
 			return rbuilder.build();
 		}
 		pm.close();
-		pm = ServiceUtils.PMF.getPersistenceManager();
+		//pm = ServiceUtils.PMF.getPersistenceManager();
+		PersistenceManager pmMod = ServiceUtils.PMF.getPersistenceManager();
 		
 		//TODO check if smartphone corresponds to USER
 		
 		// get smartphone from provided key
 		logger.info("[Parent Modifications] Obtaining smartphone from provided key "+smartphoneId);
-		PCSmartphone smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneId));
+		PCSmartphone smartphone = (PCSmartphone)pmMod.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneId));
 		if(smartphone == null){
 			logger.severe("[Parent Modifications] No smartphone found from the given key "+smartphoneId);
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
@@ -139,16 +140,15 @@ public class ParentSmartphoneModifications {
 		
 		logger.info("[Parent Modifications] Processing Parent Modifications");
 		try {
-			ModificationUtils.ProcessParentModifications(smartphone, modifications);
+			ModificationUtils.ProcessParentModifications(pmMod, smartphone, modifications);
 		} catch (ModificationParsingException e) {
 			logger.severe("[Parent Modifications] An error occurred when processing modifications "+e.getMessage());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
 		}
 		
-		pm.close();
-
-		rbuilder = Response.ok(responseMsg.toString(), MediaType.APPLICATION_JSON);
+		pmMod.close();
+		rbuilder = Response.ok(WSStatus.OK.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 		return rbuilder.build();
 	}
 }
