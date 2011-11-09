@@ -48,8 +48,19 @@ public class InitResource {
 
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		Key smartKey = KeyFactory.stringToKey("aglub19hcHBfaWRyHgsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRgyDA");
+		Key smartKey = KeyFactory.stringToKey("aglub19hcHBfaWRyHwsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRiQAQw");
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
+		
+//		String rule = "aglub19hcHBfaWRyKgsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRhXDAsSBlBDUnVsZRhgDA";
+		
+//		pm.deletePersistent(smart.getRules().get(0));
+		
+//		ArrayList<String> deletedRules = new ArrayList<String>();
+//		deletedRules.add(rule);
+//		
+//		smart.getModification().setDeletedRules(deletedRules);
+//		
+//		pm.close();
 
 		ArrayList<Key> inactive = smart.getInactiveContacts();
 		
@@ -67,38 +78,40 @@ public class InitResource {
 		inactive.add(pcsimple.getKey());
 		smart.setInactiveContacts(inactive);
 		
-		PCProperty prop = new PCProperty();
-		prop.setCreationDate(Calendar.getInstance().getTime());
-		prop.setDescription("SPEED_LIMIT");
-		prop.setId(PCPropertyType.SPEED_LIMIT);	
-		prop.setValue("80");
-		
-		ArrayList<PCProperty> props = smart.getProperties();
-		
-		props.add(prop);
-		smart.setProperties(props);
-		
-		PCFunctionality func = new PCFunctionality();
-		func.setDescription("BROWSER_ACCESS");
-		func.setId(FunctionalityTypeId.BROWSER_ACCESS_ID);
-		
-		pm.makePersistent(func);
-		
-		ArrayList<Key> funcs = new ArrayList<Key>();
-		funcs.add(func.getKey());
-		
-		PCRule rule = new PCRule();
-		Date date = Calendar.getInstance().getTime();
-		rule.setCreationDate(date);
-		rule.setDisabledFunctionalities(funcs);
-		rule.setEndDate(date);
-		rule.setStartDate(date);
-		
-		ArrayList<PCRule> rules = smart.getRules();
-		rules.add(rule);
-		smart.setRules(rules);
-		
 		pm.close();
+//		
+//		PCProperty prop = new PCProperty();
+//		prop.setCreationDate(Calendar.getInstance().getTime());
+//		prop.setDescription("SPEED_LIMIT");
+//		prop.setId(PCPropertyType.SPEED_LIMIT);	
+//		prop.setValue("80");
+//		
+//		ArrayList<PCProperty> props = smart.getProperties();
+//		
+//		props.add(prop);
+//		smart.setProperties(props);
+//		
+//		PCFunctionality func = new PCFunctionality();
+//		func.setDescription("BROWSER_ACCESS");
+//		func.setId(FunctionalityTypeId.BROWSER_ACCESS_ID);
+//		
+//		pm.makePersistent(func);
+//		
+//		ArrayList<Key> funcs = new ArrayList<Key>();
+//		funcs.add(func.getKey());
+//		
+//		PCRule rule = new PCRule();
+//		Date date = Calendar.getInstance().getTime();
+//		rule.setCreationDate(date);
+//		rule.setDisabledFunctionalities(funcs);
+//		rule.setEndDate(date);
+//		rule.setStartDate(date);
+//		
+//		ArrayList<PCRule> rules = smart.getRules();
+//		rules.add(rule);
+//		smart.setRules(rules);
+//		
+//		pm.close();
 		
 		//createDummyApplication();
 		
@@ -130,7 +143,8 @@ public class InitResource {
 		
 		ResponseBuilder rbuilder;
 		JsonObject okResponse = WSStatus.OK.getStatusAsJson();
-		//okResponse.addProperty("key", KeyFactory.keyToString(mod.getKey()));
+		
+		//okResponse.addProperty("key", rule);
 		
 		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
 		

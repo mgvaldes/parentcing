@@ -1,12 +1,17 @@
 package com.ing3nia.parentalcontrol.services.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
+import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
@@ -143,10 +148,15 @@ public class ModificationModel {
 	public void setDeletedRules(ArrayList<String> deletedRules) {
 		this.deletedRules = deletedRules;
 	}
-
+	
 	public static ModificationModel convertToModificationModel(PCModification modification) throws IllegalArgumentException, SessionQueryException {
 		ModificationModel modificationModel = new ModificationModel();
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		ArrayList<Key> auxKeyList;
+		PCSimpleContact auxSimpleContact;
+		ArrayList<SimpleContactModel> pcContacts;
+		PCEmergencyNumber auxEmergencyNumber;
+		ArrayList<EmergencyNumberModel> emergencyNumbers;
 		
 		try {
 			//------------------------------------------------------------
@@ -157,59 +167,75 @@ public class ModificationModel {
 			//------------------------------------------------------------
 			// Loading active contacts
 			//------------------------------------------------------------
-			ArrayList<PCSimpleContact> pcActiveContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(modification.getActiveContacts());
-			ArrayList<SimpleContactModel> activeContacts = new ArrayList<SimpleContactModel>();
+			auxKeyList = modification.getActiveContacts();
+			pcContacts = new ArrayList<SimpleContactModel>();
 			
-			for (PCSimpleContact contact : pcActiveContacts) {
-				activeContacts.add(SimpleContactModel.convertToSimpleContactModel(contact));
-			}
+			if (auxKeyList != null) {
+				for (Key key : auxKeyList) {
+					auxSimpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, key);
+					pcContacts.add(SimpleContactModel.convertToSimpleContactModel(auxSimpleContact));
+				}
+			}			
 			
-			modificationModel.setActiveContacts(activeContacts);
+			modificationModel.setActiveContacts(pcContacts);
 			
 			//------------------------------------------------------------
 			// Loading inactive contacts
 			//------------------------------------------------------------
-			ArrayList<PCSimpleContact> pcInactiveContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(modification.getInactiveContacts());
-			ArrayList<SimpleContactModel> inactiveContacts = new ArrayList<SimpleContactModel>();
+			auxKeyList = modification.getInactiveContacts();
+			pcContacts = new ArrayList<SimpleContactModel>();
 			
-			for (PCSimpleContact contact : pcInactiveContacts) {
-				inactiveContacts.add(SimpleContactModel.convertToSimpleContactModel(contact));
+			if (auxKeyList != null) {
+				for (Key key : auxKeyList) {
+					auxSimpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, key);
+					pcContacts.add(SimpleContactModel.convertToSimpleContactModel(auxSimpleContact));
+				}
 			}
 			
-			modificationModel.setInactiveContacts(inactiveContacts);
+			modificationModel.setInactiveContacts(pcContacts);
 			
 			//------------------------------------------------------------
 			// Loading added emergency numbers
 			//------------------------------------------------------------
-			ArrayList<PCEmergencyNumber> pcAddedEmergencyNumbers = (ArrayList<PCEmergencyNumber>)pm.getObjectsById(modification.getAddedEmergencyNumbers());
-			ArrayList<EmergencyNumberModel> addedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
+			auxKeyList = modification.getAddedEmergencyNumbers();
+			emergencyNumbers = new ArrayList<EmergencyNumberModel>();
 			
-			for (PCEmergencyNumber emergencyNumber : pcAddedEmergencyNumbers) {
-				addedEmergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(emergencyNumber));
+			if (auxKeyList != null) {
+				for (Key key : auxKeyList) {
+					auxEmergencyNumber = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, key);
+					emergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(auxEmergencyNumber));
+				}
 			}
 			
-			modificationModel.setAddedEmergencyNumbers(addedEmergencyNumbers);
+			modificationModel.setAddedEmergencyNumbers(emergencyNumbers);
 			
 			//------------------------------------------------------------
 			// Loading deleted emergency numbers
 			//------------------------------------------------------------
-			ArrayList<PCEmergencyNumber> pcDeletedEmergencyNumbers = (ArrayList<PCEmergencyNumber>)pm.getObjectsById(modification.getDeletedEmergencyNumbers());
-			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
+			auxKeyList = modification.getDeletedEmergencyNumbers();
+			emergencyNumbers = new ArrayList<EmergencyNumberModel>();
 			
-			for (PCEmergencyNumber emergencyNumber : pcDeletedEmergencyNumbers) {
-				deletedEmergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(emergencyNumber));
+			if (auxKeyList != null) {
+				for (Key key : auxKeyList) {
+					auxEmergencyNumber = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, key);
+					emergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(auxEmergencyNumber));
+				}
 			}
 			
-			modificationModel.setDeletedEmergencyNumbers(deletedEmergencyNumbers);
+			modificationModel.setDeletedEmergencyNumbers(emergencyNumbers);
 			
 			//------------------------------------------------------------
 			// Loading properties
 			//------------------------------------------------------------
 			ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
+			ArrayList<Key> pcProperties = modification.getProperties();
+			PCProperty auxProperty;
 			
-			ArrayList<PCProperty> propertyList = (ArrayList<PCProperty>)pm.getObjectById(modification.getProperties());
-			for (PCProperty property : propertyList) {
-				properties.add(PropertyModel.convertToPropertyModel(property));
+			if (auxKeyList != null) {
+				for (Key property : pcProperties) {
+					auxProperty = (PCProperty)pm.getObjectById(PCProperty.class, property);
+					properties.add(PropertyModel.convertToPropertyModel(auxProperty));
+				}
 			}
 			
 			modificationModel.setProperties(properties);
@@ -218,13 +244,27 @@ public class ModificationModel {
 			// Loading rules
 			//------------------------------------------------------------
 			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
-			ArrayList<PCRule> rulesList = (ArrayList<PCRule>)pm.getObjectById(modification.getRules());
-			for (PCRule rule : rulesList) {
-				rules.add(RuleModel.convertToRuleModel(rule));
+			ArrayList<Key> pcRules = modification.getRules();
+			PCRule auxRule;
+			
+			if (auxKeyList != null) {
+				for (Key rule : pcRules) {
+					auxRule = (PCRule)pm.getObjectById(PCRule.class, rule);
+					rules.add(RuleModel.convertToRuleModel(auxRule));
+				}
 			}
 			
 			modificationModel.setRules(rules);
-			modificationModel.setDeletedRules(modification.getDeletedRules());
+			
+			ArrayList<String> deletedRules = modification.getDeletedRules();
+			
+			if (deletedRules != null) {
+				modificationModel.setDeletedRules(deletedRules);
+			}
+			else {
+				modificationModel.setDeletedRules(new ArrayList<String>());
+			}
+			
 		} 		
 		catch (IllegalArgumentException ex) {
 			throw ex;

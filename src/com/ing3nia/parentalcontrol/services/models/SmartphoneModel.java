@@ -276,7 +276,6 @@ public class SmartphoneModel {
 	        pair = (Map.Entry)it.next();	        
 
 	        auxName = ((String)pair.getKey()).split("\\|");
-	        ModelLogger.logger.info("Contact key " + auxName.length);
 	        auxContact = new ContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
 	        contactsList.add(auxContact);
 	    }
@@ -337,49 +336,50 @@ public class SmartphoneModel {
 			}
 			
 			smartphoneModel.setAddedEmergencyNumbers(addedEmergencyNumbers);
-//			
-//			//------------------------------------------------------------
-//			// Loading properties 
-//			//------------------------------------------------------------
-//			ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
-//			
-//			for (PCProperty property : savedSmartphone.getProperties()) {
-//				properties.add(PropertyModel.convertToPropertyModel(property));
-//			}
-//			
-//			smartphoneModel.setProperties(properties);
-//			
-//			//------------------------------------------------------------
-//			// Loading rules
-//			//------------------------------------------------------------
-//			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
-//			
-//			for (PCRule rule : savedSmartphone.getRules()) {
-//				rules.add(RuleModel.convertToRuleModel(rule));
-//			}
-//			
-//			smartphoneModel.setRules(rules);
-//			
-//			//------------------------------------------------------------
-//			// Loading device
-//			//------------------------------------------------------------
-//			smartphoneModel.setDevice(DeviceModel.convertToDeviceModel(savedSmartphone.getDevice()));
-//			
-//			//------------------------------------------------------------
-//			// Loading application version
-//			//------------------------------------------------------------
-//			PCApplication application = (PCApplication)pm.getObjectById(PCApplication.class, savedSmartphone.getApplication());			
-//			smartphoneModel.setAppVersion(application.getAppInfo().getAppVersion());
-//			
-//			//------------------------------------------------------------
-//			// Loading serial number
-//			//------------------------------------------------------------
-//			smartphoneModel.setSerialNumber(savedSmartphone.getSerialNumber());
-//			
-//			//------------------------------------------------------------
-//			// Loading smartphone name
-//			//------------------------------------------------------------
-//			smartphoneModel.setName(savedSmartphone.getName());
+			
+			//------------------------------------------------------------
+			// Loading properties 
+			//------------------------------------------------------------
+			ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
+			ArrayList<PCProperty> pcProperties = savedSmartphone.getProperties(); 
+			
+			for (PCProperty property : pcProperties) {
+				properties.add(PropertyModel.convertToPropertyModel(property));
+			}
+			
+			smartphoneModel.setProperties(properties);
+			
+			//------------------------------------------------------------
+			// Loading rules
+			//------------------------------------------------------------
+			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+			
+			for (PCRule rule : savedSmartphone.getRules()) {
+				rules.add(RuleModel.convertToRuleModel(rule));
+			}
+			
+			smartphoneModel.setRules(rules);
+			
+			//------------------------------------------------------------
+			// Loading device
+			//------------------------------------------------------------
+			smartphoneModel.setDevice(DeviceModel.convertToDeviceModel(savedSmartphone.getDevice()));
+			
+			//------------------------------------------------------------
+			// Loading application version
+			//------------------------------------------------------------
+			PCApplication application = (PCApplication)pm.getObjectById(PCApplication.class, savedSmartphone.getApplication());			
+			smartphoneModel.setAppVersion(application.getAppInfo().getAppVersion());
+			
+			//------------------------------------------------------------
+			// Loading serial number
+			//------------------------------------------------------------
+			smartphoneModel.setSerialNumber(savedSmartphone.getSerialNumber());
+			
+			//------------------------------------------------------------
+			// Loading smartphone name
+			//------------------------------------------------------------
+			smartphoneModel.setName(savedSmartphone.getName());
 		}
 		catch (Exception ex) {
 	    	ModelLogger.logger.info("[Total Synchronization Service] An error ocurred while finding smartphone info en DB " + ex.getMessage());

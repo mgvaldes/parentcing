@@ -43,10 +43,9 @@ public class NotificationModel {
 	public PCNotification convertToPCNotification() {
 		PCNotification notification = new PCNotification();
 		
-		int type = Integer.valueOf(this.type);
-		notification.setType(type);
+		notification.setType(this.type);
 		
-		notification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(type));
+		notification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(this.type));
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		

@@ -41,6 +41,37 @@ public class InternalModificationsResource {
 		logger.addHandler(new ConsoleHandler());
 	}
 	
+	/*
+	  {
+		'id':'aglub19hcHBfaWRyHgsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRhXDA',
+		'modification':{
+			'inactiveContacts':[
+				{
+					'firstName':'Jamey',
+					'lastName”:'Jhonson',
+					'phones':[
+						{'type':1,'phoneNumber':'555432126'},
+						{'type':1,'phoneNumber':'551989213'}
+					]
+				}
+			],
+			'activeContacs':[
+				{
+					'firstName':'Maria',
+					'lastName':'Elena',
+					'phones':[
+						{'type':1,'phoneNumber':'04267336220'},
+						{'type':1,'phoneNumber':'623554123'}
+					]
+				}
+			], 
+			'deletedEmergencyNumbers':[
+				{'country':”VEN”,'number”:'113','description':'Emergency Number'}
+			]
+		},
+		'location':{'latitude':'70.61','longitude':'85.78'}
+	}
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -102,6 +133,7 @@ public class InternalModificationsResource {
 			PCModification modification = savedSmartphone.getModification();
 			
 			if (modification == null) {
+				logger.info("[Internal Modifications Service] Smartphone modification is null. Initializing smartphone modification.");
 				modification = new PCModification();
 				savedSmartphone.setModification(modification);
 			}
@@ -125,7 +157,13 @@ public class InternalModificationsResource {
 	public void checkDeletedEmergencyNumbers(ArrayList<EmergencyNumberModel> internalModDeletedEmergencyNumbers, ArrayList<Key> savedAddedEmergencyNumbers, PCModification modification) {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 
-		ArrayList<PCEmergencyNumber> addedEmergencyNumbers = (ArrayList<PCEmergencyNumber>)pm.getObjectsById(savedAddedEmergencyNumbers);
+		PCEmergencyNumber auxAddedEmergencyNumber;
+		ArrayList<PCEmergencyNumber> addedEmergencyNumbers = new ArrayList<PCEmergencyNumber>();
+		
+		for (Key key : savedAddedEmergencyNumbers) {
+			auxAddedEmergencyNumber = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, key);		
+			addedEmergencyNumbers.add(auxAddedEmergencyNumber);
+		}
 		
 		for (EmergencyNumberModel em : internalModDeletedEmergencyNumbers) {
 			checkInAddedEmergencyNumber(em, addedEmergencyNumbers, modification);
@@ -138,20 +176,29 @@ public class InternalModificationsResource {
 				em.getDescription().equals(emergencyNumber.getDescription()) &&
 				em.getNumber().equals(emergencyNumber.getNumber())) {
 				ArrayList<Key> modAddedEmergencyNumbers = modification.getAddedEmergencyNumbers();
+				
+				if (modAddedEmergencyNumbers == null) {
+					modAddedEmergencyNumbers = new ArrayList<Key>();
+				}
+				
 				modAddedEmergencyNumbers.add(em.getKey());
 				modification.setAddedEmergencyNumbers(modAddedEmergencyNumbers);
 			}
 		}
 	} 
 	
-	public boolean isActiveContact(String firstName, String lastName, String phoneNumer, ArrayList<Key> savedActiveContacts, PCModification modification, boolean specialCase) {
+	public boolean isActiveContact(String firstName, String lastName, String phoneNumber, ArrayList<Key> savedActiveContacts, PCModification modification, boolean specialCase) {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		boolean isActive = false;
+		boolean isActive = false;	
+		PCSimpleContact auxSimpleContact;
+		PCPhone auxPhone;
 		
-		ArrayList<PCSimpleContact> activeContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(savedActiveContacts);
-		
-		for (PCSimpleContact c : activeContacts) {
-			if (c.getFirstName().equals(firstName) && c.getLastName().equals(lastName) && c.getPhone().equals(phoneNumer)) {
+		for (Key c : savedActiveContacts) {
+			auxSimpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, c);
+			auxPhone = (PCPhone)pm.getObjectById(PCPhone.class, auxSimpleContact.getPhone());
+			
+			if (auxSimpleContact.getFirstName().equals(firstName) && auxSimpleContact.getLastName().equals(lastName) && auxPhone.getPhoneNumber().equals(phoneNumber)) {
+				logger.info("[Internal Modifications Service] Contact is active.");
 				
 				if (specialCase) {
 					ArrayList<Key> modActiveContacts = modification.getActiveContacts();
@@ -160,7 +207,7 @@ public class InternalModificationsResource {
 						modActiveContacts = new ArrayList<Key>();
 					}
 					
-					modActiveContacts.add(c.getKey());
+					modActiveContacts.add(auxSimpleContact.getKey());
 					
 					modification.setActiveContacts(modActiveContacts);
 				}
@@ -178,12 +225,16 @@ public class InternalModificationsResource {
 	public boolean isInactiveContact(String firstName, String lastName, String phoneNumber, ArrayList<Key> savedInactiveContacts, PCModification modification) {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		boolean isInactive = false;
-		
-		ArrayList<PCSimpleContact> inactiveContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(savedInactiveContacts);
+		PCSimpleContact auxSimpleContact;		
 		ArrayList<Key> modInactiveContacts;
+		PCPhone auxPhone;
 		
-		for (PCSimpleContact c : inactiveContacts) {
-			if (c.getFirstName().equals(firstName) && c.getLastName().equals(lastName) && c.getPhone().equals(phoneNumber)) {
+		for (Key c : savedInactiveContacts) {
+			auxSimpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, c);
+			auxPhone = (PCPhone)pm.getObjectById(PCPhone.class, auxSimpleContact.getPhone());
+			
+			if (auxSimpleContact.getFirstName().equals(firstName) && auxSimpleContact.getLastName().equals(lastName) && auxPhone.getPhoneNumber().equals(phoneNumber)) {
+				logger.info("[Internal Modifications Service] Contact is inactive.");
 				isInactive = true;
 				
 				modInactiveContacts = modification.getInactiveContacts();
@@ -192,7 +243,7 @@ public class InternalModificationsResource {
 					modInactiveContacts = new ArrayList<Key>();
 				}
 				
-				modInactiveContacts.add(c.getKey());
+				modInactiveContacts.add(auxSimpleContact.getKey());
 				
 				modification.setInactiveContacts(modInactiveContacts);
 				
@@ -203,10 +254,9 @@ public class InternalModificationsResource {
 		return isInactive;
 	}
 	
-	public void checkAddedContacts(ArrayList<SimpleContactModel> internalModAddedContacts, ArrayList<Key> savedActiveContacts, ArrayList<Key> savedInactiveContacts, PCModification modification) {
+	public void checkAddedContacts(ArrayList<SimpleContactModel> internalModAddedContacts, ArrayList<Key> savedActiveContacts, ArrayList<Key> savedInactiveContacts, PCModification modification) {		
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		logger.info("[Internal Modification Service] Searching for contacts from keys.");
 		boolean isActive;
 		boolean isInactive;
 		PCSimpleContact newContact;
@@ -226,6 +276,7 @@ public class InternalModificationsResource {
 				isActive = isActiveContact(mc.getFirstName(), mc.getLastName(), p.getPhoneNumber(), savedActiveContacts, modification, false);
 								
 				if (!isActive) {
+					logger.info("[Internal Modifications Service] Contact is not active.");
 					//------------------------------------------------------------
 					// Contact is not active. Checking if contact added by child 
 					// already exists in smartphone inactive contact list. If it's
@@ -235,6 +286,7 @@ public class InternalModificationsResource {
 					isInactive = isInactiveContact(mc.getFirstName(), mc.getLastName(), p.getPhoneNumber(), savedInactiveContacts, modification);
 					
 					if (!isInactive) {
+						logger.info("[Internal Modifications Service] Contact is not inactive.");
 						//------------------------------------------------------------
 						// Contact is not active and neither inactive. Adding new    
 						// contact to smartphone's active contact list.

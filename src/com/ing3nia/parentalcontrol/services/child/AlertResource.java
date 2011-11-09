@@ -126,9 +126,9 @@ public class AlertResource {
 			
 			pm.close();
 		}
-		catch (ParseException ex) {
-			throw ex;
-		}
+//		catch (ParseException ex) {
+//			throw ex;
+//		}
 		catch (IllegalArgumentException ex) {
 			throw ex;
 		}

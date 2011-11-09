@@ -6,9 +6,10 @@ import java.util.ArrayList;
 
 import com.google.appengine.api.datastore.GeoPt;
 import com.ing3nia.parentalcontrol.models.PCRoute;
+import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 
 public class RouteModel {
-	private ArrayList<LocationModel> route;
+	private ArrayList<LocationModel> points;
 	
 	private String date;
 
@@ -16,18 +17,18 @@ public class RouteModel {
 		super();
 	}
 
-	public RouteModel(ArrayList<LocationModel> route, String date) {
+	public RouteModel(ArrayList<LocationModel> points, String date) {
 		super();
-		this.route = route;
+		this.points = points;
 		this.date = date;
 	}
 
-	public ArrayList<LocationModel> getRoute() {
-		return route;
+	public ArrayList<LocationModel> getPoints() {
+		return points;
 	}
 
-	public void setRoute(ArrayList<LocationModel> route) {
-		this.route = route;
+	public void setPoints(ArrayList<LocationModel> points) {
+		this.points = points;
 	}
 	
 	public String getDate() {
@@ -47,7 +48,7 @@ public class RouteModel {
 			points.add(LocationModel.convertToLocationModel(point));
 		}
 		
-		routeModel.setRoute(points);
+		routeModel.setPoints(points);
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		routeModel.setDate(formatter.format(route.getDate()));
@@ -57,15 +58,15 @@ public class RouteModel {
 	
 	public PCRoute convertToPCRoute() {
 		PCRoute newRoute = new PCRoute();
-		ArrayList<GeoPt> points = new ArrayList<GeoPt>();
+		ArrayList<GeoPt> geoPoints = new ArrayList<GeoPt>();
 		GeoPt p;
 		
-		for (LocationModel loc : this.route) {
-			p = new GeoPt(Long.valueOf(loc.getLatitude()), Long.valueOf(loc.getLongitude()));
-			points.add(p);
+		for (LocationModel loc : this.points) {
+			p = new GeoPt(Float.valueOf(loc.getLatitude()), Float.valueOf(loc.getLongitude()));
+			geoPoints.add(p);
 		}
 		
-		newRoute.setRoute(points);
+		newRoute.setRoute(geoPoints);
 		
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 		

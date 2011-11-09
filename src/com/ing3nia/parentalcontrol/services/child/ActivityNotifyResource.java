@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.services.child;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
@@ -8,6 +9,7 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -22,6 +24,7 @@ import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCServiceStatistics;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.models.utils.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ActivityNotifyModel;
@@ -30,6 +33,7 @@ import com.ing3nia.parentalcontrol.services.models.NotificationModel;
 import com.ing3nia.parentalcontrol.services.models.ServiceStatisticsModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
+@Path("act-not")
 public class ActivityNotifyResource {
 	private static Logger logger = Logger.getLogger(ActivityNotifyResource.class.getName());
 	
@@ -42,7 +46,7 @@ public class ActivityNotifyResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response doPost(String body) {
 		Gson jsonParser = new Gson();
-		Type bodyType = new TypeToken<AlertModel>(){}.getType();
+		Type bodyType = new TypeToken<ActivityNotifyModel>(){}.getType();
 		
 		ActivityNotifyModel activityNotifyModel;
 		ResponseBuilder rbuilder;
@@ -94,28 +98,46 @@ public class ActivityNotifyResource {
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
 			ArrayList<PCRoute> newRoutes = savedSmartphone.getRoutes();
-			newRoutes.add(activityNotifyModel.getRoute().convertToPCRoute());
+			newRoutes.add(activityNotifyModel.getRoute().convertToPCRoute());			
 			savedSmartphone.setRoutes(newRoutes);
 			
+			PCNotification pcNotification;
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			ArrayList<PCNotification> pcNotifications = new ArrayList<PCNotification>();
 			ArrayList<NotificationModel> notifications = activityNotifyModel.getAlerts();
-			PCNotification notification;
-			ArrayList<Key> newNotifications = savedSmartphone.getNotifications();
 			
-			for (NotificationModel notif : notifications) {
-				notification = notif.convertToPCNotification();
-				NotificationModel.savePCNotification(notification);
-				newNotifications.add(notification.getKey());
+			for (NotificationModel notification : notifications) {
+				pcNotification = new PCNotification();
+				pcNotification.setType(notification.getType());
+				pcNotification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(notification.getType()));
+				pcNotification.setDate(formatter.parse(notification.getDate()));
+				
+				pcNotifications.add(pcNotification);
 			}
 			
-			savedSmartphone.setNotifications(newNotifications);
+			pm.makePersistentAll(pcNotifications);
 			
+			ArrayList<Key> notificationKeys = savedSmartphone.getNotifications();
+			
+			for (PCNotification not : pcNotifications) {
+				notificationKeys.add(not.getKey());
+			}
+			
+			savedSmartphone.setNotifications(notificationKeys);
+		
 			ArrayList<ServiceStatisticsModel> stats = activityNotifyModel.getSyncStat();
+			ArrayList<PCServiceStatistics> pcServiceStats = new ArrayList<PCServiceStatistics>();
 			PCServiceStatistics stat;
 			
 			for (ServiceStatisticsModel s : stats) {
+				s.setSmartphone(activityNotifyModel.getId());
 				stat = s.convertToPCServiceStatistics();
-				ServiceStatisticsModel.savePCServiceStatistics(stat);
+				pcServiceStats.add(stat);				
 			}
+			
+			pm.makePersistentAll(pcServiceStats);
+			
+			pm.close();
 		}
 		catch (IllegalArgumentException ex) {
 			throw ex;
