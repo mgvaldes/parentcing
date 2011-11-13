@@ -41,14 +41,14 @@ public class PCServiceStatistics {
 	private Key smartphone;
 	
 	@Persistent
-	private PCWSStatus status;
+	private Key status;
 
 	public PCServiceStatistics() {
 		super();
 	}
 
 	public PCServiceStatistics(Key key, String serviceName, Date date, Key smartphone,
-			PCWSStatus status, String serviceCode) {
+			Key status, String serviceCode) {
 		super();
 		this.key = key;
 		this.serviceName = serviceName;
@@ -58,11 +58,11 @@ public class PCServiceStatistics {
 		this.serviceCode = serviceCode;
 	}
 
-	public PCWSStatus getStatus() {
+	public Key getStatus() {
 		return status;
 	}
 
-	public void setStatus(PCWSStatus status) {
+	public void setStatus(Key status) {
 		this.status = status;
 	}
 

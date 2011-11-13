@@ -20,12 +20,14 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ModificationModel;
+import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
@@ -58,10 +60,12 @@ public class UpdateSynchronizationResource {
 		
 		logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
 		
-		Gson jsonParser = new Gson();
-		Type responseType = new TypeToken<ModificationModel>(){}.getType();
 		JsonObject okResponse = WSStatus.OK.getStatusAsJson();
-		okResponse.addProperty("modification", jsonParser.toJson(modification, responseType));
+		Gson jsonBuilder = new Gson();
+		JsonParser jsonParser = new JsonParser();
+		Type type = new TypeToken<ModificationModel>(){}.getType();
+		JsonObject modificationObject = (JsonObject)jsonParser.parse(jsonBuilder.toJson(modification, type));
+		okResponse.add("modification", modificationObject);
 		
 		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
 		return rbuilder.build();
@@ -168,12 +172,14 @@ public class UpdateSynchronizationResource {
 			Key smartphoneKey = KeyFactory.stringToKey(id);
 			
 			logger.info("[Update Synchronization Service] Searching for smartphone in DB.");
-			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);					
+			
+			logger.info("[Update Synchronization Service] Converting PCModification en ModificationModel.");
+			ModificationModel modModel = ModificationModel.convertToModificationModel(savedSmartphone.getModification());
 			
 			pm.close();
 			
-			logger.info("[Update Synchronization Service] Converting PCModification en ModificationModel.");
-			return ModificationModel.convertToModificationModel(savedSmartphone.getModification());
+			return modModel;
 		}
 		catch (IllegalArgumentException ex) {
 			throw ex;

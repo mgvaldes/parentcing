@@ -10,6 +10,7 @@ import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.PCWSStatus;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.gson.JsonObject;
 
 /**
@@ -52,8 +53,8 @@ public enum WSStatus {
 		this.msg = msg;
 	}
 	
-	public static PCWSStatus getPCWSStatusFromCode(String code) {
-		PCWSStatus status = null;
+	public static Key getPCWSStatusFromCode(String code) {
+		Key status = null;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		Query query = pm.newQuery(PCWSStatus.class);
@@ -63,9 +64,8 @@ public enum WSStatus {
 	    
 	    try {
 	    	List<PCWSStatus> result = (List<PCWSStatus>)query.execute(code);
-	    	Iterator<PCWSStatus> iter = result.iterator();
 	    	
-	    	status = (PCWSStatus)iter.next();
+	    	status = ((PCWSStatus)result.get(0)).getKey();
 	    }
 	    finally {
 	    	pm.close();

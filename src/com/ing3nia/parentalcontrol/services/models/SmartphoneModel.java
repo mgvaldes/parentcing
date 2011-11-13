@@ -241,29 +241,27 @@ public class SmartphoneModel {
 
 	}
 
-	public static ArrayList<ContactModel> convertContacts(
-			ArrayList<PCSimpleContact> pcContacts) {
+	public static ArrayList<ContactModel> convertContacts(ArrayList<PCSimpleContact> pcContacts) {
 		ArrayList<ContactModel> contactsList = new ArrayList<ContactModel>();
 		HashMap<String, ArrayList<PhoneModel>> auxContactsHashMap = new HashMap<String, ArrayList<PhoneModel>>();
 		String contactName;
 		ArrayList<PhoneModel> auxPhoneList;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 
-		for (PCSimpleContact contact : pcContacts) {
+		for (PCSimpleContact contact : pcContacts) {			
 			contactName = contact.getFirstName() + "|" + contact.getLastName();
 
 			if (auxContactsHashMap.containsKey(contactName)) {
 				auxPhoneList = auxContactsHashMap.get(contactName);
 
-				PCPhone pcphone = (PCPhone) pm.getObjectById(PCPhone.class,
-						contact.getPhone());
+				PCPhone pcphone = (PCPhone) pm.getObjectById(PCPhone.class, contact.getPhone());
 				auxPhoneList.add(PhoneModel.convertToPhoneModel(pcphone));
 				auxContactsHashMap.put(contactName, auxPhoneList);
-			} else {
+			} 
+			else {
 				auxPhoneList = new ArrayList<PhoneModel>();
 
-				PCPhone pcphone = (PCPhone) pm.getObjectById(PCPhone.class,
-						contact.getPhone());
+				PCPhone pcphone = (PCPhone) pm.getObjectById(PCPhone.class, contact.getPhone());
 				auxPhoneList.add(PhoneModel.convertToPhoneModel(pcphone));
 				auxContactsHashMap.put(contactName, auxPhoneList);
 			}
@@ -275,9 +273,9 @@ public class SmartphoneModel {
 		String[] auxName; 
 		
 	    while (it.hasNext()) {
-	        pair = (Map.Entry)it.next();
+	        pair = (Map.Entry)it.next();	        
 
-	        auxName = ((String)pair.getKey()).split("|");
+	        auxName = ((String)pair.getKey()).split("\\|");
 	        auxContact = new ContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
 	        contactsList.add(auxContact);
 	    }
@@ -287,29 +285,53 @@ public class SmartphoneModel {
 	
 	public static SmartphoneModel convertToSmartphoneModel(PCSmartphone savedSmartphone, PersistenceManager pm) throws SessionQueryException {
 		SmartphoneModel smartphoneModel = new SmartphoneModel();
+		ArrayList<Key> auxKeyList;
+		PCSimpleContact auxSimpleContact;
+		ArrayList<PCSimpleContact> pcContacts;
+		PCEmergencyNumber auxEmergencyNumber;
+		ArrayList<PCEmergencyNumber> pcEmergencyNumbers;
 		
 		try {
-			ArrayList<PCSimpleContact> pcContacts;			
-			
 			//------------------------------------------------------------
 			// Loading active contacts
 			//------------------------------------------------------------
-			pcContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(savedSmartphone.getActiveContacts());
-			smartphoneModel.setActiveContacts(convertContacts(pcContacts));
+			auxKeyList = savedSmartphone.getActiveContacts();
+			pcContacts = new ArrayList<PCSimpleContact>();
 			
+			for (Key key : auxKeyList) {
+				auxSimpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, key);
+				pcContacts.add(auxSimpleContact);
+			}
+			
+			smartphoneModel.setActiveContacts(convertContacts(pcContacts));			
+
 			//------------------------------------------------------------
 			// Loading inactive contacts
 			//------------------------------------------------------------
-			pcContacts = (ArrayList<PCSimpleContact>)pm.getObjectsById(savedSmartphone.getInactiveContacts());
+			auxKeyList = savedSmartphone.getInactiveContacts();
+			pcContacts = new ArrayList<PCSimpleContact>();
+			
+			for (Key key : auxKeyList) {
+				auxSimpleContact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, key);
+				pcContacts.add(auxSimpleContact);
+			}
+			
 			smartphoneModel.setInactiveContacts(convertContacts(pcContacts));
 			
 			//------------------------------------------------------------
 			// Loading added emergency numbers
 			//------------------------------------------------------------
-			ArrayList<PCEmergencyNumber> pcAddedEmergencyNumbers = (ArrayList<PCEmergencyNumber>)pm.getObjectsById(savedSmartphone.getAddedEmergencyNumbers());
+			auxKeyList = savedSmartphone.getAddedEmergencyNumbers();
+			pcEmergencyNumbers = new ArrayList<PCEmergencyNumber>();
+			
+			for (Key key : auxKeyList) {
+				auxEmergencyNumber = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, key);
+				pcEmergencyNumbers.add(auxEmergencyNumber);
+			}
+			
 			ArrayList<EmergencyNumberModel> addedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
 			
-			for (PCEmergencyNumber emergencyNumber : pcAddedEmergencyNumbers) {
+			for (PCEmergencyNumber emergencyNumber : pcEmergencyNumbers) {
 				addedEmergencyNumbers.add(EmergencyNumberModel.convertToEmergencyNumberModel(emergencyNumber));
 			}
 			
@@ -319,8 +341,9 @@ public class SmartphoneModel {
 			// Loading properties 
 			//------------------------------------------------------------
 			ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
+			ArrayList<PCProperty> pcProperties = savedSmartphone.getProperties(); 
 			
-			for (PCProperty property : savedSmartphone.getProperties()) {
+			for (PCProperty property : pcProperties) {
 				properties.add(PropertyModel.convertToPropertyModel(property));
 			}
 			
@@ -365,14 +388,5 @@ public class SmartphoneModel {
 	    }
 		
 		return smartphoneModel;
-	}
-	
-	/**
-	 * Returns the smartphone info as a json object
-	 */
-	public JsonObject getSmartphoneAsJson(){
-		JsonObject smartphone = new JsonObject();
-		
-		return smartphone;
 	}
 }

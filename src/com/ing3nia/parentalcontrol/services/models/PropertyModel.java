@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.services.models;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.ing3nia.parentalcontrol.models.PCProperty;
@@ -14,14 +15,14 @@ public class PropertyModel {
 	
 	private int id;
 	
-	private Date creationDate;
+	private String creationDate;
 
 	public PropertyModel() {
 		super();
 	}
 
 	public PropertyModel(String keyId, String description, String value, int id,
-			Date creationDate) {
+			String creationDate) {
 		super();
 		this.keyId = keyId;
 		this.description = description;
@@ -31,7 +32,7 @@ public class PropertyModel {
 	}
 	
 	public PropertyModel(String description, String value, int id,
-			Date creationDate) {
+			String creationDate) {
 		super();
 		this.description = description;
 		this.value = value;
@@ -63,11 +64,11 @@ public class PropertyModel {
 		this.id = id;
 	}
 
-	public Date getCreationDate() {
+	public String getCreationDate() {
 		return creationDate;
 	}
 
-	public void setCreationDate(Date creationDate) {
+	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
 	}
 	
@@ -81,6 +82,8 @@ public class PropertyModel {
 	}
 
 	public static PropertyModel convertToPropertyModel(PCProperty property) {
-		return new PropertyModel(property.getDescription(), property.getValue(), property.getId(), property.getCreationDate());
+		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		
+		return new PropertyModel(property.getDescription(), property.getValue(), property.getId(), formatter.format(property.getCreationDate()));
 	}
 }
