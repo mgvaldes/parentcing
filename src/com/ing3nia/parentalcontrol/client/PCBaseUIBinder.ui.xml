@@ -1,0 +1,48 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+<g:HTMLPanel styleName="mainPanel">
+
+	<g:HTMLPanel styleName="headerPanel">
+		<g:FlowPanel styleName="pclogoBlock">
+			<g:Image styleName="pclogo" url="images/pclogo.png"/>
+		</g:FlowPanel>
+		<g:FlowPanel styleName="alertBlock"></g:FlowPanel>
+		<g:FlowPanel styleName="sessionButtons">
+			<g:Button styleName="addAdminButton" text="Add Administrator"></g:Button>
+			<g:Button styleName="logout" text="Logout"></g:Button>
+		</g:FlowPanel>
+	</g:HTMLPanel>
+
+	<g:HTMLPanel styleName="bodyPanel">
+		<g:HTMLPanel styleName="leftMenuPanel">
+			<g:FlowPanel styleName="leftMenuHeader">
+				<g:Label styleName="deviceLabel" text="Device List"/>
+				<g:FlowPanel styleName="deviceOptions">
+					<g:Button styleName="addDeviceButton" text="Add Device"></g:Button>
+					<g:Button styleName="editDeviceButton" text="Edit"></g:Button>
+				</g:FlowPanel>
+			</g:FlowPanel>
+			<g:FlowPanel styleName="deviceMenu">
+				<g:FlowPanel styleName="deviceChoiceList">
+				</g:FlowPanel>
+			</g:FlowPanel>
+		</g:HTMLPanel>
+		
+		<g:HTMLPanel styleName="centerPanel">
+			<g:FlowPanel styleName="centerPanelHeader">
+				<g:Label styleName="navigationLabel" text="Navigation"/>
+				<g:FlowPanel styleName="centerMenuOptions">
+					<g:Button styleName="centerMenuOptions" text="User List"></g:Button>
+					<g:Button styleName="centerMenuOptions" text="Add User"></g:Button>
+				</g:FlowPanel>
+			</g:FlowPanel>
+			<g:HTMLPanel styleName="centerContent">
+			</g:HTMLPanel>
+		</g:HTMLPanel>
+	</g:HTMLPanel>
+
+	<div class="clearingDiv" />
+	<g:FlowPanel styleName="footer"></g:FlowPanel>
+
+</g:HTMLPanel>
+</ui:UiBinder>
