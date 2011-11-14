@@ -35,7 +35,7 @@ public class PCHelpdeskTicket {
 	private Key status;
 	
 	@Persistent
-	private ArrayList<String> answers;
+	private ArrayList<PCHelpdeskTicketAnswer> answers;
 	
 	@Persistent
 	private Key category;
@@ -45,7 +45,7 @@ public class PCHelpdeskTicket {
 	}
 
 	public PCHelpdeskTicket(PCUser user, Date date, String subject, String question,
-			Key status, ArrayList<String> answers, Key category) {
+			Key status, ArrayList<PCHelpdeskTicketAnswer> answers, Key category) {
 		super();
 		this.user = user;
 		this.date = date;
@@ -104,11 +104,11 @@ public class PCHelpdeskTicket {
 		this.status = status;
 	}
 
-	public ArrayList<String> getAnswers() {
+	public ArrayList<PCHelpdeskTicketAnswer> getAnswers() {
 		return answers;
 	}
 
-	public void setAnswers(ArrayList<String> answers) {
+	public void setAnswers(ArrayList<PCHelpdeskTicketAnswer> answers) {
 		this.answers = answers;
 	}
 
