@@ -3,6 +3,7 @@ package com.ing3nia.parentalcontrol.client;
 import java.util.ArrayList;
 
 import com.ibm.icu.impl.CalendarAstronomer.Horizon;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
 import com.ing3nia.parentalcontrol.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
@@ -67,9 +68,9 @@ public class ParentalControl implements EntryPoint {
 		
 		PCBaseUIBinder pcbase = new PCBaseUIBinder();
 		RootPanel.get().add(pcbase);
-		
-		int childCount = pcbase.deviceChoiceList.getWidgetCount();
-		
+
+		BaseViewHandler baseViewHandler = new BaseViewHandler(pcbase);
+		baseViewHandler.setAddAdminButtonHandler();
 		
 		/*
 		// Adding style to panels
