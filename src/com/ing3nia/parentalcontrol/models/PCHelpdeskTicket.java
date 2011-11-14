@@ -26,6 +26,9 @@ public class PCHelpdeskTicket {
 	private Date date;
 	
 	@Persistent
+	private String subject;
+	
+	@Persistent
 	private String question;
 	
 	@Persistent
@@ -41,11 +44,12 @@ public class PCHelpdeskTicket {
 		super();
 	}
 
-	public PCHelpdeskTicket(PCUser user, Date date, String question,
+	public PCHelpdeskTicket(PCUser user, Date date, String subject, String question,
 			Key status, ArrayList<String> answers, Key category) {
 		super();
 		this.user = user;
 		this.date = date;
+		this.subject = subject;
 		this.question = question;
 		this.status = status;
 		this.answers = answers;
@@ -66,6 +70,22 @@ public class PCHelpdeskTicket {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public Key getKey() {
+		return key;
+	}
+
+	public void setKey(Key key) {
+		this.key = key;
+	}
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
 	}
 
 	public String getQuestion() {

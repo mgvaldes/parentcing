@@ -153,6 +153,8 @@ public class TicketListView {
 		// Push the data into the widget.
 	    openTicketsTable.setRowData(0, openTickets);
 	    
+	    openTicketsViewContent.add(openTicketsLabel);
+	    
 	    openTicketsViewContent.add(openTicketsTable);
 	    
 	    centerContent.add(openTicketsViewContent);
@@ -243,6 +245,8 @@ public class TicketListView {
 
 		// Push the data into the widget.
 	    closedTicketsTable.setRowData(0, closedTickets);
+	    
+	    closedTicketsViewContent.add(closedTicketsLabel);
 	    
 	    closedTicketsViewContent.add(closedTicketsTable);
 	    
