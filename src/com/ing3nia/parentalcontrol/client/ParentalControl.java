@@ -68,6 +68,9 @@ public class ParentalControl implements EntryPoint {
 		PCBaseUIBinder pcbase = new PCBaseUIBinder();
 		RootPanel.get().add(pcbase);
 		
+		int childCount = pcbase.deviceChoiceList.getWidgetCount();
+		
+		
 		/*
 		// Adding style to panels
 		headerPanel.addStyleName("headerBlock");
