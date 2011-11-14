@@ -3,11 +3,22 @@ package com.ing3nia.parentalcontrol.models;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
+import javax.jdo.annotations.PrimaryKey;
+
+import com.google.appengine.api.datastore.Key;
 
 @PersistenceCapable
 public class PCHelpdeskTicket {
+	/**
+	 * Unique key that identifies the statistic.
+	 */
+	@PrimaryKey
+    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
+    private Key key;
+	
 	@Persistent
 	private PCUser user;
 	
@@ -18,20 +29,20 @@ public class PCHelpdeskTicket {
 	private String question;
 	
 	@Persistent
-	private PCStatus status;
+	private Key status;
 	
 	@Persistent
 	private ArrayList<String> answers;
 	
 	@Persistent
-	private PCCategory category;
+	private Key category;
 
 	public PCHelpdeskTicket() {
 		super();
 	}
 
 	public PCHelpdeskTicket(PCUser user, Date date, String question,
-			PCStatus status, ArrayList<String> answers, PCCategory category) {
+			Key status, ArrayList<String> answers, Key category) {
 		super();
 		this.user = user;
 		this.date = date;
@@ -65,11 +76,11 @@ public class PCHelpdeskTicket {
 		this.question = question;
 	}
 
-	public PCStatus getStatus() {
+	public Key getStatus() {
 		return status;
 	}
 
-	public void setStatus(PCStatus status) {
+	public void setStatus(Key status) {
 		this.status = status;
 	}
 
@@ -81,11 +92,11 @@ public class PCHelpdeskTicket {
 		this.answers = answers;
 	}
 
-	public PCCategory getCategory() {
+	public Key getCategory() {
 		return category;
 	}
 
-	public void setCategory(PCCategory category) {
+	public void setCategory(Key category) {
 		this.category = category;
 	}
 }

@@ -46,4 +46,3 @@ public class GreetingServiceImpl extends RemoteServiceServlet implements
 				.replaceAll(">", "&gt;");
 	}
 }
-
