@@ -29,20 +29,21 @@ public class RuleListView {
 	 * Main panel of alert list view that groups all 
 	 * the widgets together.
 	 */
-	private HTMLPanel viewContent = new HTMLPanel("");
+	private HTMLPanel viewContent;
 	
 	/**
 	 * List of alerts received by a user.
 	 */
-	private List<RuleModel> rules = new ArrayList<RuleModel>();
+	private List<RuleModel> rules;
 	
 	/**
 	 * Table where the alerts are displayed.
 	 */
-	private CellTable<RuleModel> ruleTable = new CellTable<RuleModel>();
+	private CellTable<RuleModel> ruleTable;
 	
 	public RuleListView(HTMLPanel centerContent) {
 		this.centerContent = centerContent;
+		viewContent = new HTMLPanel("");
 		this.ruleTable = new CellTable<RuleModel>(10);
 		this.viewContent = new HTMLPanel("");
 		this.rules = new ArrayList<RuleModel>();

@@ -26,20 +26,22 @@ public class DeviceAlertListView {
 	 * Main panel of alert list view that groups all 
 	 * the widgets together.
 	 */
-	private HTMLPanel viewContent = new HTMLPanel("");
+	private HTMLPanel viewContent;
 	
 	/**
 	 * List of alerts received by a user.
 	 */
-	private List<AlertModel> alerts = new ArrayList<AlertModel>();
+	private List<AlertModel> alerts;
 	
 	/**
 	 * Table where the alerts are displayed.
 	 */
-	private CellTable<AlertModel> alertTable = new CellTable<AlertModel>();
+	private CellTable<AlertModel> alertTable;
 	
 	public DeviceAlertListView(HTMLPanel centerContent) {
 		this.centerContent = centerContent;
+		viewContent = new HTMLPanel("");
+		alerts = new ArrayList<AlertModel>();
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");
 		this.alerts = new ArrayList<AlertModel>();
