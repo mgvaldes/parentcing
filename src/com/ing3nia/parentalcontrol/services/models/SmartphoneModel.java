@@ -23,7 +23,7 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
-import com.sun.org.apache.bcel.internal.classfile.PMGClass;
+//import com.sun.org.apache.bcel.internal.classfile.PMGClass;
 
 public class SmartphoneModel {
 	private String keyId;

@@ -70,7 +70,12 @@ public class ParentalControl implements EntryPoint {
 		RootPanel.get().add(pcbase);
 
 		BaseViewHandler baseViewHandler = new BaseViewHandler(pcbase);
-		baseViewHandler.setAddAdminButtonHandler();
+		
+		baseViewHandler.setAddAdministratorButton();
+		baseViewHandler.setAdminUserListView();
+		baseViewHandler.setNewAdminUserViewHandler();
+		
+		
 		
 		/*
 		// Adding style to panels

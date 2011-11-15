@@ -41,9 +41,8 @@
 		<g:HTMLPanel styleName="centerPanel">
 			<g:FlowPanel styleName="centerPanelHeader">
 				<g:Label styleName="navigationLabel" text="Navigation"/>
-				<g:FlowPanel styleName="centerMenuOptions">
-					<g:Button styleName="centerMenuButton" text="User List"></g:Button>
-					<g:Button styleName="centerMenuButton" text="Add User"></g:Button>
+				<g:FlowPanel styleName="centerMenuOptions" ui:field="centerMenuOptions">
+
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:HTMLPanel styleName="centerContent" ui:field="centerContent">

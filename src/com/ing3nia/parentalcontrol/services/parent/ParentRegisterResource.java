@@ -21,7 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import sun.security.provider.MD5;
+//import sun.security.provider.MD5;
 
 import com.google.appengine.api.datastore.Email;
 import com.google.gson.Gson;

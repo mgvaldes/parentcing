@@ -2,7 +2,7 @@ package com.ing3nia.parentalcontrol.client.views.models;
 
 import java.util.Date;
 
-import sun.rmi.runtime.NewThreadAction;
+//import sun.rmi.runtime.NewThreadAction;
 
 /**
  * Class that represents a single ticket in the ticket list view.

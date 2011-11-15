@@ -8,6 +8,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.ing3nia.parentalcontrol.client.views.classnames.NewAdminUserViewClassName;
 
 public class NewAdminUserView {
 	/**
@@ -65,7 +66,17 @@ public class NewAdminUserView {
 	/**
 	 * Adding all widgets to the center content main panel.
 	 */
-	public NewAdminUserView() {		
+	public NewAdminUserView(HTMLPanel centerContent) {	
+		this.centerContent = centerContent;
+	}
+	
+	public void initNewAdminUseView(){
+		
+		//initializing content
+		this.centerContent.clear();
+		
+		this.viewContent.setStylePrimaryName(NewAdminUserViewClassName.NewAdminUserBlock.getClassname());
+		
 		viewContent.add(newUserLabel);
 		viewContent.add(usernameLabel);
 		viewContent.add(usernameTextBox);

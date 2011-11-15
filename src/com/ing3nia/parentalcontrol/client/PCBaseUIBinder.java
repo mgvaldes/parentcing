@@ -12,9 +12,25 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PCBaseUIBinder extends Composite {
 	
-	@UiField FlowPanel deviceChoiceList;
-	@UiField Button addAdminButton;
+	
+	
 	@UiField HTMLPanel centerContent;
+	
+	@UiField FlowPanel deviceChoiceList;
+	
+	@UiField FlowPanel centerMenuOptions;
+	
+	@UiField Button addAdminButton;
+	
+	/*
+	@UiField Button userListButton;
+	@UiField Button addUserButton;
+	*/
+	
+	/*
+	 * 					<g:Button styleName="centerMenuButton" text="User List" ui:field="userListButton"></g:Button>
+					<g:Button styleName="centerMenuButton" text="Add User" ui:field="addUserButton"></g:Button>
+	 */
 	
 	private static PCBaseUIBinderUiBinder uiBinder = GWT
 			.create(PCBaseUIBinderUiBinder.class);
@@ -38,6 +54,15 @@ public class PCBaseUIBinder extends Composite {
 	public HTMLPanel getCenterContent() {
 		return centerContent;
 	}
+
+	public FlowPanel getCenterMenuOptions() {
+		return centerMenuOptions;
+	}
+
+	public void setCenterMenuOptions(FlowPanel centerMenuOptions) {
+		this.centerMenuOptions = centerMenuOptions;
+	}
+	
 	
 
 }

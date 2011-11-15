@@ -12,6 +12,8 @@ import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.view.client.ListDataProvider;
@@ -32,6 +34,22 @@ public class AdminUserListView {
 	private HTMLPanel viewContent;// = new HTMLPanel("");
 	
 	/**
+	 * Center menu options panel
+	 */
+	private FlowPanel centerMenuOptions;
+	
+	/**
+	 * Add User button in center menu options panel
+	 */
+	private Button addUserButton;
+	
+	/**
+	 * Add User button in center menu options panel
+	 */
+	private Button addUserList;
+	
+	
+	/**
 	 * List of admin users registered.
 	 */
 	private List<AdminUserModel> adminUsers;// = new ArrayList<AdminUserModel>();
@@ -44,6 +62,7 @@ public class AdminUserListView {
 
 	public AdminUserListView(HTMLPanel centerContent) {
 		this.centerContent = centerContent;
+
 		this.adminUserTable = new CellTable<AdminUserModel>(10);
 		this.adminUserTable.setStyleName(AdminUserListViewClassName.AdminUserTable.getClassname());
 		
@@ -51,7 +70,7 @@ public class AdminUserListView {
 		
 		this.viewContent = new HTMLPanel("");
 		this.adminUsers = new ArrayList<AdminUserModel>();
-		this.centerContent.clear();
+
 		addTestUsers();
 	}
 	
@@ -129,7 +148,10 @@ public class AdminUserListView {
 	
 	}
 	public void initAdminUserListView() {
-
+		
+		//initializing content
+		this.centerContent.clear();
+		
 		// Add a text column to show the username.
 		TextColumn<AdminUserModel> usernameColumn = new TextColumn<AdminUserModel>() {
 			@Override
