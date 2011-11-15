@@ -4,8 +4,15 @@ import java.util.ArrayList;
 
 import com.ibm.icu.impl.CalendarAstronomer.Horizon;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.models.ClientSmartphoneModel;
+import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
+import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.models.PCUser;
+import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.shared.FieldVerifier;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -69,7 +76,12 @@ public class ParentalControl implements EntryPoint {
 		PCBaseUIBinder pcbase = new PCBaseUIBinder();
 		RootPanel.get().add(pcbase);
 
+		ClientUserModel user = getDummyUser();
 		BaseViewHandler baseViewHandler = new BaseViewHandler(pcbase);
+		baseViewHandler.setUser(user);
+		baseViewHandler.setSlist(getDummySmartphoneList());
+		
+		baseViewHandler.initBaseView();
 		
 		baseViewHandler.setAddAdministratorButton();
 		baseViewHandler.setAdminUserListView();
@@ -100,6 +112,32 @@ public class ParentalControl implements EntryPoint {
 		RootPanel rp = RootPanel.get("stockList");
 		rp.add(mainPanel);
 		*/
+	}
+
+	private ClientUserModel getDummyUser() {
+		ClientUserModel user = new ClientUserModel();
+		user.setName("Nombre de usuario");
+		user.setEmail("javierfdr@gmail.com");
+		return user;
+	}
+	
+	private ArrayList<ClientSmartphoneModel> getDummySmartphoneList(){
+		ArrayList<ClientSmartphoneModel> slist = new ArrayList<ClientSmartphoneModel>();
+		ClientSmartphoneModel s1 = new ClientSmartphoneModel();
+		s1.setName("Michael's iPhone");
+		
+		ClientSmartphoneModel s2 = new ClientSmartphoneModel();
+		s2.setName("John's Android");
+		
+		ClientSmartphoneModel s3 = new ClientSmartphoneModel();
+		s3.setName("Julie");
+		
+		slist.add(s1);
+		slist.add(s2);
+		slist.add(s3);		
+		
+		return slist;
+		
 	}
 
 }

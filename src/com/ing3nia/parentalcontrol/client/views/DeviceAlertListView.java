@@ -48,7 +48,7 @@ public class DeviceAlertListView {
 		this.centerContent.clear();
 		
 		addTestDeviceAlerts();
-		initDeviceAlertListView();
+
 	}
 	
 	public void addTestDeviceAlerts() {

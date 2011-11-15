@@ -29,11 +29,6 @@
 			</g:FlowPanel>
 			<g:FlowPanel styleName="deviceMenu">
 				<g:FlowPanel styleName="deviceChoiceList" ui:field="deviceChoiceList">
-				<g:Button styleName="buttonFromList" text="DEVICE NAME [0]"></g:Button>
-				<g:Button styleName="buttonFromList" text="DEVICE NAME [1]"></g:Button>
-				<g:Button styleName="buttonFromList" text="DEVICE NAME [2]"></g:Button>
-				<g:Button styleName="buttonFromList" text="DEVICE NAME [3]"></g:Button>
-				<g:Button styleName="buttonFromList" text="DEVICE NAME [4]"></g:Button>
 				</g:FlowPanel>
 			</g:FlowPanel>
 		</g:HTMLPanel>

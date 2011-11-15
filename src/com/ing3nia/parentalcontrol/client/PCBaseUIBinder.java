@@ -62,7 +62,9 @@ public class PCBaseUIBinder extends Composite {
 	public void setCenterMenuOptions(FlowPanel centerMenuOptions) {
 		this.centerMenuOptions = centerMenuOptions;
 	}
-	
-	
 
+	public void setDeviceChoiceList(FlowPanel deviceChoiceList) {
+		this.deviceChoiceList = deviceChoiceList;
+	}
+	
 }

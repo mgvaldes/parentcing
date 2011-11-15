@@ -52,7 +52,6 @@ public class AlertListView {
 		this.centerContent.clear();
 		
 		addTestAlerts();
-		initAlertListView();
 	}
 	
 	public void addTestAlerts() {
