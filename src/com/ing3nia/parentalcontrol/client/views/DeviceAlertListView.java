@@ -1,6 +1,8 @@
 package com.ing3nia.parentalcontrol.client.views;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -43,20 +45,38 @@ public class DeviceAlertListView {
 		this.alerts = new ArrayList<AlertModel>();
 		this.centerContent.clear();
 		
+		addTestDeviceAlerts();
 		initDeviceAlertListView();
 	}
 	
+	public void addTestDeviceAlerts() {
+		Date now = Calendar.getInstance().getTime();		
+		
+		AlertModel alert = new AlertModel(now, "Device 1", "LOW BATTERY");
+		alerts.add(alert);
+		
+		alert = new AlertModel(now, "Device 1", "DEAD_BATTERY");
+		alerts.add(alert);
+		
+		alert = new AlertModel(now, "Device 1", "UNREACHABLE_PHONE");
+		alerts.add(alert);
+		
+		alert = new AlertModel(now, "Device 1", "SPEED_LIMIT_OVERSTEP");
+		alerts.add(alert);
+	}
+	
 	public void initDeviceAlertListView() {
-		// Add a date column to show the creation date of the alert.
-		DateCell dateCell = new DateCell();
-		Column<AlertModel, Date> dateColumn = new Column<AlertModel, Date>(dateCell) {
+		final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
+	    
+	    // Add a date column to show the creation date of the alert.
+		TextColumn<AlertModel> dateColumn = new TextColumn<AlertModel>() {
 			@Override
-			public Date getValue(AlertModel object) {
-				return object.getDate();
+			public String getValue(AlertModel object) {
+				return formatter.format(object.getDate());
 			}
 		};
-	    
-	    alertTable.addColumn(dateColumn, "Date");
+		
+		alertTable.addColumn(dateColumn, "Date");
 	    
 	    // Add a text column to show the device name.
 		TextColumn<AlertModel> deviceNameColumn = new TextColumn<AlertModel>() {

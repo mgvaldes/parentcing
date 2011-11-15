@@ -56,8 +56,6 @@ public class AdminUserListView {
 	}
 	
 	private void addTestUsers(){
-		
-		
 		AdminUserModel user = new AdminUserModel("Ingrid");
 		adminUsers.add(user);
 		
@@ -125,8 +123,6 @@ public class AdminUserListView {
 		
 		user = new AdminUserModel("Mandfred");
 		adminUsers.add(user);
-		
-	
 	}
 	
 	public void initAdminUserListView() {
