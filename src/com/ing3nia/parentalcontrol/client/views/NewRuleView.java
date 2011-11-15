@@ -258,6 +258,7 @@ public class NewRuleView {
 		this.saveButton = new Button("Save");
 		this.clearButton = new Button("Clear");
 		
+		this.centerContent.clear();
 		initNewRuleView();
 	}
 	

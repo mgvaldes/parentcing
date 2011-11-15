@@ -128,6 +128,7 @@ public class AdminUserListView {
 		
 	
 	}
+	
 	public void initAdminUserListView() {
 
 		// Add a text column to show the username.
