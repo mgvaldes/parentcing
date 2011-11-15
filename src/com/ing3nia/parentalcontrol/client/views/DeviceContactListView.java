@@ -34,7 +34,7 @@ public class DeviceContactListView {
 	private HTMLPanel viewContent;
 	
 	/**
-	 * Contacts lable.
+	 * Contacts label.
 	 */
 	private Label contactsLabel;
 	
