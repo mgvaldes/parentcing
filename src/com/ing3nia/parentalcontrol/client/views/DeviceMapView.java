@@ -22,12 +22,12 @@ public class DeviceMapView {
 	 * Main panel of alert list view that groups all 
 	 * the widgets together.
 	 */
-	private HTMLPanel viewContent = new HTMLPanel("");
+	private HTMLPanel viewContent;
 	
 	/**
-	 * List of alerts received by a user.
+	 * List of device locations.
 	 */
-	private List<GeoPt> deviceLocations = new ArrayList<GeoPt>();
+	private List<GeoPt> deviceLocations;
 	
 	/**
 	 * Map where all device locations are displayed.
@@ -35,6 +35,9 @@ public class DeviceMapView {
 	private MapWidget map;
 	
 	public DeviceMapView() {
+		viewContent = new HTMLPanel("");
+		deviceLocations = new ArrayList<GeoPt>();
+		
 		Maps.loadMapsApi(ViewUtils.mapsKey, "2", false, new Runnable() {
 			public void run() {
 				loadDeviceLocations();
@@ -52,7 +55,10 @@ public class DeviceMapView {
 	    for (GeoPt devLoc : deviceLocations) {
 	    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
 	    	map.addOverlay(new Marker(deviceLoc));
-	    }	    
+	    }
+
+	    this.viewContent.add(this.map);
+		this.centerContent.add(this.viewContent);
 	}
 
 	public HTMLPanel getCenterContent() {
