@@ -6,21 +6,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
-import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
 import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
 
-public class AlertListView {
+public class DeviceAlertListView {
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * alert list view.
@@ -43,35 +38,36 @@ public class AlertListView {
 	 */
 	private CellTable<AlertModel> alertTable;
 	
-	public AlertListView(HTMLPanel centerContent) {
+	public DeviceAlertListView(HTMLPanel centerContent) {
 		this.centerContent = centerContent;
 		viewContent = new HTMLPanel("");
+		alerts = new ArrayList<AlertModel>();
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");
 		this.alerts = new ArrayList<AlertModel>();
 		this.centerContent.clear();
 		
-		addTestAlerts();
-		initAlertListView();
+		addTestDeviceAlerts();
+		initDeviceAlertListView();
 	}
 	
-	public void addTestAlerts() {
+	public void addTestDeviceAlerts() {
 		Date now = Calendar.getInstance().getTime();		
 		
 		AlertModel alert = new AlertModel(now, "Device 1", "LOW BATTERY");
 		alerts.add(alert);
 		
-		alert = new AlertModel(now, "Device 2", "DEAD_BATTERY");
+		alert = new AlertModel(now, "Device 1", "DEAD_BATTERY");
 		alerts.add(alert);
 		
-		alert = new AlertModel(now, "Device 3", "UNREACHABLE_PHONE");
+		alert = new AlertModel(now, "Device 1", "UNREACHABLE_PHONE");
 		alerts.add(alert);
 		
-		alert = new AlertModel(now, "Device 4", "SPEED_LIMIT_OVERSTEP");
+		alert = new AlertModel(now, "Device 1", "SPEED_LIMIT_OVERSTEP");
 		alerts.add(alert);
 	}
 	
-	public void initAlertListView() {
+	public void initDeviceAlertListView() {
 		final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
 	    
 	    // Add a date column to show the creation date of the alert.

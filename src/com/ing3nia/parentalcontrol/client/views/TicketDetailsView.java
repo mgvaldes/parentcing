@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -191,11 +193,32 @@ public class TicketDetailsView {
 		this.ticketReplyContent.add(this.replyTicketLabel);
 		this.ticketReplyContent.add(this.replyTextArea);
 		
-		this.buttonPanel.add(saveButton);
-		this.buttonPanel.add(clearButton);
+		saveButton.addClickHandler(new ClickHandler() {
+	    	public void onClick(ClickEvent event) {
+	    		saveTicketReply();
+	    	}
+	    });
+		
+		buttonPanel.add(saveButton);
+		
+		clearButton.addClickHandler(new ClickHandler() {
+	    	public void onClick(ClickEvent event) {
+	    		clearTextBoxes();
+	    	}
+	    });
+		
+		buttonPanel.add(clearButton);
 		this.ticketReplyContent.add(this.buttonPanel);
 		
 		this.centerContent.add(this.ticketReplyContent);
+	}
+	
+	public void saveTicketReply() {
+		
+	}
+	
+	public void clearTextBoxes() {
+		this.replyTextArea.setText("");
 	}
 	
 	public void loadTicketAnswers() {
