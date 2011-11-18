@@ -1,7 +1,5 @@
 package com.ing3nia.parentalcontrol.client.views;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -124,7 +122,7 @@ public class TicketDetailsView {
 	 */
 	private Button clearButton;
 	
-	public TicketDetailsView(HTMLPanel centerContent, String subject, String comment, Date date) {
+	public TicketDetailsView(HTMLPanel centerContent, String subject, String comment, String date) {
 		this.centerContent = centerContent;
 		
 		this.ticketContent = new HTMLPanel("");
@@ -148,9 +146,12 @@ public class TicketDetailsView {
 		this.saveButton = new Button("Save");
 		this.clearButton = new Button("Clear");
 		
+		/*
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
 		String stringDate = formatter.format(date);
-		
+		*/
+		String stringDate = date;
+			
 		addTestTicketAnswers();
 		initTicketDetailsView(subject, comment, stringDate);
 	}

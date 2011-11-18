@@ -33,6 +33,8 @@ public class DeviceAlertListView {
 	 */
 	private List<AlertModel> alerts;
 	
+	private final String dateNow =  "16/11/2011 - 14:13:11 PM";
+	
 	/**
 	 * Table where the alerts are displayed.
 	 */
@@ -52,7 +54,7 @@ public class DeviceAlertListView {
 	}
 	
 	public void addTestDeviceAlerts() {
-		Date now = Calendar.getInstance().getTime();		
+		Date now = new Date();//Calendar.getInstance().getTime();		
 		
 		AlertModel alert = new AlertModel(now, "Device 1", "LOW BATTERY");
 		alerts.add(alert);
@@ -68,13 +70,14 @@ public class DeviceAlertListView {
 	}
 	
 	public void initDeviceAlertListView() {
-		final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
+		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
 	    
 	    // Add a date column to show the creation date of the alert.
 		TextColumn<AlertModel> dateColumn = new TextColumn<AlertModel>() {
 			@Override
 			public String getValue(AlertModel object) {
-				return formatter.format(object.getDate());
+				return dateNow;
+				//return formatter.format(object.getDate());
 			}
 		};
 		

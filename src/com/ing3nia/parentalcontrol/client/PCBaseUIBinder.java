@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -21,6 +22,10 @@ public class PCBaseUIBinder extends Composite {
 	@UiField FlowPanel centerMenuOptions;
 	
 	@UiField Button addAdminButton;
+	
+	@UiField Image pclogo;
+	
+	@UiField Label helpDesk;
 	
 	/*
 	@UiField Button userListButton;
@@ -63,8 +68,25 @@ public class PCBaseUIBinder extends Composite {
 		this.centerMenuOptions = centerMenuOptions;
 	}
 
+	public Image getPclogo() {
+		return pclogo;
+	}
+
+	public void setPclogo(Image pclogo) {
+		this.pclogo = pclogo;
+	}
+
 	public void setDeviceChoiceList(FlowPanel deviceChoiceList) {
 		this.deviceChoiceList = deviceChoiceList;
 	}
+
+	public Label getHelpDesk() {
+		return helpDesk;
+	}
+
+	public void setHelpDesk(Label helpDesk) {
+		this.helpDesk = helpDesk;
+	}
+	
 	
 }

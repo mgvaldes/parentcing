@@ -3,7 +3,7 @@
 <g:HTMLPanel styleName="mainPanel">
 
 	<g:FlowPanel styleName="headerPanel">
-		<g:Image styleName="pclogo" url="/media/images/pclogo.png"/>
+		<g:Image styleName="pclogo" url="/media/images/pclogo.png" ui:field="pclogo"/>
 		<g:FlowPanel styleName="alertBlock">
 			<g:HorizontalPanel styleName="alertInfo">
 				<g:Image styleName="alertImage" url="/media/images/alert.png"/>
@@ -48,7 +48,8 @@
 	<g:FlowPanel styleName="clearingDiv" />
 	<g:FlowPanel styleName="footer">
 		<g:Label styleName="footerText" text="&#169;2011 DaddyText"/>
+		<g:Label styleName="footerText" text="Terms and Conditions"/>
+		<g:Label styleName="footerText" text="Help Desk" ui:field="helpDesk"/>
 	</g:FlowPanel>
-
 </g:HTMLPanel>
 </ui:UiBinder>

@@ -18,6 +18,15 @@ public class MenuSetterHandler {
 	private Button deviceContacts;
 	private Button deviceSettings;
 	
+	private Button dashboardAlertList;
+	private Button dashboardDeviceMap;
+	
+	private Button ticketsButton;
+	private Button openTickets;
+	private Button closedTickets;
+	
+	private Button parentSmartphoneButton;
+	
 	
 	public MenuSetterHandler(PCBaseUIBinder baseBinder){
 		this.baseBinder = baseBinder;
@@ -29,7 +38,12 @@ public class MenuSetterHandler {
 		this.alertRules = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.AlertRules.getClassname(), CenterMenuOptionsClassNames.AlertRules.getText());
 		this.deviceContacts = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.DeviceContacts.getClassname(), CenterMenuOptionsClassNames.DeviceContacts.getText());
 		this.deviceSettings = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.DeviceSettings.getClassname(), CenterMenuOptionsClassNames.DeviceSettings.getText());
-		
+		this.dashboardAlertList = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.DashboardAlertList.getClassname(), CenterMenuOptionsClassNames.DashboardAlertList.getText());
+		this.dashboardDeviceMap = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.DashboardDeviceMap.getClassname(), CenterMenuOptionsClassNames.DashboardDeviceMap.getText());
+		this.ticketsButton = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.TicketList.getClassname(), CenterMenuOptionsClassNames.TicketList.getText());
+		this.closedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());
+		this.openTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.OpenTickets.getClassname(), CenterMenuOptionsClassNames.OpenTickets.getText());
+				
 	}
 	/*
 	public initCenterMenuOptionsHandlers(){
@@ -125,6 +139,53 @@ public class MenuSetterHandler {
 		this.deviceSettings = deviceSettings;
 	}
 
+	public Button getDashboardAlertList() {
+		return dashboardAlertList;
+	}
+
+	public void setDashboardAlertList(Button dashboardAlertList) {
+		this.dashboardAlertList = dashboardAlertList;
+	}
+
+	public Button getDashboardDeviceMap() {
+		return dashboardDeviceMap;
+	}
+
+	public void setDashboardDeviceMap(Button dashboardDeviceMap) {
+		this.dashboardDeviceMap = dashboardDeviceMap;
+	}
+
+	public Button getParentSmartphoneButton() {
+		return parentSmartphoneButton;
+	}
+
+	public void setParentSmartphoneButton(Button parentSmartphoneButton) {
+		this.parentSmartphoneButton = parentSmartphoneButton;
+	}
+
+	public Button getTicketsButton() {
+		return ticketsButton;
+	}
+
+	public void setTicketsButton(Button ticketsButton) {
+		this.ticketsButton = ticketsButton;
+	}
+
+	public Button getOpenTickets() {
+		return openTickets;
+	}
+
+	public void setOpenTickets(Button openTickets) {
+		this.openTickets = openTickets;
+	}
+
+	public Button getClosedTickets() {
+		return closedTickets;
+	}
+
+	public void setClosedTickets(Button closedTickets) {
+		this.closedTickets = closedTickets;
+	}
 	
 	
 }

@@ -1,6 +1,8 @@
 package com.ing3nia.parentalcontrol.client.models;
 
 public class ClientUserModel {
+	private String key;
+	
 	/**
 	 * The user name of the parent
 	 */
@@ -52,6 +54,30 @@ public class ClientUserModel {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getUsr() {
+		return usr;
+	}
+
+	public void setUsr(String usr) {
+		this.usr = usr;
+	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
 	}
 	
 }

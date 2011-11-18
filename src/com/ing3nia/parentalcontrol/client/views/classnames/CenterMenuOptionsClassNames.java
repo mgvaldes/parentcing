@@ -8,7 +8,12 @@ public enum CenterMenuOptionsClassNames {
 	AlertList("centerMenuButton","Alert List"),
 	AlertRules("centerMenuButton","Alert Rules"),
 	DeviceContacts("centerMenuButton","Device Contacts"),
-	DeviceSettings("centerMenuButton","Device Settings");
+	DeviceSettings("centerMenuButton","Device Settings"),
+	DashboardAlertList("centerMenuButton","Alerts List"),
+	DashboardDeviceMap("centerMenuButton","Device Map"),
+	TicketList("centerMenuButton","Tickets"),
+	OpenTickets("centerMenuButton","Open Tickets"),
+	ClosedTickets("centerMenuButton","Closed Tickets");
 	
 	private String classname;
 	private String text;

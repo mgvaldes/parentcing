@@ -36,6 +36,8 @@ public class RuleListView {
 	 */
 	private List<RuleModel> rules;
 	
+	private final String dateNow =  "16/11/2011 - 14:13:11 PM";
+	
 	/**
 	 * Table where the alerts are displayed.
 	 */
@@ -50,11 +52,10 @@ public class RuleListView {
 		this.centerContent.clear();
 		
 		addTestRules();
-		initRuleListView();
 	}
 	
 	public void addTestRules() {
-		Date now = Calendar.getInstance().getTime();
+		Date now = new Date();//Calendar.getInstance().getTime();
 		
 		RuleModel rule = new RuleModel(now, now, "SMS - Send/Receive");
 		rules.add(rule);
@@ -70,13 +71,14 @@ public class RuleListView {
 	}
 	
 	public void initRuleListView() {
-		final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
+		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
 	    
 	    // Add a date column to show the creation date of the alert.
 		TextColumn<RuleModel> startDateColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return formatter.format(object.getStartDate());
+				return dateNow;
+				//return formatter.format(object.getStartDate());
 			}
 		};
 		
@@ -86,7 +88,8 @@ public class RuleListView {
 		TextColumn<RuleModel> endDateColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return formatter.format(object.getEndDate());
+				return dateNow;
+				//return formatter.format(object.getEndDate());
 			}
 		};
 		

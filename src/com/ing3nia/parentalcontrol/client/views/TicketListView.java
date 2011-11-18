@@ -65,7 +65,9 @@ public class TicketListView {
 	 */
 	private CellTable<TicketModel> closedTicketsTable = new CellTable<TicketModel>();
 	
-	public TicketListView() {
+	public TicketListView(HTMLPanel centerContent) {
+		this.centerContent =  centerContent;
+		
 		// Setting up open tickets table 
 		
 		// Add a text column to show the id.
@@ -250,6 +252,9 @@ public class TicketListView {
 	    
 	    closedTicketsViewContent.add(closedTicketsTable);
 	    
+	}
+	
+	public void initTicketList(){
 	    centerContent.add(closedTicketsViewContent);
 	}
 

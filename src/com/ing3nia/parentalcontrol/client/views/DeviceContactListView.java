@@ -75,7 +75,6 @@ public class DeviceContactListView {
 		this.centerContent.clear();
 		
 		addTestDeviceContacts();
-		initDeviceContactListView();
 	}
 	
 	public void addTestDeviceContacts() {
