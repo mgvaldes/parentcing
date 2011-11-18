@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import sun.security.provider.MD5;
 
 import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.Key;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -136,7 +137,7 @@ public class ParentRegisterResource {
 		pcuser.setName(ut.getName());
 		pcuser.setEmail(ut.getEmail());
 		pcuser.setPassword(encrypted_pass);
-		pcuser.setSmartphones(new ArrayList<PCSmartphone>()); //must be added from child app
+		pcuser.setSmartphones(new ArrayList<Key>()); //must be added from child app
 		pcuser.setUsername(ut.getUsername());
 
 		logger.info("[Parent Register] Persisting new user in datastore");

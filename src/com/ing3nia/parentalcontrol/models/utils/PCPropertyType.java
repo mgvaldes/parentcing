@@ -19,5 +19,7 @@ public class PCPropertyType {
 	
 	public static int SPEED_LIMIT = 8;
 	
+	public static int BLOCK_SMARTPHONE_STATUS = 9;
+	
 	//TODO Agregar resto de properties faltantes.
 }

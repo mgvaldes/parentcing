@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
-import com.google.gson.JsonObject;
 
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
@@ -23,7 +22,6 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
-import com.sun.org.apache.bcel.internal.classfile.PMGClass;
 
 public class SmartphoneModel {
 	private String keyId;
@@ -55,6 +53,8 @@ public class SmartphoneModel {
 	private ModificationModel modification;
 	
 	private ArrayList<RuleModel> rules;
+	
+	private ArrayList<NotificationModel> alerts;
 	
 	public SmartphoneModel() {
 		super();
@@ -388,5 +388,12 @@ public class SmartphoneModel {
 	    }
 		
 		return smartphoneModel;
+	}
+	
+	public void updateSmartphone(SmartphoneModel updateSmart) {
+		this.setAddedEmergencyNumbers(updateSmart.getAddedEmergencyNumbers());
+		this.setDeletedEmergencyNumbers(updateSmart.getDeletedEmergencyNumbers());
+		this.setProperties(updateSmart.getProperties());
+		this.setRules(updateSmart.getRules());
 	}
 }

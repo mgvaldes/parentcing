@@ -15,6 +15,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -137,8 +138,8 @@ public class RegisterSmartphoneResource {
     		
     		logger.info("[Register Smartphone Service] Assigning new smartphone to user.");
     		
-    		ArrayList<PCSmartphone> userSmartphones = user.getSmartphones();
-    		userSmartphones.add(newSmartphone);    		
+    		ArrayList<Key> userSmartphones = user.getSmartphones();
+    		userSmartphones.add(newSmartphone.getKey());    		
     		user.setSmartphones(userSmartphones);
     		
     		registeredSmartphoneKey = KeyFactory.keyToString(newSmartphone.getKey());

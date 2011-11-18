@@ -2,7 +2,6 @@ package com.ing3nia.parentalcontrol.services.models;
 
 import java.util.ArrayList;
 
-import com.google.appengine.api.datastore.PhoneNumber;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 
 public class PhoneModel {

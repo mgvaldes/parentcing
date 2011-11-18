@@ -53,6 +53,15 @@ public class ContactModel {
 		this.phones = phones;
 	}
 	
+	public ContactModel(String key, String firstName, String lastName,
+			ArrayList<PhoneModel> phones) {
+		super();
+		this.keyId = key;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phones = phones;
+	}
+	
 	public ContactModel(String firstName, String lastName,
 			ArrayList<PhoneModel> phones, ArrayList<String> emails,
 			ArrayList<AddressModel> addresses,
@@ -201,7 +210,14 @@ public class ContactModel {
 		contact.setLastName(savedContact.getLastName());
 		
 		ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
-		ArrayList<PCPhone>  pcphoneList = (ArrayList<PCPhone>)pm.getObjectsById(savedContact.getPhones());
+		ArrayList<Key> pcphoneListKeys = savedContact.getPhones();
+		ArrayList<PCPhone> pcphoneList = new ArrayList<PCPhone>();
+		PCPhone auxPhone;
+		
+		for (Key k : pcphoneListKeys) {
+			auxPhone = (PCPhone)pm.getObjectById(PCPhone.class, k);
+			pcphoneList.add(auxPhone);
+		}
 		
 		for (PCPhone phone : pcphoneList) {
 			phones.add(PhoneModel.convertToPhoneModel(phone));

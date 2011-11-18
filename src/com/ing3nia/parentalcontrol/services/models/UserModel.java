@@ -1,10 +1,5 @@
 package com.ing3nia.parentalcontrol.services.models;
 
-import java.util.ArrayList;
-import javax.jdo.annotations.Persistent;
-import com.google.appengine.api.datastore.Email;
-import com.ing3nia.parentalcontrol.models.PCSmartphone;
-
 /**
  * Represents parent user in central system.
  * Field names appear just as they will be passed in the web service call
