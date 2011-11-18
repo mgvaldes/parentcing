@@ -15,8 +15,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
-import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
-import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.UserKeyService;
+import com.ing3nia.parentalcontrol.client.rpc.UserKeyServiceAsync;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 
 public class LoginView {
@@ -102,7 +102,26 @@ public class LoginView {
 	public void callLoginService() {
 		final String usr = this.usernameTextBox.getText();
 		final String pass = this.passwordTextBox.getText();
-		final ArrayList<SmartphoneModel> smartphoneResults;
+		final ClientUserModel auxUserModel = this.userModel;
+		
+		UserKeyServiceAsync userKeyService = GWT.create(UserKeyService.class);
+		userKeyService.getUserKey(usr, pass, 
+				new AsyncCallback<String>() {
+					public void onFailure(Throwable error) {
+					}
+		
+					public void onSuccess(String userKey) {
+						if (userKey != null) {
+							auxUserModel.setKey(userKey);
+						}
+						else {
+							Window.alert("An error occured. The smartphones could not be loaded.");
+						}
+					}
+				}
+		);
+		
+		this.userModel.setKey(auxUserModel.getKey());
 		
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
 		loginService.login(usr, pass, 
@@ -112,14 +131,15 @@ public class LoginView {
 		
 					public void onSuccess(ArrayList<SmartphoneModel> smartphones) {
 						if (smartphones != null) {
-							smartphoneResults = smartphones;
+							auxUserModel.setSmartphones(smartphones);
 						}
 						else {
-							smartphoneResults = null;
 							Window.alert("An error occured. The smartphones could not be loaded.");
 						}
 					}
 				}
 		);
+		
+		this.userModel.setSmartphones(auxUserModel.getSmartphones());
 	}
 }

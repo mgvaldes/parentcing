@@ -14,6 +14,11 @@ package com.ing3nia.parentalcontrol.services.models;
 
 public class UserModel {
 	/**
+	 * The user's key.
+	 */
+	private String key;
+	
+	/**
 	 * The user name of the parent
 	 */
 	private String usr;

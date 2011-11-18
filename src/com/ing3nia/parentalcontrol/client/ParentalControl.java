@@ -4,7 +4,11 @@ import java.util.ArrayList;
 
 import com.ibm.icu.impl.CalendarAstronomer.Horizon;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
+import com.ing3nia.parentalcontrol.client.rpc.LoginService;
+import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
+import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -71,7 +75,7 @@ public class ParentalControl implements EntryPoint {
 
 		BaseViewHandler baseViewHandler = new BaseViewHandler(pcbase);
 		baseViewHandler.setAddAdminButtonHandler();
-		
+				
 		/*
 		// Adding style to panels
 		headerPanel.addStyleName("headerBlock");
@@ -96,5 +100,4 @@ public class ParentalControl implements EntryPoint {
 		rp.add(mainPanel);
 		*/
 	}
-
 }
