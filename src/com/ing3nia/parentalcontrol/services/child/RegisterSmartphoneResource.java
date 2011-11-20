@@ -108,14 +108,7 @@ public class RegisterSmartphoneResource {
 		
 		PCUser user = null;
 		String registeredSmartphoneKey = null;
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager(); 
-		Query query = pm.newQuery(PCUser.class);
-		
-		logger.info("[Register Smartphone Service] Applying filters to look for user with username: " + registerSmartphoneModel.getUsr() + " and password: " + registerSmartphoneModel.getPass());
-		
-	    query.setFilter("username == usernameParam && password == passwordParam");
-	    query.declareParameters("String usernameParam, String passwordParam");
-	    query.setRange(0, 1);
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 	    
     	logger.info("[Register Smartphone Service] Encrypting password in MD5.");
     	

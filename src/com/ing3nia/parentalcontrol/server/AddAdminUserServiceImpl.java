@@ -43,6 +43,9 @@ public class AddAdminUserServiceImpl extends RemoteServiceServlet implements Add
 		catch (Exception ex) {
 			
 		}
+		finally {
+			pm.close();
+		}
 		
 		return adminKey;
 	}

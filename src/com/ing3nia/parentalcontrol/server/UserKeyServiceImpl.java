@@ -54,6 +54,9 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 		catch (IllegalArgumentException ex) {
 			return userKey;
 		}
+		finally {
+			pm.close();
+		}
 		
 		return userKey;
 	}

@@ -26,10 +26,10 @@ public class AdminUserListServiceImpl extends RemoteServiceServlet implements Ad
 	@Override
 	public ArrayList<ClientUserModel> getAdminUserList(String userKey) {
 		ArrayList<ClientUserModel> admins = new ArrayList<ClientUserModel>();
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		try {
-			Key key = KeyFactory.stringToKey(userKey);
-			PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+			Key key = KeyFactory.stringToKey(userKey);			
 			
 			PCUser user = (PCUser)pm.getObjectById(PCUser.class, key);
 			ArrayList<Key> adminKeys = user.getAdmins();
@@ -48,6 +48,9 @@ public class AdminUserListServiceImpl extends RemoteServiceServlet implements Ad
 		}
 		catch (Exception ex) {
 			admins = null;
+		}
+		finally {
+			pm.close();
 		}
 		
 		return admins;

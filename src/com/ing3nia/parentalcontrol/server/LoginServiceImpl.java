@@ -15,8 +15,6 @@ import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
-import javax.vecmath.Tuple2d;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -27,11 +25,9 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.utils.ContactInfo;
-import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.models.ContactModel;
 import com.ing3nia.parentalcontrol.services.models.EmergencyNumberModel;
-import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
 import com.ing3nia.parentalcontrol.services.models.PhoneModel;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.models.UserModel;
@@ -119,14 +115,14 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			}
 		}
 		
-		Iterator it = auxContactsHashMap.entrySet().iterator();
+		Iterator<Map.Entry<String, ContactInfo>> it = auxContactsHashMap.entrySet().iterator();
 		ContactModel auxContact;
-		Map.Entry pair;
+		Map.Entry<String, ContactInfo> pair;
 		String[] auxName;
 		auxContactInfo = null;
 		
 	    while (it.hasNext()) {
-	        pair = (Map.Entry)it.next();	        
+	        pair = (Map.Entry<String, ContactInfo>)it.next();	        
 
 	        auxName = ((String)pair.getKey()).split("\\|");
 	        auxContactInfo = (ContactInfo)pair.getValue();

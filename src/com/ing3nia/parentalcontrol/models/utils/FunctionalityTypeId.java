@@ -10,29 +10,71 @@ package com.ing3nia.parentalcontrol.models.utils;
  * @version 1.0
  *
  */
-public class FunctionalityTypeId {
+public enum FunctionalityTypeId {
 	/**
 	 * 
 	 */
-	public static int BROWSER_ACCESS_ID = 1;
+	BROWSER_ACCESS(1, "BROWSER_ACCESS"),
 	
 	/**
 	 * 
 	 */
-	public static int TOTAL_BLOCK_ID = 2;
+	TOTAL_BLOCK(2, "TOTAL_BLOCK"),
 	
 	/**
 	 * 
 	 */
-	public static int OUTGOING_CALLS_ID = 3;
+	OUTGOING_CALLS(3, "OUTGOING_CALLS"),
 	
 	/**
 	 * 
 	 */
-	public static int INCOMMING_CALLS_ID = 4;
+	INCOMMING_CALLS(4, "INCOMMING_CALLS"),
 	
 	/**
 	 * 
 	 */
-	public static int OUTGOING_SMS_ID = 5;
+	OUTGOING_SMS(5, "OUTGOING_SMS"),
+	
+	/**
+	 * 
+	 */
+	INCOMMING_SMS(6, "INCOMMING_SMS");
+	
+	private int id;
+	
+	private String description;
+	
+	FunctionalityTypeId(int id, String description) {
+		this.id = id;
+		this.description = description;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	public String findById(int id) {
+		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
+		
+		for (FunctionalityTypeId f : funcs) {
+			if (f.getId() == id) {
+				return f.getDescription();
+			}
+		}
+		
+		return "";
+	}
 }

@@ -44,6 +44,9 @@ public class PCRule {
 	 */
 	@Persistent
 	private Date creationDate;
+	
+	@Persistent
+	private String name;
 
 	public PCRule() {
 		super();
@@ -51,13 +54,14 @@ public class PCRule {
 
 	public PCRule(Key key, Date startDate, Date endDate,
 			ArrayList<Key> disabledFunctionalities,
-			Date creationDate) {
+			Date creationDate, String name) {
 		super();
 		this.key = key;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.disabledFunctionalities = disabledFunctionalities;
 		this.creationDate = creationDate;
+		this.name = name;
 	}
 
 	public Key getKey() {
@@ -99,5 +103,13 @@ public class PCRule {
 
 	public void setCreationDate(Date creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }
