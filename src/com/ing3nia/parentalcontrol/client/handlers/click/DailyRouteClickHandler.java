@@ -2,6 +2,7 @@ package com.ing3nia.parentalcontrol.client.handlers.click;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,6 +23,7 @@ public class DailyRouteClickHandler implements ClickHandler{
 	private HTMLPanel centerContent;
 	private MenuSetterHandler menuSetter;
 	private FlowPanel deviceChoiceList;
+	private static Logger logger = Logger.getLogger("Daily Route Logger");
 	
 	public DailyRouteClickHandler(String key, PCBaseUIBinder basebinder, HTMLPanel centerContent, MenuSetterHandler menuSetter, FlowPanel deviceChoiceList){
 		this.key = key;
@@ -44,10 +46,13 @@ public class DailyRouteClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceContacts());
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
+		logger.info("Initializing device route map");
 		DeviceDailyRouteView view = new DeviceDailyRouteView(baseBinder.getCenterContent());		
 		view.setDeviceRoute(getDummyDeviceRoute());
 		view.initDeviceLocationLoad();
 		
+		logger.info("Devices Loaded. Displaying route Names "+view.getDeviceRouteNames().size()+" ex: "+view.getDeviceRouteNames().get(0));
+
 		displayRouteNames(menuSetter.getParentSmartphoneButton(), deviceChoiceList, view.getDeviceRouteNames());
 	}
 	

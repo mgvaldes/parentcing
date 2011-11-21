@@ -83,8 +83,7 @@ public class BaseViewHandler {
 		geo.setLongitude(2.5539);
 		deviceLocations.add(geo);
 		
-		return deviceLocations;
-		
+		return deviceLocations;	
 	}
 	
 	/**

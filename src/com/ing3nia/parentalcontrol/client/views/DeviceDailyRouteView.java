@@ -9,16 +9,24 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.control.LargeMapControl;
+import com.google.gwt.maps.client.geocode.DirectionQueryOptions;
+import com.google.gwt.maps.client.geocode.DirectionQueryOptions.TravelMode;
+//import com.google.gwt.maps.client.geocode.Directions;
+import com.google.gwt.maps.client.geocode.Directions;
+import com.google.gwt.maps.client.geocode.DirectionsPanel;
 import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LocationCallback;
 import com.google.gwt.maps.client.geocode.Placemark;
+import com.google.gwt.maps.client.geocode.Waypoint;
 import com.google.gwt.maps.client.geom.LatLng;
 import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
+import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 
 public class DeviceDailyRouteView {
@@ -65,6 +73,23 @@ public class DeviceDailyRouteView {
 
 	}
 	
+	public void loadDirectionsRoute(Waypoint[] waypoints) {
+ 
+		    DirectionsPanel directionsPanel = new DirectionsPanel();
+		    directionsPanel.setSize("100%", "100%");
+
+		    DirectionQueryOptions opts = new DirectionQueryOptions(map, directionsPanel);
+		    
+		    Directions.loadFromWaypoints(waypoints, opts);
+		    
+		    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
+		    dock.addNorth(this.map, 490);
+		    
+		    this.viewContent.add(dock);
+			this.centerContent.add(this.viewContent);
+	}
+	
+	
 	public void loadDeviceRoute() {
 		LatLng deviceLoc = LatLng.newInstance(deviceRoute.get(0).getLatitude(), deviceRoute.get(0).getLongitude());
 		
@@ -83,7 +108,7 @@ public class DeviceDailyRouteView {
 	    	locCounter++;
 	    	
 	    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
-	    	map.addOverlay(new Marker(deviceLoc));	 
+	    	//map.addOverlay(new Marker(deviceLoc));	 
 	    	geocoder.getLocations(deviceLoc, new LocationCallback() {
 				@Override
 				public void onSuccess(JsArray<Placemark> locations) {
@@ -110,7 +135,6 @@ public class DeviceDailyRouteView {
 						
 						deviceRouteNames.add(value.toString());
 					}
-				
 				}
 				
 				@Override
@@ -120,14 +144,18 @@ public class DeviceDailyRouteView {
 			});
 	    }
 	    
-	    Polyline polyline = new Polyline(locationArray);
-	    map.addOverlay(polyline);
+	    //Polyline polyline = new Polyline(locationArray);
+	    //map.addOverlay(polyline);
+
+	    Waypoint[] waypoints = new Waypoint[locationArray.length];
+	    int i=0;
+	    for(LatLng latlng: locationArray){
+	    	waypoints[i] = new Waypoint(latlng);
+	    	i++;
+	    }
 	    
-	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
-	    dock.addNorth(this.map, 490);
-	    
-	    this.viewContent.add(dock);
-		this.centerContent.add(this.viewContent);
+	    loadDirectionsRoute(waypoints);
+
 	}
 
 	public List<GeoPtModel> getDeviceRoute() {

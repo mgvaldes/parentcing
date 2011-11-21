@@ -26,6 +26,8 @@ public class PCBaseUIBinder extends Composite {
 	
 	@UiField Label helpDesk;
 	
+	@UiField Button logout;
+	
 	/*
 	@UiField Button userListButton;
 	@UiField Button addUserButton;
@@ -86,6 +88,13 @@ public class PCBaseUIBinder extends Composite {
 	public void setHelpDesk(Label helpDesk) {
 		this.helpDesk = helpDesk;
 	}
-	
-	
+
+	public Button getLogout() {
+		return logout;
+	}
+
+	public void setLogout(Button logout) {
+		this.logout = logout;
+	}
+
 }

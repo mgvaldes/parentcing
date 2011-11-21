@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 
+
 public class DeviceMapView {
 	/**
 	 * Center Panel containing all the widgets of the 

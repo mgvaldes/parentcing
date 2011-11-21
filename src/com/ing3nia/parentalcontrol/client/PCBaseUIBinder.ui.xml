@@ -14,7 +14,7 @@
 		</g:FlowPanel>
 		<g:FlowPanel styleName="sessionButtons">
 			<g:Button styleName="addAdminButton" ui:field="addAdminButton" text="Add Administrator"></g:Button>
-			<g:Button styleName="logout" text="Logout"></g:Button>
+			<g:Button styleName="logout" text="Logout" ui:field="logout"></g:Button>
 		</g:FlowPanel>
 	</g:FlowPanel>
 

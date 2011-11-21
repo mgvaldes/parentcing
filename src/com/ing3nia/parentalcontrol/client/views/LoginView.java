@@ -81,10 +81,10 @@ public class LoginView {
 	
 	public static boolean validateUserName(String username, String password, ClientUserModel userModel){
 		
-		if(!username.equals("testuser") && !password.equals("pass123")){
-			return false;
-		}else{
+		if(username.equals("testuser") && password.equals("pass123")){
 			return true;
+		}else{
+			return false;
 		}
 	}
 
