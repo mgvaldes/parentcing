@@ -24,6 +24,7 @@ public class MenuSetterHandler {
 	private Button ticketsButton;
 	private Button openTickets;
 	private Button closedTickets;
+	private Button newTicket;
 	
 	private Button parentSmartphoneButton;
 	
@@ -43,7 +44,8 @@ public class MenuSetterHandler {
 		this.ticketsButton = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.TicketList.getClassname(), CenterMenuOptionsClassNames.TicketList.getText());
 		this.closedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());
 		this.openTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.OpenTickets.getClassname(), CenterMenuOptionsClassNames.OpenTickets.getText());
-				
+		this.newTicket = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.NewTicket.getClassname(), CenterMenuOptionsClassNames.NewTicket.getText()); 		
+		
 	}
 	/*
 	public initCenterMenuOptionsHandlers(){
@@ -185,6 +187,14 @@ public class MenuSetterHandler {
 
 	public void setClosedTickets(Button closedTickets) {
 		this.closedTickets = closedTickets;
+	}
+
+	public Button getNewTicket() {
+		return newTicket;
+	}
+
+	public void setNewTicket(Button newTicket) {
+		this.newTicket = newTicket;
 	}
 	
 	

@@ -13,8 +13,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PCBaseUIBinder extends Composite {
 	
-	
-	
+
 	@UiField HTMLPanel centerContent;
 	
 	@UiField FlowPanel deviceChoiceList;

@@ -13,6 +13,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
 
 public class DeviceAlertListView {
@@ -72,6 +73,9 @@ public class DeviceAlertListView {
 	public void initDeviceAlertListView() {
 		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
 	    
+		//Setting alert table style
+		alertTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
+		
 	    // Add a date column to show the creation date of the alert.
 		TextColumn<AlertModel> dateColumn = new TextColumn<AlertModel>() {
 			@Override

@@ -15,6 +15,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.views.models.RuleModel;
 
@@ -73,6 +74,9 @@ public class RuleListView {
 	public void initRuleListView() {
 		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
 	    
+		//Setting alert table style
+		ruleTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
+		
 	    // Add a date column to show the creation date of the alert.
 		TextColumn<RuleModel> startDateColumn = new TextColumn<RuleModel>() {
 			@Override

@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
 import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.views.models.ContactModel;
@@ -82,6 +83,10 @@ public class DeviceContactListView {
 	}
 	
 	public void initDeviceContactListView() {
+		
+		//Setting alert table style
+		contactTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
+		
 		this.viewContent.add(this.contactsLabel);
 		
 		contactsButton.addClickHandler(new ClickHandler() {

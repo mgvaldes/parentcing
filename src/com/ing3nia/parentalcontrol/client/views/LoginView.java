@@ -1,10 +1,14 @@
 package com.ing3nia.parentalcontrol.client.views;
 
+import org.apache.http.impl.conn.tsccm.WaitingThread;
+
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 
 public class LoginView {
 	/**
@@ -37,7 +41,7 @@ public class LoginView {
 	/**
 	 * Password text box.
 	 */
-	private TextBox passwordTextBox;
+	private PasswordTextBox passwordTextBox;
 	
 	/**
 	 * Remember me check box.
@@ -56,7 +60,7 @@ public class LoginView {
 		usernameLabel = new Label("Username:");
 		usernameTextBox = new TextBox();
 		passwordLabel = new Label("Password:");
-		passwordTextBox = new TextBox();
+		passwordTextBox = new PasswordTextBox();
 		rememberMeCheckBox = new CheckBox("Remember me");
 		signInButton = new Button("Sign In");
 		
@@ -73,4 +77,15 @@ public class LoginView {
 		
 		centerContent.add(viewContent);
 	}
+
+	
+	public static boolean validateUserName(String username, String password, ClientUserModel userModel){
+		
+		if(!username.equals("testuser") && !password.equals("pass123")){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
 }

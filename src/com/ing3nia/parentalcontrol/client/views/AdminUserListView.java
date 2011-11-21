@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.view.client.ListDataProvider;
 import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
+import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
 
 public class AdminUserListView {
@@ -145,6 +146,9 @@ public class AdminUserListView {
 	}
 	
 	public void initAdminUserListView() {
+		
+		//Setting alert table style
+		adminUserTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
 		//initializing content
 		this.centerContent.clear();

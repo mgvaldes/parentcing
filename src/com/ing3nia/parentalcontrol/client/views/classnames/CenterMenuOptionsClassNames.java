@@ -13,7 +13,9 @@ public enum CenterMenuOptionsClassNames {
 	DashboardDeviceMap("centerMenuButton","Device Map"),
 	TicketList("centerMenuButton","Tickets"),
 	OpenTickets("centerMenuButton","Open Tickets"),
-	ClosedTickets("centerMenuButton","Closed Tickets");
+	ClosedTickets("centerMenuButton","Closed Tickets"),
+	NewTicket("centerMenuButton","New Ticket"),
+	TicketDetails("centerMenuButton","Edit");
 	
 	private String classname;
 	private String text;

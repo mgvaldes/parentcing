@@ -12,6 +12,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
 import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.views.models.TicketModel;
@@ -66,6 +67,13 @@ public class TicketListView {
 	private CellTable<TicketModel> closedTicketsTable = new CellTable<TicketModel>();
 	
 	public TicketListView(HTMLPanel centerContent) {
+		
+		//Setting alert table style
+		openTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
+		
+		//Setting alert table style
+		closedTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
+		
 		this.centerContent =  centerContent;
 		
 		// Setting up open tickets table 
@@ -254,7 +262,9 @@ public class TicketListView {
 	    
 	}
 	
-	public void initTicketList(){
+	public void initUserTicketList(){
+		centerContent.clear();
+		centerContent.add(openTicketsViewContent);
 	    centerContent.add(closedTicketsViewContent);
 	}
 

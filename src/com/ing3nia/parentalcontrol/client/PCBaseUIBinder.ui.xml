@@ -47,9 +47,13 @@
 
 	<g:FlowPanel styleName="clearingDiv" />
 	<g:FlowPanel styleName="footer">
-		<g:Label styleName="footerText" text="&#169;2011 DaddyText"/>
-		<g:Label styleName="footerText" text="Terms and Conditions"/>
-		<g:Label styleName="footerText" text="Help Desk" ui:field="helpDesk"/>
+		<g:FlowPanel styleName="footerText">
+		<g:Label styleName="daddyText" text="&#169;2011 DaddyText"/>
+		<g:Label styleName="footerSep" text="-"/>
+		<g:Label styleName="footerClick" text="Terms and Conditions"/>
+		<g:Label styleName="footerSep" text="-"/>
+		<g:Label styleName="footerClick" text="Help Desk" ui:field="helpDesk"/>
+		</g:FlowPanel>
 	</g:FlowPanel>
 </g:HTMLPanel>
 </ui:UiBinder>

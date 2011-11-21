@@ -73,7 +73,9 @@ public class NewTicketView {
 	 */
 	private Button clearButton = new Button("Clear");
 	
-	public NewTicketView() {
+	public NewTicketView(HTMLPanel centerContent) {
+		this.centerContent = centerContent;
+		
 		viewContent.add(newTicketLabel);
 		viewContent.add(categoryLabel);
 		viewContent.add(categoryListBox);
@@ -99,6 +101,10 @@ public class NewTicketView {
 		buttonPanel.add(clearButton);
 		viewContent.add(buttonPanel);
 		
+	}
+	
+	public void initNewTicketView(){
+		centerContent.clear();
 		centerContent.add(viewContent);
 	}
 	

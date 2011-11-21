@@ -29,7 +29,7 @@ public class TicketDetailsClickHandler implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 
-		baseViewHandler.toggleTicketCenterMenu(CenterMenuOptionsClassNames.TicketList);
+		baseViewHandler.toggleTicketCenterMenu(CenterMenuOptionsClassNames.TicketDetails);
 		TicketDetailsView view = new TicketDetailsView(centerContent, subject, comment, date);		
 		view.initTicketDetailsView(subject, comment, date);
 	}

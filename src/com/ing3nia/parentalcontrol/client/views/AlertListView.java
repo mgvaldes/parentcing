@@ -17,6 +17,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
+import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
 import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
 
@@ -74,6 +75,9 @@ public class AlertListView {
 	public void initAlertListView() {
 		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
 	    
+		//Setting alert table style
+		alertTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
+		
 	    // Add a date column to show the creation date of the alert.
 		TextColumn<AlertModel> dateColumn = new TextColumn<AlertModel>() {
 			@Override
@@ -120,12 +124,10 @@ public class AlertListView {
 		pager.setDisplay(alertTable);
 		pager2.setDisplay(alertTable);
 		
-		pager2.setStylePrimaryName("tablePager");
-		pager2.setStyleName("");
+		pager2.setStyleName("tablePager");
 		viewContent.add(pager2);
 		viewContent.add(alertTable);
-		pager.setStylePrimaryName("tablePager");
-		pager.setStyleName("");
+		pager.setStyleName("tablePager");
 		viewContent.add(pager);		
 		
 		centerContent.add(viewContent);
