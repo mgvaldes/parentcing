@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.ing3nia.parentalcontrol.client.views.models.ContactModel;
+import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
 import com.ing3nia.parentalcontrol.client.views.models.FullContactModel;
 
 public class DeviceContactDetailsView {

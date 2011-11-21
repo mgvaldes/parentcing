@@ -1,10 +1,14 @@
 package com.ing3nia.parentalcontrol.client.views;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -12,12 +16,20 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
+import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
-import com.ing3nia.parentalcontrol.client.views.models.ContactModel;
+import com.ing3nia.parentalcontrol.client.models.PhoneModel;
+import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
+import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 
 public class DeviceContactListView {
 	/**
@@ -55,41 +67,67 @@ public class DeviceContactListView {
 	/**
 	 * List of contacts of device.
 	 */
-	private List<ContactModel> contacts;
+	private List<ClientSimpleContactModel> contacts;
 	
-	private List<ContactModel> activeContacts;
+	private List<ClientSimpleContactModel> activeContacts;
 	
-	private List<ContactModel> inactiveContacts;
+	private List<ClientSimpleContactModel> inactiveContacts;
+	
+	private SmartphoneModel smartphone;
+	
+	private String cookieId;
 	
 	/**
 	 * Table where the alerts are displayed.
 	 */
-	private CellTable<ContactModel> contactTable = new CellTable<ContactModel>();
+	private CellTable<ClientSimpleContactModel> contactTable = new CellTable<ClientSimpleContactModel>();
 	
 	private SimplePager pager;
 	
 	private Button saveButton;
 	
-	public DeviceContactListView(HTMLPanel centerContent, ArrayList<ContactModel> activeContacts, ArrayList<ContactModel> inactiveContacts) {
-		this.contacts = new ArrayList<ContactModel>();
-		this.contacts.addAll(activeContacts);
-		this.contacts.addAll(inactiveContacts);
-		this.activeContacts = new ArrayList<ContactModel>();
-		this.inactiveContacts = new ArrayList<ContactModel>();
+	public DeviceContactListView(HTMLPanel centerContent, String cookieId, SmartphoneModel smartphone) {
+		this.cookieId = cookieId;
+		this.smartphone = smartphone;
+		this.contacts = new ArrayList<ClientSimpleContactModel>();
+		loadSmartphoneContacts();		
+		this.activeContacts = new ArrayList<ClientSimpleContactModel>();
+		this.inactiveContacts = new ArrayList<ClientSimpleContactModel>();
 		this.centerContent = centerContent;		
 		this.viewContent = new HTMLPanel("");
 		this.contactsLabel = new Label("Contacts:");
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");
 		this.emergencyContactsButton = new Button("Emergency Contacts");
-		this.contactTable = new CellTable<ContactModel>(10);
+		this.contactTable = new CellTable<ClientSimpleContactModel>(10);
 		this.pager = new SimplePager();
-		this.contacts = new ArrayList<ContactModel>();
+		this.contacts = new ArrayList<ClientSimpleContactModel>();
 		this.saveButton = new Button("Save");
 		this.centerContent.clear();
 		
 		addTestDeviceContacts();
 		initDeviceContactListView();
+	}
+	
+	public void loadSmartphoneContacts() {
+		ArrayList<ContactModel> smartContacts = smartphone.getActiveContacts();
+		ClientSimpleContactModel auxSimpleContact;
+				
+		for (ContactModel c : smartContacts) {
+			for (PhoneModel p : c.getPhones()) {
+				auxSimpleContact = new ClientSimpleContactModel(c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
+				contacts.add(auxSimpleContact);
+			}
+		}
+		
+		smartContacts = smartphone.getInactiveContacts();
+		
+		for (ContactModel c : smartContacts) {
+			for (PhoneModel p : c.getPhones()) {
+				auxSimpleContact = new ClientSimpleContactModel(c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
+				contacts.add(auxSimpleContact);
+			}
+		}
 	}
 	
 	public void addTestDeviceContacts() {
@@ -117,9 +155,9 @@ public class DeviceContactListView {
 		this.viewContent.add(contactButtonsPanel);
 		
 		// Add a text column to show the first name.
-		TextColumn<ContactModel> firstNameColumn = new TextColumn<ContactModel>() {
+		TextColumn<ClientSimpleContactModel> firstNameColumn = new TextColumn<ClientSimpleContactModel>() {
 			@Override
-			public String getValue(ContactModel object) {
+			public String getValue(ClientSimpleContactModel object) {
 				return object.getFirstName();
 			}
 		};
@@ -127,9 +165,9 @@ public class DeviceContactListView {
 		contactTable.addColumn(firstNameColumn, "First Name");
 		
 		// Add a text column to show the last name.
-		TextColumn<ContactModel> lastNameColumn = new TextColumn<ContactModel>() {
+		TextColumn<ClientSimpleContactModel> lastNameColumn = new TextColumn<ClientSimpleContactModel>() {
 			@Override
-			public String getValue(ContactModel object) {
+			public String getValue(ClientSimpleContactModel object) {
 				return object.getLastName();
 			}
 		};
@@ -137,9 +175,9 @@ public class DeviceContactListView {
 		contactTable.addColumn(lastNameColumn, "Last Name");
 		
 		// Add a text column to show the phone.
-		TextColumn<ContactModel> phoneColumn = new TextColumn<ContactModel>() {
+		TextColumn<ClientSimpleContactModel> phoneColumn = new TextColumn<ClientSimpleContactModel>() {
 			@Override
-			public String getValue(ContactModel object) {
+			public String getValue(ClientSimpleContactModel object) {
 				return object.getPhone();
 			}
 		};
@@ -148,16 +186,16 @@ public class DeviceContactListView {
 
 		// Add an edit column to show the disallow button.
 		ButtonCell disallowCell = new ButtonCell();
-		Column<ContactModel, String> disallowColumn = new Column<ContactModel, String>(disallowCell) {
+		Column<ClientSimpleContactModel, String> disallowColumn = new Column<ClientSimpleContactModel, String>(disallowCell) {
 			@Override
-			public String getValue(ContactModel object) {
+			public String getValue(ClientSimpleContactModel object) {
 				return "Disallow";
 			}
 		};
 
-		disallowColumn.setFieldUpdater(new FieldUpdater<ContactModel, String>() {
+		disallowColumn.setFieldUpdater(new FieldUpdater<ClientSimpleContactModel, String>() {
 			@Override
-			public void update(int index, ContactModel object, String value) {
+			public void update(int index, ClientSimpleContactModel object, String value) {
 				//Change button's style
 				TableRowElement row = contactTable.getRowElement(index);
 				
@@ -175,16 +213,16 @@ public class DeviceContactListView {
 		
 		// Add an edit column to show the disallow button.
 		ButtonCell allowCell = new ButtonCell();
-		Column<ContactModel, String> allowColumn = new Column<ContactModel, String>(allowCell) {
+		Column<ClientSimpleContactModel, String> allowColumn = new Column<ClientSimpleContactModel, String>(allowCell) {
 			@Override
-			public String getValue(ContactModel object) {
+			public String getValue(ClientSimpleContactModel object) {
 				return "Allow";
 			}
 		};
 
-		allowColumn.setFieldUpdater(new FieldUpdater<ContactModel, String>() {
+		allowColumn.setFieldUpdater(new FieldUpdater<ClientSimpleContactModel, String>() {
 			@Override
-			public void update(int index, ContactModel object, String value) {
+			public void update(int index, ClientSimpleContactModel object, String value) {
 				//Change button's style
 				TableRowElement row = contactTable.getRowElement(index);
 				
@@ -202,16 +240,16 @@ public class DeviceContactListView {
 		
 		// Add an edit column to show the edit button.
 		ButtonCell viewCell = new ButtonCell();
-		Column<ContactModel, String> viewColumn = new Column<ContactModel, String>(viewCell) {
+		Column<ClientSimpleContactModel, String> viewColumn = new Column<ClientSimpleContactModel, String>(viewCell) {
 			@Override
-			public String getValue(ContactModel object) {
+			public String getValue(ClientSimpleContactModel object) {
 				return "View";
 			}
 		};
 
-		viewColumn.setFieldUpdater(new FieldUpdater<ContactModel, String>() {
+		viewColumn.setFieldUpdater(new FieldUpdater<ClientSimpleContactModel, String>() {
 			@Override
-			public void update(int index, ContactModel object, String value) {
+			public void update(int index, ClientSimpleContactModel object, String value) {
 				
 			}
 		});
@@ -226,7 +264,7 @@ public class DeviceContactListView {
 
 		// Push the data into the widget.
 		//adminUserTable.setRowData(0, adminUsers);
-		ListDataProvider<ContactModel> dataProvider = new ListDataProvider<ContactModel>(contacts);
+		ListDataProvider<ClientSimpleContactModel> dataProvider = new ListDataProvider<ClientSimpleContactModel>(contacts);
 		dataProvider.addDataDisplay(contactTable);
 		
 		//creating paging controls		
@@ -251,8 +289,91 @@ public class DeviceContactListView {
 	
 	public void saveContacts() {
 		if (!activeContacts.isEmpty() && !inactiveContacts.isEmpty()) {
-			ModificationModel auxMod = new ModificationModel();			
+			ModificationModel auxMod = new ModificationModel();
+			
+			HashMap<String, ArrayList<PhoneModel>> activeHash = new HashMap<String, ArrayList<PhoneModel>>();
+			HashMap<String, ArrayList<PhoneModel>> inactiveHash = new HashMap<String, ArrayList<PhoneModel>>();
+			String auxContactName;
+			ArrayList<PhoneModel> auxPhones;
+			
+			for (ClientSimpleContactModel contact : activeContacts) {
+				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
+				
+				if (activeHash.containsKey(auxContactName)) {
+					auxPhones = (ArrayList<PhoneModel>)activeHash.get(auxContactName);					
+				}
+				else {
+					auxPhones = new ArrayList<PhoneModel>();
+				}
+				
+				auxPhones.add(new PhoneModel(contact.getPhoneType(), contact.getPhone()));
+				activeHash.put(auxContactName, auxPhones);
+			}
+			
+			for (ClientSimpleContactModel contact : inactiveContacts) {
+				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
+				
+				if (inactiveHash.containsKey(auxContactName)) {
+					auxPhones = (ArrayList<PhoneModel>)inactiveHash.get(auxContactName);					
+				}
+				else {
+					auxPhones = new ArrayList<PhoneModel>();
+				}
+				
+				auxPhones.add(new PhoneModel(contact.getPhoneType(), contact.getPhone()));
+				inactiveHash.put(auxContactName, auxPhones);
+			}
+			
+			Iterator<Map.Entry<String, ArrayList<PhoneModel>>> it = activeHash.entrySet().iterator();
+			SimpleContactModel auxContact;
+			Map.Entry<String, ArrayList<PhoneModel>> pair;
+			String[] auxName;
+			ArrayList<SimpleContactModel> simpleActiveContacts = new ArrayList<SimpleContactModel>();
+			
+		    while (it.hasNext()) {
+		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
+
+		        auxName = ((String)pair.getKey()).split("\\|");
+		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
+		        simpleActiveContacts.add(auxContact);
+		    }
+		    
+		    auxMod.setActiveContacts(simpleActiveContacts);
+		    
+		    it = inactiveHash.entrySet().iterator();
+			ArrayList<SimpleContactModel> simpleInactiveContacts = new ArrayList<SimpleContactModel>();
+			
+		    while (it.hasNext()) {
+		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
+
+		        auxName = ((String)pair.getKey()).split("\\|");
+		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
+		        simpleInactiveContacts.add(auxContact);
+		    }
+		    
+		    auxMod.setInactiveContacts(simpleInactiveContacts);
+		    
+		    SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
+					new AsyncCallback<Boolean>() {
+						public void onFailure(Throwable error) {
+						}
+			
+						public void onSuccess(Boolean result) {
+							if (result) {
+								saveResultInLocalSmartphone();
+							}
+							else {
+								Window.alert("An error occured. The device settings couldn't be applied.");
+							}
+						}
+					}
+			);
 		}
+	}
+	
+	public void saveResultInLocalSmartphone() {
+		//TODO 
 	}
 	
 	public void loadDeviceContacts() {
