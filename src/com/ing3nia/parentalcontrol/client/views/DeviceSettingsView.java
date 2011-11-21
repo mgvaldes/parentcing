@@ -12,12 +12,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.client.models.PropertyModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
-import com.ing3nia.parentalcontrol.services.models.ModificationModel;
-import com.ing3nia.parentalcontrol.services.models.PropertyModel;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 
 public class DeviceSettingsView {
 	/**

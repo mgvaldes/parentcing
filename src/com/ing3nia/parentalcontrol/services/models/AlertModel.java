@@ -2,6 +2,8 @@ package com.ing3nia.parentalcontrol.services.models;
 
 import java.util.ArrayList;
 
+import com.ing3nia.parentalcontrol.client.models.NotificationModel;
+
 public class AlertModel {
 	private String id;
 	

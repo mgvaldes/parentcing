@@ -13,11 +13,11 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyService;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyServiceAsync;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 
 public class LoginView {
 	/**

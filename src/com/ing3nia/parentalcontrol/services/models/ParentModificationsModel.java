@@ -1,5 +1,7 @@
 package com.ing3nia.parentalcontrol.services.models;
 
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+
 public class ParentModificationsModel {
 	private String cid;
 	private String smid;

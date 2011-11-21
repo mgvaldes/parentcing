@@ -23,13 +23,13 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.ing3nia.parentalcontrol.client.models.ContactModel;
+import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
+import com.ing3nia.parentalcontrol.client.models.PhoneModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.utils.ContactInfo;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
-import com.ing3nia.parentalcontrol.services.models.ContactModel;
-import com.ing3nia.parentalcontrol.services.models.EmergencyNumberModel;
-import com.ing3nia.parentalcontrol.services.models.PhoneModel;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.services.models.UserModel;
 
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
@@ -245,8 +245,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		
 		try {
 			UserModel userModel = new UserModel();
-			userModel.setUsername(username);
-			userModel.setPassword(password);
+			userModel.setUsr(username);
+			userModel.setPass(password);
 			
 			url = new URL("https://localhost:8888/resources/login");
 			conn = url.openConnection();

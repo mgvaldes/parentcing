@@ -1,6 +1,5 @@
 package com.ing3nia.parentalcontrol.services.models;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,7 +9,6 @@ import javax.jdo.Query;
 import com.google.appengine.api.datastore.Key;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ApplicationModel {
 	

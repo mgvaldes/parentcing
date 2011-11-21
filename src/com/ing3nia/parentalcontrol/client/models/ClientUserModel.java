@@ -2,7 +2,6 @@ package com.ing3nia.parentalcontrol.client.models;
 
 import java.util.ArrayList;
 
-import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
 
 public class ClientUserModel {
 	/**

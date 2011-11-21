@@ -1,7 +1,9 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-public class ClientAddressModel {
-	private String type;
+import com.ing3nia.parentalcontrol.models.PCAddress;
+
+public class AddressModel {
+	private int type;
 	
 	private String street;
 	
@@ -13,7 +15,7 @@ public class ClientAddressModel {
 	
 	private String country;
 
-	public ClientAddressModel(String type, String street, String city, String state,
+	public AddressModel(int type, String street, String city, String state,
 			String zipCode, String country) {
 		super();
 		this.type = type;
@@ -24,11 +26,11 @@ public class ClientAddressModel {
 		this.country = country;
 	}
 
-	public String getType() {
+	public int getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(int type) {
 		this.type = type;
 	}
 
@@ -70,5 +72,22 @@ public class ClientAddressModel {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+	
+	public PCAddress convertToPCAddress() {
+		PCAddress address = new PCAddress();
+		
+		address.setCity(this.city);
+		address.setCountry(this.country);
+		address.setState(this.state);
+		address.setStreet(this.street);
+		address.setType(this.type);
+		address.setZipCode(this.zipCode);
+		
+		return address;
+	}
+	
+	public static AddressModel convertToAddressModel(PCAddress address) {
+		return new AddressModel(address.getType(), address.getStreet(), address.getCity(), address.getState(), address.getZipCode(), address.getCountry());
 	}
 }

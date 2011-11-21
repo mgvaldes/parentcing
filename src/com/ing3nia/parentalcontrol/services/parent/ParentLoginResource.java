@@ -101,7 +101,7 @@ public class ParentLoginResource {
 		String pass_param = null;
 		try {
 			logger.info("[Parent Login] Encrypting password in MD5");
-			pass_param = EncryptionUtils.toMD5(ut.getPassword());
+			pass_param = EncryptionUtils.toMD5(ut.getPass());
 		} catch (EncodingException e1) {
 			logger.severe("[Parent Login] An error occurred when encrypting the supplied password");
 			rbuilder = Response.ok(WSStatus.INVALID_PASSWORD_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);

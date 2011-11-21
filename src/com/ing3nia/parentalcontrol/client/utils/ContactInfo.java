@@ -2,7 +2,7 @@ package com.ing3nia.parentalcontrol.client.utils;
 
 import java.util.ArrayList;
 
-import com.ing3nia.parentalcontrol.services.models.PhoneModel;
+import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 
 public class ContactInfo {
 	private String key;

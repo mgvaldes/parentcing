@@ -17,9 +17,9 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
-import com.ing3nia.parentalcontrol.services.models.ModificationModel;
 import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
 
 public class SaveSmartphoneModificationsServiceImpl extends RemoteServiceServlet implements SaveSmartphoneModificationsService {

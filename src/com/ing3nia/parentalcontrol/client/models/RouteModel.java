@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.services.models;
+package com.ing3nia.parentalcontrol.client.models;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import com.google.appengine.api.datastore.GeoPt;
 import com.ing3nia.parentalcontrol.models.PCRoute;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 
 public class RouteModel {
 	private ArrayList<LocationModel> points;

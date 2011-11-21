@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.services.models;
+package com.ing3nia.parentalcontrol.client.models;
 
 import com.ing3nia.parentalcontrol.models.PCOrganization;
 

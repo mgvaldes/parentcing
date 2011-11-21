@@ -1,8 +1,9 @@
-package com.ing3nia.parentalcontrol.services.models;
+package com.ing3nia.parentalcontrol.client.models;
 
 import java.util.ArrayList;
 
 import javax.jdo.PersistenceManager;
+
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;

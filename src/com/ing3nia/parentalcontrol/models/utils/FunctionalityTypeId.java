@@ -14,32 +14,32 @@ public enum FunctionalityTypeId {
 	/**
 	 * 
 	 */
-	BROWSER_ACCESS(1, "BROWSER_ACCESS"),
+	BROWSER_ACCESS(1, "Browser Access"),
 	
 	/**
 	 * 
 	 */
-	TOTAL_BLOCK(2, "TOTAL_BLOCK"),
+	TOTAL_BLOCK(2, "Total Block"),
 	
 	/**
 	 * 
 	 */
-	OUTGOING_CALLS(3, "OUTGOING_CALLS"),
+	OUTGOING_CALLS(3, "Outgoing Calls"),
 	
 	/**
 	 * 
 	 */
-	INCOMMING_CALLS(4, "INCOMMING_CALLS"),
+	INCOMMING_CALLS(4, "Incomming Calls"),
 	
 	/**
 	 * 
 	 */
-	OUTGOING_SMS(5, "OUTGOING_SMS"),
+	OUTGOING_SMS(5, "Outgoing SMS"),
 	
 	/**
 	 * 
 	 */
-	INCOMMING_SMS(6, "INCOMMING_SMS");
+	INCOMMING_SMS(6, "Incomming SMS");
 	
 	private int id;
 	
@@ -66,7 +66,7 @@ public enum FunctionalityTypeId {
 		this.description = description;
 	}
 	
-	public String findById(int id) {
+	public static String findById(int id) {
 		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
 		
 		for (FunctionalityTypeId f : funcs) {
@@ -76,5 +76,17 @@ public enum FunctionalityTypeId {
 		}
 		
 		return "";
+	}
+	
+	public static int findByDescription(String desc) {
+		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
+		
+		for (FunctionalityTypeId f : funcs) {
+			if (f.getDescription().equals(desc)) {
+				return f.getId();
+			}
+		}
+		
+		return -1;
 	}
 }

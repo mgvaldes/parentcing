@@ -1,7 +1,6 @@
-package com.ing3nia.parentalcontrol.services.models;
+package com.ing3nia.parentalcontrol.client.models;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import com.ing3nia.parentalcontrol.models.PCProperty;
 

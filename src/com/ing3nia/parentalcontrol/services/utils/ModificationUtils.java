@@ -12,6 +12,11 @@ import javax.jdo.Query;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.client.models.PropertyModel;
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
+import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCProperty;
@@ -20,11 +25,6 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.services.exceptions.ModificationParsingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.models.EmergencyNumberModel;
-import com.ing3nia.parentalcontrol.services.models.ModificationModel;
-import com.ing3nia.parentalcontrol.services.models.PropertyModel;
-import com.ing3nia.parentalcontrol.services.models.RuleModel;
-import com.ing3nia.parentalcontrol.services.models.SimpleContactModel;
 
 /**
  * Contain a series of utils methods to manipulate and query smarpthone modifications

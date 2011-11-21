@@ -1,5 +1,7 @@
 package com.ing3nia.parentalcontrol.services.models;
 
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+
 public class RegisterSmartphoneModel {
 	private String usr;
 	

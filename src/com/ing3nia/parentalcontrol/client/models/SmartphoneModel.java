@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.services.models;
+package com.ing3nia.parentalcontrol.client.models;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,6 +20,8 @@ import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.ApplicationModel;
+import com.ing3nia.parentalcontrol.services.models.DeviceModel;
 import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
@@ -67,7 +69,7 @@ public class SmartphoneModel {
 			ArrayList<EmergencyNumberModel> addedEmergencyNumbers,
 			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers,
 			ArrayList<RouteModel> routes, ArrayList<PropertyModel> properties,
-			ModificationModel modification, ArrayList<RuleModel> rules) {
+			ModificationModel modification, ArrayList<RuleModel> rules, ArrayList<NotificationModel> alerts) {
 		super();
 		this.id = id;
 		this.location = location;
@@ -83,6 +85,7 @@ public class SmartphoneModel {
 		this.properties = properties;
 		this.modification = modification;
 		this.rules = rules;
+		this.alerts = alerts;
 	}
 
 	public String getId() {
@@ -207,6 +210,14 @@ public class SmartphoneModel {
 		this.keyId = keyId;
 	}
 
+	public ArrayList<NotificationModel> getAlerts() {
+		return alerts;
+	}
+
+	public void setAlerts(ArrayList<NotificationModel> alerts) {
+		this.alerts = alerts;
+	}
+
 	public PCSmartphone convertToPCSmartphone() throws SessionQueryException {
 
 		PCSmartphone smartphone = new PCSmartphone();
@@ -267,13 +278,13 @@ public class SmartphoneModel {
 			}
 		}
 		
-		Iterator it = auxContactsHashMap.entrySet().iterator();
+		Iterator<Map.Entry<String, ArrayList<PhoneModel>>> it = auxContactsHashMap.entrySet().iterator();
 		ContactModel auxContact;
-		Map.Entry pair;
+		Map.Entry<String, ArrayList<PhoneModel>> pair;
 		String[] auxName; 
 		
 	    while (it.hasNext()) {
-	        pair = (Map.Entry)it.next();	        
+	        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
 
 	        auxName = ((String)pair.getKey()).split("\\|");
 	        auxContact = new ContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());

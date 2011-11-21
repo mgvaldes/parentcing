@@ -116,7 +116,7 @@ public class RuleListView {
 			@Override
 			public void update(int index, RuleModel object, String value) {
 				// The user clicked on the edit button.
-				editRule();
+				editRule(object);
 			}
 		});
 		
@@ -149,7 +149,7 @@ public class RuleListView {
 		centerContent.add(viewContent);
 	}
 	
-	public void editRule() {
-		
+	public void editRule(RuleModel editRule) {
+		//Load NewRuleView with editRule Data.
 	}
 }

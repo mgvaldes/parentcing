@@ -5,19 +5,18 @@ import java.util.List;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
-import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.views.models.ContactModel;
 
 public class DeviceContactListView {
@@ -56,22 +55,37 @@ public class DeviceContactListView {
 	/**
 	 * List of contacts of device.
 	 */
-	private List<ContactModel> contacts = new ArrayList<ContactModel>();
+	private List<ContactModel> contacts;
+	
+	private List<ContactModel> activeContacts;
+	
+	private List<ContactModel> inactiveContacts;
 	
 	/**
 	 * Table where the alerts are displayed.
 	 */
 	private CellTable<ContactModel> contactTable = new CellTable<ContactModel>();
 	
-	public DeviceContactListView(HTMLPanel centerContent) {
-		this.centerContent = centerContent;
+	private SimplePager pager;
+	
+	private Button saveButton;
+	
+	public DeviceContactListView(HTMLPanel centerContent, ArrayList<ContactModel> activeContacts, ArrayList<ContactModel> inactiveContacts) {
+		this.contacts = new ArrayList<ContactModel>();
+		this.contacts.addAll(activeContacts);
+		this.contacts.addAll(inactiveContacts);
+		this.activeContacts = new ArrayList<ContactModel>();
+		this.inactiveContacts = new ArrayList<ContactModel>();
+		this.centerContent = centerContent;		
 		this.viewContent = new HTMLPanel("");
 		this.contactsLabel = new Label("Contacts:");
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");
 		this.emergencyContactsButton = new Button("Emergency Contacts");
 		this.contactTable = new CellTable<ContactModel>(10);
+		this.pager = new SimplePager();
 		this.contacts = new ArrayList<ContactModel>();
+		this.saveButton = new Button("Save");
 		this.centerContent.clear();
 		
 		addTestDeviceContacts();
@@ -144,7 +158,15 @@ public class DeviceContactListView {
 		disallowColumn.setFieldUpdater(new FieldUpdater<ContactModel, String>() {
 			@Override
 			public void update(int index, ContactModel object, String value) {
+				//Change button's style
+				TableRowElement row = contactTable.getRowElement(index);
 				
+				//Add to inactive contacts;
+				if (activeContacts.contains(object)) {
+					activeContacts.remove(object);
+				}
+				
+				inactiveContacts.add(object);
 			}
 		});
 		
@@ -163,7 +185,15 @@ public class DeviceContactListView {
 		allowColumn.setFieldUpdater(new FieldUpdater<ContactModel, String>() {
 			@Override
 			public void update(int index, ContactModel object, String value) {
+				//Change button's style
+				TableRowElement row = contactTable.getRowElement(index);
 				
+				//Add to active contacts;
+				if (inactiveContacts.contains(object)) {
+					inactiveContacts.remove(object);
+				}
+				
+				activeContacts.add(object);
 			}
 		});
 		
@@ -199,21 +229,30 @@ public class DeviceContactListView {
 		ListDataProvider<ContactModel> dataProvider = new ListDataProvider<ContactModel>(contacts);
 		dataProvider.addDataDisplay(contactTable);
 		
-		//creating paging controls
-		SimplePager pager = new SimplePager();
-		SimplePager pager2 = new SimplePager();
+		//creating paging controls		
 		pager.setDisplay(contactTable);
-		pager2.setDisplay(contactTable);
-		
-		pager2.setStylePrimaryName("tablePager");
-		pager2.setStyleName("");
-		viewContent.add(pager2);
-		viewContent.add(contactTable);
 		pager.setStylePrimaryName("tablePager");
 		pager.setStyleName("");
+		
+		viewContent.add(pager);
+		viewContent.add(contactTable);		
 		viewContent.add(pager);
 		
+		saveButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				saveContacts();
+			}
+		});
+		
 		this.centerContent.add(this.viewContent);
+	}
+	
+	public void saveContacts() {
+		if (!activeContacts.isEmpty() && !inactiveContacts.isEmpty()) {
+			ModificationModel auxMod = new ModificationModel();			
+		}
 	}
 	
 	public void loadDeviceContacts() {

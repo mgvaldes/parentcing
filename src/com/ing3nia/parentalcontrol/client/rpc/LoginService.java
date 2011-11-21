@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.ing3nia.parentalcontrol.services.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
 @RemoteServiceRelativePath("login")
 public interface LoginService extends RemoteService {

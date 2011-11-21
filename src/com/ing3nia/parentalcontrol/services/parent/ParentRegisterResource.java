@@ -126,7 +126,7 @@ public class ParentRegisterResource {
 		
 		try {
 			logger.info("[Parent Register] Encrypting password in MD5");
-			encrypted_pass = EncryptionUtils.toMD5(ut.getPassword());
+			encrypted_pass = EncryptionUtils.toMD5(ut.getPass());
 		} catch (EncodingException e1) {
 			logger.severe("[Parent Register] An error occurred when encrypting the supplied password");
 			rbuilder = Response.ok(WSStatus.INVALID_PASSWORD_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);

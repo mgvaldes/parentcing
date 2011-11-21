@@ -1,15 +1,13 @@
-package com.ing3nia.parentalcontrol.services.models;
+package com.ing3nia.parentalcontrol.client.models;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCRule;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class RuleModel {
@@ -18,6 +16,8 @@ public class RuleModel {
 	private String startDate;
 	
 	private String endDate;
+	
+	private String name;
 	
 	private ArrayList<Integer> disabledFunctionalities;
 	
@@ -28,20 +28,22 @@ public class RuleModel {
 	}
 
 	public RuleModel(String keyId, String startDate, String endDate,
-			ArrayList<Integer> disabledFunctionalities) {
+			ArrayList<Integer> disabledFunctionalities, String name) {
 		super();
 		this.keyId = keyId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.disabledFunctionalities = disabledFunctionalities;
+		this.name = name;
 	}
 	
 	public RuleModel(String startDate, String endDate,
-			ArrayList<Integer> disabledFunctionalities) {
+			ArrayList<Integer> disabledFunctionalities, String name) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.disabledFunctionalities = disabledFunctionalities;
+		this.name = name;
 	}
 
 	public String getStartDate() {
@@ -84,6 +86,14 @@ public class RuleModel {
 
 	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public static RuleModel convertToRuleModel(PCRule rule) {

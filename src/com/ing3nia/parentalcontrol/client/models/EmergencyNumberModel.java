@@ -1,7 +1,9 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-public class ClientEmergencyNumberModel {
-	private String key;
+import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
+
+public class EmergencyNumberModel {
+	private String keyId;
 	
 	private String country;
 	
@@ -9,20 +11,20 @@ public class ClientEmergencyNumberModel {
 	
 	private String description;
 
-	public ClientEmergencyNumberModel() {
+	public EmergencyNumberModel() {
 		super();
 	}
 
-	public ClientEmergencyNumberModel(String key, String country, String number,
+	public EmergencyNumberModel(String keyId, String country, String number,
 			String description) {
 		super();
-		this.key = key;
+		this.keyId = keyId;
 		this.country = country;
 		this.number = number;
 		this.description = description;
 	}
 	
-	public ClientEmergencyNumberModel(String country, String number,
+	public EmergencyNumberModel(String country, String number,
 			String description) {
 		super();
 		this.country = country;
@@ -54,11 +56,15 @@ public class ClientEmergencyNumberModel {
 		this.description = description;
 	}
 	
-	public String getKey() {
-		return key;
+	public String getKeyId() {
+		return keyId;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
+	public static EmergencyNumberModel convertToEmergencyNumberModel(PCEmergencyNumber emergencyNumber) {
+		return new EmergencyNumberModel(emergencyNumber.getCountry(), emergencyNumber.getNumber().getNumber(), emergencyNumber.getDescription());
 	}
 }
