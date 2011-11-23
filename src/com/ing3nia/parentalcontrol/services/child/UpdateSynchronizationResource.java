@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.client.models.utils.ModificationModelUtils;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
@@ -174,7 +175,7 @@ public class UpdateSynchronizationResource {
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);					
 			
 			logger.info("[Update Synchronization Service] Converting PCModification en ModificationModel.");
-			ModificationModel modModel = ModificationModel.convertToModificationModel(savedSmartphone.getModification());
+			ModificationModel modModel = ModificationModelUtils.convertToModificationModel(savedSmartphone.getModification());
 			
 			pm.close();
 			

@@ -22,6 +22,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
@@ -79,7 +80,7 @@ public class TotalSynchronizationResource {
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
 			logger.info("[Total Synchronization Service] Converting PCSmartphone en SmartphoneModel.");
-			smartphoneModel = SmartphoneModel.convertToSmartphoneModel(savedSmartphone, pm);
+			smartphoneModel = SmartphoneModelUtils.convertToSmartphoneModel(savedSmartphone, pm);
 		}
 		catch (IllegalArgumentException ex) {
 			throw ex;

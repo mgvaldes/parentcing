@@ -1,7 +1,5 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-import com.google.appengine.api.datastore.GeoPt;
-
 public class LocationModel {
 	private String latitude;
 	
@@ -33,13 +31,7 @@ public class LocationModel {
 		this.longitude = longitude;
 	}
 	
-	public GeoPt convertToGeoPt() {
-		GeoPt location = new GeoPt(new Float(latitude), new Float(longitude));
-		
-		return location;
-	}
+
 	
-	public static LocationModel convertToLocationModel(GeoPt point) {
-		return new LocationModel(String.valueOf(point.getLatitude()), String.valueOf(point.getLongitude()));
-	}
+
 }

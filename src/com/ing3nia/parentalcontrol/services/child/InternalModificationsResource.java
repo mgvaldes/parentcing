@@ -22,6 +22,7 @@ import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
+import com.ing3nia.parentalcontrol.client.models.utils.LocationModelUtils;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
@@ -128,7 +129,8 @@ public class InternalModificationsResource {
 			logger.info("[Internal Modifications Service] Searching for smartphone in DB.");
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
-			savedSmartphone.setLocation(internalModsModel.getLocation().convertToGeoPt());
+			//savedSmartphone.setLocation(internalModsModel.getLocation().convertToGeoPt());
+			savedSmartphone.setLocation(LocationModelUtils.convertToGeoPt(internalModsModel.getLocation()));
 			
 			PCModification modification = savedSmartphone.getModification();
 			

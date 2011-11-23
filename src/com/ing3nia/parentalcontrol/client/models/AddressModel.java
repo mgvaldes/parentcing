@@ -1,6 +1,5 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-import com.ing3nia.parentalcontrol.models.PCAddress;
 
 public class AddressModel {
 	private int type;
@@ -74,20 +73,5 @@ public class AddressModel {
 		this.country = country;
 	}
 	
-	public PCAddress convertToPCAddress() {
-		PCAddress address = new PCAddress();
-		
-		address.setCity(this.city);
-		address.setCountry(this.country);
-		address.setState(this.state);
-		address.setStreet(this.street);
-		address.setType(this.type);
-		address.setZipCode(this.zipCode);
-		
-		return address;
-	}
-	
-	public static AddressModel convertToAddressModel(PCAddress address) {
-		return new AddressModel(address.getType(), address.getStreet(), address.getCity(), address.getState(), address.getZipCode(), address.getCountry());
-	}
+
 }

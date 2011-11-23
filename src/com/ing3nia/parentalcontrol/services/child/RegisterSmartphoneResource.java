@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+import com.ing3nia.parentalcontrol.client.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -28,6 +29,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
+import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
 
 @Path("reg-sph")
 public class RegisterSmartphoneResource {
@@ -122,7 +124,9 @@ public class RegisterSmartphoneResource {
     	else {
     		logger.info("[Register Smartphone Service] Creating PCSmartphone with input smartphone info.");
     		
-    		PCSmartphone newSmartphone = registerSmartphoneModel.getSmartphone().convertToPCSmartphone();    		
+    		//PCSmartphone newSmartphone = registerSmartphoneModel.getSmartphone().convertToPCSmartphone();    		
+    		PCSmartphone newSmartphone = SmartphoneModelUtils.convertToPCSmartphone(registerSmartphoneModel.getSmartphone());    		
+    		
     		
     		logger.info("[Register Smartphone Service] Saving PCSmartphone with input smartphone info.");
     		pm.makePersistent(newSmartphone);

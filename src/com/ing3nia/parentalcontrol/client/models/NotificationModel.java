@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import javax.jdo.PersistenceManager;
 
 import com.ing3nia.parentalcontrol.models.PCNotification;
-import com.ing3nia.parentalcontrol.models.utils.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class NotificationModel {

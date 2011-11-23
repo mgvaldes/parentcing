@@ -27,6 +27,7 @@ import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.utils.ContactInfo;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -60,7 +61,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				for (SmartphoneModel sph : smartphones) {
 					auxObject = callParentSmartphoneDetails(cid, sph.getKeyId());
 					auxSmartphone = gson.fromJson(auxObject, sphType); 
-					sph.updateSmartphone(auxSmartphone);
+					
+					SmartphoneModelUtils.updateSmartphone(auxSmartphone, sph);
+					//sph.updateSmartphone(auxSmartphone);
 					
 					auxArray = auxObject.getAsJsonArray("inactive_cts");
 					auxContacts = parseContacts(auxArray);

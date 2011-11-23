@@ -1,7 +1,5 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
-
 public class EmergencyNumberModel {
 	private String keyId;
 	
@@ -64,7 +62,4 @@ public class EmergencyNumberModel {
 		this.keyId = keyId;
 	}
 
-	public static EmergencyNumberModel convertToEmergencyNumberModel(PCEmergencyNumber emergencyNumber) {
-		return new EmergencyNumberModel(emergencyNumber.getCountry(), emergencyNumber.getNumber().getNumber(), emergencyNumber.getDescription());
-	}
 }
