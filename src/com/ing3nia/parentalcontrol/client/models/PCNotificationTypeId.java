@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.models.utils;
+package com.ing3nia.parentalcontrol.client.models;
 
 /**
  *  
