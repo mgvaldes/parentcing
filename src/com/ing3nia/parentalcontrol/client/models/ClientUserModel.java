@@ -1,60 +1,53 @@
 package com.ing3nia.parentalcontrol.client.models;
+import java.util.ArrayList;
+
 
 public class ClientUserModel {
-	private String key;
+	/**
+	 * String that represents the key of this PCAdmin object.
+	 */
+	String key;
 	
 	/**
-	 * The user name of the parent
+	 * Admin user's username.
 	 */
-	private String usr;
+	String username;
 	
 	/**
-	 * Specifies the password of the user.
+	 * Admin user's password.
 	 */
-	private String pass;
-
-	/**
-	 * The email of the parent
-	 */
-	private String email;
+	String password;
 	
 	/**
-	 * The name of the parent
+	 * Smartphone list associated to a user.
 	 */
+	ArrayList<SmartphoneModel> smartphones;
 	
-	private String name;
-
-	public String getUsername() {
-		return usr;
+	/**
+	 * Admin users added by owner user.
+	 */
+	ArrayList<ClientAdminUserModel> admins;
+	
+	/**
+	 * User help desk tickets
+	 */
+	ArrayList<TicketModel> tickets;
+	
+	public ClientUserModel(String key, String username, String password, ArrayList<SmartphoneModel> smartphones, ArrayList<ClientAdminUserModel> admins, ArrayList<TicketModel> tickets) {
+		this.key = key;
+		this.username = username;
+		this.password = password;
+		this.smartphones = smartphones;
+		this.admins = admins;
+		this.tickets = tickets;
 	}
-
-	public void setUsername(String username) {
-		this.usr = username;
+	
+	public ClientUserModel(String username, String password) {
+		this.username = username;
+		this.password = password;
 	}
-
-	public String getPassword() {
-		return pass;
-	}
-
-	public void setPassword(String password) {
-		this.pass = password;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	
+	public ClientUserModel(){}
 
 	public String getKey() {
 		return key;
@@ -64,20 +57,52 @@ public class ClientUserModel {
 		this.key = key;
 	}
 
-	public String getUsr() {
-		return usr;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setUsr(String usr) {
-		this.usr = usr;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
-	public String getPass() {
-		return pass;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setPass(String pass) {
-		this.pass = pass;
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public ArrayList<SmartphoneModel> getSmartphones() {
+		return smartphones;
+	}
+
+	public void setSmartphones(ArrayList<SmartphoneModel> smartphones) {
+		this.smartphones = smartphones;
+	}
+
+	public ArrayList<ClientAdminUserModel> getAdmins() {
+		return admins;
+	}
+
+	public void setAdmins(ArrayList<ClientAdminUserModel> admins) {
+		this.admins = admins;
+	}
+
+
+	public ArrayList<TicketModel> getTickets() {
+		return tickets;
+	}
+
+	public void setTickets(ArrayList<TicketModel> tickets) {
+		this.tickets = tickets;
+	}
+
+	public ArrayList<AlertModel> getUserAlertList(){
+		ArrayList<AlertModel> alertList = new ArrayList<AlertModel>();
+		for(SmartphoneModel smartphone : this.getSmartphones()){
+			alertList.addAll(smartphone.getAlerts());
+		}
 	}
 	
 }

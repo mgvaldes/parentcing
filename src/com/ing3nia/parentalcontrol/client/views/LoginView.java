@@ -2,6 +2,13 @@ package com.ing3nia.parentalcontrol.client.views;
 
 import org.apache.http.impl.conn.tsccm.WaitingThread;
 
+import java.util.ArrayList;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -9,6 +16,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
+import com.google.gwt.user.client.ui.TextBox;
+import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.rpc.LoginService;
+import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.UserKeyService;
+import com.ing3nia.parentalcontrol.client.rpc.UserKeyServiceAsync;
 
 public class LoginView {
 	/**
@@ -42,7 +56,7 @@ public class LoginView {
 	 * Password text box.
 	 */
 	private PasswordTextBox passwordTextBox;
-	
+
 	/**
 	 * Remember me check box.
 	 */
@@ -53,14 +67,18 @@ public class LoginView {
 	 */
 	private Button signInButton;
 	
-	public LoginView(HTMLPanel centerContent) {
+	private ClientUserModel userModel;
+	
+	public LoginView(HTMLPanel centerContent, ClientUserModel userModel) {
 		this.centerContent = centerContent;
+		this.userModel = userModel;
 		
 		viewContent = new HTMLPanel("");
 		usernameLabel = new Label("Username:");
 		usernameTextBox = new TextBox();
 		passwordLabel = new Label("Password:");
 		passwordTextBox = new PasswordTextBox();
+
 		rememberMeCheckBox = new CheckBox("Remember me");
 		signInButton = new Button("Sign In");
 		
@@ -73,6 +91,15 @@ public class LoginView {
 		viewContent.add(passwordLabel);
 		viewContent.add(passwordTextBox);
 		viewContent.add(rememberMeCheckBox);
+		
+		signInButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				callLoginService();
+			}
+		});
+		
 		viewContent.add(signInButton);
 		
 		centerContent.add(viewContent);
@@ -88,4 +115,47 @@ public class LoginView {
 		}
 	}
 
+	public void callLoginService() {
+		final String usr = this.usernameTextBox.getText();
+		final String pass = this.passwordTextBox.getText();
+		final ClientUserModel auxUserModel = this.userModel;
+		
+		UserKeyServiceAsync userKeyService = GWT.create(UserKeyService.class);
+		userKeyService.getUserKey(usr, pass, 
+				new AsyncCallback<String>() {
+					public void onFailure(Throwable error) {
+					}
+		
+					public void onSuccess(String userKey) {
+						if (userKey != null) {
+							auxUserModel.setKey(userKey);
+						}
+						else {
+							Window.alert("An error occured. The smartphones could not be loaded.");
+						}
+					}
+				}
+		);
+		
+		this.userModel.setKey(auxUserModel.getKey());
+		
+		LoginServiceAsync loginService = GWT.create(LoginService.class);
+		loginService.login(usr, pass, 
+				new AsyncCallback<ArrayList<SmartphoneModel>>() {
+					public void onFailure(Throwable error) {
+					}
+		
+					public void onSuccess(ArrayList<SmartphoneModel> smartphones) {
+						if (smartphones != null) {
+							auxUserModel.setSmartphones(smartphones);
+						}
+						else {
+							Window.alert("An error occured. The smartphones could not be loaded.");
+						}
+					}
+				}
+		);
+		
+		this.userModel.setSmartphones(auxUserModel.getSmartphones());
+	}
 }

@@ -13,9 +13,8 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
-import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
-import com.ing3nia.parentalcontrol.client.views.models.TicketModel;
+
+import com.ing3nia.parentalcontrol.client.models.TicketModel;
 
 public class TicketListView {
 	/**

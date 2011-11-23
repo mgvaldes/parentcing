@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.services.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.jdo.PersistenceManager;
@@ -37,34 +38,37 @@ public class SmartphoneUtils {
 	/**
 	 * Returns smartphone general information as a json object
 	 */
-	public static JsonObject getSmartphoneGeneralInfo(PCSmartphone pcSmart){
+	public static JsonObject getSmartphoneGeneralInfo(Key pcSmartKey){
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
+		PCSmartphone pcSmart = pm.getObjectById(PCSmartphone.class, pcSmartKey);
+		
 		JsonObject smpJson = new JsonObject();
-		smpJson.addProperty("id", KeyFactory.keyToString(pcSmart.getKey()));
+		smpJson.addProperty("id", KeyFactory.keyToString(pcSmartKey));
 		smpJson.addProperty("name",pcSmart.getName());
 		
 		JsonObject deviceJson = new JsonObject();
 		PCDevice device = pcSmart.getDevice();
 		deviceJson.addProperty("model", device.getModel());
 		deviceJson.addProperty("version", device.getVersion());
-		deviceJson.addProperty("os", device.getOs().getOsType());
+		deviceJson.addProperty("type", device.getOs().getId());
 		smpJson.add("device", deviceJson);
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss a");
 		
 		JsonArray alertsJson = new JsonArray();
 		for(Key notKey : pcSmart.getNotifications()){
 			PCNotification notif = (PCNotification) pm.getObjectById(PCNotification.class, notKey);
 			JsonObject alert = new JsonObject();
-			alert.addProperty("type", String.valueOf(notif.getType()));
-			alert.addProperty("verbose", notif.getMessage());
-			alert.addProperty("date", notif.getDate().toString());
+			alert.addProperty("type", notif.getType());
+			alert.addProperty("date", formatter.format(notif.getDate()));
 			alertsJson.add(alert);
 		}
 		smpJson.add("alerts", alertsJson);
 		
 		JsonObject locJson = new JsonObject();
-		locJson.addProperty("lat", pcSmart.getLocation().getLatitude());
-		locJson.addProperty("long", pcSmart.getLocation().getLongitude());
+		locJson.addProperty("latitude", pcSmart.getLocation().getLatitude());
+		locJson.addProperty("longitude", pcSmart.getLocation().getLongitude());
 		
 		smpJson.add("location", locJson);
 		pm.close();
@@ -80,8 +84,8 @@ public class SmartphoneUtils {
 	public static JsonArray getChildrenSmartphonesInfo(PCUser user){
 		JsonArray smpList = new JsonArray();
 		
-		for(PCSmartphone smartphone : user.getSmartphones()){
-			JsonObject smpGrlInfo = getSmartphoneGeneralInfo(smartphone);
+		for(Key smartphoneKey : user.getSmartphones()){
+			JsonObject smpGrlInfo = getSmartphoneGeneralInfo(smartphoneKey);
 			smpList.add(smpGrlInfo);
 		}
 		
@@ -109,10 +113,12 @@ public class SmartphoneUtils {
 			JsonArray contactNumsJson = new JsonArray();
 			
 			PCPhone p = (PCPhone)pm.getObjectById(PCPhone.class, contact.getPhone());
-			JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
-			contactNumsJson.add(prim);
+			JsonObject phoneJson = new JsonObject();
+			phoneJson.addProperty("type", p.getType());
+			phoneJson.addProperty("phone", p.getPhoneNumber());
+			contactNumsJson.add(phoneJson);
 			
-			contactJson.add("nums", contactNumsJson);
+			contactJson.add("num", contactNumsJson);
 			inactiveArray.add(contactJson);
 		}
 		detailsJson.add("inactive_cts", inactiveArray);
@@ -130,10 +136,12 @@ public class SmartphoneUtils {
 			JsonArray contactNumsJson = new JsonArray();
 			
 			PCPhone p = (PCPhone)pm.getObjectById(PCPhone.class, contact.getPhone());
-			JsonPrimitive prim  = new JsonPrimitive(p.getPhoneNumber());
-			contactNumsJson.add(prim);
+			JsonObject phoneJson = new JsonObject();
+			phoneJson.addProperty("type", p.getType());
+			phoneJson.addProperty("phone", p.getPhoneNumber());
+			contactNumsJson.add(phoneJson);
 			
-			contactJson.add("nums", contactNumsJson);
+			contactJson.add("num", contactNumsJson);
 			activeArray.add(contactJson);
 		}
 		detailsJson.add("active_cts", activeArray);
@@ -144,14 +152,14 @@ public class SmartphoneUtils {
 		for(Key contactKey : smartphone.getAddedEmergencyNumbers()){
 			JsonObject contactJson = new JsonObject();
 			PCEmergencyNumber contact = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, contactKey);
-			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
-			contactJson.addProperty("ctry",contact.getCountry());
-			contactJson.addProperty("desc", contact.getDescription());
-			contactJson.addProperty("num", contact.getNumber().getNumber());
+			contactJson.addProperty("keyId", KeyFactory.keyToString(contactKey));
+			contactJson.addProperty("country",contact.getCountry());
+			contactJson.addProperty("description", contact.getDescription());
+			contactJson.addProperty("number", contact.getNumber().getNumber());
 			
 			emergencyArray.add(contactJson);
 		}
-		detailsJson.add("added_em_nums", emergencyArray);
+		detailsJson.add("addedEmergencyNumbers", emergencyArray);
 		
 		//Obtaining and parsing deleted emergency numbers
 		JsonArray emergencyDeletedArray = new JsonArray();
@@ -159,14 +167,14 @@ public class SmartphoneUtils {
 		for(Key contactKey : smartphone.getDeletedEmergencyNumbers()){
 			JsonObject contactJson = new JsonObject();
 			PCEmergencyNumber contact = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, contactKey);
-			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
-			contactJson.addProperty("ctry",contact.getCountry());
-			contactJson.addProperty("desc", contact.getDescription());
-			contactJson.addProperty("num", contact.getNumber().getNumber());
+			contactJson.addProperty("keyId", KeyFactory.keyToString(contactKey));
+			contactJson.addProperty("country",contact.getCountry());
+			contactJson.addProperty("description", contact.getDescription());
+			contactJson.addProperty("number", contact.getNumber().getNumber());
 			
 			emergencyDeletedArray.add(contactJson);
 		}
-		detailsJson.add("del_em_nums", emergencyDeletedArray);
+		detailsJson.add("deletedEmergencyNumbers", emergencyDeletedArray);
 		
 		//Obtaining and parsing properties
 		JsonArray propsArray = new JsonArray();
@@ -175,9 +183,9 @@ public class SmartphoneUtils {
 			for (PCProperty property : smartphone.getProperties()) {
 				JsonObject propertyJson = new JsonObject();
 
-				propertyJson.addProperty("id", KeyFactory.keyToString(property.getKey()));
-				propertyJson.addProperty("prop_id", property.getId());
-				propertyJson.addProperty("desc", property.getDescription());
+				propertyJson.addProperty("keyId", KeyFactory.keyToString(property.getKey()));
+				propertyJson.addProperty("id", property.getId());
+				propertyJson.addProperty("description", property.getDescription());
 				propertyJson.addProperty("value", property.getValue());
 
 				propsArray.add(propertyJson);
@@ -187,21 +195,22 @@ public class SmartphoneUtils {
 
 		//Obtaining and parsing rules
 		JsonArray rulesArray = new JsonArray();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 		if (smartphone.getRules() != null) {
 			for (PCRule rule : smartphone.getRules()) {
 				JsonObject ruleJson = new JsonObject();
 
-				ruleJson.addProperty("id", KeyFactory.keyToString(rule.getKey()));
-				ruleJson.addProperty("init", rule.getStartDate().toString());
-				ruleJson.addProperty("end", rule.getEndDate().toString());
+				ruleJson.addProperty("keyId", KeyFactory.keyToString(rule.getKey()));
+				ruleJson.addProperty("startDate", formatter.format(rule.getStartDate()));
+				ruleJson.addProperty("endDate", formatter.format(rule.getEndDate()));
 
 				JsonArray funcArray = new JsonArray();
 				ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectsById(rule.getDisabledFunctionalities());
 				for (PCFunctionality func : disabledFuncionalities) {
 					funcArray.add(new JsonPrimitive(func.getId()));
 				}
-				ruleJson.add("func", funcArray);
+				ruleJson.add("disabledFunctionalities", funcArray);
 				rulesArray.add(ruleJson);
 			}
 		}

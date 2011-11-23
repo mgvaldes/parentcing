@@ -1,10 +1,5 @@
 package com.ing3nia.parentalcontrol.services.models;
 
-import java.util.ArrayList;
-import javax.jdo.annotations.Persistent;
-import com.google.appengine.api.datastore.Email;
-import com.ing3nia.parentalcontrol.models.PCSmartphone;
-
 /**
  * Represents parent user in central system.
  * Field names appear just as they will be passed in the web service call
@@ -18,6 +13,11 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
  */
 
 public class UserModel {
+	/**
+	 * The user's key.
+	 */
+	private String key;
+	
 	/**
 	 * The user name of the parent
 	 */
@@ -39,20 +39,32 @@ public class UserModel {
 	
 	private String name;
 
-	public String getUsername() {
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
+	}
+
+	public String getUsr() {
 		return usr;
 	}
 
-	public void setUsername(String username) {
-		this.usr = username;
+	public void setUsr(String usr) {
+		this.usr = usr;
 	}
 
-	public String getPassword() {
+	public String getPass() {
 		return pass;
 	}
 
-	public void setPassword(String password) {
-		this.pass = password;
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	public String getUsername() {
+		return usr;
 	}
 
 	public String getEmail() {

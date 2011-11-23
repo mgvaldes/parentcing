@@ -9,7 +9,7 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.HelpDeskUserClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.LogoImageClickHandler;
-import com.ing3nia.parentalcontrol.client.models.ClientSmartphoneModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
@@ -32,6 +32,7 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 
 
+
 /**
  * Entry point classes define <code>onModuleLoad()</code>.
  */
@@ -51,6 +52,7 @@ public class ParentalControl implements EntryPoint {
 	}
 	
 	public void loadPage(){
+
 		
 		// Check if user session is active
 		String userCookie = CookieHandler.getPCCookie();
@@ -86,35 +88,34 @@ public class ParentalControl implements EntryPoint {
 
 	private ClientUserModel getDummyUser() {
 		ClientUserModel user = new ClientUserModel();
-		user.setName("Nombre de usuario");
-		user.setEmail("javierfdr@gmail.com");
+		user.setUsername("javierfdr@gmail.com");
 		return user;
 	}
 
-	private ArrayList<ClientSmartphoneModel> getDummySmartphoneList() {
-		ArrayList<ClientSmartphoneModel> slist = new ArrayList<ClientSmartphoneModel>();
-		ClientSmartphoneModel s1 = new ClientSmartphoneModel();
+	private ArrayList<SmartphoneModel> getDummySmartphoneList() {
+		/*
+		ArrayList<SmartphoneModel> slist = new ArrayList<SmartphoneModel>();
+		SmartphoneModel s1 = new SmartphoneModel();
 		s1.setName("Michael's iPhone");
 
-		ClientSmartphoneModel s2 = new ClientSmartphoneModel();
+		SmartphoneModel s2 = new SmartphoneModel();
 		s2.setName("John's Android");
 
-		ClientSmartphoneModel s3 = new ClientSmartphoneModel();
+		SmartphoneModel s3 = new SmartphoneModel();
 		s3.setName("Julie");
 
 		slist.add(s1);
 		slist.add(s2);
 		slist.add(s3);
-
-		return slist;
+*/
+		return new ArrayList<SmartphoneModel>();
 	}
 	
 	public void loadPCAdmin(ClientUserModel usermodel){
 		  PCBaseUIBinder pcbase = new PCBaseUIBinder();
 		  RootPanel.get().add(pcbase);
 		  
-		  ClientUserModel user = getDummyUser(); 
-		 
+		  ClientUserModel user = getDummyUser();
 		  
 		  BaseViewHandler baseViewHandler = new BaseViewHandler(pcbase);
 		  baseViewHandler.setUser(user);
@@ -127,7 +128,7 @@ public class ParentalControl implements EntryPoint {
 		  pcbase.getPclogo().addClickHandler(logoClickHandler);
  
 		  //TODO ask for user type
-		  HelpDeskUserClickHandler helpDeskClickHandler =  new HelpDeskUserClickHandler(baseViewHandler);
+		  HelpDeskUserClickHandler helpDeskClickHandler =  new HelpDeskUserClickHandler(baseViewHandler, user.getKey(), user.getTickets());
 		  helpDeskClickHandler.setUserHelpDeskClickHandlers();
 		  pcbase.getHelpDesk().addClickHandler(helpDeskClickHandler);
 	  
@@ -175,6 +176,7 @@ public class ParentalControl implements EntryPoint {
 		}
 	}
 
+
 	public Image getLoadingImage() {
 		return loadingImage;
 	}
@@ -182,5 +184,5 @@ public class ParentalControl implements EntryPoint {
 	public void setLoadingImage(Image loadingImage) {
 		this.loadingImage = loadingImage;
 	}
-	
+
 }

@@ -6,7 +6,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -24,7 +24,6 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
-import com.ing3nia.parentalcontrol.services.exceptions.MissingParameterException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
@@ -107,14 +106,7 @@ public class RegisterSmartphoneResource {
 		
 		PCUser user = null;
 		String registeredSmartphoneKey = null;
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager(); 
-		Query query = pm.newQuery(PCUser.class);
-		
-		logger.info("[Register Smartphone Service] Applying filters to look for user with username: " + registerSmartphoneModel.getUsr() + " and password: " + registerSmartphoneModel.getPass());
-		
-	    query.setFilter("username == usernameParam && password == passwordParam");
-	    query.declareParameters("String usernameParam, String passwordParam");
-	    query.setRange(0, 1);
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 	    
     	logger.info("[Register Smartphone Service] Encrypting password in MD5.");
     	
@@ -137,8 +129,8 @@ public class RegisterSmartphoneResource {
     		
     		logger.info("[Register Smartphone Service] Assigning new smartphone to user.");
     		
-    		ArrayList<PCSmartphone> userSmartphones = user.getSmartphones();
-    		userSmartphones.add(newSmartphone);    		
+    		ArrayList<Key> userSmartphones = user.getSmartphones();
+    		userSmartphones.add(newSmartphone.getKey());    		
     		user.setSmartphones(userSmartphones);
     		
     		registeredSmartphoneKey = KeyFactory.keyToString(newSmartphone.getKey());

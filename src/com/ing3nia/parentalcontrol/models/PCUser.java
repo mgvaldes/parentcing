@@ -50,7 +50,8 @@ public class PCUser {
 	 * user.
 	 */
 	@Persistent
-	private ArrayList<PCSmartphone> smartphones;
+//	private ArrayList<PCSmartphone> smartphones;
+	private ArrayList<Key> smartphones;
 	
 	/**
 	 * 
@@ -63,9 +64,14 @@ public class PCUser {
 	 */
 	@Persistent
 	private String name;
+	
+	/**
+	 * 
+	 */
+	private ArrayList<Key> admins;
 
 	public PCUser(Key key, String username, String password,
-			ArrayList<PCSmartphone> smartphones, String email, String name) {
+			ArrayList<Key> smartphones, String email, String name, ArrayList<Key> admins) {
 		super();
 		this.key = key;
 		this.username = username;
@@ -73,6 +79,7 @@ public class PCUser {
 		this.smartphones = smartphones;
 		this.email = email;
 		this.name = name;
+		this.admins = admins;
 	}
 
 	public String getEmail() {
@@ -115,11 +122,19 @@ public class PCUser {
 		this.password = password;
 	}
 
-	public ArrayList<PCSmartphone> getSmartphones() {
+	public ArrayList<Key> getSmartphones() {
 		return smartphones;
 	}
 
-	public void setSmartphones(ArrayList<PCSmartphone> smartphones) {
+	public void setSmartphones(ArrayList<Key> smartphones) {
 		this.smartphones = smartphones;
+	}
+
+	public ArrayList<Key> getAdmins() {
+		return admins;
+	}
+
+	public void setAdmins(ArrayList<Key> admins) {
+		this.admins = admins;
 	}
 }

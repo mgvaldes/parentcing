@@ -25,9 +25,9 @@ import com.ing3nia.parentalcontrol.client.handlers.click.DashboardDeviceMapClick
 import com.ing3nia.parentalcontrol.client.handlers.click.DeviceContactsClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.DeviceSettingsClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.SmartphoneClickHandler;
-import com.ing3nia.parentalcontrol.client.models.ClientSmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.utils.PCMapMarkersEnum;
@@ -46,7 +46,8 @@ public class BaseViewHandler {
 	private PCBaseUIBinder baseBinder;
 	private MenuSetterHandler menuSetter;
 	private ClientUserModel user;
-	private List<ClientSmartphoneModel> slist;
+	private List<SmartphoneModel> slist;
+	private int clickedSmartphoneIndex = -1;
 	
 	public BaseViewHandler(PCBaseUIBinder baseBinder){
 		this.baseBinder = baseBinder;
@@ -56,7 +57,7 @@ public class BaseViewHandler {
 	public void initBaseView(){
 		FlowPanel deviceChoiceList = baseBinder.getDeviceChoiceList();
 		int smartphoneCount = 0;
-		for(ClientSmartphoneModel smartphone : slist){
+		for(SmartphoneModel smartphone : slist){
 			Button b = new Button();
 			FlowPanel buttonPanel = new FlowPanel();
 			buttonPanel.setStyleName("buttonPanel");
@@ -66,7 +67,7 @@ public class BaseViewHandler {
 			
 			b.setStyleName("buttonFromList");
 			b.setText(smartphone.getName());
-			SmartphoneClickHandler smClick = new SmartphoneClickHandler(smartphone.getKeyId(), this, b);
+			SmartphoneClickHandler smClick = new SmartphoneClickHandler(smartphone.getKeyId(), this, b, smartphoneCount);
 			b.addClickHandler(smClick);
 			
 			buttonPanel.add(b);
@@ -140,19 +141,27 @@ public class BaseViewHandler {
 		Button deviceContactsButton = this.menuSetter.getDeviceContacts();
 		Button deviceSettings = this.menuSetter.getDeviceSettings();
 		
+		// getting the associated smartphone
+		SmartphoneModel smartphone = user.getSmartphones().get(this.getClickedSmartphoneIndex());
+		
 		DailyRouteClickHandler dailyRouteHandler = new DailyRouteClickHandler(user.getKey(), this);
 		dailyRouteButton.addClickHandler(dailyRouteHandler);
 		
-		AlertListClickHandler alertListHandler =  new AlertListClickHandler(user.getKey(), this);
-		alertListButton.addClickHandler(alertListHandler);
+		//AlertListClickHandler alertListHandler =  new AlertListClickHandler(user.getKey(), this);
 		
-		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this);
+		// TOOOOODOOOOOOOOOO  ----------------------------------------------------------------------
+		
+		//AlertListClickHandler alertListHandler = new AlertListClickHandler(user.getKey(), this, smartphone.getAlerts());
+		//alertListButton.addClickHandler(alertListHandler);
+		
+		//AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this);
+		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this, smartphone.getRules());
 		alertRulesButton.addClickHandler(alertRulesHandler);
 		
-		DeviceContactsClickHandler deviceContactsHandler =  new DeviceContactsClickHandler(user.getKey(), this);
+		DeviceContactsClickHandler deviceContactsHandler =  new DeviceContactsClickHandler(user.getKey(), this, smartphone);
 		deviceContactsButton.addClickHandler(deviceContactsHandler);
 		
-		DeviceSettingsClickHandler deviceSettingsHandler = new DeviceSettingsClickHandler(user.getKey(), this);
+		DeviceSettingsClickHandler deviceSettingsHandler = new DeviceSettingsClickHandler(user.getKey(), this, smartphone);
 		deviceSettings.addClickHandler(deviceSettingsHandler);
 		
 	}
@@ -177,7 +186,7 @@ public class BaseViewHandler {
 				centerMenu.add(userList);
 				clearOthersStyle(CenterMenuOptionsClassNames.AddUser, menuSetter.getCenterMenuOptions());
 				
-				NewAdminUserView view = new NewAdminUserView(baseBinder.getCenterContent());		
+				NewAdminUserView view = new NewAdminUserView(baseBinder.getCenterContent(), user);		
 				view.initNewAdminUseView();
 			}
 		});
@@ -222,7 +231,7 @@ public class BaseViewHandler {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				NewAdminUserView view = new NewAdminUserView(baseBinder.getCenterContent());		
+				NewAdminUserView view = new NewAdminUserView(baseBinder.getCenterContent(), user);		
 				
 				Button addUser = menuSetter.getAddUser();
 				addUser.setStyleName("selectedShinnyButton");
@@ -329,12 +338,21 @@ public class BaseViewHandler {
 		this.user = user;
 	}
 
-	public List<ClientSmartphoneModel> getSlist() {
+	public List<SmartphoneModel> getSlist() {
 		return slist;
 	}
 
-	public void setSlist(List<ClientSmartphoneModel> slist) {
+	public int getClickedSmartphoneIndex() {
+		return clickedSmartphoneIndex;
+	}
+
+	public void setClickedSmartphoneIndex(int clickedSmartphoneIndex) {
+		this.clickedSmartphoneIndex = clickedSmartphoneIndex;
+	}
+
+	public void setSlist(List<SmartphoneModel> slist) {
 		this.slist = slist;
 	}
 
+	
 }

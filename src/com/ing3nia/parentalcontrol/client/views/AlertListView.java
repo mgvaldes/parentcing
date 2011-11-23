@@ -6,20 +6,17 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.DateCell;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
+
 import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
-import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
+
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
+
 
 public class AlertListView {
 	/**
@@ -45,15 +42,15 @@ public class AlertListView {
 	private CellTable<AlertModel> alertTable;
 	private final String dateNow =  "16/11/2011 - 14:13:11 PM";
 	
-	public AlertListView(HTMLPanel centerContent) {
+	public AlertListView(HTMLPanel centerContent, ArrayList<AlertModel> alertList) {
 		this.centerContent = centerContent;
 		viewContent = new HTMLPanel("");
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");
-		this.alerts = new ArrayList<AlertModel>();
+		this.alerts = alertList;
 		this.centerContent.clear();
 		
-		addTestAlerts();
+		//addTestAlerts();
 	}
 	
 	public void addTestAlerts() {

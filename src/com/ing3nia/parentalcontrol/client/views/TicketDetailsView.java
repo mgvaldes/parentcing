@@ -1,15 +1,25 @@
 package com.ing3nia.parentalcontrol.client.views;
 
+
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
-import com.ing3nia.parentalcontrol.client.views.models.TicketAnswerModel;
+import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
+import com.ing3nia.parentalcontrol.client.models.TicketModel;
+import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
+import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerServiceAsync;
 
 public class TicketDetailsView {
 	/**
@@ -122,8 +132,19 @@ public class TicketDetailsView {
 	 */
 	private Button clearButton;
 	
-	public TicketDetailsView(HTMLPanel centerContent, String subject, String comment, String date) {
+
+	private TicketModel ticket;
+	
+	private String userKey;
+	
+	private boolean isAdmin;
+	
+	public TicketDetailsView(HTMLPanel centerContent, TicketModel ticket, String userKey, boolean isAdmin) {
 		this.centerContent = centerContent;
+		this.ticket = ticket;
+		this.ticketAnswers = this.ticket.getAnswers();
+		this.userKey = userKey;
+		this.isAdmin = isAdmin;
 		
 		this.ticketContent = new HTMLPanel("");
 		
@@ -137,6 +158,7 @@ public class TicketDetailsView {
 		this.ticketAnswersContent = new HTMLPanel("");
 		this.ticketAnswersDetailsContent = new HTMLPanel("");
 		this.ticketAnswersLabel = new Label("PRC Ticket, commented:");
+		this.ticketAnswers = new ArrayList<TicketAnswerModel>();
 		
 		this.ticketReplyContent = new HTMLPanel("");
 		this.replyTicketLabel = new Label("Reply:");
@@ -146,14 +168,11 @@ public class TicketDetailsView {
 		this.saveButton = new Button("Save");
 		this.clearButton = new Button("Clear");
 		
-		/*
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
-		String stringDate = formatter.format(date);
-		*/
-		String stringDate = date;
-			
-		addTestTicketAnswers();
-		initTicketDetailsView(subject, comment, stringDate);
+		DateTimeFormat  formatter = DateTimeFormat.getFormat("dd/MM/yyyy - KK:mm:ss a");
+		String stringDate = formatter.format(this.ticket.getDate());
+		
+		//addTestTicketAnswers();
+		//initTicketDetailsView(this.ticket.getSubject(), this.ticket.getComment(), stringDate);
 	}
 
 	public void addTestTicketAnswers() {
@@ -215,7 +234,28 @@ public class TicketDetailsView {
 	}
 	
 	public void saveTicketReply() {
+		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
 		
+		final TicketAnswerModel answer = new TicketAnswerModel(formatter.format(Calendar.getInstance().getTime()), this.userKey, this.replyTextArea.getText());
+		
+		AddTicketAnswerServiceAsync addAnswerService = GWT.create(AddTicketAnswerService.class);
+		addAnswerService.addTicketAnswer(answer, this.ticket.getKey(), this.isAdmin, 
+				new AsyncCallback<String>() {
+					public void onFailure(Throwable error) {
+					}
+		
+					public void onSuccess(String result) {
+						if (result != null) {
+							ArrayList<TicketAnswerModel> answers = ticket.getAnswers();
+							answers.add(answer);
+							ticket.setAnswers(answers);
+						}
+						else {
+							Window.alert("An error occured. The new ticket answer couldn't be saved.");
+						}
+					}
+				}
+		);
 	}
 	
 	public void clearTextBoxes() {

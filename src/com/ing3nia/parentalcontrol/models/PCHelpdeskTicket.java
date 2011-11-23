@@ -32,7 +32,7 @@ public class PCHelpdeskTicket {
 	private String question;
 	
 	@Persistent
-	private Key status;
+	private Boolean status;
 	
 	@Persistent
 	private ArrayList<PCHelpdeskTicketAnswer> answers;
@@ -45,7 +45,7 @@ public class PCHelpdeskTicket {
 	}
 
 	public PCHelpdeskTicket(PCUser user, Date date, String subject, String question,
-			Key status, ArrayList<PCHelpdeskTicketAnswer> answers, Key category) {
+			Boolean status, ArrayList<PCHelpdeskTicketAnswer> answers, Key category) {
 		super();
 		this.user = user;
 		this.date = date;
@@ -96,11 +96,11 @@ public class PCHelpdeskTicket {
 		this.question = question;
 	}
 
-	public Key getStatus() {
+	public Boolean getStatus() {
 		return status;
 	}
 
-	public void setStatus(Key status) {
+	public void setStatus(Boolean status) {
 		this.status = status;
 	}
 

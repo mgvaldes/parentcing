@@ -2,6 +2,9 @@ package com.ing3nia.parentalcontrol.services.models;
 
 import java.util.ArrayList;
 
+import com.ing3nia.parentalcontrol.client.models.NotificationModel;
+import com.ing3nia.parentalcontrol.client.models.RouteModel;
+
 public class ActivityNotifyModel {
 	private String id;
 	

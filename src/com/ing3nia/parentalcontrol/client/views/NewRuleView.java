@@ -1,10 +1,17 @@
 package com.ing3nia.parentalcontrol.client.views;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -13,6 +20,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
+import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
+import com.ing3nia.parentalcontrol.models.utils.FunctionalityTypeId;
 
 public class NewRuleView {
 	/**
@@ -201,9 +214,22 @@ public class NewRuleView {
 	 * Clear button.
 	 */
 	private Button clearButton;
+	
+	/**
+	 * Cookie id corresponding to current session. 
+	 */
+	private String cookieId;
+	
+	/**
+	 * Smartphone key corresponding to the selected 
+	 * smartphone where the new rule will be at.
+	 */
+	private SmartphoneModel smartphone;
 
-	public NewRuleView(HTMLPanel centerContent) {
+	public NewRuleView(HTMLPanel centerContent, String cookieId, SmartphoneModel smartphone) {
 		this.centerContent = centerContent;
+		this.cookieId = cookieId;
+		this.smartphone = smartphone;
 		
 		this.newRuleContent = new HTMLPanel("");
 				
@@ -211,7 +237,7 @@ public class NewRuleView {
 		
 		this.ruleTypePanel = new HTMLPanel("");
 		this.ruleTypeLabel = new Label("Rule Type:");		
-		this.ruleTypeListBox = new ListBox();
+		this.ruleTypeListBox = new ListBox();		
 		this.ruleTypeListBox.addItem("Select Rule Type");
 		this.ruleTypeListBox.addItem("Normal");
 		this.ruleTypeListBox.addItem("Speed Limit");
@@ -220,8 +246,7 @@ public class NewRuleView {
 		this.ruleNameLabel = new Label("Name:");
 		this.ruleNameTextBox = new TextBox();
 		
-		this.disabledFunctionalitiesListBox = new ListBox();
-		this.disabledFunctionalitiesListBox.addItem("Select Disabled Functionality");
+		this.disabledFunctionalitiesListBox = new ListBox();		
 		this.disabledFunctionalityAddButton = new Button("Disable");
 		this.disabledFunctionalitiesTable = new FlexTable();
 		this.disabledFunctionalities = new ArrayList<String>();
@@ -266,7 +291,17 @@ public class NewRuleView {
 		this.newRuleContent.add(newRuleLabel);
 		
 		this.ruleTypePanel.add(ruleTypeLabel);
-		this.ruleTypePanel.add(ruleTypeListBox);		
+		
+		ruleTypeListBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				loadFunctionalities();
+			}
+		});
+		
+		this.ruleTypePanel.add(ruleTypeListBox);
+		
 		this.newRuleContent.add(this.ruleTypePanel);
 		
 		this.ruleNamePanel.add(this.ruleNameLabel);
@@ -332,6 +367,21 @@ public class NewRuleView {
 		this.centerContent.add(this.newRuleContent);
 	}
 	
+	public void loadFunctionalities() {
+		disabledFunctionalitiesListBox.clear();
+		this.disabledFunctionalitiesListBox.addItem("Select Disabled Functionality");
+		
+		disabledFunctionalitiesListBox.addItem("Browser Access");
+		disabledFunctionalitiesListBox.addItem("Outgoing Calls");
+		disabledFunctionalitiesListBox.addItem("Incomming Calss");
+		disabledFunctionalitiesListBox.addItem("Outgoing SMS");
+		disabledFunctionalitiesListBox.addItem("Incomming SMS");
+		
+		if (ruleTypeListBox.getSelectedIndex() == 1) {
+			disabledFunctionalitiesListBox.addItem("Total Block");
+		}
+	}
+	
 	public void addDisabledFunctionality() {
 		this.disabledFunctionalitiesListBox.setSelectedIndex(0);
 
@@ -360,7 +410,69 @@ public class NewRuleView {
 	}
 	
 	public void saveRule() {
+		ModificationModel auxMod = new ModificationModel(); 
 		
+		if (ruleTypeListBox.getSelectedIndex() == 0 &&
+			ruleNameTextBox.getText().equals("") &&
+			disabledFunctionalities.isEmpty() &&
+			fromDateTextBox.getText().equals("") &&
+			toDateTextBox.getText().equals("") &&
+			hourTextBoxF.getText().equals("") &&
+			minuteTextBoxF.getText().equals("") &&
+			secondsTextBoxF.getText().equals("") &&
+			hourTextBoxT.getText().equals("") &&
+			minuteTextBoxT.getText().equals("") &&
+			secondsTextBoxT.getText().equals("")) {
+			Window.alert("All fields must be specified.");
+		}
+		else {
+			final RuleModel newRule = new RuleModel();
+			newRule.setName(ruleNameTextBox.getText());
+			newRule.setDisabledFunctionalities(loadFunctionalityIds());
+			
+			DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");			
+			newRule.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
+			
+			String auxDate = fromDateTextBox.getText() + " " + hourTextBoxF.getText() + ":" + minuteTextBoxF.getText() + ":" + secondsTextBoxF.getText() + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
+			newRule.setStartDate(auxDate);
+			
+			auxDate = toDateTextBox.getText() + " " + hourTextBoxT.getText() + ":" + minuteTextBoxT.getText() + ":" + secondsTextBoxT.getText() + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
+			newRule.setStartDate(auxDate);
+			
+			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+			rules.add(newRule);
+			
+			auxMod.setRules(rules);
+			
+			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
+					new AsyncCallback<Boolean>() {
+						public void onFailure(Throwable error) {
+						}
+			
+						public void onSuccess(Boolean result) {
+							if (result) {
+								ArrayList<RuleModel> rules = smartphone.getRules();
+								rules.add(newRule);								
+								smartphone.setRules(rules);
+							}
+							else {
+								Window.alert("An error occured. The new rule couldn't be saved.");
+							}
+						}
+					}
+			);
+		}				
+	}
+	
+	public ArrayList<Integer> loadFunctionalityIds() {
+		ArrayList<Integer> funcIds = new ArrayList<Integer>();
+		
+		for (String func : disabledFunctionalities) {
+			funcIds.add(FunctionalityTypeId.findByDescription(func));
+		}
+		
+		return funcIds;
 	}
 	
 	public void clearTextBoxes() {

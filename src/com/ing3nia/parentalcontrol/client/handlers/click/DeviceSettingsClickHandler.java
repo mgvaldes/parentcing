@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceSettingsView;
 
 public class DeviceSettingsClickHandler implements ClickHandler{
@@ -14,12 +16,14 @@ public class DeviceSettingsClickHandler implements ClickHandler{
 	private BaseViewHandler baseView;
 	private HTMLPanel centerContent;
 	private MenuSetterHandler menuSetter;
+	private SmartphoneModel smartphone;
 	
-	public DeviceSettingsClickHandler(String key, BaseViewHandler baseView){
+	public DeviceSettingsClickHandler(String key, BaseViewHandler baseView, SmartphoneModel smartphone){
 		this.key = key;
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.menuSetter = baseView.getMenuSetter();
+		this.smartphone = smartphone;
 	}
 	
 	@Override
@@ -35,7 +39,8 @@ public class DeviceSettingsClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		this.menuSetter.getDeviceSettings().setStyleName("selectedShinnyButton");
 		
-		DeviceSettingsView view = new DeviceSettingsView(centerContent);		
+		//DeviceSettingsView view = new DeviceSettingsView(centerContent, smartphone);
+		DeviceSettingsView view = new DeviceSettingsView(centerContent, smartphone, CookieHandler.getPCCookie());
 		view.initDeviceSettingsView();
 	}
 }

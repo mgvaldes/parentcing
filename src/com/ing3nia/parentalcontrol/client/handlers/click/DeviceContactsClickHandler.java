@@ -6,6 +6,8 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceContactListView;
 
 public class DeviceContactsClickHandler implements ClickHandler{
@@ -14,14 +16,16 @@ public class DeviceContactsClickHandler implements ClickHandler{
 	BaseViewHandler baseView;
 	private HTMLPanel centerContent;
 	private MenuSetterHandler menuSetter;
+	private SmartphoneModel smartphone;
 	
-	public DeviceContactsClickHandler(String key, BaseViewHandler baseView){
+	public DeviceContactsClickHandler(String key, BaseViewHandler baseView, SmartphoneModel smartphone){
 		this.key = key;
 		this.centerContent = centerContent;
 		this.menuSetter = menuSetter;
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.menuSetter = baseView.getMenuSetter();
+		this.smartphone = smartphone;
 	}
 	
 	@Override
@@ -37,7 +41,8 @@ public class DeviceContactsClickHandler implements ClickHandler{
 		this.menuSetter.getDeviceContacts().setStyleName("selectedShinnyButton");
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
-		DeviceContactListView view = new DeviceContactListView(centerContent);		
+		//DeviceContactListView view = new DeviceContactListView(centerContent);
+		DeviceContactListView view = new DeviceContactListView(centerContent, CookieHandler.getPCCookie(), smartphone);
 		view.initDeviceContactListView();
 	}
 }

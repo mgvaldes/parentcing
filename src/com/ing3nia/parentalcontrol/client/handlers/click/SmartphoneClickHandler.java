@@ -19,20 +19,25 @@ public class SmartphoneClickHandler implements ClickHandler{
 	private FlowPanel deviceChoiceList;
 	private Button button;
 	private String smartphoneCount;
+	private int smartphoneIndex;
 	
-	public SmartphoneClickHandler(String key, BaseViewHandler baseView, Button b){
+	public SmartphoneClickHandler(String key, BaseViewHandler baseView, Button b, int smartphoneIndex){
 		this.key = key;
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.menuSetter = baseView.getMenuSetter();
 		this.deviceChoiceList = baseView.getBaseBinder().getDeviceChoiceList();
 		this.button  = b;
+		this.smartphoneIndex = smartphoneIndex;
 	}
 	
 	@Override
 	public void onClick(ClickEvent event) {
 		this.centerContent.clear();
 		this.menuSetter.clearMenuOptions();
+		
+		//setting clicked smartphone index
+		baseView.setClickedSmartphoneIndex(this.smartphoneIndex);
 		baseView.initDeviceMenuClickHandlers();
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
@@ -51,4 +56,13 @@ public class SmartphoneClickHandler implements ClickHandler{
 		DeviceAlertListView view = new DeviceAlertListView(centerContent);		
 		view.initDeviceAlertListView();
 	}
+
+	public int getSmartphoneIndex() {
+		return smartphoneIndex;
+	}
+
+	public void setSmartphoneIndex(int smartphoneIndex) {
+		this.smartphoneIndex = smartphoneIndex;
+	}
+	
 }

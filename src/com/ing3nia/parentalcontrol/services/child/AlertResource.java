@@ -21,13 +21,13 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.AlertModel;
-import com.ing3nia.parentalcontrol.services.models.NotificationModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("alert")

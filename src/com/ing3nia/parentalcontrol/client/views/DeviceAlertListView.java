@@ -6,15 +6,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
+
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
+
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
+
 
 public class DeviceAlertListView {
 	/**

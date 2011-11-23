@@ -7,7 +7,6 @@ import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.models.PCServiceStatistics;
-import com.ing3nia.parentalcontrol.models.PCWSStatus;
 import com.ing3nia.parentalcontrol.models.utils.WSInfo;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;

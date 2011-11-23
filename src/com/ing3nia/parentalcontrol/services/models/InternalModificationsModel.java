@@ -1,5 +1,8 @@
 package com.ing3nia.parentalcontrol.services.models;
 
+import com.ing3nia.parentalcontrol.client.models.LocationModel;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+
 public class InternalModificationsModel {
 	private String id;
 	

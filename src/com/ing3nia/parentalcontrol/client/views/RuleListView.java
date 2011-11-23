@@ -2,12 +2,10 @@ package com.ing3nia.parentalcontrol.client.views;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
@@ -16,8 +14,8 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
-import com.ing3nia.parentalcontrol.client.views.models.RuleModel;
+
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
 
 public class RuleListView {
 	/**
@@ -44,20 +42,21 @@ public class RuleListView {
 	 */
 	private CellTable<RuleModel> ruleTable;
 	
-	public RuleListView(HTMLPanel centerContent) {
+	public RuleListView(HTMLPanel centerContent, ArrayList<RuleModel> ruleList) {
 		this.centerContent = centerContent;
 		viewContent = new HTMLPanel("");
 		this.ruleTable = new CellTable<RuleModel>(10);
 		this.viewContent = new HTMLPanel("");
-		this.rules = new ArrayList<RuleModel>();
+		this.rules = ruleList;
 		this.centerContent.clear();
 		
 		addTestRules();
 	}
 	
 	public void addTestRules() {
+
 		Date now = new Date();//Calendar.getInstance().getTime();
-		
+/*		
 		RuleModel rule = new RuleModel(now, now, "SMS - Send/Receive");
 		rules.add(rule);
 		
@@ -69,6 +68,20 @@ public class RuleListView {
 		
 		rule = new RuleModel(now, now, "Speed Limit - 5 MPH");
 		rules.add(rule);
+		*/
+//		Date now = Calendar.getInstance().getTime();
+//		
+//		RuleModel rule = new RuleModel(now, now, "SMS - Send/Receive");
+//		rules.add(rule);
+//		
+//		rule = new RuleModel(now, now, "Calls - Send/Receive");
+//		rules.add(rule);
+//		
+//		rule = new RuleModel(now, now, "Web Navigation");
+//		rules.add(rule);
+//		
+//		rule = new RuleModel(now, now, "Speed Limit - 5 MPH");
+//		rules.add(rule);
 	}
 	
 	public void initRuleListView() {
@@ -103,7 +116,7 @@ public class RuleListView {
 		TextColumn<RuleModel> ruleNameColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return object.getRule();
+				return object.getName();
 			}
 		};
 		
@@ -123,7 +136,7 @@ public class RuleListView {
 			@Override
 			public void update(int index, RuleModel object, String value) {
 				// The user clicked on the edit button.
-				editRule();
+				editRule(object);
 			}
 		});
 		
@@ -156,7 +169,7 @@ public class RuleListView {
 		centerContent.add(viewContent);
 	}
 	
-	public void editRule() {
-		
+	public void editRule(RuleModel editRule) {
+		//Load NewRuleView with editRule Data.
 	}
 }
