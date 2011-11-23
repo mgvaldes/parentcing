@@ -10,10 +10,15 @@ import com.google.gwt.maps.client.MapWidget;
 import com.google.gwt.maps.client.Maps;
 import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.Point;
+import com.google.gwt.maps.client.geom.Size;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
 
 
 public class DeviceMapView {
@@ -61,15 +66,23 @@ public class DeviceMapView {
 	    map.addControl(new LargeMapControl());
 	    map.setStyleName("googleMap");
 
-	    
+	    int deviceCount = 0;
 	    for (GeoPtModel devLoc : deviceLocations) {
 	    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
-	    	Marker marker = new Marker(deviceLoc);
-	    	map.addOverlay(marker);
+	    	
+	    	//TODO Test setting device image
+	    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerImageURL(deviceCount));
+	    	icon.setIconSize(Size.newInstance(20, 34));
+	    	MarkerOptions options = MarkerOptions.newInstance();
+	    	options.setIcon(icon);
+	    	  	
+	    	map.addOverlay(new Marker(deviceLoc,options));
+	    	deviceCount++;
 	    }
 	    
 	    // Add a marker
-	    map.addOverlay(new Marker(deviceLoc));
+	    //Marker marker = new Marker(deviceLoc);
+	    //map.addOverlay(marker);
 
 	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
 	    dock.addNorth(this.map, 490);

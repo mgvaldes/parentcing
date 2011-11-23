@@ -2,15 +2,19 @@ package com.ing3nia.parentalcontrol.client;
 
 import java.util.ArrayList;
 
+import org.apache.http.client.RedirectHandler;
+
 import com.ibm.icu.impl.CalendarAstronomer.Horizon;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.HelpDeskUserClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.LogoImageClickHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientSmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.LoginView;
@@ -20,6 +24,7 @@ import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -34,13 +39,18 @@ public class ParentalControl implements EntryPoint {
 
 	public static String INVALID_CREDENTIALS = "Invalid username or password, please try again";
 	public static String LOADING_LOGIN = "Authenticating user";
+	public Image loadingImage;
 	
 	/**
 	 * Entry point method.
 	 */  
 	public void onModuleLoad() {
 		
-		Image loadingImage = new Image("/media/images/loading.gif");
+		loadingImage = new Image("/media/images/loading.gif");
+		loadPage();
+	}
+	
+	public void loadPage(){
 		
 		// Check if user session is active
 		String userCookie = CookieHandler.getPCCookie();
@@ -72,7 +82,6 @@ public class ParentalControl implements EntryPoint {
 			RootPanel.get().clear();
 			loadPCAdmin(userModel);
 		}
- 
 	}
 
 	private ClientUserModel getDummyUser() {
@@ -105,15 +114,18 @@ public class ParentalControl implements EntryPoint {
 		  RootPanel.get().add(pcbase);
 		  
 		  ClientUserModel user = getDummyUser(); 
+		 
+		  
 		  BaseViewHandler baseViewHandler = new BaseViewHandler(pcbase);
 		  baseViewHandler.setUser(user);
 		  baseViewHandler.setSlist(getDummySmartphoneList());
 		  
+		  NavigationHandler navHandler = new NavigationHandler(baseViewHandler);
+		  navHandler.setDashboardNavigation(baseViewHandler.getBaseBinder().getNavigationPanel());
+		  
 		  LogoImageClickHandler logoClickHandler = new LogoImageClickHandler(baseViewHandler);
 		  pcbase.getPclogo().addClickHandler(logoClickHandler);
  
-		  //pcbase.getLogout().addClickHandler(handler);
-
 		  //TODO ask for user type
 		  HelpDeskUserClickHandler helpDeskClickHandler =  new HelpDeskUserClickHandler(baseViewHandler);
 		  helpDeskClickHandler.setUserHelpDeskClickHandlers();
@@ -123,32 +135,11 @@ public class ParentalControl implements EntryPoint {
 		  baseViewHandler.initDashboard();
 		  
 		  baseViewHandler.setAddAdministratorButton();
+		  baseViewHandler.setLogoutButton();
 		  baseViewHandler.setAdminUserListView();
 		  baseViewHandler.setNewAdminUserViewHandler();
 	}
-	
-	public class LogoImageClickHandler implements ClickHandler{
 
-		private BaseViewHandler baseViewHandler;
-		public LogoImageClickHandler(BaseViewHandler baseViewHandler){
-			this.baseViewHandler = baseViewHandler;
-		}
-		
-		@Override
-		public void onClick(ClickEvent event) {
-			this.baseViewHandler.initDashboard();		
-		}	
-	}
-	
-	public class LogoutClickHandler implements ClickHandler{
-
-		@Override
-		public void onClick(ClickEvent event) {
-			
-			
-		}
-		
-	}
 	
 	public class SignInButtonClickHandler implements ClickHandler{
 		
@@ -182,7 +173,14 @@ public class ParentalControl implements EntryPoint {
 				pclogin.getNotice().setText(INVALID_CREDENTIALS);
 			}
 		}
-		
 	}
 
+	public Image getLoadingImage() {
+		return loadingImage;
+	}
+
+	public void setLoadingImage(Image loadingImage) {
+		this.loadingImage = loadingImage;
+	}
+	
 }

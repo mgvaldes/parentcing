@@ -18,13 +18,14 @@ public class SmartphoneClickHandler implements ClickHandler{
 	private MenuSetterHandler menuSetter;
 	private FlowPanel deviceChoiceList;
 	private Button button;
+	private String smartphoneCount;
 	
-	public SmartphoneClickHandler(String key, BaseViewHandler baseView, HTMLPanel centerContent, MenuSetterHandler menuSetter, FlowPanel deviceChoiceList, Button b){
+	public SmartphoneClickHandler(String key, BaseViewHandler baseView, Button b){
 		this.key = key;
 		this.baseView = baseView;
-		this.centerContent = centerContent;
-		this.menuSetter = menuSetter;
-		this.deviceChoiceList = deviceChoiceList;
+		this.centerContent = baseView.getBaseBinder().getCenterContent();
+		this.menuSetter = baseView.getMenuSetter();
+		this.deviceChoiceList = baseView.getBaseBinder().getDeviceChoiceList();
 		this.button  = b;
 	}
 	

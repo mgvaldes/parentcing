@@ -27,6 +27,11 @@ public class CookieHandler {
 	  Cookies.setCookie(PASSWORD_ID, pass);
   }
   
+  public static void clearSessionCookie(){
+	  Cookies.removeCookie(COOKIE_ID);
+  }
+  
+  
   public static String getMailRemeberedCredential(){
 	  return Cookies.getCookie(USERNAME_ID);
   }

@@ -28,6 +28,8 @@ public class PCBaseUIBinder extends Composite {
 	
 	@UiField Button logout;
 	
+	@UiField FlowPanel navigationPanel;
+	
 	/*
 	@UiField Button userListButton;
 	@UiField Button addUserButton;
@@ -97,4 +99,11 @@ public class PCBaseUIBinder extends Composite {
 		this.logout = logout;
 	}
 
+	public FlowPanel getNavigationPanel() {
+		return navigationPanel;
+	}
+
+	public void setNavigationPanel(FlowPanel navigationPanel) {
+		this.navigationPanel = navigationPanel;
+	}
 }

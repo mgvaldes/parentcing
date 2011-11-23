@@ -4,19 +4,24 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceContactListView;
 
 public class DeviceContactsClickHandler implements ClickHandler{
 
 	private String key;
+	BaseViewHandler baseView;
 	private HTMLPanel centerContent;
 	private MenuSetterHandler menuSetter;
 	
-	public DeviceContactsClickHandler(String key, HTMLPanel centerContent, MenuSetterHandler menuSetter){
+	public DeviceContactsClickHandler(String key, BaseViewHandler baseView){
 		this.key = key;
 		this.centerContent = centerContent;
 		this.menuSetter = menuSetter;
+		this.baseView = baseView;
+		this.centerContent = baseView.getBaseBinder().getCenterContent();
+		this.menuSetter = baseView.getMenuSetter();
 	}
 	
 	@Override

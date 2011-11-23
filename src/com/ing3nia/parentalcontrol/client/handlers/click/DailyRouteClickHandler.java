@@ -12,6 +12,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 import com.ing3nia.parentalcontrol.client.views.DeviceDailyRouteView;
@@ -20,17 +21,19 @@ public class DailyRouteClickHandler implements ClickHandler{
 
 	private String key;
 	private PCBaseUIBinder baseBinder;
+	private BaseViewHandler baseView;
 	private HTMLPanel centerContent;
 	private MenuSetterHandler menuSetter;
 	private FlowPanel deviceChoiceList;
 	private static Logger logger = Logger.getLogger("Daily Route Logger");
 	
-	public DailyRouteClickHandler(String key, PCBaseUIBinder basebinder, HTMLPanel centerContent, MenuSetterHandler menuSetter, FlowPanel deviceChoiceList){
+	public DailyRouteClickHandler(String key, BaseViewHandler baseView){
 		this.key = key;
-		this.baseBinder = basebinder;
-		this.centerContent = centerContent;
-		this.menuSetter = menuSetter;
-		this.deviceChoiceList = deviceChoiceList;
+		this.baseView = baseView;
+		this.baseBinder = baseView.getBaseBinder();
+		this.centerContent = baseView.getBaseBinder().getCenterContent();
+		this.menuSetter = baseView.getMenuSetter();
+		this.deviceChoiceList = baseView.getBaseBinder().getDeviceChoiceList();
 	}
 	
 	@Override

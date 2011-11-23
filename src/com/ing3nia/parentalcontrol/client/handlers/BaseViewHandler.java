@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
+import com.ing3nia.parentalcontrol.client.ParentalControl;
 import com.ing3nia.parentalcontrol.client.handlers.click.AlertListClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.AlertRulesClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.DailyRouteClickHandler;
@@ -23,17 +28,14 @@ import com.ing3nia.parentalcontrol.client.handlers.click.SmartphoneClickHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientSmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
+import com.ing3nia.parentalcontrol.client.utils.PCMapMarkersEnum;
+import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
 import com.ing3nia.parentalcontrol.client.views.AdminUserListView;
 import com.ing3nia.parentalcontrol.client.views.AlertListView;
-import com.ing3nia.parentalcontrol.client.views.DeviceAlertListView;
-import com.ing3nia.parentalcontrol.client.views.DeviceContactListView;
-import com.ing3nia.parentalcontrol.client.views.DeviceDailyRouteView;
 import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
-import com.ing3nia.parentalcontrol.client.views.DeviceSettingsView;
 import com.ing3nia.parentalcontrol.client.views.NewAdminUserView;
-import com.ing3nia.parentalcontrol.client.views.RuleListView;
-import com.ing3nia.parentalcontrol.client.views.TicketDetailsView;
-import com.ing3nia.parentalcontrol.client.views.TicketListView;
 import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
 
 public class BaseViewHandler {
@@ -53,14 +55,24 @@ public class BaseViewHandler {
 
 	public void initBaseView(){
 		FlowPanel deviceChoiceList = baseBinder.getDeviceChoiceList();
+		int smartphoneCount = 0;
 		for(ClientSmartphoneModel smartphone : slist){
 			Button b = new Button();
+			FlowPanel buttonPanel = new FlowPanel();
+			buttonPanel.setStyleName("buttonPanel");
+			
+			Image buttonIcon = new Image(PCMapStyle.getMarkerImageURL(smartphoneCount));
+			buttonIcon.setStyleName("buttonIcon");
+			
 			b.setStyleName("buttonFromList");
 			b.setText(smartphone.getName());
-			
-			SmartphoneClickHandler smClick = new SmartphoneClickHandler(smartphone.getKeyId(), this, baseBinder.getCenterContent(), menuSetter, deviceChoiceList, b);
+			SmartphoneClickHandler smClick = new SmartphoneClickHandler(smartphone.getKeyId(), this, b);
 			b.addClickHandler(smClick);
-			deviceChoiceList.add(b);
+			
+			buttonPanel.add(b);
+			buttonPanel.add(buttonIcon);
+			deviceChoiceList.add(buttonPanel);
+			smartphoneCount++;
 		}
 		
 		initDashboard();
@@ -100,17 +112,23 @@ public class BaseViewHandler {
 		Button alertListButton = this.menuSetter.getDashboardAlertList();
 		Button deviceMap = this.menuSetter.getDashboardDeviceMap();
 		
-		DashboardAlertListClickHandler alertListHandler = new DashboardAlertListClickHandler(user.getKey(),this.baseBinder.getCenterContent(), this.menuSetter);
-		DashboardDeviceMapClickHandler dashDeviceMapHandler =  new DashboardDeviceMapClickHandler(user.getKey(), this.baseBinder.getCenterContent(), this.menuSetter, dummyDeviceLocations);
+		DashboardAlertListClickHandler alertListHandler = new DashboardAlertListClickHandler(user.getKey(),this);
+		DashboardDeviceMapClickHandler dashDeviceMapHandler =  new DashboardDeviceMapClickHandler(user.getKey(), this);
 		alertListButton.addClickHandler(alertListHandler);
 		deviceMap.addClickHandler(dashDeviceMapHandler);
 		
 		menuOptions.add(deviceMap);
 		menuOptions.add(alertListButton);
-		alertListButton.setStyleName("selectedShinnyButton");
+		deviceMap.setStyleName("selectedShinnyButton");
 
-		AlertListView view = new AlertListView(baseBinder.getCenterContent());		
-		view.initAlertListView();
+		DeviceMapView view = new DeviceMapView(baseBinder.getCenterContent());
+		
+		//TODO Set deviceLocations from user
+		view.setDeviceLocations(getDummyDeviceLocations());
+		//view.setDeviceLocations(user.getDeviceLocations());
+		view.initDeviceLocationLoad();
+		//AlertListView view = new AlertListView(baseBinder.getCenterContent());		
+		//view.initAlertListView();
 	}
 	
 	
@@ -122,25 +140,26 @@ public class BaseViewHandler {
 		Button deviceContactsButton = this.menuSetter.getDeviceContacts();
 		Button deviceSettings = this.menuSetter.getDeviceSettings();
 		
-		DailyRouteClickHandler dailyRouteHandler = new DailyRouteClickHandler(user.getKey(), this.baseBinder, this.baseBinder.getCenterContent(), this.menuSetter, this.baseBinder.getDeviceChoiceList());
+		DailyRouteClickHandler dailyRouteHandler = new DailyRouteClickHandler(user.getKey(), this);
 		dailyRouteButton.addClickHandler(dailyRouteHandler);
 		
-		AlertListClickHandler alertListHandler =  new AlertListClickHandler(user.getKey(), this.baseBinder.getCenterContent(), this.menuSetter);
+		AlertListClickHandler alertListHandler =  new AlertListClickHandler(user.getKey(), this);
 		alertListButton.addClickHandler(alertListHandler);
 		
-		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this.baseBinder.getCenterContent(), this.menuSetter);
+		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this);
 		alertRulesButton.addClickHandler(alertRulesHandler);
 		
-		DeviceContactsClickHandler deviceContactsHandler =  new DeviceContactsClickHandler(user.getKey(), this.baseBinder.getCenterContent(), this.menuSetter);
+		DeviceContactsClickHandler deviceContactsHandler =  new DeviceContactsClickHandler(user.getKey(), this);
 		deviceContactsButton.addClickHandler(deviceContactsHandler);
 		
-		DeviceSettingsClickHandler deviceSettingsHandler = new DeviceSettingsClickHandler(user.getKey(), this.baseBinder.getCenterContent(), this.menuSetter);
+		DeviceSettingsClickHandler deviceSettingsHandler = new DeviceSettingsClickHandler(user.getKey(), this);
 		deviceSettings.addClickHandler(deviceSettingsHandler);
 		
 	}
 	
 		
 	public void setAddAdministratorButton(){
+
 		Button addAdminButton = baseBinder.getAddAdminButton();
 		addAdminButton.addClickHandler(new ClickHandler() {
 			
@@ -150,7 +169,6 @@ public class BaseViewHandler {
 				FlowPanel centerMenu = menuSetter.getCenterMenuOptions();
 				menuSetter.getCenterMenuOptions().clear();
 				//Clean center menu
-				
 				
 				Button addUser = menuSetter.getAddUser();
 				addUser.setStyleName("selectedShinnyButton");
@@ -165,6 +183,20 @@ public class BaseViewHandler {
 		});
 	} 
 	
+	public void setLogoutButton(){
+
+		Button logoutButton = baseBinder.getLogout();
+		logoutButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				CookieHandler.clearSessionCookie();
+				RootPanel.get().clear();
+				//Window.Location.replace(GWT.getModuleBaseURL());
+				Window.Location.replace("http://127.0.0.1:8888/ParentalControl.html?gwt.codesvr=127.0.0.1:9997");
+			}
+		});
+	} 
 	
 	public void setAdminUserListView(){
 		Button userListButton = menuSetter.getUserList();
@@ -305,6 +337,4 @@ public class BaseViewHandler {
 		this.slist = slist;
 	}
 
-	
-	
 }

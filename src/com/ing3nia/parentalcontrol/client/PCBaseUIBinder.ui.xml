@@ -23,8 +23,6 @@
 			<g:FlowPanel styleName="leftMenuHeader">
 				<g:Label styleName="deviceLabel" text="Device List"/>
 				<g:FlowPanel styleName="deviceOptions">
-					<g:Button styleName="deviceOptionButton" text="Add Device"></g:Button>
-					<g:Button styleName="deviceOptionButton" text="Edit"></g:Button>
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:FlowPanel styleName="deviceMenu">
@@ -35,7 +33,7 @@
 		
 		<g:HTMLPanel styleName="centerPanel">
 			<g:FlowPanel styleName="centerPanelHeader">
-				<g:Label styleName="navigationLabel" text="Navigation"/>
+				<g:FlowPanel styleName="navigationPanel" ui:field="navigationPanel"/>
 				<g:FlowPanel styleName="centerMenuOptions" ui:field="centerMenuOptions">
 
 				</g:FlowPanel>
