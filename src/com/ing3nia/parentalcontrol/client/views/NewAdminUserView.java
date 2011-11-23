@@ -1,13 +1,27 @@
 package com.ing3nia.parentalcontrol.client.views;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
+import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
+import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
+import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserService;
+import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
+import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerServiceAsync;
 
 public class NewAdminUserView {
 	/**
@@ -62,10 +76,15 @@ public class NewAdminUserView {
 	 */
 	private Button clearButton = new Button("Clear");
 	
+	private ClientUserModel loggedUser;
+	
 	/**
 	 * Adding all widgets to the center content main panel.
 	 */
-	public NewAdminUserView() {		
+	public NewAdminUserView(HTMLPanel centerContent, ClientUserModel loggedUser) {
+		this.centerContent = centerContent;
+		this.loggedUser = loggedUser;
+		
 		viewContent.add(newUserLabel);
 		viewContent.add(usernameLabel);
 		viewContent.add(usernameTextBox);
@@ -93,7 +112,26 @@ public class NewAdminUserView {
 	}
 	
 	private void saveAdminUser() {
+		final String username = this.usernameTextBox.getText();
+		final String password = this.passwordTextBox.getText();
 		
+		AddAdminUserServiceAsync addAdminUserService = GWT.create(AddAdminUserService.class);
+		addAdminUserService.addAdminUser(this.usernameTextBox.getText(), this.passwordTextBox.getText(), this.loggedUser.getKey(), 
+				new AsyncCallback<String>() {
+					public void onFailure(Throwable error) {
+					}
+		
+					public void onSuccess(String result) {
+						if (result != null) {
+							ClientAdminUserModel newAdminUser = new ClientAdminUserModel(username, password);
+							loggedUser.getAdmins().add(newAdminUser);
+						}
+						else {
+							Window.alert("An error occured. The new admin user couldn't be saved.");
+						}
+					}
+				}
+		);
 	}
 	
 	private void clearTextBoxes() {

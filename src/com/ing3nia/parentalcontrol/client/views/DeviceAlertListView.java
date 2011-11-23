@@ -13,7 +13,7 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
 
 public class DeviceAlertListView {
 	/**

@@ -1,5 +1,6 @@
-package com.ing3nia.parentalcontrol.client.views.models;
+package com.ing3nia.parentalcontrol.client.models;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import sun.rmi.runtime.NewThreadAction;
@@ -43,14 +44,24 @@ public class TicketModel {
 	 * Represents the date when the ticket was created.
 	 */
 	private Date date;
+	
+	private String comment;
+	
+	private ArrayList<TicketAnswerModel> answers;
 
-	public TicketModel(String category, String subject, Date date) {
+	public TicketModel(String category, String subject, Date date, String comment, ArrayList<TicketAnswerModel> answers) {
 		this.category = category;
 		this.subject = subject;
 		this.date = date;
 		this.id = getNextId();
+		this.comment = comment;
+		this.answers = answers;
 		
 		setNextId(this.id);
+	}
+	
+	public TicketModel() {
+		
 	}
 
 	public static int getNextId() {
@@ -99,5 +110,21 @@ public class TicketModel {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	public ArrayList<TicketAnswerModel> getAnswers() {
+		return answers;
+	}
+
+	public void setAnswers(ArrayList<TicketAnswerModel> answers) {
+		this.answers = answers;
 	}
 }

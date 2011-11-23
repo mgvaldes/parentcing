@@ -15,8 +15,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.models.AdminUserModel;
 import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
-import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
 
 public class AdminUserListView {
 	/**

@@ -1,18 +1,15 @@
 package com.ing3nia.parentalcontrol.client.views;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
-import com.ing3nia.parentalcontrol.client.views.models.FullContactModel;
+import com.ing3nia.parentalcontrol.client.models.FullContactModel;
 
 public class DeviceContactDetailsView {
 	/**

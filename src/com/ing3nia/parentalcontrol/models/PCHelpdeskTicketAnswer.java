@@ -20,13 +20,25 @@ public class PCHelpdeskTicketAnswer {
 	private PCAdmin admin;
 	
 	@Persistent
+	private PCUser user;
+	
+	@Persistent
 	private Date date;
+	
+	@Persistent
+	private String answer;
 
-	public PCHelpdeskTicketAnswer(Key key, PCAdmin admin, Date date) {
+	public PCHelpdeskTicketAnswer(Key key, PCAdmin admin, Date date, PCUser user, String answer) {
 		super();
 		this.key = key;
 		this.admin = admin;
 		this.date = date;
+		this.user = user;
+		this.answer = answer;
+	}
+	
+	public PCHelpdeskTicketAnswer() {
+		super();
 	}
 
 	public Key getKey() {
@@ -51,5 +63,21 @@ public class PCHelpdeskTicketAnswer {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public PCUser getUser() {
+		return user;
+	}
+
+	public void setUser(PCUser user) {
+		this.user = user;
+	}
+
+	public String getAnswer() {
+		return answer;
+	}
+
+	public void setAnswer(String answer) {
+		this.answer = answer;
 	}
 }

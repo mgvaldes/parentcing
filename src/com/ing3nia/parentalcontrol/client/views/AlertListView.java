@@ -16,9 +16,9 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.models.AdminUserModel;
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
-import com.ing3nia.parentalcontrol.client.views.models.AdminUserModel;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
 
 public class AlertListView {
 	/**

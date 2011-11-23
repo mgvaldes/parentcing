@@ -24,12 +24,15 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
 import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
+import com.ing3nia.parentalcontrol.client.models.FullContactModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
+import com.ing3nia.parentalcontrol.models.utils.PhoneType;
+import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 
 public class DeviceContactListView {
 	/**
@@ -100,8 +103,7 @@ public class DeviceContactListView {
 		this.contactsButton = new Button("Contacts");
 		this.emergencyContactsButton = new Button("Emergency Contacts");
 		this.contactTable = new CellTable<ClientSimpleContactModel>(10);
-		this.pager = new SimplePager();
-		this.contacts = new ArrayList<ClientSimpleContactModel>();
+		this.pager = new SimplePager();		
 		this.saveButton = new Button("Save");
 		this.centerContent.clear();
 		
@@ -250,7 +252,7 @@ public class DeviceContactListView {
 		viewColumn.setFieldUpdater(new FieldUpdater<ClientSimpleContactModel, String>() {
 			@Override
 			public void update(int index, ClientSimpleContactModel object, String value) {
-				
+				loadContactDetails(object);
 			}
 		});
 		
@@ -285,6 +287,17 @@ public class DeviceContactListView {
 		});
 		
 		this.centerContent.add(this.viewContent);
+	}
+	
+	public void loadContactDetails(ClientSimpleContactModel contact) {
+		FullContactModel fullContact = new FullContactModel(contact.getFirstName(), contact.getLastName(), 
+															contact.getEmails(), contact.getOrganizations().get(0).getName(), 
+															contact.getOrganizations().get(0).getTitle(), PhoneType.getPhoneDescByType(contact.getPhoneType()), 
+															contact.getPhone(), contact.getAddresses().get(0).getStreet(), 
+															contact.getAddresses().get(0).getCity(), contact.getAddresses().get(0).getState(), 
+															contact.getAddresses().get(0).getZipCode(), contact.getAddresses().get(0).getCountry());
+		
+		//Pass fullContact to details view.
 	}
 	
 	public void saveContacts() {
@@ -373,7 +386,121 @@ public class DeviceContactListView {
 	}
 	
 	public void saveResultInLocalSmartphone() {
-		//TODO 
+		ArrayList<ContactModel> smartActiveContacts = this.smartphone.getActiveContacts();
+		ArrayList<ContactModel> smartInactiveContacts = this.smartphone.getInactiveContacts();
+		ArrayList<PhoneModel> auxPhones;
+		boolean isActive = false;
+		boolean isInactive = false;
+		ContactModel auxContact;
+		PhoneModel auxPhone;
+		
+		for (ClientSimpleContactModel cscm : this.activeContacts) {
+			for (ContactModel contact : smartActiveContacts) {
+				if (contact.getFirstName().equals(cscm.getFirstName()) && contact.getLastName().equals(cscm.getLastName())) {
+					auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+					
+					if (!contact.getPhones().contains(auxPhone)) {
+						contact.getPhones().add(auxPhone);
+						
+						for (ContactModel contact2 : smartInactiveContacts) {
+							if (contact2.getFirstName().equals(cscm.getFirstName()) && contact2.getLastName().equals(cscm.getLastName())) {
+								if (contact2.getPhones().contains(auxPhone)) {
+									contact2.getPhones().remove(auxPhone);
+								}								
+								else {
+									ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto inactivo de nombre: " + contact2.getFirstName() + " " + contact2.getLastName());
+								}
+								
+								break;
+							}
+						}
+					}
+					
+					isActive = true;
+					break;
+				}
+			}
+			
+			if (!isActive) {
+				auxPhones = new ArrayList<PhoneModel>();
+				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+				auxPhones.add(auxPhone);
+				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
+				auxContact.setEmails(cscm.getEmails());
+				auxContact.setAddresses(cscm.getAddresses());
+				auxContact.setOrganizations(cscm.getOrganizations());
+				this.smartphone.getActiveContacts().add(auxContact);
+				
+				for (ContactModel contact3 : smartInactiveContacts) {
+					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
+						if (contact3.getPhones().contains(auxPhone)) {
+							contact3.getPhones().remove(auxPhone);
+						}								
+						else {
+							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto inactivo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
+						}
+						
+						break;
+					}
+				}
+			}
+			
+			isActive = false;
+		}
+		
+		for (ClientSimpleContactModel cscm : this.inactiveContacts) {
+			for (ContactModel contact : smartInactiveContacts) {
+				if (contact.getFirstName().equals(cscm.getFirstName()) && contact.getLastName().equals(cscm.getLastName())) {
+					auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+					
+					if (!contact.getPhones().contains(auxPhone)) {
+						contact.getPhones().add(auxPhone);
+						
+						for (ContactModel contact2 : smartActiveContacts) {
+							if (contact2.getFirstName().equals(cscm.getFirstName()) && contact2.getLastName().equals(cscm.getLastName())) {
+								if (contact2.getPhones().contains(auxPhone)) {
+									contact2.getPhones().remove(auxPhone);
+								}								
+								else {
+									ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se devberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto activo de nombre: " + contact2.getFirstName() + " " + contact2.getLastName());
+								}
+								
+								break;
+							}
+						}
+					}
+					
+					isInactive = true;
+					break;
+				}
+			}
+			
+			if (!isInactive) {
+				auxPhones = new ArrayList<PhoneModel>();
+				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+				auxPhones.add(auxPhone);
+				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
+				auxContact.setEmails(cscm.getEmails());
+				auxContact.setAddresses(cscm.getAddresses());
+				auxContact.setOrganizations(cscm.getOrganizations());
+				this.smartphone.getInactiveContacts().add(auxContact);
+				
+				for (ContactModel contact3 : smartActiveContacts) {
+					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
+						if (contact3.getPhones().contains(auxPhone)) {
+							contact3.getPhones().remove(auxPhone);
+						}								
+						else {
+							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto activo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
+						}
+						
+						break;
+					}
+				}
+			}
+			
+			isInactive = false;
+		}
 	}
 	
 	public void loadDeviceContacts() {

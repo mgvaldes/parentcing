@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.client.views.models;
+package com.ing3nia.parentalcontrol.client.models;
 
 import java.util.Date;
 

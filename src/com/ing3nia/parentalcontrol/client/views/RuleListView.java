@@ -15,8 +15,8 @@ import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import com.ing3nia.parentalcontrol.client.views.models.AlertModel;
-import com.ing3nia.parentalcontrol.client.views.models.RuleModel;
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
 
 public class RuleListView {
 	/**
@@ -54,19 +54,19 @@ public class RuleListView {
 	}
 	
 	public void addTestRules() {
-		Date now = Calendar.getInstance().getTime();
-		
-		RuleModel rule = new RuleModel(now, now, "SMS - Send/Receive");
-		rules.add(rule);
-		
-		rule = new RuleModel(now, now, "Calls - Send/Receive");
-		rules.add(rule);
-		
-		rule = new RuleModel(now, now, "Web Navigation");
-		rules.add(rule);
-		
-		rule = new RuleModel(now, now, "Speed Limit - 5 MPH");
-		rules.add(rule);
+//		Date now = Calendar.getInstance().getTime();
+//		
+//		RuleModel rule = new RuleModel(now, now, "SMS - Send/Receive");
+//		rules.add(rule);
+//		
+//		rule = new RuleModel(now, now, "Calls - Send/Receive");
+//		rules.add(rule);
+//		
+//		rule = new RuleModel(now, now, "Web Navigation");
+//		rules.add(rule);
+//		
+//		rule = new RuleModel(now, now, "Speed Limit - 5 MPH");
+//		rules.add(rule);
 	}
 	
 	public void initRuleListView() {
@@ -96,7 +96,7 @@ public class RuleListView {
 		TextColumn<RuleModel> ruleNameColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return object.getRule();
+				return object.getName();
 			}
 		};
 		
