@@ -1,9 +1,5 @@
 package com.ing3nia.parentalcontrol.client.views;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -17,11 +13,8 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
-import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserService;
 import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserServiceAsync;
-import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
-import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerServiceAsync;
 
 public class NewAdminUserView {
 	/**

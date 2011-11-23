@@ -3,7 +3,6 @@ package com.ing3nia.parentalcontrol.client.views;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -16,13 +15,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
-import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
 import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerServiceAsync;
-import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
-import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 
 public class TicketDetailsView {
 	/**

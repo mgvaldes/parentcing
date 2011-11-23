@@ -1,40 +1,9 @@
 package com.ing3nia.parentalcontrol.client;
 
-import java.util.ArrayList;
-
-import com.ibm.icu.impl.CalendarAstronomer.Horizon;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
-import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
-import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
-import com.ing3nia.parentalcontrol.client.rpc.LoginService;
-import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
-import com.ing3nia.parentalcontrol.shared.FieldVerifier;
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Random;
-import com.google.gwt.user.client.Timer;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.DockLayoutPanel;
-import com.google.gwt.user.client.ui.FlexTable;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 /**

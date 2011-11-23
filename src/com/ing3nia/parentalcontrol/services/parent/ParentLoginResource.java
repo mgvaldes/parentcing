@@ -1,20 +1,12 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.jdo.JDOHelper;
 import javax.jdo.PersistenceManager;
-import javax.jdo.PersistenceManagerFactory;
-import javax.jdo.Query;
 import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -22,15 +14,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import com.google.appengine.api.datastore.Email;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.models.PCSession;
-import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;

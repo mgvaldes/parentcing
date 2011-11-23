@@ -1,12 +1,10 @@
 package com.ing3nia.parentalcontrol.models.utils;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
-import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.PCWSStatus;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 

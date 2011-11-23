@@ -25,7 +25,6 @@ import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("total-sync")

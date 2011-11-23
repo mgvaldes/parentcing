@@ -3,8 +3,6 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.util.ArrayList;
 import java.util.Date;
 
-import sun.rmi.runtime.NewThreadAction;
-
 /**
  * Class that represents a single ticket in the ticket list view.
  * 

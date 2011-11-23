@@ -6,7 +6,6 @@ import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,7 +24,6 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
-import com.ing3nia.parentalcontrol.services.exceptions.MissingParameterException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;

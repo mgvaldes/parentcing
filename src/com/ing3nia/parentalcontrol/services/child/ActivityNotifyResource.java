@@ -29,7 +29,6 @@ import com.ing3nia.parentalcontrol.models.utils.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ActivityNotifyModel;
-import com.ing3nia.parentalcontrol.services.models.AlertModel;
 import com.ing3nia.parentalcontrol.services.models.ServiceStatisticsModel;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 

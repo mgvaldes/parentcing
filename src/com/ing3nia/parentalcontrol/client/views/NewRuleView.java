@@ -21,7 +21,6 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
-import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;

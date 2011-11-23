@@ -1,14 +1,11 @@
 package com.ing3nia.parentalcontrol.client.views;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -22,12 +19,8 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
-import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
-import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
-import com.ing3nia.parentalcontrol.client.models.PhoneModel;
-import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
@@ -69,11 +62,11 @@ public class DeviceEmergencyNumberListView {
 	/**
 	 * List of contacts of device.
 	 */
-	private List<EmergencyNumberModel> emergencyNumbers;
+	private ArrayList<EmergencyNumberModel> emergencyNumbers;
 	
-	private List<EmergencyNumberModel> addedEmergencyNumbers;
+	private ArrayList<EmergencyNumberModel> addedEmergencyNumbers;
 	
-	private List<EmergencyNumberModel> deletedEmergencyNumbers;
+	private ArrayList<EmergencyNumberModel> deletedEmergencyNumbers;
 	
 	private SmartphoneModel smartphone;
 	
@@ -256,8 +249,8 @@ public class DeviceEmergencyNumberListView {
 		if (!addedEmergencyNumbers.isEmpty() && !deletedEmergencyNumbers.isEmpty()) {
 			ModificationModel auxMod = new ModificationModel();
 			
-			auxMod.setAddedEmergencyNumbers((ArrayList)this.addedEmergencyNumbers);
-			auxMod.setDeletedEmergencyNumbers((ArrayList)this.deletedEmergencyNumbers);
+			auxMod.setAddedEmergencyNumbers(this.addedEmergencyNumbers);
+			auxMod.setDeletedEmergencyNumbers(this.deletedEmergencyNumbers);
 		    
 		    SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
 			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 

@@ -17,8 +17,6 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
-import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
-import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.AddTicketService;
 import com.ing3nia.parentalcontrol.client.rpc.AddTicketServiceAsync;
 
