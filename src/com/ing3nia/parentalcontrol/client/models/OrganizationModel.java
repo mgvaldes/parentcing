@@ -28,17 +28,4 @@ public class OrganizationModel {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
-	public PCOrganization convertToPCOrganization() {
-		PCOrganization organization = new PCOrganization();
-		
-		organization.setName(this.name);
-		organization.setTitle(this.title);
-		
-		return organization;
-	}
-	
-	public static OrganizationModel convertToOrganizationModel(PCOrganization organization) {
-		return new OrganizationModel(organization.getName(), organization.getTitle());
-	}
 }

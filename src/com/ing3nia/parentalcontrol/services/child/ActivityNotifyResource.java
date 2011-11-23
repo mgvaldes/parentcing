@@ -22,6 +22,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.client.models.PCNotificationTypeId;
+import com.ing3nia.parentalcontrol.client.models.utils.RouteModelUtils;
 import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCServiceStatistics;
@@ -97,7 +98,7 @@ public class ActivityNotifyResource {
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
 			ArrayList<PCRoute> newRoutes = savedSmartphone.getRoutes();
-			newRoutes.add(activityNotifyModel.getRoute().convertToPCRoute());			
+			newRoutes.add(RouteModelUtils.convertToPCRoute(activityNotifyModel.getRoute()));			
 			savedSmartphone.setRoutes(newRoutes);
 			
 			PCNotification pcNotification;

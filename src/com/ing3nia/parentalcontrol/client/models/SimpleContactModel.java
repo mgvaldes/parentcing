@@ -70,21 +70,4 @@ public class SimpleContactModel {
 	public void setKeyId(String keyId) {
 		this.keyId = keyId;
 	}
-
-	public static SimpleContactModel convertToSimpleContactModel(PCSimpleContact savedContact) {
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
-		SimpleContactModel contact = new SimpleContactModel();
-		
-		contact.setFirstName(savedContact.getFirstName());
-		contact.setLastName(savedContact.getLastName());
-		
-		ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
-		
-		PCPhone pcphone = pm.getObjectById(PCPhone.class, savedContact.getPhone());
-		phones.add(PhoneModel.convertToPhoneModel(pcphone));		
-		contact.setPhones(phones);
-		
-		return contact;
-	}
 }

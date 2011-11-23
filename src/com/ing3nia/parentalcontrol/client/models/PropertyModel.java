@@ -79,10 +79,4 @@ public class PropertyModel {
 	public void setKeyId(String keyId) {
 		this.keyId = keyId;
 	}
-
-	public static PropertyModel convertToPropertyModel(PCProperty property) {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-		
-		return new PropertyModel(property.getDescription(), property.getValue(), property.getId(), formatter.format(property.getCreationDate()));
-	}
 }

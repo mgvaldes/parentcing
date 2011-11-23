@@ -34,30 +34,4 @@ public class PhoneModel {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
-	public PCPhone convertToPCPhone() {
-		PCPhone phone = new PCPhone();
-		
-		phone.setType(this.type);
-		phone.setPhoneNumber(this.phoneNumber);
-		
-		return phone;
-	}
-	
-	public static PhoneModel convertToPhoneModel(PCPhone phone) {
-		return new PhoneModel(phone.getType(), phone.getPhoneNumber());
-	}
-	
-	public boolean checkPhonePresent(ArrayList<PCPhone> phones) {
-		boolean present = false;
-		
-		for (PCPhone phone : phones) {
-			if ((phone.getType() == this.type) && phone.getPhoneNumber().equals(this.phoneNumber)) {
-				present = true;
-				break;
-			}
-		}
-		
-		return present;
-	}
 }
