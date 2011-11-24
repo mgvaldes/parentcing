@@ -1,14 +1,9 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import javax.jdo.PersistenceManager;
-
-import com.ing3nia.parentalcontrol.models.PCPhone;
-import com.ing3nia.parentalcontrol.models.PCSimpleContact;
-import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
-
-public class SimpleContactModel {
+public class SimpleContactModel implements Serializable{
 	
 	private String keyId;
 
@@ -69,22 +64,5 @@ public class SimpleContactModel {
 
 	public void setKeyId(String keyId) {
 		this.keyId = keyId;
-	}
-
-	public static SimpleContactModel convertToSimpleContactModel(PCSimpleContact savedContact) {
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
-		SimpleContactModel contact = new SimpleContactModel();
-		
-		contact.setFirstName(savedContact.getFirstName());
-		contact.setLastName(savedContact.getLastName());
-		
-		ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
-		
-		PCPhone pcphone = pm.getObjectById(PCPhone.class, savedContact.getPhone());
-		phones.add(PhoneModel.convertToPhoneModel(pcphone));		
-		contact.setPhones(phones);
-		
-		return contact;
 	}
 }

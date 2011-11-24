@@ -22,7 +22,6 @@ import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
-import com.ing3nia.parentalcontrol.client.models.utils.LocationModelUtils;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
@@ -31,6 +30,7 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.InternalModificationsModel;
+import com.ing3nia.parentalcontrol.services.models.utils.LocationModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("int-mod")

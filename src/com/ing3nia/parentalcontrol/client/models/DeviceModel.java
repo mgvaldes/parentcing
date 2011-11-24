@@ -1,6 +1,8 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-public class DeviceModel {
+import java.io.Serializable;
+
+public class DeviceModel implements Serializable{
 	private String model;
 
 	private String version;

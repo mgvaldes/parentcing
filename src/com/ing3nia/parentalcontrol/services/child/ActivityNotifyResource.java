@@ -30,6 +30,7 @@ import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ActivityNotifyModel;
 import com.ing3nia.parentalcontrol.services.models.ServiceStatisticsModel;
+import com.ing3nia.parentalcontrol.services.models.utils.RouteModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("act-not")
@@ -97,7 +98,7 @@ public class ActivityNotifyResource {
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
 			ArrayList<PCRoute> newRoutes = savedSmartphone.getRoutes();
-			newRoutes.add(activityNotifyModel.getRoute().convertToPCRoute());			
+			newRoutes.add(RouteModelUtils.convertToPCRoute(activityNotifyModel.getRoute()));			
 			savedSmartphone.setRoutes(newRoutes);
 			
 			PCNotification pcNotification;

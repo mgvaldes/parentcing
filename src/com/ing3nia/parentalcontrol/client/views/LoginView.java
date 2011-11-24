@@ -3,6 +3,8 @@ package com.ing3nia.parentalcontrol.client.views;
 import org.apache.http.impl.conn.tsccm.WaitingThread;
 
 import java.util.ArrayList;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Logger;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -15,6 +17,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.ing3nia.parentalcontrol.client.PCLoginUIBinder;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
@@ -23,8 +26,13 @@ import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyService;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyServiceAsync;
+import com.ing3nia.parentalcontrol.client.views.async.SignInUserCallbackHandler;
 
 public class LoginView {
+	
+	private static final Logger logger = Logger
+	.getLogger(SignInUserCallbackHandler.class.getName());
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * login view.
@@ -70,6 +78,8 @@ public class LoginView {
 	private ClientUserModel userModel;
 	
 	public LoginView(HTMLPanel centerContent, ClientUserModel userModel) {
+		logger.addHandler(new ConsoleHandler());
+		
 		this.centerContent = centerContent;
 		this.userModel = userModel;
 		
@@ -91,71 +101,58 @@ public class LoginView {
 		viewContent.add(passwordLabel);
 		viewContent.add(passwordTextBox);
 		viewContent.add(rememberMeCheckBox);
-		
-		signInButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				callLoginService();
-			}
-		});
-		
+	
 		viewContent.add(signInButton);
-		
 		centerContent.add(viewContent);
 	}
+/*
+	public static boolean validateUserName(String username, String password,
+			ClientUserModel userModel, PCLoginUIBinder loginBinder) {
 
-	
-	public static boolean validateUserName(String username, String password, ClientUserModel userModel){
-		
-		if(username.equals("testuser") && password.equals("pass123")){
-			return true;
-		}else{
-			return false;
-		}
-	}
+		boolean isValid = callLoginService(userModel, username, password, loginBinder);
+		return isValid;
+		/*
+		 * if(username.equals("testuser") && password.equals("pass123")){ return
+		 * true; }else{ return false; }
+		 */
+	//}
+/*
+	public static boolean callLoginService(ClientUserModel userModel,
+			String username, String password, PCLoginUIBinder loginBinder) {
+		final String usr = username;
+		final String pass = password;
+		// final ClientUserModel auxUserModel = new ClientUserModel();
+		String auxKey;
+		final ArrayList<SmartphoneModel> smartphoneAuxList;
 
-	public void callLoginService() {
-		final String usr = this.usernameTextBox.getText();
-		final String pass = this.passwordTextBox.getText();
-		final ClientUserModel auxUserModel = this.userModel;
-		
 		UserKeyServiceAsync userKeyService = GWT.create(UserKeyService.class);
-		userKeyService.getUserKey(usr, pass, 
-				new AsyncCallback<String>() {
-					public void onFailure(Throwable error) {
-					}
+
+		ClientUserModel auxKeyObject = new ClientUserModel();
+		//SignInUserCallbackHandler callback = new SignInUserCallbackHandler(userModel, pclogin);
+		//userKeyService.getUserKey(usr, pass, callback);
+		logger.info("NUEVO VALOR DE USERMODEL "+userModel.getKey());
 		
-					public void onSuccess(String userKey) {
-						if (userKey != null) {
-							auxUserModel.setKey(userKey);
-						}
-						else {
-							Window.alert("An error occured. The smartphones could not be loaded.");
-						}
-					}
-				}
-		);
-		
-		this.userModel.setKey(auxUserModel.getKey());
-		
+		//if (loginBinder.getAsync().getText().equals("")) {
+		//	return false;
+		//}
+		if(true){loginBinder.getAsync().setText("THE KEY IS: "+userModel.getKey());return false;}
+
 		LoginServiceAsync loginService = GWT.create(LoginService.class);
-		loginService.login(usr, pass, 
-				new AsyncCallback<ArrayList<SmartphoneModel>>() {
-					public void onFailure(Throwable error) {
-					}
-		
-					public void onSuccess(ArrayList<SmartphoneModel> smartphones) {
-						if (smartphones != null) {
-							auxUserModel.setSmartphones(smartphones);
-						}
-						else {
-							Window.alert("An error occured. The smartphones could not be loaded.");
-						}
-					}
-				}
-		);
-		
-		this.userModel.setSmartphones(auxUserModel.getSmartphones());
+		LoginAsyncCallbackHandler callback2 = new LoginAsyncCallbackHandler();
+		loginService.login(username, password, callback2);
+
+		//userModel.setKey(callback.getAuxKey());
+		userModel.setUsername(username);
+		userModel.setPassword(password);
+		userModel.setSmartphones(callback2.getSmartphoneList());
+
+		return true;
 	}
+	*/
+	public boolean setUserKey(ClientUserModel userModel, String key){
+		if(key==null) return false;
+		userModel.setKey(key);
+		return true;
+	}
+
 }

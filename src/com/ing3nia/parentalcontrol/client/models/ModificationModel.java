@@ -1,21 +1,10 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import javax.jdo.PersistenceManager;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
-import com.ing3nia.parentalcontrol.models.PCModification;
-import com.ing3nia.parentalcontrol.models.PCProperty;
-import com.ing3nia.parentalcontrol.models.PCRule;
-import com.ing3nia.parentalcontrol.models.PCSimpleContact;
-import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
-import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
-
-public class ModificationModel {
+public class ModificationModel implements Serializable {
 	private String key;
 	
 	private String smartphoneName;

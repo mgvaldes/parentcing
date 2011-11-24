@@ -31,6 +31,8 @@ public class PCBaseUIBinder extends Composite {
 	
 	@UiField FlowPanel navigationPanel;
 	
+	@UiField FlowPanel loadingBlock;
+	
 	/*
 	@UiField Button userListButton;
 	@UiField Button addUserButton;
@@ -107,4 +109,13 @@ public class PCBaseUIBinder extends Composite {
 	public void setNavigationPanel(FlowPanel navigationPanel) {
 		this.navigationPanel = navigationPanel;
 	}
+
+	public FlowPanel getLoadingBlock() {
+		return loadingBlock;
+	}
+
+	public void setLoadingBlock(FlowPanel loadingBlock) {
+		this.loadingBlock = loadingBlock;
+	}
+	
 }

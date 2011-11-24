@@ -8,6 +8,8 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
+import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.views.DeviceAlertListView;
 
 public class SmartphoneClickHandler implements ClickHandler{
@@ -20,8 +22,9 @@ public class SmartphoneClickHandler implements ClickHandler{
 	private Button button;
 	private String smartphoneCount;
 	private int smartphoneIndex;
+	private SmartphoneModel smartphoneModel;
 	
-	public SmartphoneClickHandler(String key, BaseViewHandler baseView, Button b, int smartphoneIndex){
+	public SmartphoneClickHandler(String key, BaseViewHandler baseView, Button b, int smartphoneIndex, SmartphoneModel smartphoneModel){
 		this.key = key;
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
@@ -29,6 +32,7 @@ public class SmartphoneClickHandler implements ClickHandler{
 		this.deviceChoiceList = baseView.getBaseBinder().getDeviceChoiceList();
 		this.button  = b;
 		this.smartphoneIndex = smartphoneIndex;
+		this.smartphoneModel = smartphoneModel;
 	}
 	
 	@Override
@@ -53,7 +57,9 @@ public class SmartphoneClickHandler implements ClickHandler{
 		//TODO set selected button style
 		//this.button.setStyleName("selectedSmartphoneButton");
 		
-		DeviceAlertListView view = new DeviceAlertListView(centerContent);		
+		
+		DeviceAlertListView view = new DeviceAlertListView(centerContent, smartphoneModel.getAlerts());	
+		//DeviceAlertListView view = new DeviceAlertListView(centerContent, smartphoneModel.getAlerts());
 		view.initDeviceAlertListView();
 	}
 

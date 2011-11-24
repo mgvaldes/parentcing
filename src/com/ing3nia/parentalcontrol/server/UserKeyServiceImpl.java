@@ -46,7 +46,11 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 		
 		try {
 			user = SessionUtils.getPCUser(pm, username, encryptedPass);
-			userKey = KeyFactory.keyToString(user.getKey());
+			if(user!=null){
+				userKey = KeyFactory.keyToString(user.getKey());
+				logger.info("Got Key: "+userKey);
+				return userKey;
+			}
 		}
 		catch (SessionQueryException ex) {
 			return userKey;

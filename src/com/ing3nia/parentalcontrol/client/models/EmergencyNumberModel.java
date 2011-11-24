@@ -1,6 +1,8 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-public class EmergencyNumberModel {
+import java.io.Serializable;
+
+public class EmergencyNumberModel implements Serializable {
 	private String keyId;
 	
 	private String country;

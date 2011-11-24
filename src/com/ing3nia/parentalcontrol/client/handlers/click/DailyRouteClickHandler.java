@@ -50,12 +50,11 @@ public class DailyRouteClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
 		logger.info("Initializing device route map");
-		DeviceDailyRouteView view = new DeviceDailyRouteView(baseBinder.getCenterContent());		
+		DeviceDailyRouteView view = new DeviceDailyRouteView(baseBinder, baseView);		
 		view.setDeviceRoute(getDummyDeviceRoute());
 		view.initDeviceLocationLoad();
 		
-		logger.info("Devices Loaded. Displaying route Names "+view.getDeviceRouteNames().size()+" ex: "+view.getDeviceRouteNames().get(0));
-
+		//logger.info("Devices Loaded. Displaying route Names "+view.getDeviceRouteNames().size()+" ex: "+view.getDeviceRouteNames().get(0));
 		displayRouteNames(menuSetter.getParentSmartphoneButton(), deviceChoiceList, view.getDeviceRouteNames());
 	}
 	

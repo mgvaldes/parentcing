@@ -3,6 +3,7 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.util.ArrayList;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.ing3nia.parentalcontrol.services.models.utils.GeoPtModelUtils;
 
 public class ClientUserModel {
 	/**
@@ -121,4 +122,16 @@ public class ClientUserModel {
 
 		return alerts;
 	}
+	
+	public ArrayList<GeoPtModel> getDeviceLocations(){
+		ArrayList<GeoPtModel> deviceLocations = new ArrayList<GeoPtModel>();
+		for(SmartphoneModel sph: this.getSmartphones()){
+			GeoPtModel geopt = new GeoPtModel();
+			geopt.setLatitude(Double.valueOf(sph.getLocation().getLatitude()));
+			geopt.setLongitude(Double.valueOf(sph.getLocation().getLongitude()));
+			deviceLocations.add(geopt);
+		}
+		return deviceLocations;
+	}
+	
 }

@@ -1,16 +1,21 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-public class LocationModel {
+import java.io.Serializable;
+
+public class LocationModel implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private String latitude;
 	
 	private String longitude;
 
 	public LocationModel() {
-		super();
 	}
 
 	public LocationModel(String latitude, String longitude) {
-		super();
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}

@@ -20,13 +20,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
-import com.ing3nia.parentalcontrol.client.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
+import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
+import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
@@ -112,8 +113,8 @@ public class RegisterSmartphoneResource {
 	    
     	logger.info("[Register Smartphone Service] Encrypting password in MD5.");
     	
-    	//String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());
-    	String encryptedPass = registerSmartphoneModel.getPass();
+    	String encryptedPass = EncryptionUtils.toMD5(registerSmartphoneModel.getPass());
+    	//String encryptedPass = registerSmartphoneModel.getPass();
     	
 		logger.info("[Register Smartphone Service] Finding PCUser with usr, pass: " + registerSmartphoneModel.getUsr() + " "+encryptedPass+" from: " + registerSmartphoneModel.getPass());
     	user = SessionUtils.getPCUser(pm, registerSmartphoneModel.getUsr(), encryptedPass);

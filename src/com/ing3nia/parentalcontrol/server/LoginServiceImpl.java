@@ -22,16 +22,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.utils.ContactInfo;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.models.UserModel;
+import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
 
@@ -99,7 +100,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				auxContactInfo.setKey(((JsonPrimitive)auxObject.get("id")).getAsString());
 				auxPhoneList = auxContactInfo.getPhones();
 
-				auxPhone = auxObject.getAsJsonObject("num");
+				auxPhone = (JsonObject)auxObject.getAsJsonArray("num").get(0);
 				phoneModel = new PhoneModel(((JsonPrimitive)auxPhone.get("type")).getAsInt(), ((JsonPrimitive)auxPhone.get("phone")).getAsString());
 				auxPhoneList.add(phoneModel);
 				auxContactInfo.setPhones(auxPhoneList);
@@ -108,9 +109,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			else {
 				auxContactInfo = new ContactInfo();
 				auxContactInfo.setKey(((JsonPrimitive)auxObject.get("id")).getAsString());
-				auxPhoneList = auxContactInfo.getPhones();
+				auxPhoneList = new ArrayList<PhoneModel>();
 
-				auxPhone = auxObject.getAsJsonObject("num");
+				auxPhone = (JsonObject)auxObject.getAsJsonArray("num").get(0);
 				phoneModel = new PhoneModel(((JsonPrimitive)auxPhone.get("type")).getAsInt(), ((JsonPrimitive)auxPhone.get("phone")).getAsString());
 				auxPhoneList.add(phoneModel);
 				auxContactInfo.setPhones(auxPhoneList);
@@ -162,7 +163,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				
 			rd.close();
 			
-			logger.info(sb.toString());
+			logger.info("DETAILS: "+sb.toString());
 			
 			JsonParser jsonParser = new JsonParser();			
 			JsonObject jsonResponse = (JsonObject)jsonParser.parse(sb.toString());
@@ -210,7 +211,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				
 			rd.close();
 			
-			logger.info(sb.toString());
+			logger.info("GENERAL: "+sb.toString());
 			
 			JsonParser jsonParser = new JsonParser();			
 			JsonObject jsonResponse = (JsonObject)jsonParser.parse(sb.toString());
@@ -222,7 +223,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				
 				Type sphArrayType = new TypeToken<ArrayList<SmartphoneModel>>(){}.getType();
 				Gson gson = new Gson();
-				smartphones = gson.fromJson(jsonResponse.getAsJsonObject("smartphones"), sphArrayType);
+				smartphones = gson.fromJson(jsonResponse.getAsJsonArray("smartphones"), sphArrayType);
 			}
 			else {
 				String verbose = ((JsonPrimitive)jsonResponseStatus.get("verbose")).getAsString();
@@ -251,8 +252,10 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			userModel.setUsr(username);
 			userModel.setPass(password);
 			
-			url = new URL("https://localhost:8888/resources/login");
+			url = new URL("http://localhost:8888/resources/login");
+			
 			conn = url.openConnection();
+			conn.setRequestProperty("Content-Type","application/json; charset=utf-8");
 			conn.setDoOutput(true);
 			
 			Gson jsonBuilder = new Gson();

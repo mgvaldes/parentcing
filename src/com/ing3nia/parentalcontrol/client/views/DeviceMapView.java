@@ -17,11 +17,18 @@ import com.google.gwt.maps.client.overlay.Marker;
 import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
+import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
 
 
 public class DeviceMapView {
+	
+	PCBaseUIBinder baseBinder;
+	
+	BaseViewHandler baseViewHandler;
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * alert list view.
@@ -44,8 +51,10 @@ public class DeviceMapView {
 	 */
 	private MapWidget map;
 	
-	public DeviceMapView(HTMLPanel centerContent) {
-		this.centerContent = centerContent;
+	public DeviceMapView(PCBaseUIBinder baseBinder, BaseViewHandler baseView) {
+		this.baseBinder = baseBinder;
+		this.baseViewHandler = baseView;
+		this.centerContent = baseBinder.getCenterContent();
 		viewContent = new HTMLPanel("");
 		deviceLocations = new ArrayList<GeoPtModel>();
 	}
@@ -59,8 +68,14 @@ public class DeviceMapView {
 	}
 	
 	public void loadDeviceLocations() {
-	    LatLng deviceLoc = LatLng.newInstance(deviceLocations.get(0).getLatitude(), deviceLocations.get(0).getLongitude());
 	    
+		LoadingView.setLoadingView(this.baseBinder, AsyncronousCallsMessages.LOADING_DEVICES_MAP, this.baseViewHandler.getLoadingImage());
+		LatLng deviceLoc;
+		if(deviceLocations ==null || deviceLocations.size() == 0){
+			deviceLoc = LatLng.newInstance(41, 2);
+		}else{
+			deviceLoc = LatLng.newInstance(deviceLocations.get(0).getLatitude(), deviceLocations.get(0).getLongitude());
+		}
 	    map = new MapWidget(deviceLoc,11);
 	    map.setSize("100%", "100%");	  
 	    map.addControl(new LargeMapControl());
@@ -88,6 +103,8 @@ public class DeviceMapView {
 	    dock.addNorth(this.map, 490);
 	    
 	    this.viewContent.add(dock);
+	    this.centerContent.clear();
+	    LoadingView.clearLoadingView(this.baseBinder);
 		this.centerContent.add(this.viewContent);
 	}
 

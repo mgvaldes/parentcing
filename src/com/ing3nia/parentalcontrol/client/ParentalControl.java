@@ -9,6 +9,7 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.HelpDeskUserClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.LogoImageClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.SignInButtonClickHandler;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
@@ -38,8 +39,6 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class ParentalControl implements EntryPoint {
 
-	public static String INVALID_CREDENTIALS = "Invalid username or password, please try again";
-	public static String LOADING_LOGIN = "Authenticating user";
 	public Image loadingImage;
 	
 	/**
@@ -52,7 +51,6 @@ public class ParentalControl implements EntryPoint {
 	}
 	
 	public void loadPage(){
-
 		
 		// Check if user session is active
 		String userCookie = CookieHandler.getPCCookie();
@@ -111,15 +109,17 @@ public class ParentalControl implements EntryPoint {
 		return new ArrayList<SmartphoneModel>();
 	}
 	
-	public void loadPCAdmin(ClientUserModel usermodel){
+	public static void loadPCAdmin(ClientUserModel usermodel){
 		  PCBaseUIBinder pcbase = new PCBaseUIBinder();
 		  RootPanel.get().add(pcbase);
 		  
-		  ClientUserModel user = getDummyUser();
+		  ClientUserModel user = usermodel;
 		  
 		  BaseViewHandler baseViewHandler = new BaseViewHandler(pcbase);
 		  baseViewHandler.setUser(user);
-		  baseViewHandler.setSlist(getDummySmartphoneList());
+		  baseViewHandler.setSlist(user.getSmartphones());
+		 
+		  //baseViewHandler.setSlist(getDummySmartphoneList());
 		  
 		  NavigationHandler navHandler = new NavigationHandler(baseViewHandler);
 		  navHandler.setDashboardNavigation(baseViewHandler.getBaseBinder().getNavigationPanel());
@@ -139,41 +139,6 @@ public class ParentalControl implements EntryPoint {
 		  baseViewHandler.setLogoutButton();
 		  baseViewHandler.setAdminUserListView();
 		  baseViewHandler.setNewAdminUserViewHandler();
-	}
-
-	
-	public class SignInButtonClickHandler implements ClickHandler{
-		
-		PCLoginUIBinder pclogin;
-		ClientUserModel userModel;
-		Image loadingImage;
-		public SignInButtonClickHandler(PCLoginUIBinder pclogin, ClientUserModel userModel, Image loadinImage){
-			this.pclogin = pclogin;
-			this.userModel = userModel;
-			this.loadingImage = loadinImage;
-		}
-		
-		@Override
-		public void onClick(ClickEvent event) {
-			String email = pclogin.getEmailField().getText();
-			String pass = pclogin.getPassField().getText();
-			LoadingView.setLoadingView(pclogin, LOADING_LOGIN, loadingImage);
-			
-			boolean validSignIn = LoginView.validateUserName(email, pass, userModel);
-
-			if(validSignIn){
-				CookieHandler.setPCCookie("us3rp4r3nt4lc00k13");
-				if(pclogin.getRememberMeBox().isEnabled()){
-					CookieHandler.setCredentialsRemember(pclogin.getEmailField().getText(), pclogin.getPassField().getText());
-				}
-				
-				RootPanel.get().clear();
-				loadPCAdmin(userModel);
-			}else{
-				pclogin.getLoadingBlock().clear();
-				pclogin.getNotice().setText(INVALID_CREDENTIALS);
-			}
-		}
 	}
 
 

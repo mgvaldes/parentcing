@@ -1,7 +1,9 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 
-public class AddressModel {
+
+public class AddressModel implements Serializable{
 	private int type;
 	
 	private String street;

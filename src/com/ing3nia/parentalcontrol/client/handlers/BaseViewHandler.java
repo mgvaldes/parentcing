@@ -35,8 +35,11 @@ import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
 import com.ing3nia.parentalcontrol.client.views.AdminUserListView;
 import com.ing3nia.parentalcontrol.client.views.AlertListView;
 import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
+import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.NewAdminUserView;
+import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
 import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
+import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 
 public class BaseViewHandler {
 	
@@ -48,10 +51,13 @@ public class BaseViewHandler {
 	private ClientUserModel user;
 	private List<SmartphoneModel> slist;
 	private int clickedSmartphoneIndex = -1;
+	private Image loadingImage;
 	
 	public BaseViewHandler(PCBaseUIBinder baseBinder){
 		this.baseBinder = baseBinder;
 		this.menuSetter = new MenuSetterHandler(baseBinder);
+		this.slist = new ArrayList<SmartphoneModel>();
+		this.loadingImage = new Image("/media/images/loading-black.gif");
 	}
 
 	public void initBaseView(){
@@ -67,7 +73,7 @@ public class BaseViewHandler {
 			
 			b.setStyleName("buttonFromList");
 			b.setText(smartphone.getName());
-			SmartphoneClickHandler smClick = new SmartphoneClickHandler(smartphone.getKeyId(), this, b, smartphoneCount);
+			SmartphoneClickHandler smClick = new SmartphoneClickHandler(smartphone.getKeyId(), this, b, smartphoneCount, smartphone);
 			b.addClickHandler(smClick);
 			
 			buttonPanel.add(b);
@@ -113,8 +119,8 @@ public class BaseViewHandler {
 		Button alertListButton = this.menuSetter.getDashboardAlertList();
 		Button deviceMap = this.menuSetter.getDashboardDeviceMap();
 		
-		DashboardAlertListClickHandler alertListHandler = new DashboardAlertListClickHandler(user.getKey(),this);
-		DashboardDeviceMapClickHandler dashDeviceMapHandler =  new DashboardDeviceMapClickHandler(user.getKey(), this);
+		DashboardAlertListClickHandler alertListHandler = new DashboardAlertListClickHandler(user.getKey(), this, user.getUserAlertList());
+		DashboardDeviceMapClickHandler dashDeviceMapHandler =  new DashboardDeviceMapClickHandler(user.getKey(), this, baseBinder);
 		alertListButton.addClickHandler(alertListHandler);
 		deviceMap.addClickHandler(dashDeviceMapHandler);
 		
@@ -122,12 +128,14 @@ public class BaseViewHandler {
 		menuOptions.add(alertListButton);
 		deviceMap.setStyleName("selectedShinnyButton");
 
-		DeviceMapView view = new DeviceMapView(baseBinder.getCenterContent());
+		DeviceMapView view = new DeviceMapView(baseBinder,this);
 		
 		//TODO Set deviceLocations from user
-		view.setDeviceLocations(getDummyDeviceLocations());
+		ArrayList<GeoPtModel> deviceLocations =  user.getDeviceLocations();
+		view.setDeviceLocations(deviceLocations);
 		//view.setDeviceLocations(user.getDeviceLocations());
 		view.initDeviceLocationLoad();
+
 		//AlertListView view = new AlertListView(baseBinder.getCenterContent());		
 		//view.initAlertListView();
 	}
@@ -354,5 +362,12 @@ public class BaseViewHandler {
 		this.slist = slist;
 	}
 
+	public Image getLoadingImage() {
+		return loadingImage;
+	}
+
+	public void setLoadingImage(Image loadingImage) {
+		this.loadingImage = loadingImage;
+	}
 	
 }

@@ -24,11 +24,11 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
-import com.ing3nia.parentalcontrol.client.models.utils.ModificationModelUtils;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
+import com.ing3nia.parentalcontrol.services.models.utils.ModificationModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("upd-sync")

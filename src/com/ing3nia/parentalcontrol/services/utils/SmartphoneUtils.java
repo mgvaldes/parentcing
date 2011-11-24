@@ -44,7 +44,7 @@ public class SmartphoneUtils {
 		PCSmartphone pcSmart = pm.getObjectById(PCSmartphone.class, pcSmartKey);
 		
 		JsonObject smpJson = new JsonObject();
-		smpJson.addProperty("id", KeyFactory.keyToString(pcSmartKey));
+		smpJson.addProperty("keyId", KeyFactory.keyToString(pcSmartKey));
 		smpJson.addProperty("name",pcSmart.getName());
 		
 		JsonObject deviceJson = new JsonObject();

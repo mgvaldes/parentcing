@@ -42,16 +42,15 @@ public class DeviceAlertListView {
 	 */
 	private CellTable<AlertModel> alertTable;
 	
-	public DeviceAlertListView(HTMLPanel centerContent) {
+	public DeviceAlertListView(HTMLPanel centerContent, ArrayList<AlertModel> alertList) {
 		this.centerContent = centerContent;
 		viewContent = new HTMLPanel("");
-		alerts = new ArrayList<AlertModel>();
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");
-		this.alerts = new ArrayList<AlertModel>();
+		this.alerts = alertList;
 		this.centerContent.clear();
 		
-		addTestDeviceAlerts();
+		//addTestDeviceAlerts();
 
 	}
 	
@@ -131,6 +130,7 @@ public class DeviceAlertListView {
 		pager.setStyleName("");
 		viewContent.add(pager);		
 		
+		centerContent.clear();
 		centerContent.add(viewContent);
 	}
 }

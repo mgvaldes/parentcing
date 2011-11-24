@@ -22,10 +22,10 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("total-sync")

@@ -1,10 +1,8 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
 
-import com.ing3nia.parentalcontrol.models.PCProperty;
-
-public class PropertyModel {
+public class PropertyModel implements Serializable {
 	
 	private String keyId;
 	
@@ -78,11 +76,5 @@ public class PropertyModel {
 
 	public void setKeyId(String keyId) {
 		this.keyId = keyId;
-	}
-
-	public static PropertyModel convertToPropertyModel(PCProperty property) {
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
-		
-		return new PropertyModel(property.getDescription(), property.getValue(), property.getId(), formatter.format(property.getCreationDate()));
 	}
 }

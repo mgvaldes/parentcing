@@ -27,9 +27,16 @@ import com.google.gwt.user.client.ui.DockLayoutPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.Label;
+import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 
 public class DeviceDailyRouteView {
+	
+	PCBaseUIBinder baseBinder;
+	
+	BaseViewHandler baseViewHandler;
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * alert list view.
@@ -57,8 +64,9 @@ public class DeviceDailyRouteView {
 	 */
 	private MapWidget map;
 	
-	public DeviceDailyRouteView(HTMLPanel centerContent) {
-		this.centerContent = centerContent;
+	public DeviceDailyRouteView(PCBaseUIBinder baseBinder, BaseViewHandler baseViewHandler) {
+		this.centerContent = baseBinder.getCenterContent();
+		this.baseViewHandler = baseViewHandler;
 		viewContent = new HTMLPanel("");
 		deviceRoute = new ArrayList<GeoPtModel>();
 		deviceRouteNames = new ArrayList<String>();
@@ -132,7 +140,7 @@ public class DeviceDailyRouteView {
 								value.append(location.getCountry());
 							}
 						}
-						
+						baseBinder.getDeviceChoiceList().add(new Label(value.toString()));
 						deviceRouteNames.add(value.toString());
 					}
 				}

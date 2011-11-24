@@ -46,10 +46,18 @@ public class InitResource {
 	@GET
 	public Response doGet() {
 
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
+		//PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		/*
 		Key smartKey = KeyFactory.stringToKey("aglub19hcHBfaWRyHwsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRiQAQw");
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
+	*/
+		
+		createDummyApplication();
+		
+		ResponseBuilder rbuilder;
+		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);
+		
+		return rbuilder.build();
 		
 //		String rule = "aglub19hcHBfaWRyKgsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRhXDAsSBlBDUnVsZRhgDA";
 		
@@ -62,6 +70,7 @@ public class InitResource {
 //		
 //		pm.close();
 
+		/*
 		ArrayList<Key> inactive = smart.getInactiveContacts();
 		
 		PCPhone phone = new PCPhone();
@@ -148,7 +157,7 @@ public class InitResource {
 		
 		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
 		
-		return rbuilder.build();
+		return rbuilder.build();*/
 	}
 	
 	public void createDummyApplication(){
@@ -179,6 +188,5 @@ public class InitResource {
 		finally {
             pm.close();
         }
-		
 	}
 }
