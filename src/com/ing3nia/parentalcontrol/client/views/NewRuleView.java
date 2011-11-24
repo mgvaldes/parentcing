@@ -437,7 +437,7 @@ public class NewRuleView {
 			newRule.setStartDate(auxDate);
 			
 			auxDate = toDateTextBox.getText() + " " + hourTextBoxT.getText() + ":" + minuteTextBoxT.getText() + ":" + secondsTextBoxT.getText() + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
-			newRule.setStartDate(auxDate);
+			newRule.setEndDate(auxDate);
 			
 			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
 			rules.add(newRule);
