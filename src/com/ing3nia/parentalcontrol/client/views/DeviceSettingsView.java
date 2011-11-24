@@ -5,10 +5,12 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -19,9 +21,11 @@ import com.google.gwt.user.client.ui.TextBox;
 
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
+import com.ing3nia.parentalcontrol.models.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
 
 
@@ -172,6 +176,12 @@ public class DeviceSettingsView {
 		speedLimitPanel.add(mphLabel);		
 		deviceSettingsContent.add(speedLimitPanel);
 		
+		blockPhoneButton.addClickHandler(new ClickHandler() {
+	    	public void onClick(ClickEvent event) {
+	    		blockPhone();
+	    	}
+	    });
+		
 		blockPhonePanel.add(blockPhoneButton);
 		blockPhonePanel.add(blockPhoneLabel);
 		deviceSettingsContent.add(blockPhonePanel);
@@ -198,6 +208,48 @@ public class DeviceSettingsView {
 		this.deviceSettingsContent.add(this.buttonPanel);
 		
 		this.centerContent.add(this.deviceSettingsContent);
+	}
+	
+	public void blockPhone() {
+		ModificationModel auxMod = new ModificationModel();
+		
+		final RuleModel newRule = new RuleModel();
+		newRule.setName(FunctionalityTypeId.TOTAL_BLOCK.getDescription());
+		
+		ArrayList<Integer> disabledFunctionalities = new ArrayList<Integer>();
+		disabledFunctionalities.add(FunctionalityTypeId.TOTAL_BLOCK.getId());
+		newRule.setDisabledFunctionalities(disabledFunctionalities);
+		
+		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");	
+		String now = formatter.format(Calendar.getInstance().getTime());
+		newRule.setCreationDate(now);
+		
+		newRule.setStartDate(now);
+		newRule.setEndDate(now);
+		
+		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+		rules.add(newRule);
+		
+		auxMod.setRules(rules);
+		
+		SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+		saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
+				new AsyncCallback<Boolean>() {
+					public void onFailure(Throwable error) {
+					}
+		
+					public void onSuccess(Boolean result) {
+						if (result) {
+							ArrayList<RuleModel> rules = smartphone.getRules();
+							rules.add(newRule);								
+							smartphone.setRules(rules);
+						}
+						else {
+							Window.alert("An error occured. The new rule couldn't be saved.");
+						}
+					}
+				}
+		);
 	}
 	
 	public void saveDeviceSettings() {
