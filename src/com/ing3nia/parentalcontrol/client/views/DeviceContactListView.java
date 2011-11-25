@@ -310,207 +310,207 @@ public class DeviceContactListView {
 	}
 	
 	public void saveContacts() {
-//		if (!activeContacts.isEmpty() && !inactiveContacts.isEmpty()) {
-//			ModificationModel auxMod = new ModificationModel();
-//			
-//			HashMap<String, ArrayList<PhoneModel>> activeHash = new HashMap<String, ArrayList<PhoneModel>>();
-//			HashMap<String, ArrayList<PhoneModel>> inactiveHash = new HashMap<String, ArrayList<PhoneModel>>();
-//			String auxContactName;
-//			ArrayList<PhoneModel> auxPhones;
-//			
-//			for (ClientSimpleContactModel contact : activeContacts) {
-//				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
-//				
-//				if (activeHash.containsKey(auxContactName)) {
-//					auxPhones = (ArrayList<PhoneModel>)activeHash.get(auxContactName);					
-//				}
-//				else {
-//					auxPhones = new ArrayList<PhoneModel>();
-//				}
-//				
-//				auxPhones.add(new PhoneModel(contact.getPhoneType(), contact.getPhone()));
-//				activeHash.put(auxContactName, auxPhones);
-//			}
-//			
-//			for (ClientSimpleContactModel contact : inactiveContacts) {
-//				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
-//				
-//				if (inactiveHash.containsKey(auxContactName)) {
-//					auxPhones = (ArrayList<PhoneModel>)inactiveHash.get(auxContactName);					
-//				}
-//				else {
-//					auxPhones = new ArrayList<PhoneModel>();
-//				}
-//				
-//				auxPhones.add(new PhoneModel(contact.getPhoneType(), contact.getPhone()));
-//				inactiveHash.put(auxContactName, auxPhones);
-//			}
-//						
-//			Iterator<Map.Entry<String, ArrayList<PhoneModel>>> it = activeHash.entrySet().iterator();
-//			SimpleContactModel auxContact;
-//			Map.Entry<String, ArrayList<PhoneModel>> pair;
-//			String[] auxName;
-//			ArrayList<SimpleContactModel> simpleActiveContacts = new ArrayList<SimpleContactModel>();
-//			
-//		    while (it.hasNext()) {
-//		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
-//
-//		        auxName = ((String)pair.getKey()).split("\\|");
-//		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
-//		        simpleActiveContacts.add(auxContact);
-//		    }
-//		    
-//		    auxMod.setActiveContacts(simpleActiveContacts);
-//		    
-//		    it = inactiveHash.entrySet().iterator();
-//			ArrayList<SimpleContactModel> simpleInactiveContacts = new ArrayList<SimpleContactModel>();
-//			
-//		    while (it.hasNext()) {
-//		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
-//
-//		        auxName = ((String)pair.getKey()).split("\\|");
-//		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
-//		        simpleInactiveContacts.add(auxContact);
-//		    }
-//		    
-//		    auxMod.setInactiveContacts(simpleInactiveContacts);
-//		    
-//		    SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
-//			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
-//					new AsyncCallback<Boolean>() {
-//						public void onFailure(Throwable error) {
-//						}
-//			
-//						public void onSuccess(Boolean result) {
-//							if (result) {
-//								saveResultInLocalSmartphone();
-//							}
-//							else {
-//								Window.alert("An error occured. The device settings couldn't be applied.");
-//							}
-//						}
-//					}
-//			);
-//		}
+		if (!activeContacts.isEmpty() && !inactiveContacts.isEmpty()) {
+			ModificationModel auxMod = new ModificationModel();
+			
+			HashMap<String, ArrayList<PhoneModel>> activeHash = new HashMap<String, ArrayList<PhoneModel>>();
+			HashMap<String, ArrayList<PhoneModel>> inactiveHash = new HashMap<String, ArrayList<PhoneModel>>();
+			String auxContactName;
+			ArrayList<PhoneModel> auxPhones;
+			
+			for (ClientSimpleContactModel contact : activeContacts) {
+				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
+				
+				if (activeHash.containsKey(auxContactName)) {
+					auxPhones = (ArrayList<PhoneModel>)activeHash.get(auxContactName);					
+				}
+				else {
+					auxPhones = new ArrayList<PhoneModel>();
+				}
+				
+				auxPhones.add(new PhoneModel(contact.getPhoneType(), contact.getPhone()));
+				activeHash.put(auxContactName, auxPhones);
+			}
+			
+			for (ClientSimpleContactModel contact : inactiveContacts) {
+				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
+				
+				if (inactiveHash.containsKey(auxContactName)) {
+					auxPhones = (ArrayList<PhoneModel>)inactiveHash.get(auxContactName);					
+				}
+				else {
+					auxPhones = new ArrayList<PhoneModel>();
+				}
+				
+				auxPhones.add(new PhoneModel(contact.getPhoneType(), contact.getPhone()));
+				inactiveHash.put(auxContactName, auxPhones);
+			}
+						
+			Iterator<Map.Entry<String, ArrayList<PhoneModel>>> it = activeHash.entrySet().iterator();
+			SimpleContactModel auxContact;
+			Map.Entry<String, ArrayList<PhoneModel>> pair;
+			String[] auxName;
+			ArrayList<SimpleContactModel> simpleActiveContacts = new ArrayList<SimpleContactModel>();
+			
+		    while (it.hasNext()) {
+		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
+
+		        auxName = ((String)pair.getKey()).split("\\|");
+		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
+		        simpleActiveContacts.add(auxContact);
+		    }
+		    
+		    auxMod.setActiveContacts(simpleActiveContacts);
+		    
+		    it = inactiveHash.entrySet().iterator();
+			ArrayList<SimpleContactModel> simpleInactiveContacts = new ArrayList<SimpleContactModel>();
+			
+		    while (it.hasNext()) {
+		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
+
+		        auxName = ((String)pair.getKey()).split("\\|");
+		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
+		        simpleInactiveContacts.add(auxContact);
+		    }
+		    
+		    auxMod.setInactiveContacts(simpleInactiveContacts);
+		    
+		    SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
+					new AsyncCallback<Boolean>() {
+						public void onFailure(Throwable error) {
+						}
+			
+						public void onSuccess(Boolean result) {
+							if (result) {
+								saveResultInLocalSmartphone();
+							}
+							else {
+								Window.alert("An error occured. The device settings couldn't be applied.");
+							}
+						}
+					}
+			);
+		}
 	}
 	
-//	public void saveResultInLocalSmartphone() {
-//		ArrayList<ContactModel> smartActiveContacts = this.smartphone.getActiveContacts();
-//		ArrayList<ContactModel> smartInactiveContacts = this.smartphone.getInactiveContacts();
-//		ArrayList<PhoneModel> auxPhones;
-//		boolean isActive = false;
-//		boolean isInactive = false;
-//		ContactModel auxContact;
-//		PhoneModel auxPhone;
-//		
-//		for (ClientSimpleContactModel cscm : this.activeContacts) {
-//			for (ContactModel contact : smartActiveContacts) {
-//				if (contact.getFirstName().equals(cscm.getFirstName()) && contact.getLastName().equals(cscm.getLastName())) {
-//					auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
-//					
-//					if (!contact.getPhones().contains(auxPhone)) {
-//						contact.getPhones().add(auxPhone);
-//						
-//						for (ContactModel contact2 : smartInactiveContacts) {
-//							if (contact2.getFirstName().equals(cscm.getFirstName()) && contact2.getLastName().equals(cscm.getLastName())) {
-//								if (contact2.getPhones().contains(auxPhone)) {
-//									contact2.getPhones().remove(auxPhone);
-//								}								
-//								else {
-//									ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto inactivo de nombre: " + contact2.getFirstName() + " " + contact2.getLastName());
-//								}
-//								
-//								break;
-//							}
-//						}
-//					}
-//					
-//					isActive = true;
-//					break;
-//				}
-//			}
-//			
-//			if (!isActive) {
-//				auxPhones = new ArrayList<PhoneModel>();
-//				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
-//				auxPhones.add(auxPhone);
-//				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
-//				auxContact.setEmails(cscm.getEmails());
-//				auxContact.setAddresses(cscm.getAddresses());
-//				auxContact.setOrganizations(cscm.getOrganizations());
-//				this.smartphone.getActiveContacts().add(auxContact);
-//				
-//				for (ContactModel contact3 : smartInactiveContacts) {
-//					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
-//						if (contact3.getPhones().contains(auxPhone)) {
-//							contact3.getPhones().remove(auxPhone);
-//						}								
-//						else {
-//							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto inactivo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
-//						}
-//						
-//						break;
-//					}
-//				}
-//			}
-//			
-//			isActive = false;
-//		}
-//		
-//		for (ClientSimpleContactModel cscm : this.inactiveContacts) {
-//			for (ContactModel contact : smartInactiveContacts) {
-//				if (contact.getFirstName().equals(cscm.getFirstName()) && contact.getLastName().equals(cscm.getLastName())) {
-//					auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
-//					
-//					if (!contact.getPhones().contains(auxPhone)) {
-//						contact.getPhones().add(auxPhone);
-//						
-//						for (ContactModel contact2 : smartActiveContacts) {
-//							if (contact2.getFirstName().equals(cscm.getFirstName()) && contact2.getLastName().equals(cscm.getLastName())) {
-//								if (contact2.getPhones().contains(auxPhone)) {
-//									contact2.getPhones().remove(auxPhone);
-//								}								
-//								else {
-//									ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se devberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto activo de nombre: " + contact2.getFirstName() + " " + contact2.getLastName());
-//								}
-//								
-//								break;
-//							}
-//						}
-//					}
-//					
-//					isInactive = true;
-//					break;
-//				}
-//			}
-//			
-//			if (!isInactive) {
-//				auxPhones = new ArrayList<PhoneModel>();
-//				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
-//				auxPhones.add(auxPhone);
-//				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
-//				auxContact.setEmails(cscm.getEmails());
-//				auxContact.setAddresses(cscm.getAddresses());
-//				auxContact.setOrganizations(cscm.getOrganizations());
-//				this.smartphone.getInactiveContacts().add(auxContact);
-//				
-//				for (ContactModel contact3 : smartActiveContacts) {
-//					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
-//						if (contact3.getPhones().contains(auxPhone)) {
-//							contact3.getPhones().remove(auxPhone);
-//						}								
-//						else {
-//							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto activo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
-//						}
-//						
-//						break;
-//					}
-//				}
-//			}
-//			
-//			isInactive = false;
-//		}
-//	}
+	public void saveResultInLocalSmartphone() {
+		ArrayList<ContactModel> smartActiveContacts = this.smartphone.getActiveContacts();
+		ArrayList<ContactModel> smartInactiveContacts = this.smartphone.getInactiveContacts();
+		ArrayList<PhoneModel> auxPhones;
+		boolean isActive = false;
+		boolean isInactive = false;
+		ContactModel auxContact;
+		PhoneModel auxPhone;
+		
+		for (ClientSimpleContactModel cscm : this.activeContacts) {
+			for (ContactModel contact : smartActiveContacts) {
+				if (contact.getFirstName().equals(cscm.getFirstName()) && contact.getLastName().equals(cscm.getLastName())) {
+					auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+					
+					if (!contact.getPhones().contains(auxPhone)) {
+						contact.getPhones().add(auxPhone);
+						
+						for (ContactModel contact2 : smartInactiveContacts) {
+							if (contact2.getFirstName().equals(cscm.getFirstName()) && contact2.getLastName().equals(cscm.getLastName())) {
+								if (contact2.getPhones().contains(auxPhone)) {
+									contact2.getPhones().remove(auxPhone);
+								}								
+								else {
+									ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto inactivo de nombre: " + contact2.getFirstName() + " " + contact2.getLastName());
+								}
+								
+								break;
+							}
+						}
+					}
+					
+					isActive = true;
+					break;
+				}
+			}
+			
+			if (!isActive) {
+				auxPhones = new ArrayList<PhoneModel>();
+				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+				auxPhones.add(auxPhone);
+				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
+				auxContact.setEmails(cscm.getEmails());
+				auxContact.setAddresses(cscm.getAddresses());
+				auxContact.setOrganizations(cscm.getOrganizations());
+				this.smartphone.getActiveContacts().add(auxContact);
+				
+				for (ContactModel contact3 : smartInactiveContacts) {
+					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
+						if (contact3.getPhones().contains(auxPhone)) {
+							contact3.getPhones().remove(auxPhone);
+						}								
+						else {
+							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto inactivo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
+						}
+						
+						break;
+					}
+				}
+			}
+			
+			isActive = false;
+		}
+		
+		for (ClientSimpleContactModel cscm : this.inactiveContacts) {
+			for (ContactModel contact : smartInactiveContacts) {
+				if (contact.getFirstName().equals(cscm.getFirstName()) && contact.getLastName().equals(cscm.getLastName())) {
+					auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+					
+					if (!contact.getPhones().contains(auxPhone)) {
+						contact.getPhones().add(auxPhone);
+						
+						for (ContactModel contact2 : smartActiveContacts) {
+							if (contact2.getFirstName().equals(cscm.getFirstName()) && contact2.getLastName().equals(cscm.getLastName())) {
+								if (contact2.getPhones().contains(auxPhone)) {
+									contact2.getPhones().remove(auxPhone);
+								}								
+								else {
+									ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se devberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto activo de nombre: " + contact2.getFirstName() + " " + contact2.getLastName());
+								}
+								
+								break;
+							}
+						}
+					}
+					
+					isInactive = true;
+					break;
+				}
+			}
+			
+			if (!isInactive) {
+				auxPhones = new ArrayList<PhoneModel>();
+				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
+				auxPhones.add(auxPhone);
+				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
+				auxContact.setEmails(cscm.getEmails());
+				auxContact.setAddresses(cscm.getAddresses());
+				auxContact.setOrganizations(cscm.getOrganizations());
+				this.smartphone.getInactiveContacts().add(auxContact);
+				
+				for (ContactModel contact3 : smartActiveContacts) {
+					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
+						if (contact3.getPhones().contains(auxPhone)) {
+							contact3.getPhones().remove(auxPhone);
+						}								
+						else {
+							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto activo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
+						}
+						
+						break;
+					}
+				}
+			}
+			
+			isInactive = false;
+		}
+	}
 	
 	public void loadDeviceContacts() {
 		
