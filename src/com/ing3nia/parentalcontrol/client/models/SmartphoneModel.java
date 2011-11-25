@@ -3,6 +3,8 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.google.gwt.i18n.client.DateTimeFormat;
+
 
 public class SmartphoneModel implements Serializable{
 	/**
@@ -199,6 +201,24 @@ public class SmartphoneModel implements Serializable{
 
 	public void setAlerts(ArrayList<NotificationModel> alerts) {
 		this.alerts = alerts;
+	}
+	
+	
+	public static ArrayList<AlertModel> getUserAlertList(SmartphoneModel smart) {
+		ArrayList<AlertModel> alerts = new ArrayList<AlertModel>();
+		AlertModel auxAlert;
+		DateTimeFormat formatter = DateTimeFormat
+				.getFormat("dd/MM/yyyy hh:mm:ss a");
+
+		for (NotificationModel not : smart.getAlerts()) {
+			auxAlert = new AlertModel(formatter.parse(not.getDate()),
+					smart.getName(),
+					PCNotificationTypeId.getNotificationMessageFromType(not
+							.getType()));
+			alerts.add(auxAlert);
+		}
+
+		return alerts;
 	}
 
 }

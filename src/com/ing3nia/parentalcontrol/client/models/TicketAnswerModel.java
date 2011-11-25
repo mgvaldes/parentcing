@@ -1,12 +1,18 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-public class TicketAnswerModel {
+import java.io.Serializable;
+
+public class TicketAnswerModel implements Serializable  {
 	private String date;
 	
 	private String user;
 	
 	private String answer;
 
+	public TicketAnswerModel() {
+		
+	}
+	
 	public TicketAnswerModel(String date, String user, String answer) {
 		super();
 		this.date = date;

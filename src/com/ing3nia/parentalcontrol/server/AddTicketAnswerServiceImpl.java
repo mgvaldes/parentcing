@@ -23,7 +23,7 @@ public class AddTicketAnswerServiceImpl extends RemoteServiceServlet implements 
 	private static Logger logger = Logger.getLogger(AddTicketAnswerServiceImpl.class.getName());
 	
 	public AddTicketAnswerServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

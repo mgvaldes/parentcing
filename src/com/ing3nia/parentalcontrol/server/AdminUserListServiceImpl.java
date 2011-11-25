@@ -20,7 +20,7 @@ public class AdminUserListServiceImpl extends RemoteServiceServlet implements Ad
 	private static Logger logger = Logger.getLogger(AdminUserListServiceImpl.class.getName());
 	
 	public AdminUserListServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

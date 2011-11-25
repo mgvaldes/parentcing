@@ -26,7 +26,7 @@ public class AddTicketServiceImpl extends RemoteServiceServlet implements AddTic
 	private static Logger logger = Logger.getLogger(AddTicketServiceImpl.class.getName());
 	
 	public AddTicketServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

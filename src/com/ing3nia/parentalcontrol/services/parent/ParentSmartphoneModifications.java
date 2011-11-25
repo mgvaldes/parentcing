@@ -46,7 +46,7 @@ public class ParentSmartphoneModifications {
 	.getLogger(ParentSmartphoneGeneral.class.getName());
 
 	public ParentSmartphoneModifications(){
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@POST

@@ -27,6 +27,7 @@ import com.ing3nia.parentalcontrol.client.handlers.click.DeviceSettingsClickHand
 import com.ing3nia.parentalcontrol.client.handlers.click.SmartphoneClickHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
@@ -159,10 +160,17 @@ public class BaseViewHandler {
 		
 		// TOOOOODOOOOOOOOOO  ----------------------------------------------------------------------
 		
-		//AlertListClickHandler alertListHandler = new AlertListClickHandler(user.getKey(), this, smartphone.getAlerts());
-		//alertListButton.addClickHandler(alertListHandler);
+		AlertListClickHandler alertListHandler = new AlertListClickHandler(user.getKey(), this, SmartphoneModel.getUserAlertList(smartphone));
+		alertListButton.addClickHandler(alertListHandler);
 		
 		//AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this);
+		
+		//TODO
+		if(smartphone.getRules()==null){
+			smartphone.setRules(new ArrayList<RuleModel>());
+		}
+		
+		
 		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this, smartphone.getRules());
 		alertRulesButton.addClickHandler(alertRulesHandler);
 		

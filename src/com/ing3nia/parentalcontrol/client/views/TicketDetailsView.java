@@ -234,28 +234,28 @@ public class TicketDetailsView {
 	}
 	
 	public void saveTicketReply() {
-		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
-		
-		final TicketAnswerModel answer = new TicketAnswerModel(formatter.format(Calendar.getInstance().getTime()), this.userKey, this.replyTextArea.getText());
-		
-		AddTicketAnswerServiceAsync addAnswerService = GWT.create(AddTicketAnswerService.class);
-		addAnswerService.addTicketAnswer(answer, this.ticket.getKey(), this.isAdmin, 
-				new AsyncCallback<String>() {
-					public void onFailure(Throwable error) {
-					}
-		
-					public void onSuccess(String result) {
-						if (result != null) {
-							ArrayList<TicketAnswerModel> answers = ticket.getAnswers();
-							answers.add(answer);
-							ticket.setAnswers(answers);
-						}
-						else {
-							Window.alert("An error occured. The new ticket answer couldn't be saved.");
-						}
-					}
-				}
-		);
+//		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+//		
+//		final TicketAnswerModel answer = new TicketAnswerModel(formatter.format(Calendar.getInstance().getTime()), this.userKey, this.replyTextArea.getText());
+//		
+//		AddTicketAnswerServiceAsync addAnswerService = GWT.create(AddTicketAnswerService.class);
+//		addAnswerService.addTicketAnswer(answer, this.ticket.getKey(), this.isAdmin, 
+//				new AsyncCallback<String>() {
+//					public void onFailure(Throwable error) {
+//					}
+//		
+//					public void onSuccess(String result) {
+//						if (result != null) {
+//							ArrayList<TicketAnswerModel> answers = ticket.getAnswers();
+//							answers.add(answer);
+//							ticket.setAnswers(answers);
+//						}
+//						else {
+//							Window.alert("An error occured. The new ticket answer couldn't be saved.");
+//						}
+//					}
+//				}
+//		);
 	}
 	
 	public void clearTextBoxes() {

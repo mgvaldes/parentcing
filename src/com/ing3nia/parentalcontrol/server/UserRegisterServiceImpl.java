@@ -27,7 +27,7 @@ public class UserRegisterServiceImpl extends RemoteServiceServlet implements Use
 	private static Logger logger = Logger.getLogger(UserRegisterServiceImpl.class.getName());
 	
 	public UserRegisterServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

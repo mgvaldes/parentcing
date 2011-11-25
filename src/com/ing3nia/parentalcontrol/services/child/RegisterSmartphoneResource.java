@@ -38,7 +38,7 @@ public class RegisterSmartphoneResource {
 	private static Logger logger = Logger.getLogger(RegisterSmartphoneResource.class.getName());
 	
 	public RegisterSmartphoneResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 	
 	//{'usr':'mgvaldes','pass':'mgv4ld3s','smartphone':{'location':{'latitude':'10.23','longitude':'12.87'},'activeContacts':[{'firstName':'Pedro','lastName':'Perez','phones':[{'type':1,'phoneNumber':'02129762345'}]},{'firstName':'Maria','lastName':'Vicentini','phones':[{'type':2,'phoneNumber':'04123456789'}]}],'name':'PPSmart','device':{'model':'9000','version':'5.2','type':3},'serialNumber':'AX1-BBMPA2','appVersion':'1.0.0'}}

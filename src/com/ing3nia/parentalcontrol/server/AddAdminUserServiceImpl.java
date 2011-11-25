@@ -17,7 +17,7 @@ public class AddAdminUserServiceImpl extends RemoteServiceServlet implements Add
 	private static Logger logger = Logger.getLogger(AddAdminUserServiceImpl.class.getName());
 	
 	public AddAdminUserServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

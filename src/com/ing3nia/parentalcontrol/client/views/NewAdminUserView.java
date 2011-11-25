@@ -126,6 +126,10 @@ public class NewAdminUserView {
 						if (result != null) {
 							ClientAdminUserModel newAdminUser = new ClientAdminUserModel(username, password);
 							loggedUser.getAdmins().add(newAdminUser);
+							centerContent.clear();
+							
+							AdminUserListView listView = new AdminUserListView(centerContent);
+							listView.initAdminUserListView();
 						}
 						else {
 							Window.alert("An error occured. The new admin user couldn't be saved.");

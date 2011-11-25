@@ -1,5 +1,5 @@
 package com.ing3nia.parentalcontrol.server;
-
+/*
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,4 +102,4 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 		
 		return tickets;
 	}
-}
+}*/

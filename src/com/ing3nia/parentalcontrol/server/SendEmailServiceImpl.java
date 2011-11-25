@@ -30,7 +30,7 @@ public class SendEmailServiceImpl extends RemoteServiceServlet implements SendEm
 	private static Logger logger = Logger.getLogger(SendEmailServiceImpl.class.getName());
 	
 	public SendEmailServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

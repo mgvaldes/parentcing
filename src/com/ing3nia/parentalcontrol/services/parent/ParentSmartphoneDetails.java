@@ -41,7 +41,7 @@ public class ParentSmartphoneDetails {
 	.getLogger(ParentSmartphoneDetails.class.getName());
 
 	public ParentSmartphoneDetails(){
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@GET

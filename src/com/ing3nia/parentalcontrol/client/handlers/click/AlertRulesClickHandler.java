@@ -24,6 +24,8 @@ public class AlertRulesClickHandler implements ClickHandler{
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.menuSetter = baseView.getMenuSetter();
+		this.ruleList = ruleList;
+		
 	}
 	
 	@Override

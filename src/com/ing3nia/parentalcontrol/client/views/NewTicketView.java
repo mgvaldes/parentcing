@@ -125,29 +125,29 @@ public class NewTicketView {
 	}
 	
 	private void saveTicket() {
-		final TicketModel ticket = new TicketModel();
-		ticket.setAnswers(new ArrayList<TicketAnswerModel>());
-		ticket.setCategory(this.categoryListBox.getItemText(this.categoryListBox.getSelectedIndex()));
-		ticket.setComment(this.commentTextArea.getText());
-		ticket.setDate(Calendar.getInstance().getTime());
-		ticket.setSubject(this.subjectTextBox.getText());
-		
-		AddTicketServiceAsync addTicketService = GWT.create(AddTicketService.class);
-		addTicketService.addTicket(ticket, this.loggedUser, 
-				new AsyncCallback<String>() {
-					public void onFailure(Throwable error) {
-					}
-		
-					public void onSuccess(String result) {
-						if (result != null) {
-							tickets.add(ticket);
-						}
-						else {
-							Window.alert("An error occured. The new ticket answer couldn't be saved.");
-						}
-					}
-				}
-		);
+//		final TicketModel ticket = new TicketModel();
+//		ticket.setAnswers(new ArrayList<TicketAnswerModel>());
+//		ticket.setCategory(this.categoryListBox.getItemText(this.categoryListBox.getSelectedIndex()));
+//		ticket.setComment(this.commentTextArea.getText());
+//		ticket.setDate(Calendar.getInstance().getTime());
+//		ticket.setSubject(this.subjectTextBox.getText());
+//		
+//		AddTicketServiceAsync addTicketService = GWT.create(AddTicketService.class);
+//		addTicketService.addTicket(ticket, this.loggedUser, 
+//				new AsyncCallback<String>() {
+//					public void onFailure(Throwable error) {
+//					}
+//		
+//					public void onSuccess(String result) {
+//						if (result != null) {
+//							tickets.add(ticket);
+//						}
+//						else {
+//							Window.alert("An error occured. The new ticket answer couldn't be saved.");
+//						}
+//					}
+//				}
+//		);
 	}
 	
 	private void clearTextBoxes() {

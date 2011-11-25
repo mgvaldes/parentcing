@@ -29,7 +29,7 @@ public class SmartphoneIdRequestResource {
 	private static Logger logger = Logger.getLogger(SmartphoneIdRequestResource.class.getName());
 	
 	public SmartphoneIdRequestResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 	
 	//{'serial':'AX1-BBMPA2'}

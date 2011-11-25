@@ -211,86 +211,86 @@ public class DeviceSettingsView {
 	}
 	
 	public void blockPhone() {
-		ModificationModel auxMod = new ModificationModel();
-		
-		final RuleModel newRule = new RuleModel();
-		newRule.setName(FunctionalityTypeId.TOTAL_BLOCK.getDescription());
-		
-		ArrayList<Integer> disabledFunctionalities = new ArrayList<Integer>();
-		disabledFunctionalities.add(FunctionalityTypeId.TOTAL_BLOCK.getId());
-		newRule.setDisabledFunctionalities(disabledFunctionalities);
-		
-		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");	
-		String now = formatter.format(Calendar.getInstance().getTime());
-		newRule.setCreationDate(now);
-		
-		newRule.setStartDate(now);
-		newRule.setEndDate(now);
-		
-		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
-		rules.add(newRule);
-		
-		auxMod.setRules(rules);
-		
-		SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
-		saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
-				new AsyncCallback<Boolean>() {
-					public void onFailure(Throwable error) {
-					}
-		
-					public void onSuccess(Boolean result) {
-						if (result) {
-							ArrayList<RuleModel> rules = smartphone.getRules();
-							rules.add(newRule);								
-							smartphone.setRules(rules);
-						}
-						else {
-							Window.alert("An error occured. The new rule couldn't be saved.");
-						}
-					}
-				}
-		);
+//		ModificationModel auxMod = new ModificationModel();
+//		
+//		final RuleModel newRule = new RuleModel();
+//		newRule.setName(FunctionalityTypeId.TOTAL_BLOCK.getDescription());
+//		
+//		ArrayList<Integer> disabledFunctionalities = new ArrayList<Integer>();
+//		disabledFunctionalities.add(FunctionalityTypeId.TOTAL_BLOCK.getId());
+//		newRule.setDisabledFunctionalities(disabledFunctionalities);
+//		
+//		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");	
+//		String now = formatter.format(Calendar.getInstance().getTime());
+//		newRule.setCreationDate(now);
+//		
+//		newRule.setStartDate(now);
+//		newRule.setEndDate(now);
+//		
+//		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+//		rules.add(newRule);
+//		
+//		auxMod.setRules(rules);
+//		
+//		SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+//		saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
+//				new AsyncCallback<Boolean>() {
+//					public void onFailure(Throwable error) {
+//					}
+//		
+//					public void onSuccess(Boolean result) {
+//						if (result) {
+//							ArrayList<RuleModel> rules = smartphone.getRules();
+//							rules.add(newRule);								
+//							smartphone.setRules(rules);
+//						}
+//						else {
+//							Window.alert("An error occured. The new rule couldn't be saved.");
+//						}
+//					}
+//				}
+//		);
 	}
 	
 	public void saveDeviceSettings() {
 
-		ModificationModel auxMod = new ModificationModel(); 
-		
-		final String deviceName = this.deviceNameTextBox.getText();
-		final String speedLimit = this.speedLimitTextBox.getText();		
-		
-		if (deviceName.equals("") || speedLimit.equals("")) {
-			Window.alert("All fields must be specified.");
-		}
-		else {
-			auxMod.setSmartphoneName(deviceName);
-			
-			ArrayList<PropertyModel> auxProps = new ArrayList<PropertyModel>();
-			final PropertyModel auxProp = findSpeedLimitProperty();
-			final int speedLimitPropPos = this.smartphone.getProperties().indexOf(auxProp);
-			auxProp.setValue(speedLimit);
-			auxProps.add(auxProp);
-			auxMod.setProperties(auxProps);
-			
-			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
-			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
-					new AsyncCallback<Boolean>() {
-						public void onFailure(Throwable error) {
-						}
-			
-						public void onSuccess(Boolean result) {
-							if (result) {
-								smartphone.setName(deviceName);
-								smartphone.getProperties().remove(speedLimitPropPos);
-								smartphone.getProperties().add(auxProp);
-							}
-							else {
-								Window.alert("An error occured. The device settings couldn't be applied.");
-							}
-						}
-					}
-			);
-		}
+//		ModificationModel auxMod = new ModificationModel(); 
+//		
+//		final String deviceName = this.deviceNameTextBox.getText();
+//		final String speedLimit = this.speedLimitTextBox.getText();		
+//		
+//		if (deviceName.equals("") || speedLimit.equals("")) {
+//			Window.alert("All fields must be specified.");
+//		}
+//		else {
+//			auxMod.setSmartphoneName(deviceName);
+//			
+//			ArrayList<PropertyModel> auxProps = new ArrayList<PropertyModel>();
+//			final PropertyModel auxProp = findSpeedLimitProperty();
+//			final int speedLimitPropPos = this.smartphone.getProperties().indexOf(auxProp);
+//			auxProp.setValue(speedLimit);
+//			auxProps.add(auxProp);
+//			auxMod.setProperties(auxProps);
+//			
+//			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+//			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
+//					new AsyncCallback<Boolean>() {
+//						public void onFailure(Throwable error) {
+//						}
+//			
+//						public void onSuccess(Boolean result) {
+//							if (result) {
+//								smartphone.setName(deviceName);
+//								smartphone.getProperties().remove(speedLimitPropPos);
+//								smartphone.getProperties().add(auxProp);
+//							}
+//							else {
+//								Window.alert("An error occured. The device settings couldn't be applied.");
+//							}
+//						}
+//					}
+//			);
+//		}
 	}
 	
 	public void clearTextBoxes() {
@@ -299,17 +299,17 @@ public class DeviceSettingsView {
 	}
 
 	
-	public PropertyModel findSpeedLimitProperty() {
-		PropertyModel speedLimitProp = null;
-		ArrayList<PropertyModel> props = this.smartphone.getProperties();
-		
-		for (PropertyModel p : props) {
-			if (p.getId() == PCPropertyType.SPEED_LIMIT) {
-				speedLimitProp = p;
-				break;
-			}
-		}
-		
-		return speedLimitProp;
-	}
+//	public PropertyModel findSpeedLimitProperty() {
+//		PropertyModel speedLimitProp = null;
+//		ArrayList<PropertyModel> props = this.smartphone.getProperties();
+//		
+//		for (PropertyModel p : props) {
+//			if (p.getId() == PCPropertyType.SPEED_LIMIT) {
+//				speedLimitProp = p;
+//				break;
+//			}
+//		}
+//		
+//		return speedLimitProp;
+//	}
 }

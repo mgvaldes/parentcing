@@ -36,7 +36,7 @@ public class AlertResource {
 	private static Logger logger = Logger.getLogger(AlertResource.class.getName());
 	
 	public AlertResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 	
 	@POST

@@ -49,8 +49,9 @@ public class RuleListView {
 		this.viewContent = new HTMLPanel("");
 		this.rules = ruleList;
 		this.centerContent.clear();
+		this.rules = ruleList;
 		
-		addTestRules();
+		//addTestRules();
 	}
 	
 	public void addTestRules() {

@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -11,11 +12,12 @@ import java.util.Date;
  * @author Ing3nia.
  *
  */
-public class TicketModel {
+public class TicketModel implements Serializable {
 	/**
 	 * Represents the next id correspondeing to the next
 	 * ticket created.
 	 */
+
 	private static int nextId = 0;
 	
 	/**
@@ -47,6 +49,11 @@ public class TicketModel {
 	
 	private ArrayList<TicketAnswerModel> answers;
 
+	
+	public TicketModel(){
+		
+	}
+	
 	public TicketModel(String category, String subject, Date date, String comment, ArrayList<TicketAnswerModel> answers) {
 		this.category = category;
 		this.subject = subject;
@@ -58,9 +65,6 @@ public class TicketModel {
 		setNextId(this.id);
 	}
 	
-	public TicketModel() {
-		
-	}
 
 	public static int getNextId() {
 		return nextId;

@@ -78,7 +78,7 @@ public class LoginView {
 	private ClientUserModel userModel;
 	
 	public LoginView(HTMLPanel centerContent, ClientUserModel userModel) {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 		
 		this.centerContent = centerContent;
 		this.userModel = userModel;

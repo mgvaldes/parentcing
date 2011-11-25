@@ -42,7 +42,7 @@ public class ParentSmartphoneGeneral {
 	.getLogger(ParentSmartphoneGeneral.class.getName());
 
 	public ParentSmartphoneGeneral(){
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@GET

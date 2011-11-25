@@ -34,7 +34,7 @@ public class TotalSynchronizationResource {
 	private static Logger logger = Logger.getLogger(TotalSynchronizationResource.class.getName());
 	
 	public TotalSynchronizationResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 	
 	@GET

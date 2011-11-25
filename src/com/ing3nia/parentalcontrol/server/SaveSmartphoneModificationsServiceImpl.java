@@ -28,7 +28,7 @@ public class SaveSmartphoneModificationsServiceImpl extends RemoteServiceServlet
 	private static Logger logger = Logger.getLogger(SaveSmartphoneModificationsServiceImpl.class.getName());
 	
 	public SaveSmartphoneModificationsServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

@@ -47,7 +47,7 @@ public class ParentLoginResource {
 
 	
 	public ParentLoginResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@POST

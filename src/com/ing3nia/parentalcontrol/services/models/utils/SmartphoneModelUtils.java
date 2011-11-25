@@ -8,9 +8,13 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.DeviceModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
+import com.ing3nia.parentalcontrol.client.models.NotificationModel;
+import com.ing3nia.parentalcontrol.client.models.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
@@ -221,4 +225,5 @@ public class SmartphoneModelUtils {
 		originalSmartphone.setProperties(updateSmart.getProperties());
 		originalSmartphone.setRules(updateSmart.getRules());
 	}
+
 }

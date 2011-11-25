@@ -117,6 +117,7 @@ public class DeviceDailyRouteView {
 	    	
 	    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
 	    	//map.addOverlay(new Marker(deviceLoc));	 
+	    	/*
 	    	geocoder.getLocations(deviceLoc, new LocationCallback() {
 				@Override
 				public void onSuccess(JsArray<Placemark> locations) {
@@ -140,16 +141,17 @@ public class DeviceDailyRouteView {
 								value.append(location.getCountry());
 							}
 						}
-						baseBinder.getDeviceChoiceList().add(new Label(value.toString()));
-						deviceRouteNames.add(value.toString());
+						//baseBinder.getDeviceChoiceList().add(new Label(value.toString()));
+						//deviceRouteNames.add(value.toString());
 					}
 				}
+				
 				
 				@Override
 				public void onFailure(int statusCode) {
 					Window.alert("Failed to geocode position");
 				}
-			});
+			});*/
 	    }
 	    
 	    //Polyline polyline = new Polyline(locationArray);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.ing3nia.parentalcontrol.services.models.utils.GeoPtModelUtils;
+import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
 public class ClientUserModel {
 	/**
@@ -106,18 +107,9 @@ public class ClientUserModel {
 
 	public ArrayList<AlertModel> getUserAlertList() {
 		ArrayList<AlertModel> alerts = new ArrayList<AlertModel>();
-		AlertModel auxAlert;
-		DateTimeFormat formatter = DateTimeFormat
-				.getFormat("dd/MM/yyyy hh:mm:ss a");
 
 		for (SmartphoneModel smart : this.getSmartphones()) {
-			for (NotificationModel not : smart.getAlerts()) {
-				auxAlert = new AlertModel(formatter.parse(not.getDate()),
-						smart.getName(),
-						PCNotificationTypeId.getNotificationMessageFromType(not
-								.getType()));
-				alerts.add(auxAlert);
-			}
+			alerts.addAll(SmartphoneModel.getUserAlertList(smart));
 		}
 
 		return alerts;

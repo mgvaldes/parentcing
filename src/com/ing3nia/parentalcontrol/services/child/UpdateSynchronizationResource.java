@@ -37,7 +37,7 @@ public class UpdateSynchronizationResource {
 	private static Logger logger = Logger.getLogger(UpdateSynchronizationResource.class.getName());
 	
 	public UpdateSynchronizationResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 	
 	@GET

@@ -50,7 +50,7 @@ public class ParentRegisterResource {
 
 	
 	public ParentRegisterResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@POST

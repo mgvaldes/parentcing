@@ -22,7 +22,7 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 	private static Logger logger = Logger.getLogger(UserKeyServiceImpl.class.getName());
 	
 	public UserKeyServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public class EditAdminUserServiceImpl extends RemoteServiceServlet implements Ed
 	private static Logger logger = Logger.getLogger(EditAdminUserServiceImpl.class.getName());
 	
 	public EditAdminUserServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override

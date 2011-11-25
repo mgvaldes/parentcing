@@ -11,6 +11,7 @@ import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.views.DeviceAlertListView;
+import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
 public class SmartphoneClickHandler implements ClickHandler{
 	
@@ -58,7 +59,7 @@ public class SmartphoneClickHandler implements ClickHandler{
 		//this.button.setStyleName("selectedSmartphoneButton");
 		
 		
-		DeviceAlertListView view = new DeviceAlertListView(centerContent, smartphoneModel.getAlerts());	
+		DeviceAlertListView view = new DeviceAlertListView(centerContent, SmartphoneModel.getUserAlertList(smartphoneModel));	
 		//DeviceAlertListView view = new DeviceAlertListView(centerContent, smartphoneModel.getAlerts());
 		view.initDeviceAlertListView();
 	}

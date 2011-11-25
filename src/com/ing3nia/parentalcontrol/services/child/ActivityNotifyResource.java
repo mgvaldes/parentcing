@@ -38,7 +38,7 @@ public class ActivityNotifyResource {
 	private static Logger logger = Logger.getLogger(ActivityNotifyResource.class.getName());
 	
 	public ActivityNotifyResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 	
 	@POST

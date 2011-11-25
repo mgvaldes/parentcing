@@ -39,7 +39,7 @@ public class InternalModificationsResource {
 	private static Logger logger = Logger.getLogger(InternalModificationsResource.class.getName());
 	
 	public InternalModificationsResource() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 	
 	/*

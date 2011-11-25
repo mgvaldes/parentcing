@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
+import java.net.URLEncoder;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -31,8 +32,15 @@ import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.utils.ContactInfo;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.PCURLMapper;
 import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
+
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
 
 public class LoginServiceImpl extends RemoteServiceServlet implements LoginService {
 
@@ -40,7 +48,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 	private static Logger logger = Logger.getLogger(LoginServiceImpl.class.getName());
 	
 	public LoginServiceImpl() {
-		logger.addHandler(new ConsoleHandler());
+		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override
@@ -150,8 +158,10 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		URLConnection conn;
 		
 		try {
-			url = new URL("http://localhost:8888/resources/smartphone-details?cid=" + cid + "&smid=" + smid);
+			logger.info("[login Service Connection] creating new URL");
+			url = new URL(PCURLMapper.HOST_APPENGINE+"/resources/smartphone-details?cid=" + cid + "&smid=" + smid);
 			conn = url.openConnection();
+			conn.setConnectTimeout(40000);
 			
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			StringBuffer sb = new StringBuffer();
@@ -185,7 +195,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			logger.info("[LoginService] An error occured creating resource's url. " + e); 
 		}	
 		catch (IOException e) {
-			logger.info("[LoginService] An error occured writing to OutputotStreamWriteror reading from BufferedReader. " + e);
+			logger.info("[LoginService] An error occured writing to InputStreamReader reading from BufferedReader. " + e);
 		}
 		
 		return smartphone;
@@ -198,8 +208,11 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		URLConnection conn;
 		
 		try {
-			url = new URL("http://localhost:8888/resources/smartphone-grl?cid=" + cid);
+			logger.info("CONNECT URL: "+PCURLMapper.HOST_APPENGINE+"/resources/smartphone-grl?cid=" + cid);
+			url = new URL(PCURLMapper.HOST_APPENGINE+"/resources/smartphone-grl?cid=" + cid);
 			conn = url.openConnection();
+			conn.setConnectTimeout(40000);
+			conn.setRequestProperty("Content-Type","application/json; charset=utf-8");
 			
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			StringBuffer sb = new StringBuffer();
@@ -241,6 +254,85 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		return smartphones;
 	}
 	
+	/*
+	
+	public String callParentLoginResource(String username, String password){
+		
+		logger.info("Creating login URL "+PCURLMapper.LOCALHOST+"/resources/login");
+		//String url = com.google.gwt.http.client.URL.encode(PCURLMapper.LOCALHOST+"/resources/login");
+		String url = com.google.gwt.http.client.URL.encode("http://127.0.0.1:8888/login");
+		String cid = null; 
+		UserModel userModel = new UserModel();
+		userModel.setUsr(username);
+		userModel.setPass(password); 
+		
+		// Send request to server and catch any errors.
+		logger.info("Creating request JSON data");
+		Gson jsonBuilder = new Gson();
+		Type modificationType = new TypeToken<UserModel>(){}.getType();
+		String postParams = jsonBuilder.toJson(userModel, modificationType);
+		RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, url);
+
+		logger.info("Sending Request");
+		try {
+			LoginRequestCallback loginCallback = new LoginRequestCallback();
+			Request request = builder.sendRequest(postParams,  loginCallback);
+			logger.info("Request OK, returning CID "+loginCallback.getCid());
+			return loginCallback.getCid();
+		} catch (RequestException e) {
+			logger.severe("Unexpected Error While requesting LOGIN");
+			return null;
+		}
+	}
+	
+	public class LoginRequestCallback implements RequestCallback {
+		
+		String cid = null;
+		public LoginRequestCallback(){
+		}
+		
+		public void onError(Request request, Throwable exception) {
+			logger.info("Error calling the LOGIN web service");
+		}
+
+		public void onResponseReceived(Request request,
+				Response response) {
+			if (200 == response.getStatusCode()) {
+				String responseJson = response.getText();
+				
+				JsonParser jsonParser = new JsonParser();			
+				JsonObject jsonResponse = (JsonObject)jsonParser.parse(responseJson);
+				JsonObject jsonResponseStatus = jsonResponse.getAsJsonObject("status");
+				String code = ((JsonPrimitive)jsonResponseStatus.get("code")).getAsString(); 
+				
+				if (code.equals(WSStatus.OK.getCode())) {
+					logger.info("[LoginService] ParentLoginResource resource returnes successfully.");
+					cid = ((JsonPrimitive)jsonResponse.get("cid")).getAsString();
+				}
+				else {
+					String verbose = ((JsonPrimitive)jsonResponseStatus.get("verbose")).getAsString();
+					String msg = ((JsonPrimitive)jsonResponseStatus.get("msg")).getAsString();
+					logger.info("[LoginService] An error occured calling ParentLoginResource resource. CODE: " + code + " VERBOSE: " + verbose + " MSG: " + msg);
+				}
+				
+			} else {
+				logger.severe("HTTP ERROR CODE "+response.getStatusCode());
+			}
+		}
+
+		public String getCid() {
+			return cid;
+		}
+
+		public void setCid(String cid) {
+			this.cid = cid;
+		}
+	
+	
+	}
+	*/
+	
+	
 	public String callParentLoginResource(String username, String password) {
 		String cookieId = null;
 		
@@ -252,9 +344,11 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			userModel.setUsr(username);
 			userModel.setPass(password);
 			
-			url = new URL("http://localhost:8888/resources/login");
+			logger.info("Requesting for login web service");
+			url = new URL(PCURLMapper.HOST_APPENGINE+"/resources/login");
 			
 			conn = url.openConnection();
+			conn.setConnectTimeout(40000);
 			conn.setRequestProperty("Content-Type","application/json; charset=utf-8");
 			conn.setDoOutput(true);
 			
@@ -262,10 +356,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			Type modificationType = new TypeToken<UserModel>(){}.getType();
 			String postParams = jsonBuilder.toJson(userModel, modificationType);
 			
+			logger.info("Adding OutputStreamWriter to request");
 			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 			wr.write(postParams);
 			wr.flush();
 			
+			logger.info("Parsing Response");
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 			StringBuffer sb = new StringBuffer();
 			String line;
@@ -276,7 +372,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				
 			rd.close();
 			
-			logger.info(sb.toString());
+			logger.info("Obtained response "+sb.toString());
 			
 			JsonParser jsonParser = new JsonParser();			
 			JsonObject jsonResponse = (JsonObject)jsonParser.parse(sb.toString());
@@ -302,4 +398,5 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		
 		return cookieId;
 	}
+	
 }
