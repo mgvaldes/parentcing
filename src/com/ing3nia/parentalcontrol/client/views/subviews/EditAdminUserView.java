@@ -41,7 +41,7 @@ public class EditAdminUserView {
 	/**
 	 * Main label of new admin user view.
 	 */
-	private Label newUserLabel = new Label("New User:");
+	private Label editUserLabel = new Label("Edit User:");
 	
 	/**
 	 * Username label.
@@ -115,7 +115,7 @@ public class EditAdminUserView {
 		
 		usernameTextBox.setText(adminUserModel.getUsername());
 		
-		viewContent.add(newUserLabel);
+		viewContent.add(editUserLabel);
 		viewContent.add(usernameLabel);
 		viewContent.add(usernameTextBox);
 		viewContent.add(passwordLabel);

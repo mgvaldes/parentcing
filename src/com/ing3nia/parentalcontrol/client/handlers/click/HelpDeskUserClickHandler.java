@@ -35,7 +35,8 @@ public class HelpDeskUserClickHandler implements ClickHandler{
 		baseViewHandler.initTicketUserCenterMenu();
 		baseViewHandler.toggleTicketCenterMenu(CenterMenuOptionsClassNames.OpenTickets);
 		
-		TicketListView view = new TicketListView(centerContent);		
+		//TODO -QUITAR NULL E IMPLEMENTAR
+		TicketListView view = new TicketListView(centerContent, null, null);	
 		view.initUserTicketList();
 	}
 	

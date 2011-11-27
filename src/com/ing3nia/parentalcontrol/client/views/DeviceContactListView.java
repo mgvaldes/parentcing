@@ -29,14 +29,12 @@ import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames
 
 import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
-import com.ing3nia.parentalcontrol.client.models.FullContactModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
-import com.ing3nia.parentalcontrol.models.utils.PhoneType;
 
 
 public class DeviceContactListView {
