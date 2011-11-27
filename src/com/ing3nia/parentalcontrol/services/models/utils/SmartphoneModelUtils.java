@@ -19,6 +19,7 @@ import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
@@ -32,7 +33,6 @@ import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ApplicationModel;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class SmartphoneModelUtils {

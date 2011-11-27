@@ -33,6 +33,7 @@ import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.utils.PCMapMarkersEnum;
 import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
@@ -45,7 +46,6 @@ import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.NewAdminUserView;
 import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
 import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 
 public class BaseViewHandler {
 	

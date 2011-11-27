@@ -11,13 +11,13 @@ import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
+import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ModificationModelUtils {

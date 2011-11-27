@@ -1,5 +1,5 @@
 package com.ing3nia.parentalcontrol.server;
-/*
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +79,7 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 		    			answers.add(auxAnswer);
 		    		}
 		    		
-		    		auxTicket = new TicketModel(category.getDescription(), t.getSubject(), t.getDate(), t.getQuestion(), answers);
+		    		auxTicket = new TicketModel(KeyFactory.keyToString(t.getKey()), category.getDescription(), t.getSubject(), t.getDate(), t.getQuestion(), answers);
 		    		
 		    		if (t.getStatus()) {
 		    			openedTickets.add(auxTicket);
@@ -94,7 +94,8 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 		    tickets.put("closed", closedTickets);
 		}
 		catch (Exception ex) {
-			
+			openedTickets = null;
+			closedTickets = null;
 		}
 		finally {
 			pm.close();
@@ -102,4 +103,4 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 		
 		return tickets;
 	}
-}*/
+}
