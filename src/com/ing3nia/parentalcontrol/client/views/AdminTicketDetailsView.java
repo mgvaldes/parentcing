@@ -1,16 +1,11 @@
 package com.ing3nia.parentalcontrol.client.views;
 
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -18,10 +13,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
-import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
-import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerServiceAsync;
 
-public class TicketDetailsView {
+public class AdminTicketDetailsView {
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * new ticket details view.
@@ -139,7 +132,7 @@ public class TicketDetailsView {
 	
 	private boolean isAdmin;
 	
-	public TicketDetailsView(HTMLPanel centerContent, TicketModel ticket, String userKey, boolean isAdmin) {
+	public AdminTicketDetailsView(HTMLPanel centerContent, TicketModel ticket, String userKey, boolean isAdmin) {
 		this.centerContent = centerContent;
 		this.ticket = ticket;
 		this.ticketAnswers = this.ticket.getAnswers();

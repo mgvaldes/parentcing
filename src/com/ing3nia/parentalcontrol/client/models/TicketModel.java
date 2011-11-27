@@ -48,19 +48,34 @@ public class TicketModel implements Serializable {
 	private String comment;
 	
 	private ArrayList<TicketAnswerModel> answers;
-
+	
+	private String name;
 	
 	public TicketModel(){
 		
 	}
 	
-	public TicketModel(String category, String subject, Date date, String comment, ArrayList<TicketAnswerModel> answers) {
+	public TicketModel(String key, String category, String subject, Date date, String comment, ArrayList<TicketAnswerModel> answers) {
+		this.key = key;
 		this.category = category;
 		this.subject = subject;
 		this.date = date;
 		this.id = getNextId();
 		this.comment = comment;
 		this.answers = answers;
+		
+		setNextId(this.id);
+	}
+	
+	public TicketModel(String key, String category, String subject, Date date, String comment, ArrayList<TicketAnswerModel> answers, String name) {
+		this.key = key;
+		this.category = category;
+		this.subject = subject;
+		this.date = date;
+		this.id = getNextId();
+		this.comment = comment;
+		this.answers = answers;
+		this.name = name;
 		
 		setNextId(this.id);
 	}
@@ -128,5 +143,13 @@ public class TicketModel implements Serializable {
 
 	public void setAnswers(ArrayList<TicketAnswerModel> answers) {
 		this.answers = answers;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 }

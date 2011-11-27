@@ -24,7 +24,7 @@ import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
+import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 
 public class DeviceEmergencyNumberListView {
 	/**

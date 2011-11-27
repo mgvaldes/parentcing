@@ -38,7 +38,7 @@ public class TicketListView {
 	/**
 	 * List of open tickets.
 	 */
-	private List<TicketModel> openTickets = new ArrayList<TicketModel>();
+	private ArrayList<TicketModel> openTickets;
 	
 	/**
 	 * Open tickets label.
@@ -53,7 +53,7 @@ public class TicketListView {
 	/**
 	 * List of closed tickets.
 	 */
-	private List<TicketModel> closedTickets = new ArrayList<TicketModel>();
+	private ArrayList<TicketModel> closedTickets;
 	
 	/**
 	 * Closed tickets label.
@@ -65,7 +65,7 @@ public class TicketListView {
 	 */
 	private CellTable<TicketModel> closedTicketsTable = new CellTable<TicketModel>();
 	
-	public TicketListView(HTMLPanel centerContent) {
+	public TicketListView(HTMLPanel centerContent, ArrayList<TicketModel> openTickets, ArrayList<TicketModel> closedTickets) {
 		
 		//Setting alert table style
 		openTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
@@ -74,6 +74,8 @@ public class TicketListView {
 		closedTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
 		this.centerContent =  centerContent;
+		this.openTickets = openTickets;
+		this.closedTickets = closedTickets;
 		
 		// Setting up open tickets table 
 		
@@ -123,7 +125,7 @@ public class TicketListView {
 	    Column<TicketModel, String> viewColumn = new Column<TicketModel, String>(viewCell) {
 	    	@Override
 	    	public String getValue(TicketModel object) {
-	    		return object.getKey();
+	    		return "View";
 	    	}
 	    };
 	    
@@ -141,14 +143,14 @@ public class TicketListView {
 	    Column<TicketModel, String> closeColumn = new Column<TicketModel, String>(closeCell) {
 	    	@Override
 	    	public String getValue(TicketModel object) {
-	    		return object.getKey();
+	    		return "Close";
 	    	}
 	    };
 	    
 	    closeColumn.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
 			@Override
 			public void update(int index, TicketModel object, String value) {
-				// The user clicked on the view button.
+				closeTicket(object.getKey());
 			}
 		});
 	    
@@ -216,7 +218,7 @@ public class TicketListView {
 	    Column<TicketModel, String> viewColumnC = new Column<TicketModel, String>(viewCellC) {
 	    	@Override
 	    	public String getValue(TicketModel object) {
-	    		return object.getKey();
+	    		return "View";
 	    	}
 	    };
 	    
@@ -228,24 +230,6 @@ public class TicketListView {
 		});
 	    
 		closedTicketsTable.addColumn(viewColumnC, "");
-	    
-	    // Add an view column to show the view button.
-	    ButtonCell closeCellC = new ButtonCell();
-	    Column<TicketModel, String> closeColumnC = new Column<TicketModel, String>(closeCellC) {
-	    	@Override
-	    	public String getValue(TicketModel object) {
-	    		return object.getKey();
-	    	}
-	    };
-	    
-	    closeColumnC.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
-			@Override
-			public void update(int index, TicketModel object, String value) {
-				// The user clicked on the view button.
-			}
-		});
-	    
-	    closedTicketsTable.addColumn(closeColumnC, "");
 	    
 		// Set the total row count. This isn't strictly necessary, but it
 		// affects paging calculations, so its good habit to keep the row 
@@ -259,6 +243,10 @@ public class TicketListView {
 	    
 	    closedTicketsViewContent.add(closedTicketsTable);
 	    
+	}
+	
+	public void closeTicket(String tiketKey) {
+		
 	}
 	
 	public void initUserTicketList(){
@@ -311,7 +299,7 @@ public class TicketListView {
 		return openTickets;
 	}
 
-	public void setOpenTickets(List<TicketModel> openTickets) {
+	public void setOpenTickets(ArrayList<TicketModel> openTickets) {
 		this.openTickets = openTickets;
 	}
 
@@ -327,7 +315,7 @@ public class TicketListView {
 		return closedTickets;
 	}
 
-	public void setClosedTickets(List<TicketModel> closedTickets) {
+	public void setClosedTickets(ArrayList<TicketModel> closedTickets) {
 		this.closedTickets = closedTickets;
 	}
 

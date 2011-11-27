@@ -76,7 +76,8 @@ public class ParentalControl implements EntryPoint {
 				passfield.setSelectionRange(0, passfield.getText().length());
 			}
 			
-		}else{
+		}
+		else{
 			//TODO retrieve user details and start the thing
 			ClientUserModel userModel = new ClientUserModel(); 
 			RootPanel.get().clear();

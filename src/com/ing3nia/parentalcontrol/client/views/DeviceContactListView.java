@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
 
+import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
@@ -36,7 +37,6 @@ import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 import com.ing3nia.parentalcontrol.models.utils.PhoneType;
-import com.ing3nia.parentalcontrol.services.utils.ModelLogger;
 
 
 public class DeviceContactListView {

@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.services.utils;
+package com.ing3nia.parentalcontrol.client.utils;
 
 import java.util.logging.Logger;
 
