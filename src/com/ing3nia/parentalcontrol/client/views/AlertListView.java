@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -40,8 +41,7 @@ public class AlertListView {
 	 * Table where the alerts are displayed.
 	 */
 	private CellTable<AlertModel> alertTable;
-	private final String dateNow =  "16/11/2011 - 14:13:11 PM";
-	
+
 	public AlertListView(HTMLPanel centerContent, ArrayList<AlertModel> alertList) {
 		this.centerContent = centerContent;
 		viewContent = new HTMLPanel("");
@@ -70,8 +70,9 @@ public class AlertListView {
 	}
 	
 	public void initAlertListView() {
-		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
-	    
+		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		final DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+		
 		//Setting alert table style
 		alertTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
@@ -79,7 +80,7 @@ public class AlertListView {
 		TextColumn<AlertModel> dateColumn = new TextColumn<AlertModel>() {
 			@Override
 			public String getValue(AlertModel object) {
-				return dateNow;
+				return formatter.format(object.getDate());
 				//return formatter.format(object.getDate());
 			}
 		};

@@ -1,7 +1,6 @@
 package com.ing3nia.parentalcontrol.server;
 
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -9,7 +8,7 @@ import javax.jdo.PersistenceManager;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
+import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.rpc.AdminUserListService;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
@@ -20,12 +19,11 @@ public class AdminUserListServiceImpl extends RemoteServiceServlet implements Ad
 	private static Logger logger = Logger.getLogger(AdminUserListServiceImpl.class.getName());
 	
 	public AdminUserListServiceImpl() {
-		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override
-	public ArrayList<ClientUserModel> getAdminUserList(String userKey) {
-		ArrayList<ClientUserModel> admins = new ArrayList<ClientUserModel>();
+	public ArrayList<ClientAdminUserModel> getAdminUserList(String userKey) {
+		ArrayList<ClientAdminUserModel> admins = new ArrayList<ClientAdminUserModel>();
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		try {
@@ -34,25 +32,26 @@ public class AdminUserListServiceImpl extends RemoteServiceServlet implements Ad
 			PCUser user = (PCUser)pm.getObjectById(PCUser.class, key);
 			ArrayList<Key> adminKeys = user.getAdmins();
 			PCUser auxAdmin;
-			ClientUserModel auxClientUser;
+			ClientAdminUserModel auxClientUser;
 			
 			for (Key k : adminKeys) {
 				auxAdmin = (PCUser)pm.getObjectById(PCUser.class, k);
-				auxClientUser = new ClientUserModel(auxAdmin.getUsername(), auxAdmin.getPassword());
+				auxClientUser = new ClientAdminUserModel(auxAdmin.getUsername(), auxAdmin.getPassword());
 				auxClientUser.setKey(KeyFactory.keyToString(k));
 				admins.add(auxClientUser);
 			}
 		}
 		catch (IllegalArgumentException ex) {
+			logger.severe("Error retrieving user admin list: "+ex);
 			admins = null;
 		}
 		catch (Exception ex) {
+			logger.severe("Error retrieving user admin list: "+ex);
 			admins = null;
 		}
 		finally {
 			pm.close();
 		}
-		
 		return admins;
 	}
 }

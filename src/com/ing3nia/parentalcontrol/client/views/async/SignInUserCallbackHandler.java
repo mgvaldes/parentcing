@@ -1,8 +1,5 @@
 package com.ing3nia.parentalcontrol.client.views.async;
 
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Logger;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.ing3nia.parentalcontrol.client.PCLoginUIBinder;
@@ -12,8 +9,6 @@ import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyService;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyServiceAsync;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
-import com.ing3nia.parentalcontrol.services.parent.ParentTestResource;
-
 
 public class SignInUserCallbackHandler implements AsyncCallback<String> {
 
@@ -41,6 +36,7 @@ public class SignInUserCallbackHandler implements AsyncCallback<String> {
 			LoadingView.changeLoadingMessage(pclogin, AsyncronousCallsMessages.REQUESTING_DATA);		
 			LoginAsyncCallbackHandler loginAsyncCallback = new LoginAsyncCallbackHandler(pclogin, userModel);
 			LoginServiceAsync loginService = GWT.create(LoginService.class);
+			userModel.setKey(userKey);
 			loginService.login(userModel.getUsername(), userModel.getPassword(), loginAsyncCallback);
 		}else{
 			LoadingView.clearLoadingView(pclogin);

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 
-
 public class SmartphoneModel implements Serializable{
 	/**
 	 * 
@@ -210,7 +209,7 @@ public class SmartphoneModel implements Serializable{
 		DateTimeFormat formatter = DateTimeFormat
 				.getFormat("dd/MM/yyyy hh:mm:ss a");
 
-		for (NotificationModel not : smart.getAlerts()) {
+		for (NotificationModel not : smart.getAlerts()) {	
 			auxAlert = new AlertModel(formatter.parse(not.getDate()),
 					smart.getName(),
 					PCNotificationTypeId.getNotificationMessageFromType(not

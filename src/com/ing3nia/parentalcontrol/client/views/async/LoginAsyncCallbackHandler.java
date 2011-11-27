@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.ing3nia.parentalcontrol.client.PCLoginUIBinder;
 import com.ing3nia.parentalcontrol.client.ParentalControl;
+import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
@@ -35,9 +36,10 @@ public class LoginAsyncCallbackHandler implements AsyncCallback<ArrayList<Smartp
 		if (smartphones != null) {
 			LoadingView.clearLoadingView(pclogin);
 			this.userModel.setSmartphones(smartphones);
+			this.userModel.setAdmins(null);
 			
 			CookieHandler.setPCCookie("us3rp4r3nt4lc00k13");
-			if (pclogin.getRememberMeBox().isEnabled()) {
+			if (pclogin.getRememberMeBox().getValue()) {
 				CookieHandler.setCredentialsRemember(pclogin.getEmailField()
 						.getText(), pclogin.getPassField().getText());
 			}

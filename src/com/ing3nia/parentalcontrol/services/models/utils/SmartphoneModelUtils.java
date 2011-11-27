@@ -23,6 +23,7 @@ import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
+import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRoute;
@@ -179,6 +180,19 @@ public class SmartphoneModelUtils {
 			smartphoneModel.setProperties(properties);
 			
 			//------------------------------------------------------------
+			// Loading Alerts (Notifications)
+			//------------------------------------------------------------
+			ArrayList<NotificationModel> alerts = new ArrayList<NotificationModel>();
+			PCNotification alert;
+			NotificationModel alertModel;
+			for(Key alertKey: savedSmartphone.getNotifications()){
+				alert = (PCNotification)pm.getObjectById(PCNotification.class, alertKey);
+				alertModel = new NotificationModel();
+
+				alerts.add(alertModel);
+			}
+			
+			//------------------------------------------------------------
 			// Loading rules
 			//------------------------------------------------------------
 			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
@@ -186,7 +200,6 @@ public class SmartphoneModelUtils {
 			for (PCRule rule : savedSmartphone.getRules()) {
 				rules.add(RuleModelUtils.convertToRuleModel(rule));
 			}
-			
 			smartphoneModel.setRules(rules);
 			
 			//------------------------------------------------------------

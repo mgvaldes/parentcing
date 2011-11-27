@@ -105,7 +105,7 @@ public class ParentalControl implements EntryPoint {
 		slist.add(s1);
 		slist.add(s2);
 		slist.add(s3);
-*/
+		 */
 		return new ArrayList<SmartphoneModel>();
 	}
 	

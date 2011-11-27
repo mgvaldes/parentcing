@@ -31,8 +31,8 @@ import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.utils.ContactInfo;
+import com.ing3nia.parentalcontrol.client.utils.PCURLMapper;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
-import com.ing3nia.parentalcontrol.services.PCURLMapper;
 import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
@@ -316,7 +316,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		catch (IOException e) {
 			logger.info("[LoginService] An error occured writing to OutputotStreamWriteror reading from BufferedReader. " + e);
 		}
-		
+
 		return cookieId;
 	}
 	

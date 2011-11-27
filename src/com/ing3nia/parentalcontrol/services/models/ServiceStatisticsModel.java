@@ -68,7 +68,7 @@ public class ServiceStatisticsModel {
 	public PCServiceStatistics convertToPCServiceStatistics() {
 		PCServiceStatistics stat = new PCServiceStatistics();
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 		try {
 			stat.setDate(formatter.parse(this.date));

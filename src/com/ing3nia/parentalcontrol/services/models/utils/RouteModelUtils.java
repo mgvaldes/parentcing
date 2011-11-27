@@ -21,7 +21,7 @@ public class RouteModelUtils {
 		
 		routeModel.setPoints(points);
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		routeModel.setDate(formatter.format(route.getDate()));
 		
 		return routeModel;

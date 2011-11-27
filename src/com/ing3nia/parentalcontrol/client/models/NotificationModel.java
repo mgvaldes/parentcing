@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 public class NotificationModel implements Serializable {
 	private int type;
-	
 	private String date;
 
 	public NotificationModel() {

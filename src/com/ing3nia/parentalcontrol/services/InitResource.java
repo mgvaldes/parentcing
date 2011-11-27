@@ -52,7 +52,9 @@ public class InitResource {
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
 	*/
 		
-		createDummyApplication();
+		//createDummyApplication();
+		
+		
 		
 		ResponseBuilder rbuilder;
 		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);

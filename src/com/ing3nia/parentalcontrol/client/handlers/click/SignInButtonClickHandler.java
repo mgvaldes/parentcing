@@ -43,7 +43,6 @@ public class SignInButtonClickHandler implements ClickHandler {
 		// then initialize the base view
 		userModel.setUsername(email);
 		userModel.setPassword(pass);
-
 		
 		SignInUserCallbackHandler getSignInCallback = new SignInUserCallbackHandler(userModel, pclogin);
 		UserKeyServiceAsync userKeyService = GWT.create(UserKeyService.class);

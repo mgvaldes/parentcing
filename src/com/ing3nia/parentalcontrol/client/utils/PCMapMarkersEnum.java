@@ -28,7 +28,6 @@ public enum PCMapMarkersEnum {
 	X(23,"markerX.png"),
 	Z(24,"markerZ.png");
 
-
 	Integer id;
 	String imageName;
 	

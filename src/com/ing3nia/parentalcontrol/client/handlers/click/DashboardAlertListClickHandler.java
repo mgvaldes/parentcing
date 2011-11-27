@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.views.AlertListView;
 import com.ing3nia.parentalcontrol.client.views.DeviceAlertListView;
 
 public class DashboardAlertListClickHandler implements ClickHandler {
@@ -39,8 +40,12 @@ public class DashboardAlertListClickHandler implements ClickHandler {
 		this.menuSetter.getDashboardAlertList().setStyleName(
 				"selectedShinnyButton");
 
+		AlertListView view = new AlertListView(centerContent, alertList);
+		view.initAlertListView();
+		/*
 		DeviceAlertListView view = new DeviceAlertListView(
 				centerContent, alertList);
 		view.initDeviceAlertListView();
+		*/
 	}
 }

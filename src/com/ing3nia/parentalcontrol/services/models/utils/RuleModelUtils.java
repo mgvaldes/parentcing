@@ -14,7 +14,7 @@ import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 public class RuleModelUtils {
 	public static RuleModel convertToRuleModel(PCRule rule) {
 		RuleModel ruleModel = new RuleModel();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 		ruleModel.setStartDate(formatter.format(rule.getStartDate()));
 		ruleModel.setEndDate(formatter.format(rule.getEndDate()));

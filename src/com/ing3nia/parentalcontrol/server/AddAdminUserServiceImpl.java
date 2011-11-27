@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserService;
 import com.ing3nia.parentalcontrol.models.PCUser;
+import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AddAdminUserServiceImpl extends RemoteServiceServlet implements AddAdminUserService {
@@ -25,23 +26,26 @@ public class AddAdminUserServiceImpl extends RemoteServiceServlet implements Add
 		String adminKey = null;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
+		logger.info("[Add Admin User Service] Creating new admin user from key: "+ loggedUserKey);
 		try {
 			PCUser loggedUser = (PCUser)pm.getObjectById(PCUser.class, KeyFactory.stringToKey(loggedUserKey));
 			
 			PCUser admin = new PCUser();
-			admin.setUsername(username);
-			admin.setPassword(password);
+			admin.setUsername(username);	    
+			admin.setPassword(EncryptionUtils.toMD5(password));
 			admin.setSmartphones(loggedUser.getSmartphones());
-			
+			admin.setEmail(username);
+
 			pm.makePersistent(admin);
+			adminKey = KeyFactory.keyToString(admin.getKey());	
+			loggedUser.getAdmins().add(admin.getKey());
 			
-			adminKey = KeyFactory.keyToString(admin.getKey());
 		}
 		catch (IllegalArgumentException ex) {
-			
+			logger.severe("[Add Admin User Service] An error ocurred while creating the new admin user "+ex);
 		}
 		catch (Exception ex) {
-			
+			logger.severe("[Add Admin User Service] An unexpected while creating the new admin user "+ex);
 		}
 		finally {
 			pm.close();

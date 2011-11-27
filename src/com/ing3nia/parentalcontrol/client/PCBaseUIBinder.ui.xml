@@ -40,6 +40,7 @@
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:HTMLPanel styleName="centerContent" ui:field="centerContent">
+				<g:Label styleName="notice" ui:field="notice"></g:Label>
 			</g:HTMLPanel>
 		</g:HTMLPanel>
 	</g:HTMLPanel>

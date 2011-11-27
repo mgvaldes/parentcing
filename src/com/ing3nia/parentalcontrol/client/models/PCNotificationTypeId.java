@@ -11,10 +11,10 @@ package com.ing3nia.parentalcontrol.client.models;
  *
  */
 public enum PCNotificationTypeId {
-	LOW_BATTERY_ID(1, "Bater’a de dispositivo baja"),
-	DEAD_BATTERY_ID(2, "Bater’a de dispositivo muerta"),
-	UNREACHABLE_PHONE_ID(3, "Dispositivo inalcanzable"),
-	SPEED_LIMIT_OVERSTEP_ID(4, "Se ha sobrepasado el l’mite de velocidad permitido");
+	LOW_BATTERY_ID(1, "Device Battery Low"),
+	DEAD_BATTERY_ID(2, "Device Battery Dead"),
+	UNREACHABLE_PHONE_ID(3, "Unreacheable Device"),
+	SPEED_LIMIT_OVERSTEP_ID(4, "Speed Limit Overstepped");
 	
 	private int type;
 	

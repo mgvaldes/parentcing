@@ -1,6 +1,13 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-public class ClientAdminUserModel {
+import java.io.Serializable;
+
+public class ClientAdminUserModel implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * String that represents the key of this PCAdmin object.
 	 */
@@ -15,6 +22,10 @@ public class ClientAdminUserModel {
 	 * Admin user's password.
 	 */
 	String password;
+	
+	public ClientAdminUserModel(){
+		
+	}
 	
 	public ClientAdminUserModel(String key, String username, String password) {
 		this.key = key;

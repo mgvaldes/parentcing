@@ -14,12 +14,19 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
-import com.ing3nia.parentalcontrol.client.models.AdminUserModel;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.EditAdminUserHandler;
+import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
+import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 
 public class AdminUserListView {
+	
+	
+	private BaseViewHandler baseViewHandler;
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * admin user list view.
@@ -46,101 +53,29 @@ public class AdminUserListView {
 	 * Add User button in center menu options panel
 	 */
 	private Button addUserList;
-	
-	
+
 	/**
 	 * List of admin users registered.
 	 */
-	private List<AdminUserModel> adminUsers;// = new ArrayList<AdminUserModel>();
+	private List<ClientAdminUserModel> adminUsers;// = new ArrayList<ClientAdminUserModel>();
 	
 	/**
 	 * Table where the admin users are displayed.
 	 */
-	private CellTable<AdminUserModel> adminUserTable;// = new CellTable<AdminUserModel>(10);
+	private CellTable<ClientAdminUserModel> adminUserTable;// = new CellTable<ClientAdminUserModel>(10);
 	
 
-	public AdminUserListView(HTMLPanel centerContent) {
-		this.centerContent = centerContent;
+	public AdminUserListView(BaseViewHandler baseViewHandler, ArrayList<ClientAdminUserModel> adminUsers) {
+		this.baseViewHandler = baseViewHandler;		
+		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
 
-		this.adminUserTable = new CellTable<AdminUserModel>(10);
+		this.adminUserTable = new CellTable<ClientAdminUserModel>(10);
 		this.adminUserTable.setStyleName(AdminUserListViewClassName.AdminUserTable.getClassname());
 		
 		this.adminUserTable.setStylePrimaryName(AdminUserListViewClassName.AdminUserTable.getClassname());
 		
 		this.viewContent = new HTMLPanel("");
-		this.adminUsers = new ArrayList<AdminUserModel>();
-
-		addTestUsers();
-	}
-	
-	private void addTestUsers(){
-		AdminUserModel user = new AdminUserModel("Ingrid");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Dorothea");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Edward");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Roderich");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Sabine");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Bernd");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Ira");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Mandfred");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Roderich");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Sabine");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Bernd");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Ira");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Mandfred");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Roderich");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Sabine");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Bernd");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Ira");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Mandfred");
-		adminUsers.add(user);
-		user = new AdminUserModel("Roderich");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Sabine");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Bernd");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Ira");
-		adminUsers.add(user);
-		
-		user = new AdminUserModel("Mandfred");
-		adminUsers.add(user);
+		this.adminUsers = adminUsers;
 	}
 	
 	public void initAdminUserListView() {
@@ -152,9 +87,9 @@ public class AdminUserListView {
 		this.centerContent.clear();
 		
 		// Add a text column to show the username.
-		TextColumn<AdminUserModel> usernameColumn = new TextColumn<AdminUserModel>() {
+		TextColumn<ClientAdminUserModel> usernameColumn = new TextColumn<ClientAdminUserModel>() {
 			@Override
-			public String getValue(AdminUserModel object) {
+			public String getValue(ClientAdminUserModel object) {
 				return object.getUsername();
 			}
 		};
@@ -163,22 +98,16 @@ public class AdminUserListView {
 
 		// Add an edit column to show the edit button.
 		ButtonCell editCell = new ButtonCell();
-		Column<AdminUserModel, String> editColumn = new Column<AdminUserModel, String>(
+		Column<ClientAdminUserModel, String> editColumn = new Column<ClientAdminUserModel, String>(
 				editCell) {
 			@Override
-			public String getValue(AdminUserModel object) {
+			public String getValue(ClientAdminUserModel object) {
 				return "Edit";
 			}
 		};
 
-		editColumn.setFieldUpdater(new FieldUpdater<AdminUserModel, String>() {
-			@Override
-			public void update(int index, AdminUserModel object, String value) {
-				// The user clicked on the edit button.
-				Window.alert("Editing "+object.getUsername());
-			}
-		});
-		
+		EditAdminUserHandler editAdminHandler = new EditAdminUserHandler(centerContent, baseViewHandler, baseViewHandler.getUser());
+		editColumn.setFieldUpdater(editAdminHandler);		
 
 		adminUserTable.addColumn(editColumn, "");
 
@@ -189,7 +118,7 @@ public class AdminUserListView {
 
 		// Push the data into the widget.
 		//adminUserTable.setRowData(0, adminUsers);
-		ListDataProvider<AdminUserModel> dataProvider = new ListDataProvider<AdminUserModel>(adminUsers);
+		ListDataProvider<ClientAdminUserModel> dataProvider = new ListDataProvider<ClientAdminUserModel>(adminUsers);
 		dataProvider.addDataDisplay(adminUserTable);
 		
 		//creating paging controls
@@ -227,19 +156,19 @@ public class AdminUserListView {
 		this.viewContent = viewContent;
 	}
 
-	public List<AdminUserModel> getAdminUsers() {
+	public List<ClientAdminUserModel> getAdminUsers() {
 		return adminUsers;
 	}
 
-	public void setAdminUsers(List<AdminUserModel> adminUsers) {
+	public void setAdminUsers(List<ClientAdminUserModel> adminUsers) {
 		this.adminUsers = adminUsers;
 	}
 
-	public CellTable<AdminUserModel> getAdminUserTable() {
+	public CellTable<ClientAdminUserModel> getAdminUserTable() {
 		return adminUserTable;
 	}
 
-	public void setAdminUserTable(CellTable<AdminUserModel> adminUserTable) {
+	public void setAdminUserTable(CellTable<ClientAdminUserModel> adminUserTable) {
 		this.adminUserTable = adminUserTable;
 	}
 }

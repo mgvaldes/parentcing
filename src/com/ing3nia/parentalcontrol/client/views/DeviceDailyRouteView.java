@@ -90,8 +90,9 @@ public class DeviceDailyRouteView {
 		    
 		    Directions.loadFromWaypoints(waypoints, opts);
 		    
-		    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
-		    dock.addNorth(this.map, 490);
+		    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PCT);
+		    dock.setStyleName("mapPanel");
+		    dock.addNorth(this.map, 100);
 		    
 		    this.viewContent.add(dock);
 			this.centerContent.add(this.viewContent);

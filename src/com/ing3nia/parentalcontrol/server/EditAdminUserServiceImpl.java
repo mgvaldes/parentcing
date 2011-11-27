@@ -8,6 +8,7 @@ import javax.jdo.PersistenceManager;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.rpc.EditAdminUserService;
 import com.ing3nia.parentalcontrol.models.PCUser;
+import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class EditAdminUserServiceImpl extends RemoteServiceServlet implements EditAdminUserService {
@@ -27,8 +28,7 @@ public class EditAdminUserServiceImpl extends RemoteServiceServlet implements Ed
 		try {						
 			PCUser user = (PCUser)pm.getObjectById(PCUser.class, userKey);
 			user.setUsername(username);
-			user.setPassword(password);					
-			
+			user.setPassword(EncryptionUtils.toMD5(password));						
 			editResult = true;
 		}
 		catch (Exception ex) {

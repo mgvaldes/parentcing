@@ -33,6 +33,8 @@ public class PCBaseUIBinder extends Composite {
 	
 	@UiField FlowPanel loadingBlock;
 	
+	@UiField Label notice;
+	
 	/*
 	@UiField Button userListButton;
 	@UiField Button addUserButton;
@@ -117,5 +119,14 @@ public class PCBaseUIBinder extends Composite {
 	public void setLoadingBlock(FlowPanel loadingBlock) {
 		this.loadingBlock = loadingBlock;
 	}
+
+	public Label getNotice() {
+		return notice;
+	}
+
+	public void setNotice(Label notice) {
+		this.notice = notice;
+	}
+
 	
 }

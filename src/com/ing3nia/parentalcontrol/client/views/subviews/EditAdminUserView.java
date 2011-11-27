@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.client.views;
+package com.ing3nia.parentalcontrol.client.views.subviews;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -12,14 +12,17 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.views.async.AddAdminUserCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.EditAdminUserCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.NewAdminUserViewClassName;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserService;
 import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.EditAdminUserService;
+import com.ing3nia.parentalcontrol.client.rpc.EditAdminUserServiceAsync;
 
-public class NewAdminUserView {
+public class EditAdminUserView {
 
 	BaseViewHandler baseView;
 	
@@ -85,13 +88,15 @@ public class NewAdminUserView {
 	 */
 	private Button clearButton = new Button("Clear");
 	
-	private ClientUserModel loggedUser;
+	private ClientUserModel userModel;
+	private ClientAdminUserModel adminUserModel;
+	private int adminUserIndex;
 	
 	/**
 	 * Adding all widgets to the center content main panel.
 	 */
 
-	public void initNewAdminUseView(){
+	public void initEditAdminUserView(){
 		
 		//initializing content
 		this.centerContent.clear();
@@ -99,12 +104,16 @@ public class NewAdminUserView {
 		centerContent.add(viewContent);
 	}
 	
-	public NewAdminUserView(HTMLPanel centerContent, ClientUserModel loggedUser, BaseViewHandler baseView) {
+	public EditAdminUserView(HTMLPanel centerContent, BaseViewHandler baseView, ClientUserModel userModel, ClientAdminUserModel adminUserModel, int adminUserIndex) {
 		
 		this.baseView = baseView;
 		
 		this.centerContent = centerContent;
-		this.loggedUser = loggedUser;
+		this.userModel = userModel;
+		this.adminUserModel = adminUserModel;
+		this.adminUserIndex = adminUserIndex;
+		
+		usernameTextBox.setText(adminUserModel.getUsername());
 		
 		viewContent.add(newUserLabel);
 		viewContent.add(usernameLabel);
@@ -148,9 +157,10 @@ public class NewAdminUserView {
 			return;
 		}
 		
-		AddAdminUserCallbackHandler addAdminCallback = new AddAdminUserCallbackHandler(baseView, loggedUser, centerContent, username, password);
-		AddAdminUserServiceAsync addAdminUserService = GWT.create(AddAdminUserService.class);
-		addAdminUserService.addAdminUser(this.usernameTextBox.getText(), this.passwordTextBox.getText(), this.loggedUser.getKey(), addAdminCallback);
+		EditAdminUserCallbackHandler editAdminCallback = new EditAdminUserCallbackHandler(baseView, userModel, centerContent, username, password, adminUserIndex);
+		EditAdminUserServiceAsync editAdminUserService = GWT.create(EditAdminUserService.class);
+		editAdminUserService.editAdminUser(username, password, adminUserModel.getKey(), editAdminCallback);
+		
 	}
 	
 	private void clearTextBoxes() {

@@ -54,7 +54,7 @@ public class SmartphoneUtils {
 		deviceJson.addProperty("type", device.getOs().getId());
 		smpJson.add("device", deviceJson);
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - hh:mm:ss a");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 		JsonArray alertsJson = new JsonArray();
 		for(Key notKey : pcSmart.getNotifications()){

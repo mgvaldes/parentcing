@@ -102,15 +102,16 @@ public class AlertResource {
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
 			PCNotification pcNotification;
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			ArrayList<PCNotification> notifications = new ArrayList<PCNotification>();
 			
 			for (NotificationModel notification : alertModel.getAlerts()) {
 				pcNotification = new PCNotification();
 				pcNotification.setType(notification.getType());
 				pcNotification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(notification.getType()));
+				logger.info("FORMATTING DATE: "+notification.getDate());
 				pcNotification.setDate(formatter.parse(notification.getDate()));
-				
+				logger.info("CREATED DATE: "+pcNotification.getDate().toString());
 				notifications.add(pcNotification);
 			}
 			

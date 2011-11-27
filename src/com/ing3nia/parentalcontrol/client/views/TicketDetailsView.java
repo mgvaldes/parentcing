@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.client.views;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -167,8 +168,8 @@ public class TicketDetailsView {
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
 		this.clearButton = new Button("Clear");
-		
-		DateTimeFormat  formatter = DateTimeFormat.getFormat("dd/MM/yyyy - KK:mm:ss a");
+
+		DateTimeFormat  formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
 		String stringDate = formatter.format(this.ticket.getDate());
 		
 		//addTestTicketAnswers();

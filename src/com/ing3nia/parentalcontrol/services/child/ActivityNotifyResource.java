@@ -102,7 +102,7 @@ public class ActivityNotifyResource {
 			savedSmartphone.setRoutes(newRoutes);
 			
 			PCNotification pcNotification;
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			ArrayList<PCNotification> pcNotifications = new ArrayList<PCNotification>();
 			ArrayList<NotificationModel> notifications = activityNotifyModel.getAlerts();
 			

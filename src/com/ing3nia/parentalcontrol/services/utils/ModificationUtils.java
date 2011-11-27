@@ -292,7 +292,7 @@ public class ModificationUtils {
 			} catch(Exception e){
 				throw new ModificationParsingException("Could not get rule from key: "+ruleModel.getKeyId()+" "+e.getMessage());
 			}
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			Date date;
 			try {
 				date = sdf.parse(ruleModel.getCreationDate());

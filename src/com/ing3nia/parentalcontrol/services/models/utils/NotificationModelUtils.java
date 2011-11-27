@@ -18,7 +18,7 @@ public class NotificationModelUtils {
 		
 		notification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(not.getType()));
 		
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
 		try {
 			notification.setDate(formatter.parse(not.getDate()));
@@ -29,6 +29,16 @@ public class NotificationModelUtils {
 		}
 		
 		return notification;
+	}
+	
+	public static NotificationModel convertToNotificationModel(PCNotification notf){
+		NotificationModel notfModel = new NotificationModel();
+		notfModel.setType(notf.getType());
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		notfModel.setDate(formatter.format(notf.getDate()));
+		
+		return notfModel;
 	}
 	
 	public static void savePCNotification(PCNotification notification) {

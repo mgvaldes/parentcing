@@ -69,7 +69,7 @@ public class DeviceMapView {
 	
 	public void loadDeviceLocations() {
 	    
-		LoadingView.setLoadingView(this.baseBinder, AsyncronousCallsMessages.LOADING_DEVICES_MAP, this.baseViewHandler.getLoadingImage());
+		//LoadingView.setLoadingView(this.baseBinder, AsyncronousCallsMessages.LOADING_DEVICES_MAP, this.baseViewHandler.getLoadingImage());
 		LatLng deviceLoc;
 		if(deviceLocations ==null || deviceLocations.size() == 0){
 			deviceLoc = LatLng.newInstance(41, 2);
@@ -104,7 +104,7 @@ public class DeviceMapView {
 	    
 	    this.viewContent.add(dock);
 	    this.centerContent.clear();
-	    LoadingView.clearLoadingView(this.baseBinder);
+	    //LoadingView.clearLoadingView(this.baseBinder);
 		this.centerContent.add(this.viewContent);
 	}
 

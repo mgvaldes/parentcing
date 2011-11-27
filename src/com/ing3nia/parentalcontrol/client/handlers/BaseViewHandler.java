@@ -17,6 +17,8 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.ParentalControl;
+import com.ing3nia.parentalcontrol.client.handlers.click.AddAdminClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.AdminUserListViewClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.AlertListClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.AlertRulesClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.DailyRouteClickHandler;
@@ -25,6 +27,7 @@ import com.ing3nia.parentalcontrol.client.handlers.click.DashboardDeviceMapClick
 import com.ing3nia.parentalcontrol.client.handlers.click.DeviceContactsClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.DeviceSettingsClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.SmartphoneClickHandler;
+import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
@@ -33,6 +36,8 @@ import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.utils.PCMapMarkersEnum;
 import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
+import com.ing3nia.parentalcontrol.client.utils.PCSmartphoneMenuStyle;
+import com.ing3nia.parentalcontrol.client.utils.PCURLMapper;
 import com.ing3nia.parentalcontrol.client.views.AdminUserListView;
 import com.ing3nia.parentalcontrol.client.views.AlertListView;
 import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
@@ -58,6 +63,7 @@ public class BaseViewHandler {
 		this.baseBinder = baseBinder;
 		this.menuSetter = new MenuSetterHandler(baseBinder);
 		this.slist = new ArrayList<SmartphoneModel>();
+		//this.user = userModel;
 		this.loadingImage = new Image("/media/images/loading-black.gif");
 	}
 
@@ -69,7 +75,7 @@ public class BaseViewHandler {
 			FlowPanel buttonPanel = new FlowPanel();
 			buttonPanel.setStyleName("buttonPanel");
 			
-			Image buttonIcon = new Image(PCMapStyle.getMarkerImageURL(smartphoneCount));
+			Image buttonIcon = new Image(PCSmartphoneMenuStyle.getIconImageURL(smartphoneCount));
 			buttonIcon.setStyleName("buttonIcon");
 			
 			b.setStyleName("buttonFromList");
@@ -186,26 +192,8 @@ public class BaseViewHandler {
 	public void setAddAdministratorButton(){
 
 		Button addAdminButton = baseBinder.getAddAdminButton();
-		addAdminButton.addClickHandler(new ClickHandler() {
+		addAdminButton.addClickHandler(new AddAdminClickHandler(menuSetter, this, baseBinder));
 			
-			@Override
-			public void onClick(ClickEvent event) {
-
-				FlowPanel centerMenu = menuSetter.getCenterMenuOptions();
-				menuSetter.getCenterMenuOptions().clear();
-				//Clean center menu
-				
-				Button addUser = menuSetter.getAddUser();
-				addUser.setStyleName("selectedShinnyButton");
-				centerMenu.add(addUser);
-				Button userList = menuSetter.getUserList();
-				centerMenu.add(userList);
-				clearOthersStyle(CenterMenuOptionsClassNames.AddUser, menuSetter.getCenterMenuOptions());
-				
-				NewAdminUserView view = new NewAdminUserView(baseBinder.getCenterContent(), user);		
-				view.initNewAdminUseView();
-			}
-		});
 	} 
 	
 	public void setLogoutButton(){
@@ -218,45 +206,22 @@ public class BaseViewHandler {
 				CookieHandler.clearSessionCookie();
 				RootPanel.get().clear();
 				//Window.Location.replace(GWT.getModuleBaseURL());
-				Window.Location.replace("http://127.0.0.1:8888/ParentalControl.html?gwt.codesvr=127.0.0.1:9997");
+				Window.Location.replace(PCURLMapper.CURRENT_BASE_URL);
+				//Window.Location.reload();
 			}
 		});
 	} 
 	
 	public void setAdminUserListView(){
 		Button userListButton = menuSetter.getUserList();
-		userListButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				AdminUserListView view = new AdminUserListView(baseBinder.getCenterContent());		
-
-				Button userList = menuSetter.getUserList();
-				userList.setStyleName("selectedShinnyButton");
-				clearOthersStyle(CenterMenuOptionsClassNames.UserList, menuSetter.getCenterMenuOptions());
-				
-				view.initAdminUserListView();
-			}
-		});
+		AdminUserListViewClickHandler adminUserListClickHandler = new AdminUserListViewClickHandler(this);
+		userListButton.addClickHandler(adminUserListClickHandler);
 	} 
 	
 	
 	public void setNewAdminUserViewHandler(){
-		Button newAdminUserButton = menuSetter.getAddUser();
-		newAdminUserButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				NewAdminUserView view = new NewAdminUserView(baseBinder.getCenterContent(), user);		
-				
-				Button addUser = menuSetter.getAddUser();
-				addUser.setStyleName("selectedShinnyButton");
-				
-				clearOthersStyle(CenterMenuOptionsClassNames.AddUser, menuSetter.getCenterMenuOptions());
-				
-				view.initNewAdminUseView();
-			}
-		});
+		Button newAdminUserButton = menuSetter.getAddUser();		
+		newAdminUserButton.addClickHandler(new AddAdminClickHandler(menuSetter, this, baseBinder));
 	}
 	
 	public static void clearOthersStyle(CenterMenuOptionsClassNames onFocusButton, FlowPanel menuOptions){
