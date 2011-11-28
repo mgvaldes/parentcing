@@ -33,6 +33,7 @@ public class AddAdminUserCallbackHandler implements AsyncCallback<String> {
 				.getNotice()
 				.setText(
 						"An error occured. The new admin user couldn't be saved.");
+		centerContent.add(baseView.getBaseBinder().getNotice());
 	}
 
 	public void onSuccess(String result) {
@@ -42,6 +43,7 @@ public class AddAdminUserCallbackHandler implements AsyncCallback<String> {
 				userModel.setAdmins(new ArrayList<ClientAdminUserModel>());
 			}
 			userModel.getAdmins().add(newAdminUser);
+			
 			centerContent.clear();
 			
 			Button userList = baseView.getMenuSetter().getUserList();

@@ -287,41 +287,52 @@ public class ModificationUtils {
 		logger.info("[ParentModifications] Adding rules modifications");
 		for (RuleModel ruleModel : modifications.getRules()) {
 			PCRule rule;
-			try{
-			rule = pm.getObjectById(PCRule.class,
-					KeyFactory.stringToKey(ruleModel.getKeyId()));
-			} catch(Exception e){
-				throw new ModificationParsingException("Could not get rule from key: "+ruleModel.getKeyId()+" "+e.getMessage());
+			
+			try {
+				rule = pm.getObjectById(PCRule.class, KeyFactory.stringToKey(ruleModel.getKeyId()));
+			} 
+			catch (Exception e) {
+				throw new ModificationParsingException("Could not get rule from key: " + ruleModel.getKeyId() + " " + e.getMessage());
 			}
+			
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			Date date;
+			
 			try {
 				date = sdf.parse(ruleModel.getCreationDate());
-			} catch (ParseException e) {
-				logger.severe("[ParentModifications] Error while parsing rule creating date: "+ruleModel.getCreationDate());
-				throw new ModificationParsingException("Date parsing error: "+ruleModel.getCreationDate()+" "+e.getMessage());
+			} 
+			catch (ParseException e) {
+				logger.severe("[ParentModifications] Error while parsing rule creating date: " + ruleModel.getCreationDate());
+				throw new ModificationParsingException("Date parsing error: " + ruleModel.getCreationDate() + " " + e.getMessage());
 			}
+			
 			rule.setCreationDate(date);
 			
 			try {
 				date = sdf.parse(ruleModel.getStartDate());
-			} catch (ParseException e) {
-				logger.severe("[ParentModifications] Error while parsing rule start date: "+ruleModel.getStartDate());
-				throw new ModificationParsingException("Date parsing error: "+ruleModel.getStartDate()+" "+e.getMessage());
+			} 
+			catch (ParseException e) {
+				logger.severe("[ParentModifications] Error while parsing rule start date: " + ruleModel.getStartDate());
+				throw new ModificationParsingException("Date parsing error: " + ruleModel.getStartDate() + " " + e.getMessage()); 
 			}
+			
 			rule.setStartDate(date);
 			
 			try {
 				date = sdf.parse(ruleModel.getEndDate());
-			} catch (ParseException e) {
-				logger.severe("[ParentModifications] Error while parsing rule end date: "+ruleModel.getEndDate());
-				throw new ModificationParsingException("Date parsing error: "+ruleModel.getEndDate()+" "+e.getMessage());
+			} 
+			catch (ParseException e) {
+				logger.severe("[ParentModifications] Error while parsing rule end date: " + ruleModel.getEndDate());
+				throw new ModificationParsingException("Date parsing error: " + ruleModel.getEndDate() + " " + e.getMessage());
 			}
+			
 			rule.setEndDate(date);
+			
+			rule.setName(ruleModel.getName());
 			
 			logger.info("[ParentModifications] Setting new funcionalities to rules");
 			ArrayList<Key> newDisabledFuncionalities = getNewFuncionalitiesAsKeys(pm, ruleModel);
-			rule.setDisabledFunctionalities(newDisabledFuncionalities);
+			rule.setDisabledFunctionalities(newDisabledFuncionalities);			
 		}
 		
 		// adding deleted rules
@@ -333,8 +344,7 @@ public class ModificationUtils {
 		}
 		
 		pm.makePersistent(pcsmartphone);
-		pm.makePersistent(pcmodification);
-	
+		pm.makePersistent(pcmodification);	
 	}
 	
 	private static ArrayList<Key> getNewFuncionalitiesAsKeys(PersistenceManager pm,
@@ -356,8 +366,7 @@ public class ModificationUtils {
 			logger.info("[ParentModification] Finding funcionality by id: "
 					+ idFuncionality);
 			try {
-				List<PCFunctionality> results = (List<PCFunctionality>) query
-						.execute(idFuncionality);
+				List<PCFunctionality> results = (List<PCFunctionality>) query.execute(idFuncionality);
 				if (!results.isEmpty()) {
 					logger.info("[ParentModification] Returning found PCFuncionality");
 					funcionality = results.get(0);

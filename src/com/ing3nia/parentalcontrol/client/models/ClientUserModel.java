@@ -1,12 +1,13 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.ing3nia.parentalcontrol.services.models.utils.GeoPtModelUtils;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
-public class ClientUserModel {
+public class ClientUserModel implements Serializable {
 	/**
 	 * String that represents the key of this PCAdmin object.
 	 */
@@ -36,6 +37,8 @@ public class ClientUserModel {
 	 * User help desk tickets
 	 */
 	ArrayList<TicketModel> tickets;
+	
+	String cid;
 
 	public ClientUserModel(String key, String username, String password,
 			ArrayList<SmartphoneModel> smartphones,
@@ -103,6 +106,14 @@ public class ClientUserModel {
 
 	public void setTickets(ArrayList<TicketModel> tickets) {
 		this.tickets = tickets;
+	}
+
+	public String getCid() {
+		return cid;
+	}
+
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 
 	public ArrayList<AlertModel> getUserAlertList() {

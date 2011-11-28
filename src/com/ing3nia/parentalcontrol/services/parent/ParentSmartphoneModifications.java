@@ -65,11 +65,12 @@ public class ParentSmartphoneModifications {
 		//parsing json message from request
 		Type modificationType = new TypeToken<ParentModificationsModel>(){}.getType();
 		ParentModificationsModel mt;
-		try{
-		logger.info("[Parent Modifications] Transforming json object "+msg);
-		 mt = gson.fromJson(msg, modificationType);
-		}catch(Exception e){
-			logger.warning("[Parent Modifications] ModificationsModel couldn't be created from message "+WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+		try {
+			logger.info("[Parent Modifications] Transforming json object " + msg);
+			mt = gson.fromJson(msg, modificationType);
+		} 
+		catch (Exception e) {
+			logger.warning("[Parent Modifications] ModificationsModel couldn't be created from message " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
 		}

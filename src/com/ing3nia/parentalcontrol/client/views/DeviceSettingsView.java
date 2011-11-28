@@ -25,7 +25,7 @@ import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
-import com.ing3nia.parentalcontrol.models.utils.FunctionalityTypeId;
+import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
 
 
