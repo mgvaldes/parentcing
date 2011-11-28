@@ -211,6 +211,7 @@ public class DeviceContactDetailsView {
 	
 	public DeviceContactDetailsView(HTMLPanel centerPanel, FullContactModel contact) {
 		this.centerContent = centerPanel;
+		this.centerContent.setStyleName("centerContent");
 		viewContent = new HTMLPanel("");
 		contactDetailsLabel = new Label("Contact Details:");
 		contactTable = new FlexTable();

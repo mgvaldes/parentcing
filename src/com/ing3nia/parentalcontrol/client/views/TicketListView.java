@@ -74,6 +74,7 @@ public class TicketListView {
 		closedTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
 		this.centerContent =  centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.openTickets = openTickets;
 		this.closedTickets = closedTickets;
 		

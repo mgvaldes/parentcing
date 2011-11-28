@@ -136,6 +136,7 @@ public class DeviceSettingsView {
 	
 	public DeviceSettingsView(HTMLPanel centerContent, SmartphoneModel smartphone, String cookieId) {
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.smartphone = smartphone;
 		this.cookieId = cookieId;
 		

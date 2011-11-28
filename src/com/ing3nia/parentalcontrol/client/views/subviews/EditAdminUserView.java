@@ -109,6 +109,7 @@ public class EditAdminUserView {
 		this.baseView = baseView;
 		
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.userModel = userModel;
 		this.adminUserModel = adminUserModel;
 		this.adminUserIndex = adminUserIndex;

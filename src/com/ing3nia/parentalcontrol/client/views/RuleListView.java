@@ -44,6 +44,7 @@ public class RuleListView {
 	
 	public RuleListView(HTMLPanel centerContent, ArrayList<RuleModel> ruleList) {
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		viewContent = new HTMLPanel("");
 		this.ruleTable = new CellTable<RuleModel>(10);
 		this.viewContent = new HTMLPanel("");

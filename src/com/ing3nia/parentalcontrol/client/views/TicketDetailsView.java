@@ -142,6 +142,7 @@ public class TicketDetailsView {
 	
 	public TicketDetailsView(HTMLPanel centerContent, TicketModel ticket, String userKey, boolean isAdmin) {
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.ticket = ticket;
 		this.ticketAnswers = this.ticket.getAnswers();
 		this.userKey = userKey;

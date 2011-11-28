@@ -48,6 +48,7 @@ public class AdminClosedTicketListView {
 		closedTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
 		this.centerContent =  centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.closedTickets = closedTickets;
 		
 		// Setting up open tickets table 

@@ -49,17 +49,40 @@ public class DailyRouteClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceContacts());
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
+		//initializing route panel
+		ScrollPanel routePanel = initRouteNamesDisplay(menuSetter.getParentSmartphoneButton(), menuOptions);
+		HTMLPanel scrollBody = new HTMLPanel("");
+		if(routePanel != null){
+			deviceChoiceList = BaseViewHandler
+			.clearRouteNamesPanels(deviceChoiceList);
+			
+			routePanel.setStyleName("routeScrollPanel");
+			routePanel.setHeight("120px");		
+			scrollBody.setStyleName("routeScrollBodyPanel");
+			routePanel.add(scrollBody);
+			placeRouteNamesPanel(routePanel, deviceChoiceList, baseView.getClickedSmartphoneIndex());
+		}
+
+		//deviceChoiceList.add(routePanel);
+		
 		logger.info("Initializing device route map");
-		DeviceDailyRouteView view = new DeviceDailyRouteView(baseBinder, baseView);		
+		DeviceDailyRouteView view = new DeviceDailyRouteView(baseBinder, baseView, scrollBody);		
 		view.setDeviceRoute(getDummyDeviceRoute());
 		view.initDeviceLocationLoad();
 		
+		
 		//logger.info("Devices Loaded. Displaying route Names "+view.getDeviceRouteNames().size()+" ex: "+view.getDeviceRouteNames().get(0));
-		displayRouteNames(menuSetter.getParentSmartphoneButton(), deviceChoiceList, view.getDeviceRouteNames());
+		//displayRouteNames(menuSetter.getParentSmartphoneButton(), deviceChoiceList, view.getDeviceRouteNames());
 	}
 	
-
 	
+	public ScrollPanel initRouteNamesDisplay(Button smpButton, FlowPanel deviceChoiceList){
+		if(smpButton==null) return null;
+		int index= deviceChoiceList.getWidgetIndex(smpButton);
+		ScrollPanel p = new ScrollPanel();
+		return p;
+	}
+	/*
 	public void displayRouteNames(Button smpButton, FlowPanel deviceChoiceList, List<String> deviceRouteNames){
 		if(smpButton==null) return;
 		int index= deviceChoiceList.getWidgetIndex(smpButton);
@@ -69,6 +92,17 @@ public class DailyRouteClickHandler implements ClickHandler{
 			p.add(l);
 		}
 		deviceChoiceList.add(p);
+	}*/
+	
+	
+	public void placeRouteNamesPanel(ScrollPanel routePanel,
+			FlowPanel deviceChoiceList, int smpButtonPos) {
+		// int deviceMax = deviceChoiceList.getWidgetCount();
+		if (smpButtonPos == (deviceChoiceList.getWidgetCount() - 1)) {
+			deviceChoiceList.add(routePanel);
+		} else {
+			deviceChoiceList.insert(routePanel, smpButtonPos + 1);
+		}
 	}
 	
 	public ArrayList<GeoPtModel> getDummyDeviceRoute(){

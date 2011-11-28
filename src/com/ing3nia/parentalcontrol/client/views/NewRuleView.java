@@ -228,6 +228,7 @@ public class NewRuleView {
 
 	public NewRuleView(HTMLPanel centerContent, String cookieId, SmartphoneModel smartphone) {
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.cookieId = cookieId;
 		this.smartphone = smartphone;
 		
@@ -423,7 +424,7 @@ public class NewRuleView {
 			hourTextBoxT.getText().equals("") &&
 			minuteTextBoxT.getText().equals("") &&
 			secondsTextBoxT.getText().equals("")) {
-			Window.alert("All fields must be specified.");
+			//Window.alert("All fields must be specified.");
 		}
 		else {
 			final RuleModel newRule = new RuleModel();

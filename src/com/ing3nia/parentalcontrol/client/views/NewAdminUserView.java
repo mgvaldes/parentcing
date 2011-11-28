@@ -95,6 +95,7 @@ public class NewAdminUserView {
 		
 		//initializing content
 		this.centerContent.clear();
+		this.centerContent.setStyleName("centerContent");
 		this.viewContent.setStylePrimaryName(NewAdminUserViewClassName.NewAdminUserBlock.getClassname());
 		centerContent.add(viewContent);
 	}

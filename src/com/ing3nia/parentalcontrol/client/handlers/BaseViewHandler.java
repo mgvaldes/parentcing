@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.ParentalControl;
 import com.ing3nia.parentalcontrol.client.handlers.click.AddAdminClickHandler;
@@ -293,6 +294,22 @@ public class BaseViewHandler {
 		else if(menuOption.equals(CenterMenuOptionsClassNames.NewTicket)){
 			this.menuSetter.getClosedTickets().setStyleName("selectedShinnyButton");
 		}
+	}
+	
+	public static FlowPanel clearRouteNamesPanels(FlowPanel deviceChoiceList){
+		int widgetCount = deviceChoiceList.getWidgetCount();
+		Window.alert("Widget count "+widgetCount);
+		ArrayList<Integer> removeList = new ArrayList<Integer>();
+		for(int i = 0; i<widgetCount; i++){
+			Widget w = deviceChoiceList.getWidget(i);
+			if(w instanceof ScrollPanel){
+				removeList.add(i);
+			}
+		}
+		for(int j:removeList){
+			deviceChoiceList.remove(j);
+		}
+		return deviceChoiceList;
 	}
 	
 	public PCBaseUIBinder getBaseBinder() {

@@ -55,6 +55,9 @@ public class SmartphoneClickHandler implements ClickHandler{
 		
 		menuSetter.setParentSmartphoneButton(this.button);
 		
+		deviceChoiceList = BaseViewHandler
+		.clearRouteNamesPanels(deviceChoiceList);
+		
 		//TODO set selected button style
 		//this.button.setStyleName("selectedSmartphoneButton");
 		

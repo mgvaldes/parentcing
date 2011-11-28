@@ -81,6 +81,7 @@ public class LoginView {
 		//logger.addHandler(new ConsoleHandler());
 		
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.userModel = userModel;
 		
 		viewContent = new HTMLPanel("");

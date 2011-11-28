@@ -55,6 +55,7 @@ public class DeviceMapView {
 		this.baseBinder = baseBinder;
 		this.baseViewHandler = baseView;
 		this.centerContent = baseBinder.getCenterContent();
+		this.centerContent.setStyleName("mapCenterContent");
 		viewContent = new HTMLPanel("");
 		deviceLocations = new ArrayList<GeoPtModel>();
 	}
