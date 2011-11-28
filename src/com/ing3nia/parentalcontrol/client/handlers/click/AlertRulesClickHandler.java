@@ -42,7 +42,7 @@ public class AlertRulesClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
 		//RuleListView view = new RuleListView(centerContent);		
-		RuleListView view = new RuleListView(centerContent, ruleList);
+		RuleListView view = new RuleListView(baseView, ruleList);
 		view.initRuleListView();
 	}
 }

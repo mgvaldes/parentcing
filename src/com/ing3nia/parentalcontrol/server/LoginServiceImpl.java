@@ -25,6 +25,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
@@ -52,7 +53,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 	}
 
 	@Override
-	public ArrayList<SmartphoneModel> login(String username, String password) {
+	public ClientUserModel login(String username, String password) {
 		ArrayList<SmartphoneModel> smartphones = new ArrayList<SmartphoneModel>();
 		SmartphoneModel auxSmartphone;
 		JsonObject auxObject;
@@ -60,11 +61,15 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		Type sphType = new TypeToken<SmartphoneModel>(){}.getType();
 		Gson gson = new Gson();
 		ArrayList<ContactModel> auxContacts;
+		ClientUserModel user = null;
 		
 		String cid = callParentLoginResource(username, password);
 		
 		if (cid != null) {
-			smartphones = callParentSmartphoneGeneral(cid);
+			user = new ClientUserModel();
+			user.setCid(cid);
+			
+			smartphones = callParentSmartphoneGeneral(cid);			
 			
 			if (smartphones != null) {
 				for (SmartphoneModel sph : smartphones) {
@@ -82,10 +87,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 					auxContacts = parseContacts(auxArray);
 					sph.setActiveContacts(auxContacts);
 				}
+				
+				user.setSmartphones(smartphones);
 			}
 		}
 		
-		return smartphones;
+		return user;
 	}
 	
 	public ArrayList<ContactModel> parseContacts(JsonArray simpleContactsArray) {

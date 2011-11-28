@@ -13,6 +13,10 @@ public class ParentModificationsModel {
 		this.modifications = modifications;
 	}
 	
+	public ParentModificationsModel() {
+		
+	}
+	
 	public String getCid() {
 		return cid;
 	}

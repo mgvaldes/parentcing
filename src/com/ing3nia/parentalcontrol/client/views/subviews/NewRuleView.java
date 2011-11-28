@@ -1,14 +1,18 @@
-package com.ing3nia.parentalcontrol.client.views;
+package com.ing3nia.parentalcontrol.client.views.subviews;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import com.gargoylesoftware.htmlunit.javascript.host.Text;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -19,13 +23,25 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.datepicker.client.DateBox;
 import com.google.gwt.user.datepicker.client.DatePicker;
+import com.ibm.icu.text.DateFormat;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.AlertRulesClickHandler;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
+import com.ing3nia.parentalcontrol.client.rpc.AddRuleServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
-import com.ing3nia.parentalcontrol.models.utils.FunctionalityTypeId;
+import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
+import com.ing3nia.parentalcontrol.client.views.AdminUserListView;
+import com.ing3nia.parentalcontrol.client.views.RuleListView;
+import com.ing3nia.parentalcontrol.client.views.async.AddRuleCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.SaveSmartphoneModificationsCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
+import com.ing3nia.parentalcontrol.server.AddRuleServiceImpl;
 
 public class NewRuleView {
 	/**
@@ -113,12 +129,13 @@ public class NewRuleView {
 	/**
 	 * From date text box.
 	 */
-	private TextBox fromDateTextBox;
+	//private TextBox fromDateTextBox;
 	
 	/**
 	 * From date picker.
 	 */
-	private DatePicker fromDatePicker;
+	//private DatePicker fromDatePicker;
+	private DateBox fromDatePicker;
 	
 	/**
 	 * To date label.
@@ -128,12 +145,13 @@ public class NewRuleView {
 	/**
 	 * To date text box.
 	 */
-	private TextBox toDateTextBox;
+	//private TextBox toDateTextBox;
 	
 	/**
 	 * To date picker.
 	 */
-	private DatePicker toDatePicker;
+	//private DatePicker toDatePicker;
+	private DateBox toDatePicker;
 	
 	/**
 	 * Panel to group from time widgets
@@ -149,11 +167,6 @@ public class NewRuleView {
 	 * Hour text box.
 	 */
 	private TextBox hourTextBoxF;
-	
-	/**
-	 * Time separator ':'.
-	 */
-	private Label timeSeparator;
 	
 	/**
 	 * Minute text box.
@@ -225,10 +238,14 @@ public class NewRuleView {
 	 * smartphone where the new rule will be at.
 	 */
 	private SmartphoneModel smartphone;
+	
+	private BaseViewHandler baseViewHandler;
 
-	public NewRuleView(HTMLPanel centerContent, String cookieId, SmartphoneModel smartphone) {
-		this.centerContent = centerContent;
-		this.centerContent.setStyleName("centerContent");
+
+	public NewRuleView(BaseViewHandler baseViewHandler, String cookieId, SmartphoneModel smartphone) {
+		this.baseViewHandler = baseViewHandler;
+		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
+        this.centerContent.setStyleName("centerContent");
 		this.cookieId = cookieId;
 		this.smartphone = smartphone;
 		
@@ -247,6 +264,7 @@ public class NewRuleView {
 		this.ruleNameLabel = new Label("Name:");
 		this.ruleNameTextBox = new TextBox();
 		
+		this.disabledFunctionalitiesPanel = new HTMLPanel("");
 		this.disabledFunctionalitiesListBox = new ListBox();		
 		this.disabledFunctionalityAddButton = new Button("Disable");
 		this.disabledFunctionalitiesTable = new FlexTable();
@@ -254,16 +272,15 @@ public class NewRuleView {
 		
 		this.datePanel = new HTMLPanel("");
 		this.fromDateLabel = new Label("Date:");
-		this.fromDateTextBox = new TextBox();
-		this.fromDatePicker = new DatePicker();		
+		//this.fromDateTextBox = new TextBox();
+		this.fromDatePicker = new DateBox();	
 		this.toDateLabel = new Label("to");
-		this.toDateTextBox = new TextBox();
-		this.toDatePicker = new DatePicker();
+		//this.toDateTextBox = new TextBox();
+		this.toDatePicker = new DateBox();
 		
 		this.fromTimePanel = new HTMLPanel("");
 		this.fromTimeLabel = new Label("From:");
 		this.hourTextBoxF = new TextBox();
-		this.timeSeparator = new Label(":");
 		this.minuteTextBoxF = new TextBox();
 		this.secondsTextBoxF = new TextBox();
 		
@@ -289,12 +306,13 @@ public class NewRuleView {
 	}
 	
 	public void initNewRuleView() {
+		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
+		
 		this.newRuleContent.add(newRuleLabel);
 		
 		this.ruleTypePanel.add(ruleTypeLabel);
 		
-		ruleTypeListBox.addChangeHandler(new ChangeHandler() {
-			
+		ruleTypeListBox.addChangeHandler(new ChangeHandler() {			
 			@Override
 			public void onChange(ChangeEvent event) {
 				loadFunctionalities();
@@ -321,30 +339,56 @@ public class NewRuleView {
 		this.newRuleContent.add(this.disabledFunctionalitiesTable);
 		
 		this.datePanel.add(this.fromDateLabel);
-		this.datePanel.add(this.fromDateTextBox);
+		//this.datePanel.add(this.fromDateTextBox);
+		
+//		this.fromDatePicker.addValueChangeHandler(new ValueChangeHandler() {
+//			public void onValueChange(ValueChangeEvent event) {
+//				DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
+//				Date date = (Date)event.getValue();
+//				String dateString = formatter.format(date);
+//				fromDateTextBox.setText(dateString);
+//			}
+//		});
+		
+		this.fromDatePicker.setFormat(new DateBox.DefaultFormat(formatter));
 		this.datePanel.add(this.fromDatePicker);
 		this.datePanel.add(this.toDateLabel);
-		this.datePanel.add(this.toDateTextBox);
+		//this.datePanel.add(this.toDateTextBox);
+		
+//		this.toDatePicker.addValueChangeHandler(new ValueChangeHandler() {
+//			public void onValueChange(ValueChangeEvent event) {
+//				DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
+//				Date date = (Date)event.getValue();
+//				String dateString = formatter.format(date);
+//				toDateTextBox.setText(dateString);
+//			}
+//		});
+		
+		this.toDatePicker.setFormat(new DateBox.DefaultFormat(formatter));
 		this.datePanel.add(this.toDatePicker);
 		this.newRuleContent.add(this.datePanel);
 		
 		this.fromTimePanel.add(this.fromTimeLabel);
+		this.hourTextBoxF.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxF, true));
 		this.fromTimePanel.add(this.hourTextBoxF);
-		this.fromTimePanel.add(this.timeSeparator);
+		//this.fromTimePanel.add(new Label(":"));
+		this.minuteTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxF, true, true));
 		this.fromTimePanel.add(this.minuteTextBoxF);
-		this.fromTimePanel.add(this.timeSeparator);
-		this.fromTimePanel.add(this.secondsTextBoxF);
-		this.fromTimePanel.add(this.timeSeparator);
+		//this.fromTimePanel.add(new Label(":"));
+		this.secondsTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxF, true, false));
+		this.fromTimePanel.add(this.secondsTextBoxF);		
 		this.fromTimePanel.add(this.ampmListBoxF);
 		this.newRuleContent.add(this.fromTimePanel);
 		
 		this.tillTimePanel.add(this.tillTimeLabel);
+		this.hourTextBoxT.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxT, false));
 		this.tillTimePanel.add(this.hourTextBoxT);
-		this.tillTimePanel.add(this.timeSeparator);
+		//this.tillTimePanel.add(new Label(":"));
+		this.minuteTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxT, false, true));
 		this.tillTimePanel.add(this.minuteTextBoxT);
-		this.tillTimePanel.add(this.timeSeparator);
+		//this.tillTimePanel.add(new Label(":"));
+		this.secondsTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxT, false, false));
 		this.tillTimePanel.add(this.secondsTextBoxT);
-		this.tillTimePanel.add(this.timeSeparator);
 		this.tillTimePanel.add(this.ampmListBoxT);
 		this.newRuleContent.add(this.tillTimePanel);
 		
@@ -374,17 +418,23 @@ public class NewRuleView {
 		
 		disabledFunctionalitiesListBox.addItem("Browser Access");
 		disabledFunctionalitiesListBox.addItem("Outgoing Calls");
-		disabledFunctionalitiesListBox.addItem("Incomming Calss");
+		disabledFunctionalitiesListBox.addItem("Incomming Calls");
 		disabledFunctionalitiesListBox.addItem("Outgoing SMS");
 		disabledFunctionalitiesListBox.addItem("Incomming SMS");
 		
 		if (ruleTypeListBox.getSelectedIndex() == 1) {
 			disabledFunctionalitiesListBox.addItem("Total Block");
 		}
+		
+		this.disabledFunctionalities = new ArrayList<String>();
+		this.disabledFunctionalitiesTable.removeAllRows();
+		
+//		this.disabledFunctionalitiesTable.clear();
+//		this.disabledFunctionalitiesTable.clear(true);
 	}
 	
 	public void addDisabledFunctionality() {
-		this.disabledFunctionalitiesListBox.setSelectedIndex(0);
+		//this.disabledFunctionalitiesListBox.setSelectedIndex(0);
 
 		// Don't add the disabled functionality if it's already in the table.
 		final String selectedDisabledFunc = this.disabledFunctionalitiesListBox.getItemText(this.disabledFunctionalitiesListBox.getSelectedIndex());
@@ -410,59 +460,37 @@ public class NewRuleView {
 		disabledFunctionalitiesTable.setWidget(row, 1, enableFuncButton);
 	}
 	
-	public void saveRule() {
-		ModificationModel auxMod = new ModificationModel(); 
-		
+	public void saveRule() {		 		
 		if (ruleTypeListBox.getSelectedIndex() == 0 &&
 			ruleNameTextBox.getText().equals("") &&
-			disabledFunctionalities.isEmpty() &&
-			fromDateTextBox.getText().equals("") &&
-			toDateTextBox.getText().equals("") &&
+			disabledFunctionalities.isEmpty() &&			
 			hourTextBoxF.getText().equals("") &&
 			minuteTextBoxF.getText().equals("") &&
 			secondsTextBoxF.getText().equals("") &&
 			hourTextBoxT.getText().equals("") &&
 			minuteTextBoxT.getText().equals("") &&
 			secondsTextBoxT.getText().equals("")) {
-			//Window.alert("All fields must be specified.");
+
+			baseViewHandler.getBaseBinder().getNotice().setText("All fields must be specified");
+			centerContent.add(baseViewHandler.getBaseBinder().getNotice());
 		}
 		else {
-			final RuleModel newRule = new RuleModel();
+			RuleModel newRule = new RuleModel();
 			newRule.setName(ruleNameTextBox.getText());
 			newRule.setDisabledFunctionalities(loadFunctionalityIds());
 			
 			DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");			
-			newRule.setCreationDate(formatter.format(Calendar.getInstance().getTime()));
-			
-			String auxDate = fromDateTextBox.getText() + " " + hourTextBoxF.getText() + ":" + minuteTextBoxF.getText() + ":" + secondsTextBoxF.getText() + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
+			newRule.setCreationDate(formatter.format(new Date()));
+						
+			String auxDate = fromDatePicker.getTextBox().getText() + " " + hourTextBoxF.getText() + ":" + minuteTextBoxF.getText() + ":" + secondsTextBoxF.getText() + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
 			newRule.setStartDate(auxDate);
 			
-			auxDate = toDateTextBox.getText() + " " + hourTextBoxT.getText() + ":" + minuteTextBoxT.getText() + ":" + secondsTextBoxT.getText() + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
+			auxDate = toDatePicker.getTextBox().getText() + " " + hourTextBoxT.getText() + ":" + minuteTextBoxT.getText() + ":" + secondsTextBoxT.getText() + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
 			newRule.setEndDate(auxDate);
 			
-			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
-			rules.add(newRule);
-			
-			auxMod.setRules(rules);
-			
-			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
-			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
-					new AsyncCallback<Boolean>() {
-						public void onFailure(Throwable error) {
-						}
-			
-						public void onSuccess(Boolean result) {
-							if (result) {
-								ArrayList<RuleModel> rules = smartphone.getRules();
-								rules.add(newRule);								
-								smartphone.setRules(rules);
-							}
-							else {
-								Window.alert("An error occured. The new rule couldn't be saved.");
-							}
-						}
-					}
-			);
+			AddRuleCallbackHandler addRuleCallback = new AddRuleCallbackHandler(baseViewHandler, newRule, this.cookieId, this.smartphone.getKeyId());
+			AddRuleServiceAsync addRuleService = GWT.create(AddRuleService.class);
+			addRuleService.addRule(this.cookieId, this.smartphone.getKeyId(), newRule, addRuleCallback);			
 		}				
 	}
 	
@@ -480,13 +508,92 @@ public class NewRuleView {
 		this.ruleTypeListBox.setSelectedIndex(0);
 		this.ruleNameTextBox.setText("");
 		this.disabledFunctionalitiesListBox.setSelectedIndex(0);
-		this.fromDateTextBox.setText("");
-		this.toDateTextBox.setText("");
+//		this.fromDateTextBox.setText("");
+//		this.toDateTextBox.setText("");
+		this.fromDatePicker.getTextBox().setText("");
+		this.toDatePicker.getTextBox().setText("");
 		this.hourTextBoxF.setText("");
 		this.minuteTextBoxF.setText("");
 		this.secondsTextBoxF.setText("");
 		this.hourTextBoxT.setText("");
 		this.minuteTextBoxT.setText("");
 		this.secondsTextBoxT.setText("");
+		this.disabledFunctionalitiesTable.removeAllRows();
+	}
+	
+	public class HourChangeHandler implements ValueChangeHandler<String> {
+		TextBox hourTextBox;
+		Boolean fromOrTill;
+		
+		public HourChangeHandler(TextBox hourTextBox, boolean fromOrTill) {
+			this.hourTextBox = hourTextBox;
+			this.fromOrTill = fromOrTill;
+		}				
+		
+		@Override
+		public void onValueChange(ValueChangeEvent<String> event) {
+			int hour = Integer.valueOf(event.getValue());
+			
+			if ((hour < 1) || (hour > 12)) {
+				this.hourTextBox.setText("");
+				
+				if (this.fromOrTill) {
+					baseViewHandler.getBaseBinder().getNotice().setText("The From hours value must be between 1 and 12.");
+				}
+				else {
+					baseViewHandler.getBaseBinder().getNotice().setText("The Till hours value must be between 1 and 12.");
+				}
+				
+				baseViewHandler.getBaseBinder().getCenterContent().add(baseViewHandler.getBaseBinder().getNotice());
+			}
+			else {
+				baseViewHandler.getBaseBinder().getNotice().setText("");
+				baseViewHandler.getBaseBinder().getCenterContent().add(baseViewHandler.getBaseBinder().getNotice());
+			}
+		}
+	}
+	
+	public class MinuteSecondsChangeHandler implements ValueChangeHandler<String> {
+		TextBox minuteSecondsTextBox;
+		Boolean fromOrTill;
+		Boolean minuteOrSeconds;
+		
+		public MinuteSecondsChangeHandler(TextBox hourTextBox, boolean fromOrTill, boolean minuteOrSeconds) {
+			this.minuteSecondsTextBox = hourTextBox;
+			this.fromOrTill = fromOrTill;
+			this.minuteOrSeconds = minuteOrSeconds;
+		}				
+		
+		@Override
+		public void onValueChange(ValueChangeEvent<String> event) {
+			int mos = Integer.valueOf(event.getValue());
+			
+			if ((mos < 0) || (mos > 59)) {
+				this.minuteSecondsTextBox.setText("");
+				
+				if (this.fromOrTill) {
+					if (this.minuteOrSeconds) {
+						baseViewHandler.getBaseBinder().getNotice().setText("The From minutes value must be between 0 and 59.");
+					}
+					else {
+						baseViewHandler.getBaseBinder().getNotice().setText("The From seconds value must be between 0 and 59.");
+					}					
+				}
+				else {
+					if (this.minuteOrSeconds) {
+						baseViewHandler.getBaseBinder().getNotice().setText("The Till minutes value must be between 0 and 59.");
+					}
+					else {
+						baseViewHandler.getBaseBinder().getNotice().setText("The Till seconds value must be between 0 and 59.");
+					}
+				}
+				
+				baseViewHandler.getBaseBinder().getCenterContent().add(baseViewHandler.getBaseBinder().getNotice());
+			}
+			else {
+				baseViewHandler.getBaseBinder().getNotice().setText("");
+				baseViewHandler.getBaseBinder().getCenterContent().add(baseViewHandler.getBaseBinder().getNotice());
+			}
+		}
 	}
 }

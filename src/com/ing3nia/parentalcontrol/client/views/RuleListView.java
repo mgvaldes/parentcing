@@ -1,21 +1,29 @@
 package com.ing3nia.parentalcontrol.client.views;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
+import com.ing3nia.parentalcontrol.client.views.subviews.EditAdminUserView;
+import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView;
 
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
 public class RuleListView {
 	/**
@@ -35,60 +43,40 @@ public class RuleListView {
 	 */
 	private List<RuleModel> rules;
 	
-	private final String dateNow =  "16/11/2011 - 14:13:11 PM";
-	
 	/**
 	 * Table where the alerts are displayed.
 	 */
 	private CellTable<RuleModel> ruleTable;
 	
-	public RuleListView(HTMLPanel centerContent, ArrayList<RuleModel> ruleList) {
-		this.centerContent = centerContent;
+	private SimplePager pager;
+	
+	private Button addRuleButton;
+	
+	private BaseViewHandler baseViewHandler;
+	
+	public RuleListView(BaseViewHandler baseViewHandler, ArrayList<RuleModel> ruleList) {
+		this.baseViewHandler = baseViewHandler;
+		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
-		viewContent = new HTMLPanel("");
+		this.viewContent = new HTMLPanel("");
 		this.ruleTable = new CellTable<RuleModel>(10);
 		this.viewContent = new HTMLPanel("");
 		this.rules = ruleList;
 		this.centerContent.clear();
 		this.rules = ruleList;
-		
-		//addTestRules();
-	}
-	
-	public void addTestRules() {
-
-		Date now = new Date();//Calendar.getInstance().getTime();
-/*		
-		RuleModel rule = new RuleModel(now, now, "SMS - Send/Receive");
-		rules.add(rule);
-		
-		rule = new RuleModel(now, now, "Calls - Send/Receive");
-		rules.add(rule);
-		
-		rule = new RuleModel(now, now, "Web Navigation");
-		rules.add(rule);
-		
-		rule = new RuleModel(now, now, "Speed Limit - 5 MPH");
-		rules.add(rule);
-		*/
-//		Date now = Calendar.getInstance().getTime();
-//		
-//		RuleModel rule = new RuleModel(now, now, "SMS - Send/Receive");
-//		rules.add(rule);
-//		
-//		rule = new RuleModel(now, now, "Calls - Send/Receive");
-//		rules.add(rule);
-//		
-//		rule = new RuleModel(now, now, "Web Navigation");
-//		rules.add(rule);
-//		
-//		rule = new RuleModel(now, now, "Speed Limit - 5 MPH");
-//		rules.add(rule);
+		this.addRuleButton = new Button("Add Rule");
+		this.pager = new SimplePager();
 	}
 	
 	public void initRuleListView() {
-		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
-	    
+		addRuleButton.addClickHandler(new ClickHandler() {
+	    	public void onClick(ClickEvent event) {
+	    		saveRule();
+	    	}
+	    });
+		
+		viewContent.add(addRuleButton);
+		
 		//Setting alert table style
 		ruleTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
@@ -96,8 +84,7 @@ public class RuleListView {
 		TextColumn<RuleModel> startDateColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return dateNow;
-				//return formatter.format(object.getStartDate());
+				return object.getStartDate();
 			}
 		};
 		
@@ -107,8 +94,7 @@ public class RuleListView {
 		TextColumn<RuleModel> endDateColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return dateNow;
-				//return formatter.format(object.getEndDate());
+				return object.getEndDate();
 			}
 		};
 		
@@ -155,20 +141,22 @@ public class RuleListView {
 		dataProvider.addDataDisplay(ruleTable);
 		
 		//creating paging controls
-		SimplePager pager = new SimplePager();
-		SimplePager pager2 = new SimplePager();
 		pager.setDisplay(ruleTable);
-		pager2.setDisplay(ruleTable);
-		
-		pager2.setStylePrimaryName("tablePager");
-		pager2.setStyleName("");
-		viewContent.add(pager2);
-		viewContent.add(ruleTable);
 		pager.setStylePrimaryName("tablePager");
 		pager.setStyleName("");
-		viewContent.add(pager);		
+		
+		viewContent.add(pager);
+		viewContent.add(ruleTable);
+		viewContent.add(pager);	
 		
 		centerContent.add(viewContent);
+	}
+	
+	public void saveRule() {
+		baseViewHandler.getBaseBinder().getCenterContent().clear();
+		SmartphoneModel selectedSmart = baseViewHandler.getUser().getSmartphones().get(baseViewHandler.getClickedSmartphoneIndex());
+		NewRuleView addRuleView = new NewRuleView(baseViewHandler, baseViewHandler.getUser().getCid(), selectedSmart);
+		addRuleView.initNewRuleView();
 	}
 	
 	public void editRule(RuleModel editRule) {

@@ -12,7 +12,7 @@ import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
 
 
-public class LoginAsyncCallbackHandler implements AsyncCallback<ArrayList<SmartphoneModel>> {
+public class LoginAsyncCallbackHandler implements AsyncCallback<ClientUserModel> {
 
     ClientUserModel userModel;
     Boolean serviceOk;
@@ -32,13 +32,14 @@ public class LoginAsyncCallbackHandler implements AsyncCallback<ArrayList<Smartp
 	}
 
 	@Override
-	public void onSuccess(ArrayList<SmartphoneModel> smartphones) {
-		if (smartphones != null) {
+	public void onSuccess(ClientUserModel user) {
+		if (user != null) {
 			LoadingView.clearLoadingView(pclogin);
-			this.userModel.setSmartphones(smartphones);
+			this.userModel.setCid(user.getCid());
+			this.userModel.setSmartphones(user.getSmartphones());
 			this.userModel.setAdmins(null);
 			
-			CookieHandler.setPCCookie("us3rp4r3nt4lc00k13");
+			CookieHandler.setPCCookie(this.userModel.getCid());
 			if (pclogin.getRememberMeBox().getValue()) {
 				CookieHandler.setCredentialsRemember(pclogin.getEmailField()
 						.getText(), pclogin.getPassField().getText());

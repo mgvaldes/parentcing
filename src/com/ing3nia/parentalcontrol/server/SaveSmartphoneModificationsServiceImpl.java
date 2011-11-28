@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
+import com.ing3nia.parentalcontrol.client.utils.PCURLMapper;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
 
@@ -41,9 +42,11 @@ public class SaveSmartphoneModificationsServiceImpl extends RemoteServiceServlet
 		try {
 			ParentModificationsModel parentMod = new ParentModificationsModel(cid, smphid, modifications);
 			
-			url = new URL("https://localhost:8888/resources/parent-mod");
+			url = new URL(PCURLMapper.CURRENT_BASE_URL + "/resources/parent-mod");
 			conn = url.openConnection();
+			conn.setConnectTimeout(60000);
 			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Type","application/json; charset=utf-8");
 			
 			Gson jsonBuilder = new Gson();
 			Type modificationType = new TypeToken<ParentModificationsModel>(){}.getType();

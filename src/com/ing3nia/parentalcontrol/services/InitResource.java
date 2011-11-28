@@ -16,6 +16,7 @@ import org.datanucleus.store.mapped.expression.ArrayLiteral;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.JsonObject;
+import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.models.PCActivityStatistics;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
@@ -29,7 +30,6 @@ import com.ing3nia.parentalcontrol.models.PCApplication.PCAppInfo;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCDevice.PCOs;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
-import com.ing3nia.parentalcontrol.models.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.models.utils.PCOsTypeId;
 import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -54,7 +54,18 @@ public class InitResource {
 		
 		//createDummyApplication();
 		
-		
+//		PCFunctionality func;
+//		
+//		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
+//		
+//		for (FunctionalityTypeId f : funcs) {
+//			func = new PCFunctionality();
+//			func.setId(f.getId());
+//			func.setDescription(f.getDescription());
+//			pm.makePersistent(func);
+//		}
+//		
+//		pm.close();
 		
 		ResponseBuilder rbuilder;
 		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);
