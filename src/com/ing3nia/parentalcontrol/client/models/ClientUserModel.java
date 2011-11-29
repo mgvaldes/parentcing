@@ -36,20 +36,23 @@ public class ClientUserModel implements Serializable {
 	/**
 	 * User help desk tickets
 	 */
-	ArrayList<TicketModel> tickets;
+	ArrayList<TicketModel> openTickets;
+	
+	ArrayList<TicketModel> closedTickets;
 	
 	String cid;
 
 	public ClientUserModel(String key, String username, String password,
 			ArrayList<SmartphoneModel> smartphones,
 			ArrayList<ClientAdminUserModel> admins,
-			ArrayList<TicketModel> tickets) {
+			ArrayList<TicketModel> openTickets, ArrayList<TicketModel> closedTickets) {
 		this.key = key;
 		this.username = username;
 		this.password = password;
 		this.smartphones = smartphones;
 		this.admins = admins;
-		this.tickets = tickets;
+		this.openTickets = openTickets;
+		this.closedTickets = closedTickets;
 	}
 
 	public ClientUserModel(String username, String password) {
@@ -100,12 +103,20 @@ public class ClientUserModel implements Serializable {
 		this.admins = admins;
 	}
 
-	public ArrayList<TicketModel> getTickets() {
-		return tickets;
+	public ArrayList<TicketModel> getOpenTickets() {
+		return openTickets;
 	}
 
-	public void setTickets(ArrayList<TicketModel> tickets) {
-		this.tickets = tickets;
+	public void setOpenTickets(ArrayList<TicketModel> openTickets) {
+		this.openTickets = openTickets;
+	}
+
+	public ArrayList<TicketModel> getClosedTickets() {
+		return closedTickets;
+	}
+
+	public void setClosedTickets(ArrayList<TicketModel> closedTickets) {
+		this.closedTickets = closedTickets;
 	}
 
 	public String getCid() {

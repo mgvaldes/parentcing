@@ -48,15 +48,15 @@ public class PCRule {
 	@Persistent
 	private String name;
 	
-	@Persistent
-	private PCSmartphone smartphone;
+//	@Persistent
+//	private PCSmartphone smartphone;
 
 	public PCRule() {
 	}
 
 	public PCRule(Key key, Date startDate, Date endDate,
 			ArrayList<Key> disabledFunctionalities,
-			Date creationDate, String name, PCSmartphone smartphone) {
+			Date creationDate, String name) {
 
 		this.key = key;
 		this.startDate = startDate;
@@ -64,7 +64,7 @@ public class PCRule {
 		this.disabledFunctionalities = disabledFunctionalities;
 		this.creationDate = creationDate;
 		this.name = name;
-		this.smartphone = smartphone;
+//		this.smartphone = smartphone;
 	}
 
 	public Key getKey() {
@@ -116,11 +116,11 @@ public class PCRule {
 		this.name = name;
 	}
 
-	public PCSmartphone getSmartphone() {
-		return smartphone;
-	}
-
-	public void setSmartphone(PCSmartphone smartphone) {
-		this.smartphone = smartphone;
-	}
+//	public PCSmartphone getSmartphone() {
+//		return smartphone;
+//	}
+//
+//	public void setSmartphone(PCSmartphone smartphone) {
+//		this.smartphone = smartphone;
+//	}
 }

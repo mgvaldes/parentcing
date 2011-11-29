@@ -9,12 +9,12 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 
-public class DeviceRouteLocationCallback implements LocationCallback{
+public class DeviceRouteLocationCallbackHandler implements LocationCallback{
 
 	Button smpButton;
 	HTMLPanel scrollPanelBody;
 	
-	public DeviceRouteLocationCallback(Button smpButton, HTMLPanel scrollPanelBody){
+	public DeviceRouteLocationCallbackHandler(Button smpButton, HTMLPanel scrollPanelBody){
 		this.smpButton = smpButton;
 		this.scrollPanelBody = scrollPanelBody;
 		

@@ -97,7 +97,7 @@ public class ActivityNotifyResource {
 			logger.info("[Activity Notify Service] Buscando smartphone en base de datos.");
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
-			ArrayList<PCRoute> newRoutes = savedSmartphone.getRoutes();
+			ArrayList<Key> newRoutes = savedSmartphone.getRoutes();
 			newRoutes.add(RouteModelUtils.convertToPCRoute(activityNotifyModel.getRoute()));			
 			savedSmartphone.setRoutes(newRoutes);
 			

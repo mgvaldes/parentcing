@@ -48,7 +48,7 @@ public class SmartphoneUtils {
 		smpJson.addProperty("name",pcSmart.getName());
 		
 		JsonObject deviceJson = new JsonObject();
-		PCDevice device = pcSmart.getDevice();
+		PCDevice device = pm.getObjectById(PCDevice.class, pcSmart.getDevice());
 		deviceJson.addProperty("model", device.getModel());
 		deviceJson.addProperty("version", device.getVersion());
 		deviceJson.addProperty("type", device.getOs().getId());
@@ -178,37 +178,44 @@ public class SmartphoneUtils {
 		
 		//Obtaining and parsing properties
 		JsonArray propsArray = new JsonArray();
+		PCProperty auxProp;
 		
 		if (smartphone.getProperties() != null) {
-			for (PCProperty property : smartphone.getProperties()) {
+			for (Key property : smartphone.getProperties()) {
+				auxProp = pm.getObjectById(PCProperty.class, property);
 				JsonObject propertyJson = new JsonObject();
 
-				propertyJson.addProperty("keyId", KeyFactory.keyToString(property.getKey()));
-				propertyJson.addProperty("id", property.getId());
-				propertyJson.addProperty("description", property.getDescription());
-				propertyJson.addProperty("value", property.getValue());
+				propertyJson.addProperty("keyId", KeyFactory.keyToString(property));
+				propertyJson.addProperty("id", auxProp.getId());
+				propertyJson.addProperty("description", auxProp.getDescription());
+				propertyJson.addProperty("value", auxProp.getValue());
 
 				propsArray.add(propertyJson);
 			}
 		}
-		detailsJson.add("props", propsArray);
+		detailsJson.add("properties", propsArray);
 
 		//Obtaining and parsing rules
 		JsonArray rulesArray = new JsonArray();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		PCRule auxRule;
 		
 		if (smartphone.getRules() != null) {
-			for (PCRule rule : smartphone.getRules()) {
+			for (Key rule : smartphone.getRules()) {
+				auxRule = pm.getObjectById(PCRule.class, rule);
 				JsonObject ruleJson = new JsonObject();
 
-				ruleJson.addProperty("keyId", KeyFactory.keyToString(rule.getKey()));
-				ruleJson.addProperty("startDate", formatter.format(rule.getStartDate()));
-				ruleJson.addProperty("endDate", formatter.format(rule.getEndDate()));
+				ruleJson.addProperty("keyId", KeyFactory.keyToString(rule));
+				ruleJson.addProperty("startDate", formatter.format(auxRule.getStartDate()));
+				ruleJson.addProperty("endDate", formatter.format(auxRule.getEndDate()));
+				ruleJson.addProperty("name", auxRule.getName());
 
 				JsonArray funcArray = new JsonArray();
-				ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectsById(rule.getDisabledFunctionalities());
-				for (PCFunctionality func : disabledFuncionalities) {
-					funcArray.add(new JsonPrimitive(func.getId()));
+				//ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectsById(auxRule.getDisabledFunctionalities());
+				PCFunctionality auxFunc;
+				for (Key func : auxRule.getDisabledFunctionalities()) {
+					auxFunc = pm.getObjectById(PCFunctionality.class, func);
+					funcArray.add(new JsonPrimitive(auxFunc.getId()));
 				}
 				ruleJson.add("disabledFunctionalities", funcArray);
 				rulesArray.add(ruleJson);

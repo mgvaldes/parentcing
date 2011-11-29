@@ -65,8 +65,10 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 			PersistenceManager pm2 = ServiceUtils.PMF.getPersistenceManager();
 			rule.setDisabledFunctionalities(getNewFuncionalitiesAsKeys(pm2, newRule));
 
-			smartphone.getRules().add(rule);
-			//pm.makePersistent(smartphone);
+			pm.makePersistent(rule);
+			
+			smartphone.getRules().add(rule.getKey());
+			
 			//logger.severe("[Add Rule Service] Rule saved! "+rule.getName()+" "+rule.getCreationDate()+" "+rule.getStartDate()+" "+rule.getEndDate()+" "+rule.getDisabledFunctionalities().size()+" "+rule.getKey());
 			
 			

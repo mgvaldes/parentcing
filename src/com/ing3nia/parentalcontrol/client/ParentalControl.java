@@ -129,7 +129,7 @@ public class ParentalControl implements EntryPoint {
 		  pcbase.getPclogo().addClickHandler(logoClickHandler);
  
 		  //TODO ask for user type
-		  HelpDeskUserClickHandler helpDeskClickHandler =  new HelpDeskUserClickHandler(baseViewHandler, user.getKey(), user.getTickets());
+		  HelpDeskUserClickHandler helpDeskClickHandler =  new HelpDeskUserClickHandler(baseViewHandler);
 		  helpDeskClickHandler.setUserHelpDeskClickHandlers();
 		  pcbase.getHelpDesk().addClickHandler(helpDeskClickHandler);
 	  

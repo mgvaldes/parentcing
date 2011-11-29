@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
 
 public class TicketListView {
@@ -65,7 +66,10 @@ public class TicketListView {
 	 */
 	private CellTable<TicketModel> closedTicketsTable = new CellTable<TicketModel>();
 	
-	public TicketListView(HTMLPanel centerContent, ArrayList<TicketModel> openTickets, ArrayList<TicketModel> closedTickets) {
+	private BaseViewHandler baseView;
+	
+	public TicketListView(BaseViewHandler baseView, ArrayList<TicketModel> openTickets, ArrayList<TicketModel> closedTickets) {
+		this.baseView = baseView;
 		
 		//Setting alert table style
 		openTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
@@ -73,7 +77,7 @@ public class TicketListView {
 		//Setting alert table style
 		closedTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
-		this.centerContent =  centerContent;
+		this.centerContent = this.baseView.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.openTickets = openTickets;
 		this.closedTickets = closedTickets;

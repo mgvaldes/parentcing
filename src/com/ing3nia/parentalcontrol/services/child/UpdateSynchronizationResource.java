@@ -24,6 +24,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
@@ -143,10 +144,11 @@ public class UpdateSynchronizationResource {
 				logger.info("[Update Synchronization Service] Convirtiendo modKey : " + smartphoneModIdModel.getModKey() + " de smartphone a Key.");
 				Key modificationKey = KeyFactory.stringToKey(smartphoneModIdModel.getModKey());
 				
-				if (modificationKey.equals(savedSmartphone.getModification().getKey())) {
+				if (modificationKey.equals(savedSmartphone.getModification())) {
 					found = true;
+					PCModification mod = pm.getObjectById(PCModification.class, savedSmartphone.getModification());
 					
-					pm.deletePersistent(savedSmartphone.getModification());				
+					pm.deletePersistent(mod);				
 				}
 			}
 		}

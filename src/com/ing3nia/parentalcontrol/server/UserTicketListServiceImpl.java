@@ -15,13 +15,13 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
-//import com.ing3nia.parentalcontrol.client.rpc.UserTicketListService;
+import com.ing3nia.parentalcontrol.client.rpc.UserTicketListService;
 import com.ing3nia.parentalcontrol.models.PCCategory;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicketAnswer;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
-/*
+
 public class UserTicketListServiceImpl extends RemoteServiceServlet implements UserTicketListService {
 
 	private static final long serialVersionUID = 1L;
@@ -88,14 +88,13 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 		    			closedTickets.add(auxTicket);
 		    		}
 		    	}
+		    	
+		    	tickets.put("opened", openedTickets);
+			    tickets.put("closed", closedTickets);
 		    }
-		    
-		    tickets.put("opened", openedTickets);
-		    tickets.put("closed", closedTickets);
 		}
 		catch (Exception ex) {
-			openedTickets = null;
-			closedTickets = null;
+			tickets = null;
 		}
 		finally {
 			pm.close();
@@ -104,4 +103,3 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 		return tickets;
 	}
 }
-*/

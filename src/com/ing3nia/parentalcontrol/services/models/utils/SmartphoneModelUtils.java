@@ -43,7 +43,7 @@ public class SmartphoneModelUtils {
 
 		PCSmartphone smartphone = new PCSmartphone();
 		ArrayList<Key> pcActiveContacts = new ArrayList<Key>();
-		ArrayList<PCContact> pcOriginalContacts = new ArrayList<PCContact>();
+		ArrayList<Key> pcOriginalContacts = new ArrayList<Key>();
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 
 		for (ContactModel contact : smartphoneModel.getActiveContacts()) {
@@ -56,20 +56,23 @@ public class SmartphoneModelUtils {
 		smartphone.setInactiveContacts(new ArrayList<Key>());
 		smartphone.setAddedEmergencyNumbers(new ArrayList<Key>());
 		smartphone.setDeletedEmergencyNumbers(new ArrayList<Key>());
-		smartphone.setRoutes(new ArrayList<PCRoute>());
+		smartphone.setRoutes(new ArrayList<Key>());
 		
 		PCProperty speedLimitProperty = new PCProperty();
 		speedLimitProperty.setCreationDate(new Date());
 		speedLimitProperty.setDescription("SPEED_LIMIT");
 		speedLimitProperty.setId(PCPropertyType.SPEED_LIMIT);
 		speedLimitProperty.setValue("5");
-		
-		ArrayList<PCProperty> props = new ArrayList<PCProperty>();
-		props.add(speedLimitProperty);
-		
+		pm.makePersistent(speedLimitProperty);		
+		ArrayList<Key> props = new ArrayList<Key>();
+		props.add(speedLimitProperty.getKey());		
 		smartphone.setProperties(props);
-		smartphone.setModification(new PCModification());
-		smartphone.setRules(new ArrayList<PCRule>());
+		
+		PCModification mod = new PCModification();
+		pm.makePersistent(mod);		
+		smartphone.setModification(mod.getKey());
+		
+		smartphone.setRules(new ArrayList<Key>());
 		smartphone.setNotifications(new ArrayList<Key>());
 		smartphone.setName(smartphoneModel.getName());
 		smartphone.setDevice(DeviceModelUtils.convertToPCDevice(smartphoneModel.getDevice()));
@@ -183,9 +186,9 @@ public class SmartphoneModelUtils {
 			// Loading properties 
 			//------------------------------------------------------------
 			ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
-			ArrayList<PCProperty> pcProperties = savedSmartphone.getProperties(); 
+			ArrayList<Key> pcProperties = savedSmartphone.getProperties(); 
 			
-			for (PCProperty property : pcProperties) {
+			for (Key property : pcProperties) {
 				properties.add(PropertyModelUtils.convertToPropertyModel(property));
 			}
 			
@@ -209,7 +212,7 @@ public class SmartphoneModelUtils {
 			//------------------------------------------------------------
 			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
 			
-			for (PCRule rule : savedSmartphone.getRules()) {
+			for (Key rule : savedSmartphone.getRules()) {
 				rules.add(RuleModelUtils.convertToRuleModel(rule));
 			}
 			smartphoneModel.setRules(rules);

@@ -22,9 +22,10 @@ import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class ModificationModelUtils {
 
-	public static ModificationModel convertToModificationModel(PCModification modification) throws IllegalArgumentException, SessionQueryException {
-		ModificationModel modificationModel = new ModificationModel();
+	public static ModificationModel convertToModificationModel(Key modKey) throws IllegalArgumentException, SessionQueryException {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PCModification modification = pm.getObjectById(PCModification.class, modKey);
+		ModificationModel modificationModel = new ModificationModel();		
 		ArrayList<Key> auxKeyList;
 		PCSimpleContact auxSimpleContact;
 		ArrayList<SimpleContactModel> pcContacts;
@@ -106,8 +107,8 @@ public class ModificationModelUtils {
 			
 			if (auxKeyList != null) {
 				for (Key property : pcProperties) {
-					auxProperty = (PCProperty)pm.getObjectById(PCProperty.class, property);
-					properties.add(PropertyModelUtils.convertToPropertyModel(auxProperty));
+					//auxProperty = (PCProperty)pm.getObjectById(PCProperty.class, property);
+					properties.add(PropertyModelUtils.convertToPropertyModel(property));
 				}
 			}
 			
@@ -122,8 +123,8 @@ public class ModificationModelUtils {
 			
 			if (auxKeyList != null) {
 				for (Key rule : pcRules) {
-					auxRule = (PCRule)pm.getObjectById(PCRule.class, rule);
-					rules.add(RuleModelUtils.convertToRuleModel(auxRule));
+					//auxRule = (PCRule)pm.getObjectById(PCRule.class, rule);
+					rules.add(RuleModelUtils.convertToRuleModel(rule));
 				}
 			}
 			
