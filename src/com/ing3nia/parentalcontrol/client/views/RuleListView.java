@@ -71,7 +71,7 @@ public class RuleListView {
 	public void initRuleListView() {
 		addRuleButton.addClickHandler(new ClickHandler() {
 	    	public void onClick(ClickEvent event) {
-	    		saveRule();
+	    		loadNewRule();
 	    	}
 	    });
 		
@@ -152,7 +152,7 @@ public class RuleListView {
 		centerContent.add(viewContent);
 	}
 	
-	public void saveRule() {
+	public void loadNewRule() {
 		baseViewHandler.getBaseBinder().getCenterContent().clear();
 		SmartphoneModel selectedSmart = baseViewHandler.getUser().getSmartphones().get(baseViewHandler.getClickedSmartphoneIndex());
 		NewRuleView addRuleView = new NewRuleView(baseViewHandler, baseViewHandler.getUser().getCid(), selectedSmart);
