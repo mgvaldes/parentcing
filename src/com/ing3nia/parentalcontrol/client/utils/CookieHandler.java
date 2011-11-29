@@ -5,7 +5,7 @@ import java.util.Date;
 import com.google.gwt.user.client.Cookies;
 
 public class CookieHandler {
-  public static String COOKIE_ID = "CookieIddfgg";
+  public static String COOKIE_ID = "CookieId";
   public static String USERNAME_ID ="Content-PCcred-1-val";
   public static String PASSWORD_ID ="encr-PCval-cont2";
   

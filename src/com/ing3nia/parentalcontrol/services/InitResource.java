@@ -46,7 +46,24 @@ public class InitResource {
 	@GET
 	public Response doGet() {
 
-		//PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		//createDummyApplication();
+		/*
+		try {
+			PCRule pcrule = new PCRule();
+			Date date = new Date();
+			pcrule.setStartDate(date);
+			pcrule.setCreationDate(date);
+			pcrule.setEndDate(date);
+			pcrule.setName("RULE NAME");
+
+			pm.makePersistent(pcrule);
+		} catch (Exception e) {
+			
+		}finally{
+			pm.close();
+		}
+		*/
 		/*
 		Key smartKey = KeyFactory.stringToKey("aglub19hcHBfaWRyHwsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRiQAQw");
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
@@ -54,18 +71,18 @@ public class InitResource {
 		
 		//createDummyApplication();
 		
-//		PCFunctionality func;
-//		
-//		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
-//		
-//		for (FunctionalityTypeId f : funcs) {
-//			func = new PCFunctionality();
-//			func.setId(f.getId());
-//			func.setDescription(f.getDescription());
-//			pm.makePersistent(func);
-//		}
-//		
-//		pm.close();
+		PCFunctionality func;
+		
+		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
+		
+		for (FunctionalityTypeId f : funcs) {
+			func = new PCFunctionality();
+			func.setId(f.getId());
+			func.setDescription(f.getDescription());
+			pm.makePersistent(func);
+		}
+		
+		pm.close();
 		
 		ResponseBuilder rbuilder;
 		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);

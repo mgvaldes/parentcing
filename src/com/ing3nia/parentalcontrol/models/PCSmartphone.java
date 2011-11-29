@@ -92,7 +92,7 @@ public class PCSmartphone {
 	 * Represents a collection of rules currently disabled in a specific
 	 * smartphone.
 	 */
-	@Persistent
+	@Persistent(mappedBy = "smartphone")
 	private ArrayList<PCRule> rules;
 	
 	/**

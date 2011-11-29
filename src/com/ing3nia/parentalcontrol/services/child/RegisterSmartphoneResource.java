@@ -127,8 +127,7 @@ public class RegisterSmartphoneResource {
     		
     		//PCSmartphone newSmartphone = registerSmartphoneModel.getSmartphone().convertToPCSmartphone();    		
     		PCSmartphone newSmartphone = SmartphoneModelUtils.convertToPCSmartphone(registerSmartphoneModel.getSmartphone());    		
-    		
-    		
+	
     		logger.info("[Register Smartphone Service] Saving PCSmartphone with input smartphone info.");
     		pm.makePersistent(newSmartphone);
     		

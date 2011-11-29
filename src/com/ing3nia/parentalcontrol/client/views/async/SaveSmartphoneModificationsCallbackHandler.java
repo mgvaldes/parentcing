@@ -30,9 +30,9 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 	public void onSuccess(Boolean result) {
 		if (result) {		
 			SmartphoneModel smartphone = baseView.getUser().getSmartphones().get(baseView.getClickedSmartphoneIndex());
-			ArrayList<RuleModel> rules = smartphone.getRules();
-			rules.add(newRule);								
-			smartphone.setRules(rules);
+			//ArrayList<RuleModel> rules = smartphone.getRules();
+			//rules.add(newRule);								
+			//smartphone.setRules(rules);
 			
 			baseView.getBaseBinder().getCenterContent().clear();
 			
@@ -40,7 +40,7 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 			ruleList.setStyleName("selectedShinnyButton");
 			BaseViewHandler.clearOthersStyle(CenterMenuOptionsClassNames.AlertRules, baseView.getMenuSetter().getCenterMenuOptions());
 
-			RuleListView ruleListView = new RuleListView(baseView, rules);
+			RuleListView ruleListView = new RuleListView(baseView, smartphone.getRules());
 			ruleListView.initRuleListView();
 		}
 		else {
