@@ -72,30 +72,30 @@ public class PCSmartphone {
 	 * Represents a collection of routes of a specific smartphon registered
 	 * by the application. 
 	 */
-	@Persistent(mappedBy = "smartphone")
-	private ArrayList<PCRoute> routes;
+//	@Persistent(mappedBy = "smartphone")
+	private ArrayList<Key> routes;
 	
 	/**
 	 * Represents a collection of properties currently available in the 
 	 * smartphone.
 	 */
-	@Persistent(mappedBy = "smartphone")
-	private ArrayList<PCProperty> properties;
+//	@Persistent(mappedBy = "smartphone")
+	private ArrayList<Key> properties;
 	
 	/**
 	 * Represents the current modification that has to be applied to a specific
 	 * smartphone.
 	 */
 	//@Persistent(mappedBy = "smartphone")
-	private PCModification modification;
+	private Key modification;
 	
 	/**
 	 * Represents a collection of rules currently disabled in a specific
 	 * smartphone.
 	 */
-	@Persistent(mappedBy = "smartphone")
-    @Element(dependent = "true")
-	private ArrayList<PCRule> rules;
+//	@Persistent(mappedBy = "smartphone")
+//    @Element(dependent = "true")
+	private ArrayList<Key> rules;
 	
 	/**
 	 * Represents a collection of notifications sent to the smartphone
@@ -112,7 +112,7 @@ public class PCSmartphone {
 	/**
 	 * Specifies the device information of a specific smartphone.
      */
-	private PCDevice device;
+	private Key device;
 	
 	/**
 	 * Specifies the serial number of a smartphone.
@@ -126,8 +126,8 @@ public class PCSmartphone {
 	@Persistent
 	private Key application;
 	
-	@Persistent(mappedBy = "smartphone")
-	private ArrayList<PCContact> originalContacts;
+//	@Persistent(mappedBy = "smartphone")
+	private ArrayList<Key> originalContacts;
 	
 	public PCSmartphone() {
 		super();
@@ -138,10 +138,10 @@ public class PCSmartphone {
 			ArrayList<Key> inactiveContacts,
 			ArrayList<Key> addedEmergencyNumbers,
 			ArrayList<Key> deletedEmergencyNumbers,
-			ArrayList<PCRoute> routes, ArrayList<PCProperty> properties,
-			PCModification modification, ArrayList<PCRule> rules, String name,
-			PCDevice device, String serialNumber, Key application, ArrayList<Key> notifications,
-			ArrayList<PCContact> originalContacts) {
+			ArrayList<Key> routes, ArrayList<Key> properties,
+			Key modification, ArrayList<Key> rules, String name,
+			Key device, String serialNumber, Key application, ArrayList<Key> notifications,
+			ArrayList<Key> originalContacts) {
 		super();
 		this.key = key;
 		this.location = location;
@@ -258,36 +258,36 @@ public class PCSmartphone {
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
 	}
 
-	public ArrayList<PCRoute> getRoutes() {
+	public ArrayList<Key> getRoutes() {
 		return routes;
 	}
 
-	public void setRoutes(ArrayList<PCRoute> routes) {
+	public void setRoutes(ArrayList<Key> routes) {
 		this.routes = routes;
 	}
 
-	public ArrayList<PCProperty> getProperties() {
+	public ArrayList<Key> getProperties() {
 		return properties;
 	}
 
-	public void setProperties(ArrayList<PCProperty> properties) {
+	public void setProperties(ArrayList<Key> properties) {
 		this.properties = properties;
 	}
 
-	public PCModification getModification() {
+	public Key getModification() {
 		return modification;
 	}
 	
-	public void setModification(PCModification modification) {
+	public void setModification(Key modification) {
 		this.modification = modification;
 	}
 
 
-	public ArrayList<PCRule> getRules() {
+	public ArrayList<Key> getRules() {
 		return rules;
 	}
 
-	public void setRules(ArrayList<PCRule> rules) {
+	public void setRules(ArrayList<Key> rules) {
 		this.rules = rules;
 	}
 
@@ -299,11 +299,11 @@ public class PCSmartphone {
 		this.name = name;
 	}
 
-	public PCDevice getDevice() {
+	public Key getDevice() {
 		return device;
 	}
 
-	public void setDevice(PCDevice device) {
+	public void setDevice(Key device) {
 		this.device = device;
 	}
 
@@ -323,11 +323,11 @@ public class PCSmartphone {
 		this.notifications = notifications;
 	}
 	
-	public ArrayList<PCContact> getOriginalContacts() {
+	public ArrayList<Key> getOriginalContacts() {
 		return originalContacts;
 	}
 
-	public void setOriginalContacts(ArrayList<PCContact> originalContacts) {
+	public void setOriginalContacts(ArrayList<Key> originalContacts) {
 		this.originalContacts = originalContacts;
 	}
 }

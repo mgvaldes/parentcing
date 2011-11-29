@@ -12,7 +12,9 @@ import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class RuleModelUtils {
-	public static RuleModel convertToRuleModel(PCRule rule) {
+	public static RuleModel convertToRuleModel(Key ruleKey) {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PCRule rule = pm.getObjectById(PCRule.class, ruleKey);
 		RuleModel ruleModel = new RuleModel();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
@@ -21,8 +23,6 @@ public class RuleModelUtils {
 		ruleModel.setCreationDate(formatter.format(rule.getCreationDate()));		
 		
 		ArrayList<Integer> disabledFunctionalityModels = new ArrayList<Integer>();
-		
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		ArrayList<Key> funcKeys = rule.getDisabledFunctionalities();
 		PCFunctionality disabledFuncionality; 

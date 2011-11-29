@@ -43,22 +43,22 @@ public class PCProperty {
 	@Persistent
 	private Date creationDate;
 	
-	@Persistent
-	private PCSmartphone smartphone;
+//	@Persistent
+//	private PCSmartphone smartphone;
 
 	public PCProperty() {
 		super();
 	}
 
 	public PCProperty(Key key, String description, String value, int id,
-			Date creationDate, PCSmartphone smartphone) {
+			Date creationDate) {
 		super();
 		this.key = key;
 		this.description = description;
 		this.value = value;
 		this.id = id;
 		this.creationDate = creationDate;
-		this.smartphone = smartphone;
+//		this.smartphone = smartphone;
 	}
 
 	public Key getKey() {
@@ -101,11 +101,11 @@ public class PCProperty {
 		this.creationDate = creationDate;
 	}
 
-	public PCSmartphone getSmartphone() {
-		return smartphone;
-	}
-
-	public void setSmartphone(PCSmartphone smartphone) {
-		this.smartphone = smartphone;
-	}
+//	public PCSmartphone getSmartphone() {
+//		return smartphone;
+//	}
+//
+//	public void setSmartphone(PCSmartphone smartphone) {
+//		this.smartphone = smartphone;
+//	}
 }

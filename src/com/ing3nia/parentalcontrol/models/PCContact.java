@@ -120,8 +120,8 @@ public class PCContact {
 	@Persistent
 	private ArrayList<String> websites;
 	
-	@Persistent
-	private PCSmartphone smartphone;
+//	@Persistent
+//	private PCSmartphone smartphone;
 	
 	public PCContact() {
 		super();
@@ -133,7 +133,7 @@ public class PCContact {
 			ArrayList<PCOrganization> organizations, String nickname,
 			String imageUrl, String pin, String googleTalk, Date birthday,
 			Date aniversary, String notes, ArrayList<PCIM> im,
-			ArrayList<String> websites, PCSmartphone smartphone) {
+			ArrayList<String> websites) {
 		super();
 		this.key = key;
 		this.firstName = firstName;
@@ -151,7 +151,7 @@ public class PCContact {
 		this.notes = notes;
 		this.im = im;
 		this.websites = websites;
-		this.smartphone = smartphone;
+//		this.smartphone = smartphone;
 	}
 
 	public String getNickname() {
@@ -282,11 +282,11 @@ public class PCContact {
 		this.organizations = organizations;
 	}
 
-	public PCSmartphone getSmartphone() {
-		return smartphone;
-	}
-
-	public void setSmartphone(PCSmartphone smartphone) {
-		this.smartphone = smartphone;
-	}
+//	public PCSmartphone getSmartphone() {
+//		return smartphone;
+//	}
+//
+//	public void setSmartphone(PCSmartphone smartphone) {
+//		this.smartphone = smartphone;
+//	}
 }

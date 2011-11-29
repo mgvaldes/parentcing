@@ -25,7 +25,7 @@ public class TicketListClickHandler implements ClickHandler{
 
 		baseViewHandler.toggleTicketCenterMenu(CenterMenuOptionsClassNames.TicketList);
 		//TODO FIX NULL ASSIGNMENTS
-		TicketListView view = new TicketListView(centerContent, null, null);
+		TicketListView view = new TicketListView(baseViewHandler, baseViewHandler.getUser().getOpenTickets(), baseViewHandler.getUser().getClosedTickets());
 		//TicketListView view = new TicketListView(centerContent);	
 		view.initUserTicketList();
 	}

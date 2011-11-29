@@ -26,7 +26,7 @@ public class HelpDeskUserClickHandler implements ClickHandler{
 	private BaseViewHandler baseViewHandler;
 	private ArrayList<TicketModel> tickets;
 	
-	public HelpDeskUserClickHandler(BaseViewHandler baseViewHandler, String userKey, ArrayList<TicketModel> tickets){
+	public HelpDeskUserClickHandler(BaseViewHandler baseViewHandler){
 		this.userKey = userKey;
 		this.tickets = tickets;
 		this.baseViewHandler = baseViewHandler;

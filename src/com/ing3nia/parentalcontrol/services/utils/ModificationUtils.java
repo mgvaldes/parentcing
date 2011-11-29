@@ -42,8 +42,8 @@ public class ModificationUtils {
 	 * Processes the modifications made by the parent user on a child smartphone
 	 * @throws ModificationParsingException 
 	 */
-	public static void ProcessParentModifications(PersistenceManager pm, PCSmartphone pcsmartphone, ModificationModel modifications) throws ModificationParsingException{
-		PCModification pcmodification = pcsmartphone.getModification();
+	public static void ProcessParentModifications(PersistenceManager pm, PCSmartphone pcsmartphone, ModificationModel modifications) throws ModificationParsingException{		
+		PCModification pcmodification = pm.getObjectById(PCModification.class, pcsmartphone.getModification());
 		Logger logger = ModelLogger.logger;
 
 		logger.info("[ParentModifications] Applying parent modifications");
@@ -69,7 +69,10 @@ public class ModificationUtils {
 	private static void createNewParentModification(PersistenceManager pm, PCSmartphone pcSmartphone, ModificationModel modifications) throws ModificationParsingException{
 		PCModification pcmodification = new PCModification();
 		updateParentModification(pm, pcSmartphone, pcmodification, modifications);
-		pcSmartphone.setModification(pcmodification);
+		
+		pm.makePersistent(pcmodification);
+		
+		pcSmartphone.setModification(pcmodification.getKey());
 	}
 	
 	private static void updateParentModification(PersistenceManager pm, PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications) throws ModificationParsingException{
@@ -348,7 +351,7 @@ public class ModificationUtils {
 		
 		logger.severe("RULES ADDED: "+pcModRules.size()+" "+pcmodification.getRules());
 		
-		pcsmartphone.setModification(pcmodification);
+//		pcsmartphone.setModification(pcmodification);
 		//pm.makePersistent(pcsmartphone);
 		//pm.makePersistent(pcmodification);	
 	}

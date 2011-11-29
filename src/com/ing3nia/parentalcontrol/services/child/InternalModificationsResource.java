@@ -132,12 +132,14 @@ public class InternalModificationsResource {
 			//savedSmartphone.setLocation(internalModsModel.getLocation().convertToGeoPt());
 			savedSmartphone.setLocation(LocationModelUtils.convertToGeoPt(internalModsModel.getLocation()));
 			
-			PCModification modification = savedSmartphone.getModification();
+			Key modificationKey = savedSmartphone.getModification();
+			PCModification modification = pm.getObjectById(PCModification.class, modificationKey);
 			
 			if (modification == null) {
 				logger.info("[Internal Modifications Service] Smartphone modification is null. Initializing smartphone modification.");
 				modification = new PCModification();
-				savedSmartphone.setModification(modification);
+				pm.makePersistent(modification);
+				savedSmartphone.setModification(modification.getKey());
 			}
 			
 			checkAddedContacts(internalModsModel.getModification().getActiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);

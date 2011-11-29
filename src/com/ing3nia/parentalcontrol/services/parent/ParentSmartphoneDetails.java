@@ -102,15 +102,9 @@ public class ParentSmartphoneDetails {
 			return rbuilder.build();
 		}
 		pm.close();
-		
-		pm = ServiceUtils.PMF.getPersistenceManager();
-		Query query = pm.newQuery(PCRule.class);
-		query.setFilter("id == id_param");
-		query.declareParameters("int id_param");
-		//query.setRange(0, 1);
 	
-		
 		logger.severe("SMARTPHONE RULES: "+smartphone.getRules());
+		logger.severe("SMARTPHONE PROPS: "+smartphone.getProperties());
 		
 		logger.info("[Parent Smartphone Details] Obtaining smarpthone details");
 		JsonObject smartphoneInfo = SmartphoneUtils.getSmartphoneDetails(smartphone);

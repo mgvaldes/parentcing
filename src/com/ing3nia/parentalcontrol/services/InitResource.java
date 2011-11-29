@@ -69,7 +69,7 @@ public class InitResource {
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
 	*/
 		
-		createDummyApplication(pm);
+		//createDummyApplication(pm);
 		PCFunctionality func;
 		pm = ServiceUtils.PMF.getPersistenceManager();
 		

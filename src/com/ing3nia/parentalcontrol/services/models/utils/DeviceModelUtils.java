@@ -1,12 +1,17 @@
 package com.ing3nia.parentalcontrol.services.models.utils;
 
+import javax.jdo.PersistenceManager;
+
+import com.google.appengine.api.datastore.Key;
 import com.ing3nia.parentalcontrol.client.models.DeviceModel;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.utils.PCOsTypeId;
+import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class DeviceModelUtils {
 
-	public static PCDevice convertToPCDevice(DeviceModel deviceModel) {
+	public static Key convertToPCDevice(DeviceModel deviceModel) {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		PCDevice device = new PCDevice();
 		
 		device.setModel(deviceModel.getModel());
@@ -18,10 +23,21 @@ public class DeviceModelUtils {
 		
 		device.setOs(pcOs);
 		
-		return device;
+		pm.makePersistent(device);
+		
+		pm.close();
+		
+		return device.getKey();
 	}
 	
-	public static DeviceModel convertToDeviceModel(PCDevice device) {
-		return new DeviceModel(device.getModel(), device.getVersion(), device.getOs().getId());
+	public static DeviceModel convertToDeviceModel(Key devKey) {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PCDevice device = pm.getObjectById(PCDevice.class, devKey);
+		
+		DeviceModel d = new DeviceModel(device.getModel(), device.getVersion(), device.getOs().getId());
+		
+		pm.close();
+		
+		return d;
 	}
 }

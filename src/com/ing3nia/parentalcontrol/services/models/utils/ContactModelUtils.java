@@ -43,7 +43,8 @@ public class ContactModelUtils {
 		return contactKeys;
 	}
 	
-	public static PCContact convertToPCContact(ContactModel contactModel) {
+	public static Key convertToPCContact(ContactModel contactModel) {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		PCContact contact = new PCContact();
 		
 		contact.setFirstName(contactModel.getFirstName());
@@ -51,7 +52,6 @@ public class ContactModelUtils {
 		
 		//key to PCPhone
 		ArrayList<Key> pcPhones = new ArrayList<Key>();
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		if (contactModel.getPhones() != null) {
 			for (PhoneModel phone : contactModel.getPhones()) {
@@ -85,7 +85,11 @@ public class ContactModelUtils {
 		
 		contact.setOrganizations(pcOrganizations);
 		
-		return contact;
+		pm.makePersistent(contact);
+		
+		pm.close();
+		
+		return contact.getKey();
 	}
 	
 	public static ContactModel convertToContactModel(PCContact savedContact) {
