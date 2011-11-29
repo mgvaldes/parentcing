@@ -37,7 +37,7 @@ import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("init")
 public class InitResource {
-	private PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+	//private PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 	
 	public InitResource() {
 		
@@ -46,26 +46,43 @@ public class InitResource {
 	@GET
 	public Response doGet() {
 
-		//PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		//createDummyApplication();
+		/*
+		try {
+			PCRule pcrule = new PCRule();
+			Date date = new Date();
+			pcrule.setStartDate(date);
+			pcrule.setCreationDate(date);
+			pcrule.setEndDate(date);
+			pcrule.setName("RULE NAME");
+
+			pm.makePersistent(pcrule);
+		} catch (Exception e) {
+			
+		}finally{
+			pm.close();
+		}
+		*/
 		/*
 		Key smartKey = KeyFactory.stringToKey("aglub19hcHBfaWRyHwsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRiQAQw");
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
 	*/
 		
-		//createDummyApplication();
+		createDummyApplication(pm);
+		PCFunctionality func;
+		pm = ServiceUtils.PMF.getPersistenceManager();
 		
-//		PCFunctionality func;
-//		
-//		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
-//		
-//		for (FunctionalityTypeId f : funcs) {
-//			func = new PCFunctionality();
-//			func.setId(f.getId());
-//			func.setDescription(f.getDescription());
-//			pm.makePersistent(func);
-//		}
-//		
-//		pm.close();
+		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
+		
+		for (FunctionalityTypeId f : funcs) {
+			func = new PCFunctionality();
+			func.setId(f.getId());
+			func.setDescription(f.getDescription());
+			pm.makePersistent(func);
+		}
+		
+		pm.close();
 		
 		ResponseBuilder rbuilder;
 		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);
@@ -173,7 +190,7 @@ public class InitResource {
 		return rbuilder.build();*/
 	}
 	
-	public void createDummyApplication(){
+	public void createDummyApplication(PersistenceManager pm){
 		PCApplication application = new PCApplication();
 
 		PCAppInfo appInfo = new PCAppInfo();
@@ -195,9 +212,9 @@ public class InitResource {
 		device.setVersion("4.5");
 		application.setDevice(device);
 		
-		try {
+		try{
             pm.makePersistent(application);
-        } 
+		}
 		finally {
             pm.close();
         }

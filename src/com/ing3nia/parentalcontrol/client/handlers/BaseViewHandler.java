@@ -176,7 +176,8 @@ public class BaseViewHandler {
 		if(smartphone.getRules()==null){
 			smartphone.setRules(new ArrayList<RuleModel>());
 		}
-				
+		
+		
 		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this, smartphone.getRules());
 		alertRulesButton.addClickHandler(alertRulesHandler);
 		
@@ -297,7 +298,7 @@ public class BaseViewHandler {
 	
 	public static FlowPanel clearRouteNamesPanels(FlowPanel deviceChoiceList){
 		int widgetCount = deviceChoiceList.getWidgetCount();
-		Window.alert("Widget count "+widgetCount);
+		//Window.alert("Widget count "+widgetCount);
 		ArrayList<Integer> removeList = new ArrayList<Integer>();
 		for(int i = 0; i<widgetCount; i++){
 			Widget w = deviceChoiceList.getWidget(i);

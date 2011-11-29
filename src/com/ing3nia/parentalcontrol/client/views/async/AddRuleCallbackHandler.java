@@ -25,7 +25,7 @@ public class AddRuleCallbackHandler implements AsyncCallback<String> {
 	}
 	
 	public void onFailure(Throwable error) {
-		baseView.getBaseBinder().getNotice().setText("An error occured. The new admin user couldn't be saved.");
+		baseView.getBaseBinder().getNotice().setText("An error occured. The new rule couldn't be created.");
 		baseView.getBaseBinder().getCenterContent().add(baseView.getBaseBinder().getNotice());
 	}
 
@@ -44,7 +44,7 @@ public class AddRuleCallbackHandler implements AsyncCallback<String> {
 			saveModService.saveSmartphoneModifications(this.cid, this.smartKey, auxMod, saveModCallback);
 		} 
 		else {
-			baseView.getBaseBinder().getNotice().setText("An error occured. The new admin user couldn't be saved.");
+			baseView.getBaseBinder().getNotice().setText("An error occured. The new rule couldn't be created.");
 			baseView.getBaseBinder().getCenterContent().add(baseView.getBaseBinder().getNotice());
 		}
 	}

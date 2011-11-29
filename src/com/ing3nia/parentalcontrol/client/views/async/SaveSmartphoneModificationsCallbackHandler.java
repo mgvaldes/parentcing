@@ -45,6 +45,12 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 	public void onSuccess(Boolean result) {
 		if (result) {		
 			SmartphoneModel smartphone = baseView.getUser().getSmartphones().get(baseView.getClickedSmartphoneIndex());
+			//ArrayList<RuleModel> rules = smartphone.getRules();
+			//rules.add(newRule);								
+			//smartphone.setRules(rules);
+			
+			baseView.getBaseBinder().getCenterContent().clear();
+
 			
 			if (this.option == 0) { //SaveMod rules
 				ArrayList<RuleModel> rules = smartphone.getRules();

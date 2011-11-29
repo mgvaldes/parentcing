@@ -82,20 +82,18 @@ public class PCDevice {
     @Embedded
     private PCOs os;
     
-    @Persistent(defaultFetchGroup = "true")
-	private PCSmartphone smartphone;
-	
+
 	public PCDevice() {
 		super();
 	}
 
-	public PCDevice(Key key, String model, String version, PCOs os, PCSmartphone smartphone) {
+	public PCDevice(Key key, String model, String version, PCOs os) {
 		super();
 		this.key = key;
 		this.model = model;
 		this.version = version;
 		this.os = os;
-		this.smartphone = smartphone;
+		//this.smartphone = smartphone;
 	}
 
 	public Key getKey() {
@@ -130,11 +128,4 @@ public class PCDevice {
 		this.os = os;
 	}
 
-	public PCSmartphone getSmartphone() {
-		return smartphone;
-	}
-
-	public void setSmartphone(PCSmartphone smartphone) {
-		this.smartphone = smartphone;
-	}
 }

@@ -2,6 +2,7 @@ package com.ing3nia.parentalcontrol.models;
 
 import java.util.ArrayList;
 
+import javax.jdo.annotations.Element;
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
@@ -85,7 +86,7 @@ public class PCSmartphone {
 	 * Represents the current modification that has to be applied to a specific
 	 * smartphone.
 	 */
-	@Persistent(mappedBy = "smartphone")
+	//@Persistent(mappedBy = "smartphone")
 	private PCModification modification;
 	
 	/**
@@ -93,6 +94,7 @@ public class PCSmartphone {
 	 * smartphone.
 	 */
 	@Persistent(mappedBy = "smartphone")
+    @Element(dependent = "true")
 	private ArrayList<PCRule> rules;
 	
 	/**
@@ -109,8 +111,7 @@ public class PCSmartphone {
 	
 	/**
 	 * Specifies the device information of a specific smartphone.
-	 */
-	@Persistent(mappedBy = "smartphone")
+     */
 	private PCDevice device;
 	
 	/**

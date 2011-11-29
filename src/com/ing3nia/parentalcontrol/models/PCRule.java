@@ -52,13 +52,12 @@ public class PCRule {
 	private PCSmartphone smartphone;
 
 	public PCRule() {
-		super();
 	}
 
 	public PCRule(Key key, Date startDate, Date endDate,
 			ArrayList<Key> disabledFunctionalities,
 			Date creationDate, String name, PCSmartphone smartphone) {
-		super();
+
 		this.key = key;
 		this.startDate = startDate;
 		this.endDate = endDate;

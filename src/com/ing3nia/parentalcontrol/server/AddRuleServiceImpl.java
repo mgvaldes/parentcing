@@ -17,6 +17,9 @@ import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCRule;
+
+import com.ing3nia.parentalcontrol.models.PCSmartphone;
+
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleService {
@@ -33,7 +36,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 		String newRuleKey = null;
 //		PCSession session = null;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
+		PCRule rule = new PCRule();
 		try {
 			//TODO revisar sesion
 //			logger.info("[Add Rule Service] Finding user session from cookie");
@@ -43,12 +46,13 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 //			PCUser user = pm.getObjectById(PCUser.class, session.getUser());
 			
 //			logger.info("[Add Rule Service] Obtaining smartphone from provided key " + smartphoneKey);
-//			PCSmartphone smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneKey));
+			PCSmartphone smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneKey));
 									
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			Date date;
 			
-			PCRule rule = new PCRule();
+			//PCRule rule = new PCRule();
+			
 			date = sdf.parse(newRule.getCreationDate());
 			rule.setCreationDate(date);
 			date = sdf.parse(newRule.getStartDate());
@@ -58,24 +62,30 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 			rule.setName(newRule.getName());
 			
 			logger.info("[Add Rule Service] Setting new funcionalities to rules");
-			rule.setDisabledFunctionalities(getNewFuncionalitiesAsKeys(pm, newRule));
-					
-			pm.makePersistent(rule);
-			logger.severe("[Add Rule Service] Rule saved!");
+			PersistenceManager pm2 = ServiceUtils.PMF.getPersistenceManager();
+			rule.setDisabledFunctionalities(getNewFuncionalitiesAsKeys(pm2, newRule));
+
+			smartphone.getRules().add(rule);
+			//pm.makePersistent(smartphone);
+			//logger.severe("[Add Rule Service] Rule saved! "+rule.getName()+" "+rule.getCreationDate()+" "+rule.getStartDate()+" "+rule.getEndDate()+" "+rule.getDisabledFunctionalities().size()+" "+rule.getKey());
 			
-			pm.flush();
-			newRuleKey = KeyFactory.keyToString(rule.getKey());
-			logger.severe("[Add Rule Service] New rule's key: " + newRuleKey);
+			
+			logger.severe("[Add Rule Service] New rule's key: " + rule.getKey());
+
 		}
 		catch (Exception e) {
-			logger.severe("[Add Rule Service] Error while saving new rule " + e.getMessage());
+			logger.severe("[Add Rule Service] Error while saving new rule " + e);
 			newRuleKey = null;
 		}
 		finally {
+			
 			pm.close();
 		}
 		
+		newRuleKey = KeyFactory.keyToString(rule.getKey());
+		logger.severe("RULE DATE AND KEY: "+rule.getCreationDate()+" "+newRuleKey);
 		return newRuleKey;
+	}
 
 //		logger.info("[Add Rule Service] Finding user session from cookie");
 //		
@@ -167,7 +177,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 //		}
 //		
 //		return newRuleKey;
-	}
+	//}
 	
 	private static ArrayList<Key> getNewFuncionalitiesAsKeys(PersistenceManager pm, RuleModel ruleModel) {
 		Logger logger = ModelLogger.logger;
@@ -204,7 +214,34 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 				newDisabledFuncionalities = null;
 			}
 		}
+		pm.close();
 		
 		return newDisabledFuncionalities;
 	}
+/*
+	@Override
+	public String addRule(String cid, String smartphoneKey, RuleModel newRule)
+			throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		//createDummyApplication();
+		
+		try {
+			PCRule pcrule = new PCRule();
+			Date date = new Date();
+			pcrule.setStartDate(date);
+			pcrule.setCreationDate(date);
+			pcrule.setEndDate(date);
+			pcrule.setName("RULE NAME");
+
+			pm.makePersistent(pcrule);
+			logger.severe("RULE KEY: "+pcrule.getKey());
+			return "null";
+		} catch (Exception e) {
+			return null;
+		}finally{
+			pm.close();
+		}
+	}*/
 }

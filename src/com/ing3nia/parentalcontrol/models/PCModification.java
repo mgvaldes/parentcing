@@ -81,8 +81,8 @@ public class PCModification {
 	@Persistent
 	private ArrayList<String>  deletedRules;
 	
-	@Persistent(defaultFetchGroup = "true")
-	private PCSmartphone smartphone;
+	//@Persistent(defaultFetchGroup = "true")
+	//private PCSmartphone smartphone;
 	
 	public PCModification() {
 		super();
@@ -92,7 +92,7 @@ public class PCModification {
 			ArrayList<Key> inactiveContacts,
 			ArrayList<Key> properties, ArrayList<Key> rules,
 			ArrayList<Key> addedEmergencyNumbers,
-			ArrayList<Key> deletedEmergencyNumbers, PCSmartphone smartphone) {
+			ArrayList<Key> deletedEmergencyNumbers) {
 		super();
 		this.key = key;
 		this.activeContacts = activeContacts;
@@ -101,7 +101,7 @@ public class PCModification {
 		this.rules = rules;
 		this.addedEmergencyNumbers = addedEmergencyNumbers;
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
-		this.smartphone = smartphone;
+		//this.smartphone = smartphone;
 	}
 
 //	public PCModification(Key key, ArrayList<ArrayList<PCContact>> contacts,
@@ -197,11 +197,4 @@ public class PCModification {
 		this.deletedRules = deletedRules;
 	}
 
-	public PCSmartphone getSmartphone() {
-		return smartphone;
-	}
-
-	public void setSmartphone(PCSmartphone smartphone) {
-		this.smartphone = smartphone;
-	}
 }

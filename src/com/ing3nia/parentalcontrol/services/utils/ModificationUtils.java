@@ -69,6 +69,7 @@ public class ModificationUtils {
 	private static void createNewParentModification(PersistenceManager pm, PCSmartphone pcSmartphone, ModificationModel modifications) throws ModificationParsingException{
 		PCModification pcmodification = new PCModification();
 		updateParentModification(pm, pcSmartphone, pcmodification, modifications);
+		pcSmartphone.setModification(pcmodification);
 	}
 	
 	private static void updateParentModification(PersistenceManager pm, PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications) throws ModificationParsingException{
@@ -90,7 +91,7 @@ public class ModificationUtils {
 		ArrayList<Key> pcModDeletedEmergencyNumbers = pcmodification.getDeletedEmergencyNumbers();
 		ArrayList<Key> pcModProperties = pcmodification.getProperties();
 		ArrayList<Key> pcModRules = pcmodification.getRules();
-		ArrayList<String> pcDeletedRules = pcmodification.getDeletedRules();
+		ArrayList<String> pcModDeletedRules = pcmodification.getDeletedRules();
 		
 		if(smartphoneName != null){
 			pcsmartphone.setName(smartphoneName);
@@ -152,9 +153,9 @@ public class ModificationUtils {
 			pcmodification.setRules(new ArrayList<Key>());
 			pcModRules = pcmodification.getRules();
 		}
-		if(pcDeletedRules == null){
+		if(pcModDeletedRules == null){
 			pcmodification.setDeletedRules(new ArrayList<String>());
-			pcDeletedRules = pcmodification.getDeletedRules();
+			pcModDeletedRules = pcmodification.getDeletedRules();
 		}
 
 		logger.info("[ParentModifications] Adding active contacts modifications");
@@ -281,6 +282,7 @@ public class ModificationUtils {
 				throw new ModificationParsingException(e.getMessage());
 			}
 			property.setValue(propmodel.getValue());
+			pcModProperties.add(property.getKey());
 		}
 		
 		// parsing rule modifications
@@ -327,24 +329,28 @@ public class ModificationUtils {
 			}
 			
 			rule.setEndDate(date);
-			
 			rule.setName(ruleModel.getName());
 			
 			logger.info("[ParentModifications] Setting new funcionalities to rules");
 			ArrayList<Key> newDisabledFuncionalities = getNewFuncionalitiesAsKeys(pm, ruleModel);
-			rule.setDisabledFunctionalities(newDisabledFuncionalities);			
+			rule.setDisabledFunctionalities(newDisabledFuncionalities);		
+			
+			pcModRules.add(rule.getKey());
 		}
 		
 		// adding deleted rules
 		logger.info("[ParentModifications] Setting deleted rules");
 		for(String deletedRuleId : modifications.getDeletedRules()){
-			if(!pcDeletedRules.contains(deletedRuleId)){
-				pcDeletedRules.add(deletedRuleId);
+			if(!pcModDeletedRules.contains(deletedRuleId)){
+				pcModDeletedRules.add(deletedRuleId);
 			}
 		}
 		
-		pm.makePersistent(pcsmartphone);
-		pm.makePersistent(pcmodification);	
+		logger.severe("RULES ADDED: "+pcModRules.size()+" "+pcmodification.getRules());
+		
+		pcsmartphone.setModification(pcmodification);
+		//pm.makePersistent(pcsmartphone);
+		//pm.makePersistent(pcmodification);	
 	}
 	
 	private static ArrayList<Key> getNewFuncionalitiesAsKeys(PersistenceManager pm,
