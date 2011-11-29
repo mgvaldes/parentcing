@@ -39,7 +39,7 @@ public class AddRuleCallbackHandler implements AsyncCallback<String> {
 			
 			auxMod.setRules(rules);
 			
-			SaveSmartphoneModificationsCallbackHandler saveModCallback = new SaveSmartphoneModificationsCallbackHandler(baseView, newRule);
+			SaveSmartphoneModificationsCallbackHandler saveModCallback = new SaveSmartphoneModificationsCallbackHandler(baseView, newRule, 0);
 			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
 			saveModService.saveSmartphoneModifications(this.cid, this.smartKey, auxMod, saveModCallback);
 		} 

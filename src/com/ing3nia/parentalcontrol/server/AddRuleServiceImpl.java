@@ -17,7 +17,9 @@ import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCRule;
+
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleService {
@@ -43,7 +45,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 //			logger.info("[Add Rule Service] Session found. Getting User from session");
 //			PCUser user = pm.getObjectById(PCUser.class, session.getUser());
 			
-			logger.info("[Add Rule Service] Obtaining smartphone from provided key " + smartphoneKey);
+//			logger.info("[Add Rule Service] Obtaining smartphone from provided key " + smartphoneKey);
 			PCSmartphone smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneKey));
 									
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -59,7 +61,6 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 			rule.setEndDate(date);
 			rule.setName(newRule.getName());
 			
-			
 			logger.info("[Add Rule Service] Setting new funcionalities to rules");
 			PersistenceManager pm2 = ServiceUtils.PMF.getPersistenceManager();
 			rule.setDisabledFunctionalities(getNewFuncionalitiesAsKeys(pm2, newRule));
@@ -70,6 +71,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 			
 			
 			logger.severe("[Add Rule Service] New rule's key: " + rule.getKey());
+
 		}
 		catch (Exception e) {
 			logger.severe("[Add Rule Service] Error while saving new rule " + e);

@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.models.utils;
+package com.ing3nia.parentalcontrol.client.utils;
 
 public class PCPropertyType {
 	public static int LOW_BATTERY_CHECK = 0;

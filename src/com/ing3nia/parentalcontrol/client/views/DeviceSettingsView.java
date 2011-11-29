@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -19,6 +17,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
@@ -26,7 +25,8 @@ import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
-import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
+import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
+import com.ing3nia.parentalcontrol.client.views.async.SaveSmartphoneModificationsCallbackHandler;
 
 
 public class DeviceSettingsView {
@@ -132,10 +132,13 @@ public class DeviceSettingsView {
 	/**
 	 * 
 	 */
-	String cookieId;
+	private String cookieId;
 	
-	public DeviceSettingsView(HTMLPanel centerContent, SmartphoneModel smartphone, String cookieId) {
-		this.centerContent = centerContent;
+	private BaseViewHandler baseView;
+	
+	public DeviceSettingsView(BaseViewHandler baseView, SmartphoneModel smartphone, String cookieId) {
+		this.baseView = baseView;
+		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.smartphone = smartphone;
 		this.cookieId = cookieId;
@@ -145,9 +148,14 @@ public class DeviceSettingsView {
 		deviceNameLabel = new Label("Device Name:");
 		deviceNameTextBox = new TextBox();
 		
+		if (smartphone.getName() != null) {
+			deviceNameTextBox.setText(smartphone.getName());
+		}
+		
 		speedLimitPanel = new FlowPanel();
 		speedLimitLabel = new Label("Speed Limit:");
 		speedLimitTextBox = new TextBox();
+		loadSpeedLimit();
 		mphLabel = new Label("MPH");
 		
 		blockPhonePanel = new FlowPanel();
@@ -164,6 +172,21 @@ public class DeviceSettingsView {
 		
 		this.centerContent.clear();
 		initDeviceSettingsView();
+	}
+	
+	public String loadSpeedLimit() {
+		String speedLimit = "";
+		
+		ArrayList<PropertyModel> properties = this.smartphone.getProperties();
+		
+		for (PropertyModel p : properties) {
+			if (p.getId() == PCPropertyType.SPEED_LIMIT) {
+				this.speedLimitTextBox.setText(p.getValue());
+				break;
+			}
+		}
+		
+		return speedLimit;
 	}
 	
 	public void initDeviceSettingsView() {
@@ -254,44 +277,28 @@ public class DeviceSettingsView {
 	}
 	
 	public void saveDeviceSettings() {
-
-//		ModificationModel auxMod = new ModificationModel(); 
-//		
-//		final String deviceName = this.deviceNameTextBox.getText();
-//		final String speedLimit = this.speedLimitTextBox.getText();		
-//		
-//		if (deviceName.equals("") || speedLimit.equals("")) {
-//			Window.alert("All fields must be specified.");
-//		}
-//		else {
-//			auxMod.setSmartphoneName(deviceName);
-//			
-//			ArrayList<PropertyModel> auxProps = new ArrayList<PropertyModel>();
-//			final PropertyModel auxProp = findSpeedLimitProperty();
-//			final int speedLimitPropPos = this.smartphone.getProperties().indexOf(auxProp);
-//			auxProp.setValue(speedLimit);
-//			auxProps.add(auxProp);
-//			auxMod.setProperties(auxProps);
-//			
-//			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
-//			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
-//					new AsyncCallback<Boolean>() {
-//						public void onFailure(Throwable error) {
-//						}
-//			
-//						public void onSuccess(Boolean result) {
-//							if (result) {
-//								smartphone.setName(deviceName);
-//								smartphone.getProperties().remove(speedLimitPropPos);
-//								smartphone.getProperties().add(auxProp);
-//							}
-//							else {
-//								Window.alert("An error occured. The device settings couldn't be applied.");
-//							}
-//						}
-//					}
-//			);
-//		}
+		ModificationModel auxMod = new ModificationModel(); 
+		
+		final String deviceName = this.deviceNameTextBox.getText();
+		final String speedLimit = this.speedLimitTextBox.getText();		
+		
+		if (deviceName.equals("") || speedLimit.equals("")) {
+			Window.alert("All fields must be specified.");
+		}
+		else {
+			auxMod.setSmartphoneName(deviceName);
+			
+			ArrayList<PropertyModel> auxProps = new ArrayList<PropertyModel>();
+			final PropertyModel auxProp = findSpeedLimitProperty();
+			final int speedLimitPropPos = this.smartphone.getProperties().indexOf(auxProp);
+			auxProp.setValue(speedLimit);
+			auxProps.add(auxProp);
+			auxMod.setProperties(auxProps);
+			
+			SaveSmartphoneModificationsCallbackHandler saveModCallback = new SaveSmartphoneModificationsCallbackHandler(baseView, this.deviceNameTextBox.getText(), this.speedLimitTextBox.getText(), 1);
+			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+			saveModService.saveSmartphoneModifications(this.baseView.getUser().getCid(), this.smartphone.getKeyId(), auxMod, saveModCallback);	
+		}
 	}
 	
 	public void clearTextBoxes() {
@@ -300,17 +307,17 @@ public class DeviceSettingsView {
 	}
 
 	
-//	public PropertyModel findSpeedLimitProperty() {
-//		PropertyModel speedLimitProp = null;
-//		ArrayList<PropertyModel> props = this.smartphone.getProperties();
-//		
-//		for (PropertyModel p : props) {
-//			if (p.getId() == PCPropertyType.SPEED_LIMIT) {
-//				speedLimitProp = p;
-//				break;
-//			}
-//		}
-//		
-//		return speedLimitProp;
-//	}
+	public PropertyModel findSpeedLimitProperty() {
+		PropertyModel speedLimitProp = null;
+		ArrayList<PropertyModel> props = this.smartphone.getProperties();
+		
+		for (PropertyModel p : props) {
+			if (p.getId() == PCPropertyType.SPEED_LIMIT) {
+				speedLimitProp = p;
+				break;
+			}
+		}
+		
+		return speedLimitProp;
+	}
 }

@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.JsonObject;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
+import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.PCActivityStatistics;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
@@ -31,13 +32,12 @@ import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCDevice.PCOs;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.utils.PCOsTypeId;
-import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("init")
 public class InitResource {
-	private PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+	//private PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 	
 	public InitResource() {
 		
@@ -69,9 +69,9 @@ public class InitResource {
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
 	*/
 		
-		//createDummyApplication();
-		
+		createDummyApplication(pm);
 		PCFunctionality func;
+		pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
 		
@@ -190,7 +190,7 @@ public class InitResource {
 		return rbuilder.build();*/
 	}
 	
-	public void createDummyApplication(){
+	public void createDummyApplication(PersistenceManager pm){
 		PCApplication application = new PCApplication();
 
 		PCAppInfo appInfo = new PCAppInfo();
@@ -212,9 +212,9 @@ public class InitResource {
 		device.setVersion("4.5");
 		application.setDevice(device);
 		
-		try {
+		try{
             pm.makePersistent(application);
-        } 
+		}
 		finally {
             pm.close();
         }

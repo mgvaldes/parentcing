@@ -81,7 +81,8 @@ public class PCDevice {
     @Persistent
     @Embedded
     private PCOs os;
-	
+    
+
 	public PCDevice() {
 		super();
 	}
@@ -92,6 +93,7 @@ public class PCDevice {
 		this.model = model;
 		this.version = version;
 		this.os = os;
+		//this.smartphone = smartphone;
 	}
 
 	public Key getKey() {
@@ -125,4 +127,5 @@ public class PCDevice {
 	public void setOs(PCOs os) {
 		this.os = os;
 	}
+
 }

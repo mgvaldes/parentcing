@@ -57,6 +57,7 @@ public class PCRule {
 	public PCRule(Key key, Date startDate, Date endDate,
 			ArrayList<Key> disabledFunctionalities,
 			Date creationDate, String name, PCSmartphone smartphone) {
+
 		this.key = key;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -122,5 +123,4 @@ public class PCRule {
 	public void setSmartphone(PCSmartphone smartphone) {
 		this.smartphone = smartphone;
 	}
-	
 }

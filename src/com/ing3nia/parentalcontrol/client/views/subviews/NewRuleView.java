@@ -14,6 +14,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -299,6 +300,7 @@ public class NewRuleView {
 		
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
+		DOM.setElementAttribute(this.saveButton.getElement(), "id", "saveRuleButton");
 		this.clearButton = new Button("Clear");
 		
 		this.centerContent.clear();

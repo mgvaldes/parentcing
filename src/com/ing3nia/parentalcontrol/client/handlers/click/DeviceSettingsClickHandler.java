@@ -40,7 +40,7 @@ public class DeviceSettingsClickHandler implements ClickHandler{
 		this.menuSetter.getDeviceSettings().setStyleName("selectedShinnyButton");
 		
 		//DeviceSettingsView view = new DeviceSettingsView(centerContent, smartphone);
-		DeviceSettingsView view = new DeviceSettingsView(centerContent, smartphone, CookieHandler.getPCCookie());
+		DeviceSettingsView view = new DeviceSettingsView(baseView, smartphone, baseView.getUser().getCid());
 		view.initDeviceSettingsView();
 	}
 }
