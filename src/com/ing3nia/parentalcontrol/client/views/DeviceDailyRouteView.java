@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
-import com.ing3nia.parentalcontrol.client.views.async.DeviceRouteLocationCallback;
+import com.ing3nia.parentalcontrol.client.views.async.DeviceRouteLocationCallbackHandler;
 
 public class DeviceDailyRouteView {
 	
@@ -132,7 +132,7 @@ public class DeviceDailyRouteView {
 	    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
 	    	//map.addOverlay(new Marker(deviceLoc));	 
 	    	    	
-	    	DeviceRouteLocationCallback locationCallback = new DeviceRouteLocationCallback(baseViewHandler.getMenuSetter().getParentSmartphoneButton(), this.routePanelBody);
+	    	DeviceRouteLocationCallbackHandler locationCallback = new DeviceRouteLocationCallbackHandler(baseViewHandler.getMenuSetter().getParentSmartphoneButton(), this.routePanelBody);
       	    	geocoder.getLocations(deviceLoc, locationCallback);	    	
 	    }
 	    
