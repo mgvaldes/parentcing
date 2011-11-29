@@ -71,7 +71,7 @@ public class InitResource {
 		
 		//createDummyApplication(pm);
 		PCFunctionality func;
-		pm = ServiceUtils.PMF.getPersistenceManager();
+		//pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
 		
@@ -212,11 +212,11 @@ public class InitResource {
 		device.setVersion("4.5");
 		application.setDevice(device);
 		
-		try{
-            pm.makePersistent(application);
-		}
-		finally {
-            pm.close();
-        }
+//		try{
+        pm.makePersistent(application);
+//		}
+//		finally {
+//            pm.close();
+//        }
 	}
 }
