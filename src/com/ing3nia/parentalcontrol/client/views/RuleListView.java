@@ -57,6 +57,7 @@ public class RuleListView {
 	public RuleListView(BaseViewHandler baseViewHandler, ArrayList<RuleModel> ruleList) {
 		this.baseViewHandler = baseViewHandler;
 		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
+		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
 		this.ruleTable = new CellTable<RuleModel>(10);
 		this.viewContent = new HTMLPanel("");

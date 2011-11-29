@@ -241,9 +241,11 @@ public class NewRuleView {
 	
 	private BaseViewHandler baseViewHandler;
 
+
 	public NewRuleView(BaseViewHandler baseViewHandler, String cookieId, SmartphoneModel smartphone) {
 		this.baseViewHandler = baseViewHandler;
 		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
+        this.centerContent.setStyleName("centerContent");
 		this.cookieId = cookieId;
 		this.smartphone = smartphone;
 		
@@ -468,6 +470,7 @@ public class NewRuleView {
 			hourTextBoxT.getText().equals("") &&
 			minuteTextBoxT.getText().equals("") &&
 			secondsTextBoxT.getText().equals("")) {
+
 			baseViewHandler.getBaseBinder().getNotice().setText("All fields must be specified");
 			centerContent.add(baseViewHandler.getBaseBinder().getNotice());
 		}

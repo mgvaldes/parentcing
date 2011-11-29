@@ -8,13 +8,17 @@ import java.util.Map;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
 //import com.google.gwt.dev.util.collect.HashMap;
 import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
@@ -23,10 +27,14 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.Range;
+import com.google.gwt.view.client.RangeChangeEvent;
 
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.ContactListRangeChangeHandler;
+import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
@@ -92,6 +100,8 @@ public class DeviceContactListView {
 	
 	private Button saveButton;
 	
+	private ArrayList<Boolean> activeInactiveIndexList;
+	
 	public DeviceContactListView(HTMLPanel centerContent, String cookieId, SmartphoneModel smartphone) {
 		this.cookieId = cookieId;
 		this.smartphone = smartphone;
@@ -99,18 +109,28 @@ public class DeviceContactListView {
 		loadSmartphoneContacts();		
 		this.activeContacts = new ArrayList<ClientSimpleContactModel>();
 		this.inactiveContacts = new ArrayList<ClientSimpleContactModel>();
-		this.centerContent = centerContent;		
+		this.centerContent = centerContent;	
+		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
 		this.contactsLabel = new Label("Contacts:");
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");
 		this.emergencyContactsButton = new Button("Emergency Contacts");
-		this.contactTable = new CellTable<ClientSimpleContactModel>(10);
-		this.pager = new SimplePager();		
+		this.contactTable = new CellTable<ClientSimpleContactModel>(smartphone.getActiveContacts().size()+smartphone.getInactiveContacts().size());
+		this.pager = new SimplePager();	
+		
 		this.saveButton = new Button("Save");
 		this.centerContent.clear();
 		
-		addTestDeviceContacts();
+		this.activeInactiveIndexList = new ArrayList<Boolean>(smartphone.getActiveContacts().size() + smartphone.getInactiveContacts().size());
+		for(int i=0;i<smartphone.getActiveContacts().size();i++){
+			this.activeInactiveIndexList.add(true);
+		}
+		
+		for(int i=0;i<smartphone.getInactiveContacts().size();i++){
+			this.activeInactiveIndexList.add(false);
+		}
+		
 	}
 	
 	public void loadSmartphoneContacts() {
@@ -193,10 +213,12 @@ public class DeviceContactListView {
 		contactTable.addColumn(phoneColumn, "Phone");		
 
 		// Add an edit column to show the disallow button.
-		ButtonCell disallowCell = new ButtonCell();
+		//ButtonCell disallowCell = new ButtonCell();
+		DisallowButtonCell disallowCell = new DisallowButtonCell();
+		
 		Column<ClientSimpleContactModel, String> disallowColumn = new Column<ClientSimpleContactModel, String>(disallowCell) {
 			@Override
-			public String getValue(ClientSimpleContactModel object) {
+			public String getValue(ClientSimpleContactModel object) {	
 				return "Disallow";
 			}
 		};
@@ -204,23 +226,35 @@ public class DeviceContactListView {
 		disallowColumn.setFieldUpdater(new FieldUpdater<ClientSimpleContactModel, String>() {
 			@Override
 			public void update(int index, ClientSimpleContactModel object, String value) {
-				//Change button's style
-				TableRowElement row = contactTable.getRowElement(index);
+				
+				int newIndex = getRealIndexFromPager(index, pager);
+				
+				contactTable.getRowElement(newIndex).getCells().getItem(3).getFirstChildElement().setInnerHTML(DisallowButtonCell.opaqueButtonFullString);				
+				contactTable.getRowElement(newIndex).getCells().getItem(4).getFirstChildElement().setInnerHTML(AllowButtonCell.transpButtonFullString);							
+				
 				
 				//Add to inactive contacts;
 				if (activeContacts.contains(object)) {
 					activeContacts.remove(object);
 				}
 				
-				inactiveContacts.add(object);
+				if(!inactiveContacts.contains(object)){
+					inactiveContacts.add(object);
+				}
+				
+				// Set contact as disabled in boolean list
+				activeInactiveIndexList.set(index, false);
+				
+				//Window.alert("ACTIVE: "+activeContacts.size()+" INACTIVE: "+inactiveContacts.size());
 			}
 		});
 		
-
-		contactTable.addColumn(disallowColumn, "Allow");
+		contactTable.addColumn(disallowColumn, "Disallow");
 		
 		// Add an edit column to show the disallow button.
-		ButtonCell allowCell = new ButtonCell();
+		//ButtonCell allowCell = new ButtonCell();
+		AllowButtonCell allowCell = new AllowButtonCell();
+		
 		Column<ClientSimpleContactModel, String> allowColumn = new Column<ClientSimpleContactModel, String>(allowCell) {
 			@Override
 			public String getValue(ClientSimpleContactModel object) {
@@ -231,15 +265,24 @@ public class DeviceContactListView {
 		allowColumn.setFieldUpdater(new FieldUpdater<ClientSimpleContactModel, String>() {
 			@Override
 			public void update(int index, ClientSimpleContactModel object, String value) {
-				//Change button's style
-				TableRowElement row = contactTable.getRowElement(index);
+
+				int newIndex = getRealIndexFromPager(index, pager);
 				
+				contactTable.getRowElement(newIndex).getCells().getItem(4).getFirstChildElement().setInnerHTML(AllowButtonCell.opaqueButtonFullString);				
+				contactTable.getRowElement(newIndex).getCells().getItem(3).getFirstChildElement().setInnerHTML(DisallowButtonCell.transpButtonFullString);				
+		
 				//Add to active contacts;
 				if (inactiveContacts.contains(object)) {
 					inactiveContacts.remove(object);
 				}
+				if(!activeContacts.contains(object)){
+					activeContacts.add(object);
+				}
 				
-				activeContacts.add(object);
+				// Set contact as disabled in boolean list
+				activeInactiveIndexList.set(index, true);
+				
+				//Window.alert("ACTIVE: "+activeContacts.size()+" INACTIVE: "+inactiveContacts.size());
 			}
 		});
 		
@@ -275,10 +318,41 @@ public class DeviceContactListView {
 		ListDataProvider<ClientSimpleContactModel> dataProvider = new ListDataProvider<ClientSimpleContactModel>(contacts);
 		dataProvider.addDataDisplay(contactTable);
 		
+		//Difference bewteen allow and disallow buttons
+		ContactListRangeChangeHandler rangeChange = new ContactListRangeChangeHandler(contactTable, activeInactiveIndexList);
+		contactTable.addRangeChangeHandler(rangeChange);
+	    contactTable.setVisibleRangeAndClearData(new Range(0, 2), true);
+
+		
+		/*
+		int rowSize = contactTable.getRowCount();
+		int activeSize = smartphone.getActiveContacts().size();
+		int inactiveSize = smartphone.getInactiveContacts().size();
+		
+		int rowCount =0;
+		int innerCount =0;
+		// filtering allow (opacity to disallow)
+		
+		while(rowCount<rowSize && innerCount<activeSize){
+			contactTable.getRowElement(rowCount).getCells().getItem(3).getFirstChildElement().setInnerHTML(DisallowButtonCell.transpButtonFullString);				
+			innerCount++;
+			rowCount++;
+		}
+		
+		// filtering disallow (opacity to allow)
+		innerCount =0;
+		while(rowCount<rowSize && innerCount<inactiveSize){
+			contactTable.getRowElement(rowCount).getCells().getItem(4).getFirstChildElement().setInnerHTML(AllowButtonCell.transpButtonFullString);				
+			innerCount++;
+			rowCount++;
+		}
+		*/
+		
 		//creating paging controls		
 		pager.setDisplay(contactTable);
 		pager.setStylePrimaryName("tablePager");
 		pager.setStyleName("");
+		pager.setPageSize(10);
 		
 		viewContent.add(pager);
 		viewContent.add(contactTable);		
@@ -291,7 +365,7 @@ public class DeviceContactListView {
 				saveContacts();
 			}
 		});
-		
+
 		this.viewContent.add(saveButton);
 		this.centerContent.add(this.viewContent);
 	}
@@ -308,7 +382,7 @@ public class DeviceContactListView {
 	}
 	
 	public void saveContacts() {
-		if (!activeContacts.isEmpty() && !inactiveContacts.isEmpty()) {
+		if (!activeContacts.isEmpty() || !inactiveContacts.isEmpty()) {
 			ModificationModel auxMod = new ModificationModel();
 			
 			HashMap<String, ArrayList<PhoneModel>> activeHash = new HashMap<String, ArrayList<PhoneModel>>();
@@ -384,7 +458,7 @@ public class DeviceContactListView {
 								saveResultInLocalSmartphone();
 							}
 							else {
-								Window.alert("An error occured. The device settings couldn't be applied.");
+								//Window.alert("An error occured. The change in contacts couldn't be applied.");
 							}
 						}
 					}
@@ -509,6 +583,68 @@ public class DeviceContactListView {
 			isInactive = false;
 		}
 	}
+	
+	private class DisallowButtonCell extends ButtonCell {
+		
+		static final String opaqueButtonString = "<button type=\"button\" class=\"disallowButton\" "
+		+ "tabindex=\"-1\">";
+		static final String opaqueButtonFullString= opaqueButtonString +"Disallow"+"</button>";
+		
+		static final String transpButtonString = "<button type=\"button\" class=\"disallowButton\" style=\"opacity:0.5;\" "
+			+ "tabindex=\"-1\">";
+		static final String transpButtonFullString= transpButtonString +"Disallow"+"</button>";
+		
+		
+		public DisallowButtonCell() {
+			super();
+		}
+
+		@Override
+		public void render(final Context context, final SafeHtml data,
+				final SafeHtmlBuilder sb) {
+			sb.appendHtmlConstant("<button type=\"button\" class=\"disallowButton\" "
+					+ "tabindex=\"-1\">");
+			
+			if (data != null) {
+				sb.append(data);
+			}
+			sb.appendHtmlConstant("</button>");
+		}
+	}
+	
+
+	private class AllowButtonCell extends ButtonCell {
+		
+		private final static String opaqueButtonString = "<button type=\"button\" class=\"allowButton\" "
+		+ "tabindex=\"-1\">";
+		static final String opaqueButtonFullString= opaqueButtonString +"Allow"+"</button>";
+		
+		static final String transpButtonString = "<button type=\"button\" class=\"allowButton\" style=\"opacity:0.5;\" "
+			+ "tabindex=\"-1\">";
+		static final String transpButtonFullString= transpButtonString +"Allow"+"</button>";
+		
+		
+		
+		public AllowButtonCell() {
+			super();
+		}
+
+		@Override
+		public void render(final Context context, final SafeHtml data,
+				final SafeHtmlBuilder sb) {
+			sb.appendHtmlConstant(opaqueButtonString);
+			
+			if (data != null) {
+				sb.append(data);
+			}
+			sb.appendHtmlConstant("</button>");
+		}
+	}
+	
+	public int getRealIndexFromPager(int tableIndex, SimplePager pager){
+		return tableIndex-pager.getPageStart();
+	}
+	
 	
 	public void loadDeviceContacts() {
 		

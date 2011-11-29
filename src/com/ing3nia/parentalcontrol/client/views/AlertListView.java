@@ -44,6 +44,7 @@ public class AlertListView {
 
 	public AlertListView(HTMLPanel centerContent, ArrayList<AlertModel> alertList) {
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		viewContent = new HTMLPanel("");
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");

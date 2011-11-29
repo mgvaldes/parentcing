@@ -88,7 +88,8 @@ public class DeviceEmergencyNumberListView {
 		loadEmergencyNumbers();		
 		this.addedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
 		this.deletedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
-		this.centerContent = centerContent;		
+		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
 		this.emergencyNumbersLabel = new Label("Emergency Numbers:");
 		this.contactButtonsPanel = new HTMLPanel("");

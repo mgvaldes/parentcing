@@ -139,6 +139,7 @@ public class DeviceSettingsView {
 	public DeviceSettingsView(BaseViewHandler baseView, SmartphoneModel smartphone, String cookieId) {
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
+		this.centerContent.setStyleName("centerContent");
 		this.smartphone = smartphone;
 		this.cookieId = cookieId;
 		

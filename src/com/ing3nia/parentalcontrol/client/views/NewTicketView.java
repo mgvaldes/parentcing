@@ -89,6 +89,7 @@ public class NewTicketView {
 	
 	public NewTicketView(HTMLPanel centerContent, String loggedUser, ArrayList<TicketModel> tickets) {
 		this.centerContent = centerContent;
+		this.centerContent.setStyleName("centerContent");
 		this.loggedUser = loggedUser;
 		this.tickets = tickets;
 		

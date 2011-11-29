@@ -85,6 +85,7 @@ public class AdminUserListView {
 		
 		//initializing content
 		this.centerContent.clear();
+		this.centerContent.setStyleName("centerContent");
 		
 		// Add a text column to show the username.
 		TextColumn<ClientAdminUserModel> usernameColumn = new TextColumn<ClientAdminUserModel>() {
