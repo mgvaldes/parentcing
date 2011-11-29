@@ -71,28 +71,28 @@ public class PCSmartphone {
 	 * Represents a collection of routes of a specific smartphon registered
 	 * by the application. 
 	 */
-	@Persistent
+	@Persistent(mappedBy = "smartphone")
 	private ArrayList<PCRoute> routes;
 	
 	/**
 	 * Represents a collection of properties currently available in the 
 	 * smartphone.
 	 */
-	@Persistent
+	@Persistent(mappedBy = "smartphone")
 	private ArrayList<PCProperty> properties;
 	
 	/**
 	 * Represents the current modification that has to be applied to a specific
 	 * smartphone.
 	 */
-	@Persistent
+	@Persistent(mappedBy = "smartphone")
 	private PCModification modification;
 	
 	/**
 	 * Represents a collection of rules currently disabled in a specific
 	 * smartphone.
 	 */
-	@Persistent
+	@Persistent(mappedBy = "smartphone")
 	private ArrayList<PCRule> rules;
 	
 	/**
@@ -110,7 +110,7 @@ public class PCSmartphone {
 	/**
 	 * Specifies the device information of a specific smartphone.
 	 */
-	@Persistent
+	@Persistent(mappedBy = "smartphone")
 	private PCDevice device;
 	
 	/**
@@ -125,7 +125,7 @@ public class PCSmartphone {
 	@Persistent
 	private Key application;
 	
-	@Persistent
+	@Persistent(mappedBy = "smartphone")
 	private ArrayList<PCContact> originalContacts;
 	
 	public PCSmartphone() {

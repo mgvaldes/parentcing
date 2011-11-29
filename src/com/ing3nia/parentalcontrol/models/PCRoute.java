@@ -25,15 +25,19 @@ public class PCRoute {
 	
 	@Persistent
 	private Date date;
+	
+	@Persistent
+	private PCSmartphone smartphone;
 
 	public PCRoute() {
 		super();
 	}
 
-	public PCRoute(ArrayList<GeoPt> route, Date date) {
+	public PCRoute(ArrayList<GeoPt> route, Date date, PCSmartphone smartphone) {
 		super();
 		this.route = route;
 		this.date = date;
+		this.smartphone = smartphone;
 	}
 
 	public Key getKey() {
@@ -58,5 +62,13 @@ public class PCRoute {
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public PCSmartphone getSmartphone() {
+		return smartphone;
+	}
+
+	public void setSmartphone(PCSmartphone smartphone) {
+		this.smartphone = smartphone;
 	}
 }

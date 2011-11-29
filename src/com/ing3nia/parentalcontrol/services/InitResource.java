@@ -17,6 +17,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.JsonObject;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
+import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.PCActivityStatistics;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
@@ -31,7 +32,6 @@ import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCDevice.PCOs;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.utils.PCOsTypeId;
-import com.ing3nia.parentalcontrol.models.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 

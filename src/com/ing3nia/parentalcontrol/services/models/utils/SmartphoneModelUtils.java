@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.services.models.utils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -20,6 +21,7 @@ import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
+import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
@@ -55,7 +57,17 @@ public class SmartphoneModelUtils {
 		smartphone.setAddedEmergencyNumbers(new ArrayList<Key>());
 		smartphone.setDeletedEmergencyNumbers(new ArrayList<Key>());
 		smartphone.setRoutes(new ArrayList<PCRoute>());
-		smartphone.setProperties(new ArrayList<PCProperty>());
+		
+		PCProperty speedLimitProperty = new PCProperty();
+		speedLimitProperty.setCreationDate(new Date());
+		speedLimitProperty.setDescription("SPEED_LIMIT");
+		speedLimitProperty.setId(PCPropertyType.SPEED_LIMIT);
+		speedLimitProperty.setValue("5");
+		
+		ArrayList<PCProperty> props = new ArrayList<PCProperty>();
+		props.add(speedLimitProperty);
+		
+		smartphone.setProperties(props);
 		smartphone.setModification(new PCModification());
 		smartphone.setRules(new ArrayList<PCRule>());
 		smartphone.setNotifications(new ArrayList<Key>());
