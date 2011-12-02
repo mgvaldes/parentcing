@@ -48,6 +48,14 @@ public class PCRule {
 	@Persistent
 	private String name;
 	
+	/**
+	 * Represents the type of rule.
+	 * 0: normal
+	 * 1: speed limit
+	 */
+	@Persistent
+	private int type;
+	
 //	@Persistent
 //	private PCSmartphone smartphone;
 
@@ -56,7 +64,7 @@ public class PCRule {
 
 	public PCRule(Key key, Date startDate, Date endDate,
 			ArrayList<Key> disabledFunctionalities,
-			Date creationDate, String name) {
+			Date creationDate, String name, int type) {
 
 		this.key = key;
 		this.startDate = startDate;
@@ -64,6 +72,7 @@ public class PCRule {
 		this.disabledFunctionalities = disabledFunctionalities;
 		this.creationDate = creationDate;
 		this.name = name;
+		this.type = type;
 //		this.smartphone = smartphone;
 	}
 
@@ -114,6 +123,14 @@ public class PCRule {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 
 //	public PCSmartphone getSmartphone() {

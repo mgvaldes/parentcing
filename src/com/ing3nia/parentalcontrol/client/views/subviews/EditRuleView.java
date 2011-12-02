@@ -27,10 +27,16 @@ import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.EditRuleService;
+import com.ing3nia.parentalcontrol.client.rpc.EditRuleServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.client.views.async.AddRuleCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.EditAdminUserCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.EditRuleCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView.HourChangeHandler;
+import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView.MinuteSecondsChangeHandler;
 
-public class NewRuleView {
+public class EditRuleView {
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * new ticket details view.
@@ -227,14 +233,16 @@ public class NewRuleView {
 	private SmartphoneModel smartphone;
 	
 	private BaseViewHandler baseViewHandler;
-
-
-	public NewRuleView(BaseViewHandler baseViewHandler, String cookieId, SmartphoneModel smartphone) {
+	
+	private RuleModel rule;
+	
+	public EditRuleView(BaseViewHandler baseViewHandler, String cookieId, SmartphoneModel smartphone, RuleModel rule) {
 		this.baseViewHandler = baseViewHandler;
 		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
         this.centerContent.setStyleName("centerContent");
 		this.cookieId = cookieId;
 		this.smartphone = smartphone;
+		this.rule = rule;
 		
 		this.newRuleContent = new HTMLPanel("");
 				
@@ -259,10 +267,8 @@ public class NewRuleView {
 		
 		this.datePanel = new HTMLPanel("");
 		this.fromDateLabel = new Label("Date:");
-		//this.fromDateTextBox = new TextBox();
 		this.fromDatePicker = new DateBox();	
 		this.toDateLabel = new Label("to");
-		//this.toDateTextBox = new TextBox();
 		this.toDatePicker = new DateBox();
 		
 		this.fromTimePanel = new HTMLPanel("");
@@ -290,10 +296,12 @@ public class NewRuleView {
 		this.clearButton = new Button("Clear");
 		
 		this.centerContent.clear();
-		initNewRuleView();
+		initEditRuleView();
 	}
 	
-	public void initNewRuleView() {
+	public void initEditRuleView() {
+		setOldRuleValues();
+		
 		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
 		
 		this.newRuleContent.add(newRuleLabel);
@@ -404,11 +412,18 @@ public class NewRuleView {
 		// Add the disabled functionality to the table.
 		int row = this.disabledFunctionalitiesTable.getRowCount();
 		this.disabledFunctionalities.add(selectedDisabledFunc);
+		
 		this.disabledFunctionalitiesTable.setText(row, 0, selectedDisabledFunc);
 
 		// Add a button to enable this functionality.
 		Button enableFuncButton = new Button("Enable");
-		enableFuncButton.addClickHandler(new EnableFunctionalityClickHandler(selectedDisabledFunc, this.disabledFunctionalities, this.disabledFunctionalitiesTable));
+		enableFuncButton.addClickHandler(new ClickHandler() {
+			public void onClick(ClickEvent event) {
+				int removedIndex = disabledFunctionalities.indexOf(selectedDisabledFunc);
+				disabledFunctionalities.remove(removedIndex);
+				disabledFunctionalitiesTable.removeRow(removedIndex);
+			}
+		});
 		
 		disabledFunctionalitiesTable.setWidget(row, 1, enableFuncButton);
 	}
@@ -429,6 +444,7 @@ public class NewRuleView {
 		}
 		else {
 			RuleModel newRule = new RuleModel();
+			newRule.setKeyId(this.rule.getKeyId());
 			newRule.setName(ruleNameTextBox.getText());
 			newRule.setDisabledFunctionalities(loadFunctionalityIds());
 			
@@ -443,9 +459,9 @@ public class NewRuleView {
 			
 			newRule.setType(ruleTypeListBox.getSelectedIndex());
 			
-			AddRuleCallbackHandler addRuleCallback = new AddRuleCallbackHandler(baseViewHandler, newRule, this.cookieId, this.smartphone.getKeyId());
-			AddRuleServiceAsync addRuleService = GWT.create(AddRuleService.class);
-			addRuleService.addRule(this.cookieId, this.smartphone.getKeyId(), newRule, addRuleCallback);			
+			EditRuleCallbackHandler editRuleCallback = new EditRuleCallbackHandler(this.baseViewHandler, this.rule, newRule, this.cookieId, this.smartphone.getKeyId());
+			EditRuleServiceAsync editRuleService = GWT.create(EditRuleService.class);
+			editRuleService.editRule(newRule, editRuleCallback);
 		}				
 	}
 	
@@ -547,6 +563,59 @@ public class NewRuleView {
 				baseViewHandler.getBaseBinder().getNotice().setText("");
 				baseViewHandler.getBaseBinder().getCenterContent().add(baseViewHandler.getBaseBinder().getNotice());
 			}
+		}
+	}
+	
+	public void setOldRuleValues() {
+		this.ruleTypeListBox.setSelectedIndex(this.rule.getType());
+		loadFunctionalities();
+		
+		int row = 0;
+		String funcDesc;
+		
+		for (int func : this.rule.getDisabledFunctionalities()) {
+			funcDesc = FunctionalityTypeId.findById(func);
+			this.disabledFunctionalities.add(funcDesc);
+		
+			this.disabledFunctionalitiesTable.setText(row, 0, funcDesc);
+
+			// Add a button to enable this functionality.
+			Button enableFuncButton = new Button("Enable");
+			enableFuncButton.addClickHandler(new EnableFunctionalityClickHandler(funcDesc, this.disabledFunctionalities, this.disabledFunctionalitiesTable));
+			
+			disabledFunctionalitiesTable.setWidget(row, 1, enableFuncButton);
+			
+			row++;
+		}
+		
+		this.ruleNameTextBox.setText(this.rule.getName());
+		
+		//012345678901234567890
+		//dd/MM/yyyy hh:mm:ss a
+		
+		this.fromDatePicker.getTextBox().setText(this.rule.getStartDate().substring(0, 10));
+		this.toDatePicker.getTextBox().setText(this.rule.getEndDate().substring(0, 10));
+		
+		this.hourTextBoxF.setText(this.rule.getStartDate().substring(11, 13));
+		this.minuteTextBoxF.setText(this.rule.getStartDate().substring(14, 16));
+		this.secondsTextBoxF.setText(this.rule.getStartDate().substring(17, 19));
+		
+		if (this.rule.getStartDate().substring(20).equals("AM")) {
+			this.ampmListBoxF.setSelectedIndex(0);
+		}
+		else {
+			this.ampmListBoxF.setSelectedIndex(1);
+		}
+		
+		this.hourTextBoxT.setText(this.rule.getEndDate().substring(11, 13));
+		this.minuteTextBoxT.setText(this.rule.getEndDate().substring(14, 16));
+		this.secondsTextBoxT.setText(this.rule.getEndDate().substring(17, 19));
+		
+		if (this.rule.getEndDate().substring(20).equals("AM")) {
+			this.ampmListBoxT.setSelectedIndex(0);
+		}
+		else {
+			this.ampmListBoxT.setSelectedIndex(1);
 		}
 	}
 }
