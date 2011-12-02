@@ -5,5 +5,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("close-ticket")
 public interface CloseTicketService extends RemoteService {
-	public Boolean closeTicket(String ticketKey) throws IllegalArgumentException;
+	public Boolean closeTicket(String ticketKey, String loggedUserKey) throws IllegalArgumentException;
 }

@@ -112,6 +112,7 @@ public class PCSmartphone {
 	/**
 	 * Specifies the device information of a specific smartphone.
      */
+	@Persistent
 	private Key device;
 	
 	/**

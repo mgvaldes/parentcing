@@ -3,6 +3,7 @@ package com.ing3nia.parentalcontrol.services;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.ws.rs.GET;
@@ -16,10 +17,12 @@ import org.datanucleus.store.mapped.expression.ArrayLiteral;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.JsonObject;
+import com.ing3nia.parentalcontrol.client.utils.CategoryType;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.PCActivityStatistics;
 import com.ing3nia.parentalcontrol.models.PCApplication;
+import com.ing3nia.parentalcontrol.models.PCCategory;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
@@ -33,6 +36,7 @@ import com.ing3nia.parentalcontrol.models.PCDevice.PCOs;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.utils.PCOsTypeId;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.server.AddTicketServiceImpl;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("init")
@@ -42,6 +46,8 @@ public class InitResource {
 	public InitResource() {
 		
 	}
+	
+	private static Logger logger = Logger.getLogger(InitResource.class.getName());
 	
 	@GET
 	public Response doGet() {
@@ -69,18 +75,31 @@ public class InitResource {
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
 	*/
 		
-		//createDummyApplication(pm);
-		PCFunctionality func;
-		//pm = ServiceUtils.PMF.getPersistenceManager();
+		createDummyApplication(pm);
 		
-		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
-		
-		for (FunctionalityTypeId f : funcs) {
-			func = new PCFunctionality();
-			func.setId(f.getId());
-			func.setDescription(f.getDescription());
-			pm.makePersistent(func);
-		}
+//		PCFunctionality func;
+//		//pm = ServiceUtils.PMF.getPersistenceManager();
+//		
+//		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
+//		
+//		for (FunctionalityTypeId f : funcs) {
+//			func = new PCFunctionality();
+//			func.setId(f.getId());
+//			func.setDescription(f.getDescription());
+//			pm.makePersistent(func);
+//		}
+//		
+//		PCCategory categ;
+//		
+//		CategoryType[] categories = CategoryType.values();
+//		
+//		for (CategoryType c : categories) {
+//			categ = new PCCategory();
+//			categ.setId(c.getId());
+//			categ.setDescription(c.getDescription());
+//			pm.makePersistent(categ);
+//			logger.info("categoria: " + categ.getKey());
+//		}
 		
 		pm.close();
 		

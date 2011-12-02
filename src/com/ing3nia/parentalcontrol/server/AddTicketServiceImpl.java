@@ -39,7 +39,7 @@ public class AddTicketServiceImpl extends RemoteServiceServlet implements AddTic
 			PCUser user = (PCUser)pm.getObjectById(PCUser.class, userKey);
 			
 			PCHelpdeskTicket newTicket = new PCHelpdeskTicket();
-			newTicket.setAnswers(new ArrayList<PCHelpdeskTicketAnswer>());
+			newTicket.setAnswers(new ArrayList<Key>());
 			
 			//Buscar categoria
 			Query query = pm.newQuery(PCCategory.class);
@@ -56,14 +56,20 @@ public class AddTicketServiceImpl extends RemoteServiceServlet implements AddTic
 			newTicket.setQuestion(ticket.getComment());
 			newTicket.setSubject(ticket.getSubject());
 			newTicket.setStatus(true);
-			newTicket.setUser(user);
+			newTicket.setUser(userKey);
 			
 			pm.makePersistent(newTicket);
+			
+			if (user.getOpenTickets() == null) {
+				user.setOpenTickets(new ArrayList<Key>());
+			}
+			
+			user.getOpenTickets().add(newTicket.getKey());
 			
 			ticketKey = KeyFactory.keyToString(newTicket.getKey());
 		}
 		catch (Exception ex) {
-			
+			logger.info("[AddTicketService] An error occured saving the new ticket.");
 		}
 		finally {
 			pm.close();

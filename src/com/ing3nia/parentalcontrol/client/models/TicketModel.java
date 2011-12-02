@@ -18,7 +18,7 @@ public class TicketModel implements Serializable {
 	 * ticket created.
 	 */
 
-	private static int nextId = 0;
+//	private static int nextId = 0;
 	
 	/**
 	 * Ticket's key.
@@ -28,7 +28,7 @@ public class TicketModel implements Serializable {
 	/**
 	 * Represents the id of a ticket.
 	 */
-	private int id;
+//	private int id;
 	
 	/**
 	 * Indicates the category associated to a ticket.
@@ -60,11 +60,11 @@ public class TicketModel implements Serializable {
 		this.category = category;
 		this.subject = subject;
 		this.date = date;
-		this.id = getNextId();
+//		this.id = getNextId();
 		this.comment = comment;
 		this.answers = answers;
 		
-		setNextId(this.id);
+//		setNextId(this.id);
 	}
 	
 	public TicketModel(String key, String category, String subject, Date date, String comment, ArrayList<TicketAnswerModel> answers, String name) {
@@ -72,30 +72,30 @@ public class TicketModel implements Serializable {
 		this.category = category;
 		this.subject = subject;
 		this.date = date;
-		this.id = getNextId();
+//		this.id = getNextId();
 		this.comment = comment;
 		this.answers = answers;
 		this.name = name;
 		
-		setNextId(this.id);
+//		setNextId(this.id);
 	}
 	
 
-	public static int getNextId() {
-		return nextId;
-	}
-
-	public static void setNextId(int nextId) {
-		TicketModel.nextId = nextId;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
+//	public static int getNextId() {
+//		return nextId;
+//	}
+//
+//	public static void setNextId(int nextId) {
+//		TicketModel.nextId = nextId;
+//	}
+//
+//	public int getId() {
+//		return id;
+//	}
+//
+//	public void setId(int id) {
+//		this.id = id;
+//	}
 
 	public String getKey() {
 		return key;

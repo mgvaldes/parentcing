@@ -21,13 +21,12 @@ public class MenuSetterHandler {
 	private Button dashboardAlertList;
 	private Button dashboardDeviceMap;
 	
-	private Button ticketsButton;
-	private Button openTickets;
-	private Button closedTickets;
-	private Button newTicket;
+	private Button userTicketsButton;
+	private Button userNewTicket;
+	private Button adminOpenTickets;
+	private Button adminClosedTickets;	
 	
 	private Button parentSmartphoneButton;
-	
 	
 	public MenuSetterHandler(PCBaseUIBinder baseBinder){
 		this.baseBinder = baseBinder;
@@ -41,11 +40,10 @@ public class MenuSetterHandler {
 		this.deviceSettings = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.DeviceSettings.getClassname(), CenterMenuOptionsClassNames.DeviceSettings.getText());
 		this.dashboardAlertList = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.DashboardAlertList.getClassname(), CenterMenuOptionsClassNames.DashboardAlertList.getText());
 		this.dashboardDeviceMap = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.DashboardDeviceMap.getClassname(), CenterMenuOptionsClassNames.DashboardDeviceMap.getText());
-		this.ticketsButton = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.TicketList.getClassname(), CenterMenuOptionsClassNames.TicketList.getText());
-		this.closedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());
-		this.openTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.OpenTickets.getClassname(), CenterMenuOptionsClassNames.OpenTickets.getText());
-		this.newTicket = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.NewTicket.getClassname(), CenterMenuOptionsClassNames.NewTicket.getText()); 		
-		
+		this.userTicketsButton = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.TicketList.getClassname(), CenterMenuOptionsClassNames.TicketList.getText()); 
+		this.userNewTicket = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.NewTicket.getClassname(), CenterMenuOptionsClassNames.NewTicket.getText());
+		this.adminClosedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());
+		this.adminOpenTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.OpenTickets.getClassname(), CenterMenuOptionsClassNames.OpenTickets.getText());
 	}
 	/*
 	public initCenterMenuOptionsHandlers(){
@@ -165,37 +163,35 @@ public class MenuSetterHandler {
 		this.parentSmartphoneButton = parentSmartphoneButton;
 	}
 
-	public Button getTicketsButton() {
-		return ticketsButton;
+	public Button getUserTicketsButton() {
+		return userTicketsButton;
 	}
 
-	public void setTicketsButton(Button ticketsButton) {
-		this.ticketsButton = ticketsButton;
+	public void setUserTicketsButton(Button userTicketsButton) {
+		this.userTicketsButton = userTicketsButton;
 	}
 
-	public Button getOpenTickets() {
-		return openTickets;
+	public Button getUserNewTicket() {
+		return userNewTicket;
 	}
 
-	public void setOpenTickets(Button openTickets) {
-		this.openTickets = openTickets;
+	public void setUserNewTicket(Button userNewTicket) {
+		this.userNewTicket = userNewTicket;
 	}
 
-	public Button getClosedTickets() {
-		return closedTickets;
+	public Button getAdminOpenTickets() {
+		return adminOpenTickets;
 	}
 
-	public void setClosedTickets(Button closedTickets) {
-		this.closedTickets = closedTickets;
+	public void setAdminOpenTickets(Button adminOpenTickets) {
+		this.adminOpenTickets = adminOpenTickets;
 	}
 
-	public Button getNewTicket() {
-		return newTicket;
+	public Button getAdminClosedTickets() {
+		return adminClosedTickets;
 	}
 
-	public void setNewTicket(Button newTicket) {
-		this.newTicket = newTicket;
+	public void setAdminClosedTickets(Button adminClosedTickets) {
+		this.adminClosedTickets = adminClosedTickets;
 	}
-	
-	
 }

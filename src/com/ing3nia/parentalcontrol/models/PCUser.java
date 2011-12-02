@@ -69,6 +69,10 @@ public class PCUser {
 	 * 
 	 */
 	private ArrayList<Key> admins;
+	
+	private ArrayList<Key> openTickets;
+	
+	private ArrayList<Key> closedTickets;
 
 	public PCUser(Key key, String username, String password,
 			ArrayList<Key> smartphones, String email, String name, ArrayList<Key> admins) {
@@ -136,5 +140,21 @@ public class PCUser {
 
 	public void setAdmins(ArrayList<Key> admins) {
 		this.admins = admins;
+	}
+
+	public ArrayList<Key> getOpenTickets() {
+		return openTickets;
+	}
+
+	public void setOpenTickets(ArrayList<Key> openTickets) {
+		this.openTickets = openTickets;
+	}
+
+	public ArrayList<Key> getClosedTickets() {
+		return closedTickets;
+	}
+
+	public void setClosedTickets(ArrayList<Key> closedTickets) {
+		this.closedTickets = closedTickets;
 	}
 }

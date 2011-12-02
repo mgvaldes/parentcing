@@ -246,17 +246,16 @@ public class BaseViewHandler {
 	public void initTicketAdminCenterMenu(){
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
-		menuOptions.add(this.menuSetter.getTicketsButton());
-		menuOptions.add(this.menuSetter.getOpenTickets());
-		menuOptions.add(this.menuSetter.getClosedTickets());
+		menuOptions.add(this.menuSetter.getAdminOpenTickets());
+		menuOptions.add(this.menuSetter.getAdminClosedTickets());
 	}
 	
 	
 	public void initTicketUserCenterMenu(){
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
-		menuOptions.add(this.menuSetter.getOpenTickets());
-		menuOptions.add(this.menuSetter.getNewTicket());
+		menuOptions.add(this.menuSetter.getUserTicketsButton());
+		menuOptions.add(this.menuSetter.getUserNewTicket());
 	}
 	
 	public void clearCenterMenuStyle(){
@@ -283,16 +282,16 @@ public class BaseViewHandler {
 	
 	public void toggleTicketCenterMenu(CenterMenuOptionsClassNames menuOption){
 		if(menuOption.equals(CenterMenuOptionsClassNames.TicketList)){
-			this.menuSetter.getTicketsButton().setStyleName("selectedShinnyButton");
+			this.menuSetter.getUserTicketsButton().setStyleName("selectedShinnyButton");
 		}
 		else if(menuOption.equals(CenterMenuOptionsClassNames.OpenTickets)){
-			this.menuSetter.getOpenTickets().setStyleName("selectedShinnyButton");
+			this.menuSetter.getAdminOpenTickets().setStyleName("selectedShinnyButton");
 		}
 		else if(menuOption.equals(CenterMenuOptionsClassNames.ClosedTickets)){
-			this.menuSetter.getClosedTickets().setStyleName("selectedShinnyButton");
+			this.menuSetter.getAdminClosedTickets().setStyleName("selectedShinnyButton");
 		}
 		else if(menuOption.equals(CenterMenuOptionsClassNames.NewTicket)){
-			this.menuSetter.getClosedTickets().setStyleName("selectedShinnyButton");
+			this.menuSetter.getUserNewTicket().setStyleName("selectedShinnyButton");
 		}
 	}
 	

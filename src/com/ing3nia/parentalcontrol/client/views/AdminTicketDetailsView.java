@@ -161,20 +161,6 @@ public class AdminTicketDetailsView {
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
 		this.clearButton = new Button("Clear");
-		
-		DateTimeFormat  formatter = DateTimeFormat.getFormat("dd/MM/yyyy - KK:mm:ss a");
-		String stringDate = formatter.format(this.ticket.getDate());
-		
-		//addTestTicketAnswers();
-		//initTicketDetailsView(this.ticket.getSubject(), this.ticket.getComment(), stringDate);
-	}
-
-	public void addTestTicketAnswers() {
-		TicketAnswerModel answer = new TicketAnswerModel("13/11/2011 2:48:00 AM", "Conejo", "Hayaaaaaa!");
-		ticketAnswers.add(answer);
-		
-		answer = new TicketAnswerModel("13/11/2011 2:49:00 AM", "Conejo", "My name is El Coune...");
-		ticketAnswers.add(answer);
 	}
 	
 	public void initTicketDetailsView(String subject, String comment, String date) {
@@ -275,7 +261,7 @@ public class AdminTicketDetailsView {
 		for (TicketAnswerModel ans : ticketAnswers) {
 			ticketAnswerContent = new HTMLPanel("");
 			
-			answerInfo = new Label(ans.getDate() + " by " + ans.getUser());
+			answerInfo = new Label(ans.getDate() + " by " + ans.getUsername());
 			ticketAnswerContent.add(answerInfo);
 			
 			answer = new Label(ans.getAnswer());

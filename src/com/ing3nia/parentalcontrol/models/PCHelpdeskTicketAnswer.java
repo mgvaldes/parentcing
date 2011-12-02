@@ -3,11 +3,13 @@ package com.ing3nia.parentalcontrol.models;
 import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
+import javax.jdo.annotations.PersistenceCapable;
 import javax.jdo.annotations.Persistent;
 import javax.jdo.annotations.PrimaryKey;
 
 import com.google.appengine.api.datastore.Key;
 
+@PersistenceCapable
 public class PCHelpdeskTicketAnswer {
 	/**
 	 * Unique key.
@@ -17,10 +19,10 @@ public class PCHelpdeskTicketAnswer {
     private Key key;
 	
 	@Persistent
-	private PCAdmin admin;
+	private Key admin;
 	
 	@Persistent
-	private PCUser user;
+	private Key user;
 	
 	@Persistent
 	private Date date;
@@ -28,7 +30,7 @@ public class PCHelpdeskTicketAnswer {
 	@Persistent
 	private String answer;
 
-	public PCHelpdeskTicketAnswer(Key key, PCAdmin admin, Date date, PCUser user, String answer) {
+	public PCHelpdeskTicketAnswer(Key key, Key admin, Date date, Key user, String answer) {
 		super();
 		this.key = key;
 		this.admin = admin;
@@ -49,11 +51,11 @@ public class PCHelpdeskTicketAnswer {
 		this.key = key;
 	}
 
-	public PCAdmin getAdmin() {
+	public Key getAdmin() {
 		return admin;
 	}
 
-	public void setAdmin(PCAdmin admin) {
+	public void setAdmin(Key admin) {
 		this.admin = admin;
 	}
 
@@ -65,11 +67,11 @@ public class PCHelpdeskTicketAnswer {
 		this.date = date;
 	}
 
-	public PCUser getUser() {
+	public Key getUser() {
 		return user;
 	}
 
-	public void setUser(PCUser user) {
+	public void setUser(Key user) {
 		this.user = user;
 	}
 

@@ -8,14 +8,17 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
 import com.ing3nia.parentalcontrol.client.rpc.AdminOpenTicketListService;
+import com.ing3nia.parentalcontrol.models.PCAdmin;
 import com.ing3nia.parentalcontrol.models.PCCategory;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicketAnswer;
+import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AdminOpenTicketListServiceImpl extends RemoteServiceServlet implements AdminOpenTicketListService {
@@ -48,24 +51,36 @@ public class AdminOpenTicketListServiceImpl extends RemoteServiceServlet impleme
 		    	TicketAnswerModel auxAnswer;
 		    	SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		    	String username;
+		    	PCUser auxUser;
+		    	PCHelpdeskTicketAnswer ans;
+		    	PCUser user;
+		    	PCAdmin admin;
+		    	String userAdminKey;
 	        	
 	            for (PCHelpdeskTicket t : results) {
 	            	category = (PCCategory)pm.getObjectById(PCCategory.class, t.getCategory());
 		    		answers = new ArrayList<TicketAnswerModel>();
 		    		
-		    		for (PCHelpdeskTicketAnswer ans : t.getAnswers()) {
+		    		for (Key ansKey : t.getAnswers()) {
+		    			ans = pm.getObjectById(PCHelpdeskTicketAnswer.class, ansKey);
+		    			
 		    			if (ans.getAdmin() == null) {
-		    				username = ans.getUser().getUsername();
+		    				user = pm.getObjectById(PCUser.class, ans.getUser());
+		    				username = user.getUsername();
+		    				userAdminKey = KeyFactory.keyToString(ans.getUser());
 		    			}
 		    			else {
-		    				username = ans.getAdmin().getUsername();
+		    				admin = pm.getObjectById(PCAdmin.class, ans.getAdmin());
+		    				username = admin.getUsername();
+		    				userAdminKey = KeyFactory.keyToString(ans.getAdmin());
 		    			}
 		    			
-		    			auxAnswer = new TicketAnswerModel(formatter.format(ans.getDate()), username, ans.getAnswer());
+		    			auxAnswer = new TicketAnswerModel(formatter.format(ans.getDate()), userAdminKey, ans.getAnswer(), username);
 		    			answers.add(auxAnswer);
 		    		}
 		    		
-		    		auxTicket = new TicketModel(KeyFactory.keyToString(t.getKey()), category.getDescription(), t.getSubject(), t.getDate(), t.getQuestion(), answers, t.getUser().getUsername());
+		    		auxUser = pm.getObjectById(PCUser.class, t.getUser());
+		    		auxTicket = new TicketModel(KeyFactory.keyToString(t.getKey()), category.getDescription(), t.getSubject(), t.getDate(), t.getQuestion(), answers, auxUser.getUsername());
 		    		openTickets.add(auxTicket);
 	            }
 	        }
