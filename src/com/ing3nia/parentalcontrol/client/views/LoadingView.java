@@ -15,6 +15,8 @@ import com.ing3nia.parentalcontrol.client.PCLoginUIBinder;
 
 public class LoadingView{
 	
+	static Image loadingImage = new Image("/media/images/loading.gif");
+	
 	public static void setLoadingView(PCLoginUIBinder pclogin, String text, Image loadingImage){
 		FlowPanel loadingView = pclogin.getLoadingBlock();
 		loadingView.clear();
@@ -44,6 +46,7 @@ public class LoadingView{
 		loadingLabel.setStyleName("loadingLabel");
 		loadingView.add(loadingLabel);
 	}
+	
 	
 	public static void clearLoadingView(PCBaseUIBinder pcbase){
 		pcbase.getLoadingBlock().clear();

@@ -13,6 +13,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
@@ -65,6 +66,8 @@ public class RuleListView {
 		this.centerContent.clear();
 		this.rules = ruleList;
 		this.addRuleButton = new Button("Add Rule");
+		DOM.setElementProperty(addRuleButton.getElement(), "id", "addRuleButton");
+		
 		this.pager = new SimplePager();
 	}
 	

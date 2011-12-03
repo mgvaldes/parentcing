@@ -20,8 +20,8 @@ public class DeviceContactsClickHandler implements ClickHandler{
 	
 	public DeviceContactsClickHandler(String key, BaseViewHandler baseView, SmartphoneModel smartphone){
 		this.key = key;
-		this.centerContent = centerContent;
-		this.menuSetter = menuSetter;
+		this.centerContent = baseView.getBaseBinder().getCenterContent();
+		this.menuSetter = baseView.getMenuSetter();
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.menuSetter = baseView.getMenuSetter();
@@ -42,7 +42,7 @@ public class DeviceContactsClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
 		//DeviceContactListView view = new DeviceContactListView(centerContent);
-		DeviceContactListView view = new DeviceContactListView(centerContent, CookieHandler.getPCCookie(), smartphone);
+		DeviceContactListView view = new DeviceContactListView(baseView, CookieHandler.getPCCookie(), smartphone);
 		view.initDeviceContactListView();
 	}
 }

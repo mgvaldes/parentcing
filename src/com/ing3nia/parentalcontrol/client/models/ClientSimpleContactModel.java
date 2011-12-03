@@ -3,6 +3,12 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.util.ArrayList;
 
 public class ClientSimpleContactModel {
+	
+	/**
+	 * Contact Key
+	 */
+	private String keyId;
+	
 	/**
 	 * Contact's first name.
 	 */
@@ -26,7 +32,10 @@ public class ClientSimpleContactModel {
 	
 	private ArrayList<OrganizationModel> organizations;
 	
-	public ClientSimpleContactModel(String firstName, String lastName, String phone, int phoneType, ArrayList<String> emails, ArrayList<AddressModel> addresses, ArrayList<OrganizationModel> organizations) {
+	private boolean wasOriginallyActive;
+	
+	public ClientSimpleContactModel(String keyId, String firstName, String lastName, String phone, int phoneType, ArrayList<String> emails, ArrayList<AddressModel> addresses, ArrayList<OrganizationModel> organizations) {
+		this.keyId = keyId;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phone = phone;
@@ -91,4 +100,23 @@ public class ClientSimpleContactModel {
 	public void setOrganizations(ArrayList<OrganizationModel> organizations) {
 		this.organizations = organizations;
 	}
+
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
+	public void setWasOriginallyActive(boolean wasOriginallyActive) {
+		this.wasOriginallyActive = wasOriginallyActive;
+	}
+
+	public boolean getWasOriginallyActive() {
+		return wasOriginallyActive;
+	}
+
+	
+
 }

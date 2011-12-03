@@ -13,6 +13,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -94,10 +95,16 @@ public class DeviceEmergencyNumberListView {
 		this.emergencyNumbersLabel = new Label("Emergency Numbers:");
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");
+		DOM.setElementProperty(contactsButton.getElement(), "id", "normalContactButton");
+
 		this.emergencyContactsButton = new Button("Emergency Contacts");
+		DOM.setElementProperty(emergencyContactsButton.getElement(), "id", "emergencyContactsButton");
+		
 		this.emergencyNumberTable = new CellTable<EmergencyNumberModel>(10);
 		this.pager = new SimplePager();
 		this.saveButton = new Button("Save");
+		DOM.setElementProperty(saveButton.getElement(), "id", "saveEmergencyNumbersButton");
+		
 		this.centerContent.clear();
 		
 		addTestDeviceEmergencyNumbers();

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -216,7 +217,11 @@ public class DeviceContactDetailsView {
 		contactDetailsLabel = new Label("Contact Details:");
 		contactTable = new FlexTable();
 		disallowButton = new Button("Disallow");
+		DOM.setElementProperty(disallowButton.getElement(), "id", "disallowButton");
+
 		allowButton = new Button("Allow");
+		DOM.setElementProperty(allowButton.getElement(), "id", "allowButton");
+		
 		contactInfoPanel = new HTMLPanel("");
 		contactLabel = new Label("Contact:");
 		firstNameLabel = new Label("First Name:");

@@ -9,6 +9,7 @@ import java.util.Calendar;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -160,15 +161,22 @@ public class DeviceSettingsView {
 		
 		blockPhonePanel = new FlowPanel();
 		blockPhoneButton = new Button("Block Phone");
+		DOM.setElementProperty(blockPhoneButton.getElement(), "id", "blockPhoneButton");
+		
 		blockPhoneLabel = new Label("(In the case your mobile phone is stolen, you must report the theft inmediately to your operator)");
 		
 		restorePhonePanel = new FlowPanel();
 		restorePhoneButton = new Button("Restore Phone");
+		DOM.setElementProperty(restorePhoneButton.getElement(), "id", "restorePhoneButton");
+		
 		restorePhoneLabel = new Label("(Restore phone to default settings before installing PRC)");
 		
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
+		DOM.setElementProperty(saveButton.getElement(), "id", "saveSettingsButton");
+	
 		this.clearButton = new Button("Clear");
+		DOM.setElementProperty(clearButton.getElement(), "id", "clearSettingsButton");
 		
 		this.centerContent.clear();
 		initDeviceSettingsView();

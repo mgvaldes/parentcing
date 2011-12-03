@@ -7,5 +7,6 @@ public class AsyncronousCallsMessages {
 	public static String REQUESTING_DATA = "Requesting user data";
 	public static String ERROR_REQUESTING_DATE = "The request could not be processed";
 	public static String LOADING_DEVICES_MAP = "Loading Devices Map";
+	public static String SAVING_DEVICE_CONTACTS = "Saving contacts settings";
 	
 }

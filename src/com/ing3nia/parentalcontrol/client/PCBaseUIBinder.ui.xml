@@ -23,7 +23,6 @@
 			<g:FlowPanel styleName="leftMenuHeader">
 				<g:Label styleName="deviceLabel" text="Device List"/>
 				<g:FlowPanel styleName="deviceOptions">
-					<g:FlowPanel styleName="loadingBlock" ui:field="loadingBlock"></g:FlowPanel>
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:FlowPanel styleName="deviceMenu">
@@ -40,6 +39,7 @@
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:HTMLPanel styleName="centerContent" ui:field="centerContent">
+				<g:FlowPanel styleName="loadingBlock" ui:field="loadingBlock"></g:FlowPanel>
 				<g:Label styleName="notice" ui:field="notice"></g:Label>
 			</g:HTMLPanel>
 		</g:HTMLPanel>

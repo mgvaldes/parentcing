@@ -71,7 +71,7 @@ public class InitResource {
 		
 		//createDummyApplication(pm);
 		PCFunctionality func;
-		//pm = ServiceUtils.PMF.getPersistenceManager();
+		pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		FunctionalityTypeId[] funcs = FunctionalityTypeId.values();
 		
