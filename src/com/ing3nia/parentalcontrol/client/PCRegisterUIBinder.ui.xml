@@ -1,6 +1,6 @@
-<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
-	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
 	<g:HTMLPanel styleName="mainPanel">
 		<g:HTMLPanel styleName="bodyPanel">
 			<g:HTMLPanel styleName="centerPanelLogin">
@@ -14,17 +14,15 @@
 						<g:TextBox ui:field="emailField" />
 						<g:Label text="Password" ui:field="passwordLabel" />
 						<g:PasswordTextBox ui:field="passField" />
-
-						<g:FlowPanel styleName="rememberMeBox">
-							<g:CheckBox ui:field="rememberMeBox" text="Remember me" />
-						</g:FlowPanel>
+						<g:Label text="Confirm Password" ui:field="confirmPasswordLabel" />
+						<g:PasswordTextBox ui:field="confirmPassField" />
+						<g:Label text="Name" ui:field="nameLabel" />
+						<g:TextBox ui:field="nameField" />
 
 						<g:FlowPanel styleName="signInButton">
-							<g:Button ui:field="signInButton" text="Sign In"
-								styleName="selectedShinnyButton" />
 							<g:Button ui:field="registerButton" text="Register"
 								styleName="selectedShinnyButton" />
-						</g:FlowPanel>
+						</g:FlowPanel>						
 						<g:FlowPanel styleName="loadingBlock" ui:field="loadingBlock"></g:FlowPanel>
 						<g:Label styleName="notice" ui:field="notice"></g:Label>
 					</g:FlowPanel>
@@ -42,5 +40,4 @@
 			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:HTMLPanel>
-	
-</ui:UiBinder>
+</ui:UiBinder> 

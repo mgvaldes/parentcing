@@ -4,7 +4,6 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -12,23 +11,23 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PCLoginUIBinder extends Composite {
-
+public class PCRegisterUIBinder extends Composite {
+	
 	@UiField Label notice;
-	@UiField Button signInButton;
 	@UiField Button registerButton;
 	@UiField TextBox emailField;
+	@UiField TextBox nameField;
 	@UiField PasswordTextBox passField;
+	@UiField PasswordTextBox confirmPassField;
 	@UiField FlowPanel loginFieldsBox;
 	@UiField FlowPanel loadingBlock;
-	@UiField CheckBox rememberMeBox;
-	
-	private static PCLoginUIBinderUiBinder uiBinder = GWT.create(PCLoginUIBinderUiBinder.class);
 
-	interface PCLoginUIBinderUiBinder extends UiBinder<Widget, PCLoginUIBinder> {
+	private static PCRegisterUIBinderUiBinder uiBinder = GWT.create(PCRegisterUIBinderUiBinder.class);
+
+	interface PCRegisterUIBinderUiBinder extends UiBinder<Widget, PCRegisterUIBinder> {
 	}
 
-	public PCLoginUIBinder() {
+	public PCRegisterUIBinder() {
 		initWidget(uiBinder.createAndBindUi(this));
 	}
 
@@ -38,14 +37,6 @@ public class PCLoginUIBinder extends Composite {
 
 	public void setNotice(Label notice) {
 		this.notice = notice;
-	}
-
-	public Button getSignInButton() {
-		return signInButton;
-	}
-
-	public void setSignInButton(Button signInButton) {
-		this.signInButton = signInButton;
 	}
 
 	public Button getRegisterButton() {
@@ -64,6 +55,14 @@ public class PCLoginUIBinder extends Composite {
 		this.emailField = emailField;
 	}
 
+	public TextBox getNameField() {
+		return nameField;
+	}
+
+	public void setNameField(TextBox nameField) {
+		this.nameField = nameField;
+	}
+
 	public PasswordTextBox getPassField() {
 		return passField;
 	}
@@ -72,12 +71,20 @@ public class PCLoginUIBinder extends Composite {
 		this.passField = passField;
 	}
 
-	public FlowPanel getLoginFieldsBox() {
+	public PasswordTextBox getConfirmPassField() {
+		return confirmPassField;
+	}
+
+	public void setConfirmPassField(PasswordTextBox confirmPassField) {
+		this.confirmPassField = confirmPassField;
+	}
+
+	public FlowPanel getRegisterFieldsBox() {
 		return loginFieldsBox;
 	}
 
-	public void setLoginFieldsBox(FlowPanel loginFieldsBox) {
-		this.loginFieldsBox = loginFieldsBox;
+	public void setRegisterFieldsBox(FlowPanel registerFieldsBox) {
+		this.loginFieldsBox = registerFieldsBox;
 	}
 
 	public FlowPanel getLoadingBlock() {
@@ -86,13 +93,5 @@ public class PCLoginUIBinder extends Composite {
 
 	public void setLoadingBlock(FlowPanel loadingBlock) {
 		this.loadingBlock = loadingBlock;
-	}
-
-	public CheckBox getRememberMeBox() {
-		return rememberMeBox;
-	}
-
-	public void setRememberMeBox(CheckBox rememberMeBox) {
-		this.rememberMeBox = rememberMeBox;
 	}
 }

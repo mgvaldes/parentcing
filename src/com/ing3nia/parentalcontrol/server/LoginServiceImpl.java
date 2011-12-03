@@ -30,11 +30,11 @@ import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
 import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.utils.ContactInfo;
 import com.ing3nia.parentalcontrol.client.utils.PCURLMapper;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
-import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
 import com.google.gwt.http.client.Request;
