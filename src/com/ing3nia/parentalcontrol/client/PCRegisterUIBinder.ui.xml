@@ -1,0 +1,43 @@
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<g:HTMLPanel styleName="mainPanel">
+		<g:HTMLPanel styleName="bodyPanel">
+			<g:HTMLPanel styleName="centerPanelLogin">
+				<g:HTMLPanel styleName="centerPanelLoginContent">
+					<g:FlowPanel styleName="pclogoLoginContainer">
+						<g:Image styleName="pclogoLogin" url="/media/images/pclogo.png"
+							ui:field="pclogo" />
+					</g:FlowPanel>
+					<g:FlowPanel styleName="loginFieldsBox" ui:field="loginFieldsBox">
+						<g:Label text="Email" ui:field="emailLabel" />
+						<g:TextBox ui:field="emailField" />
+						<g:Label text="Password" ui:field="passwordLabel" />
+						<g:PasswordTextBox ui:field="passField" />
+						<g:Label text="Confirm Password" ui:field="confirmPasswordLabel" />
+						<g:PasswordTextBox ui:field="confirmPassField" />
+						<g:Label text="Name" ui:field="nameLabel" />
+						<g:TextBox ui:field="nameField" />
+
+						<g:FlowPanel styleName="signInButton">
+							<g:Button ui:field="registerButton" text="Register"
+								styleName="selectedShinnyButton" />
+						</g:FlowPanel>						
+						<g:FlowPanel styleName="loadingBlock" ui:field="loadingBlock"></g:FlowPanel>
+						<g:Label styleName="notice" ui:field="notice"></g:Label>
+					</g:FlowPanel>
+					<g:HTMLPanel />
+				</g:HTMLPanel>
+			</g:HTMLPanel>
+		</g:HTMLPanel>
+
+		<g:FlowPanel styleName="clearingDiv" />
+		<g:FlowPanel styleName="footer">
+			<g:FlowPanel styleName="footerText">
+				<g:Label styleName="daddyText" text="&#169;2011 DaddyText" />
+				<g:Label styleName="footerSep" text="-" />
+				<g:Label styleName="footerClick" text="Terms and Conditions" />
+			</g:FlowPanel>
+		</g:FlowPanel>
+	</g:HTMLPanel>
+</ui:UiBinder> 

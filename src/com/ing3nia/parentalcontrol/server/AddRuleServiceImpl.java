@@ -60,6 +60,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 			date = sdf.parse(newRule.getEndDate());
 			rule.setEndDate(date);
 			rule.setName(newRule.getName());
+			rule.setType(newRule.getType());
 			
 			logger.info("[Add Rule Service] Setting new funcionalities to rules");
 			PersistenceManager pm2 = ServiceUtils.PMF.getPersistenceManager();

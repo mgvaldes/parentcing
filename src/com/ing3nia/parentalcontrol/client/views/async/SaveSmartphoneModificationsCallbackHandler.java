@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Widget;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.DeviceSettingsClickHandler;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
@@ -77,6 +79,8 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 				
 				baseView.getBaseBinder().getNotice().setText("Device settings saved successfully.");
 				baseView.getBaseBinder().getCenterContent().add(baseView.getBaseBinder().getNotice());
+				
+				changeSmarpthoneUIName(this.deviceName, baseView.getClickedSmartphoneIndex());			
 			}
 			else if (this.option == 2) { //SaveMod contacts
 				
@@ -96,6 +100,28 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 			baseView.getBaseBinder().getCenterContent().add(baseView.getBaseBinder().getNotice());
 		}
 	}
+	
+	public void changeSmarpthoneUIName(String newName, int index) {
+		FlowPanel deviceChoiceList = baseView.getBaseBinder()
+				.getDeviceChoiceList();
+		int count = 0;
+		for (int i = 0; i < deviceChoiceList.getWidgetCount(); i++) {
+			Widget w = deviceChoiceList.getWidget(i);
+			if (w instanceof FlowPanel) {
+				FlowPanel flowpanel = (FlowPanel) w;
+				for (int j = 0; j < flowpanel.getWidgetCount(); j++) {
+					Widget w2 = flowpanel.getWidget(j);
+					if (count == index) {
+						Button b = (Button) w2;
+						b.setText(newName);
+						break;
+					}
+					count++;
+				}
+			}
+		}
+	}
+	
 	
 	public PropertyModel findSpeedLimitProperty(SmartphoneModel smartphone) {
 		PropertyModel speedLimitProp = null;

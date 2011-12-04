@@ -1,11 +1,9 @@
 package com.ing3nia.parentalcontrol.client.views.subviews;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import com.gargoylesoftware.htmlunit.javascript.host.Text;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -15,8 +13,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -25,24 +21,14 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
-import com.google.gwt.user.datepicker.client.DatePicker;
-import com.ibm.icu.text.DateFormat;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
-import com.ing3nia.parentalcontrol.client.handlers.click.AlertRulesClickHandler;
-import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.client.handlers.click.EnableFunctionalityClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleServiceAsync;
-import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
-import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
-import com.ing3nia.parentalcontrol.client.views.AdminUserListView;
-import com.ing3nia.parentalcontrol.client.views.RuleListView;
 import com.ing3nia.parentalcontrol.client.views.async.AddRuleCallbackHandler;
-import com.ing3nia.parentalcontrol.client.views.async.SaveSmartphoneModificationsCallbackHandler;
-import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
-import com.ing3nia.parentalcontrol.server.AddRuleServiceImpl;
 
 public class NewRuleView {
 	/**
@@ -115,7 +101,7 @@ public class NewRuleView {
 	/**
 	 * Disabled functionalities list.
 	 */
-	private List<String> disabledFunctionalities;
+	private ArrayList<String> disabledFunctionalities;
 	
 	/**
 	 * Panel to group date widgets
@@ -341,30 +327,10 @@ public class NewRuleView {
 		this.newRuleContent.add(this.disabledFunctionalitiesTable);
 		
 		this.datePanel.add(this.fromDateLabel);
-		//this.datePanel.add(this.fromDateTextBox);
-		
-//		this.fromDatePicker.addValueChangeHandler(new ValueChangeHandler() {
-//			public void onValueChange(ValueChangeEvent event) {
-//				DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
-//				Date date = (Date)event.getValue();
-//				String dateString = formatter.format(date);
-//				fromDateTextBox.setText(dateString);
-//			}
-//		});
 		
 		this.fromDatePicker.setFormat(new DateBox.DefaultFormat(formatter));
 		this.datePanel.add(this.fromDatePicker);
 		this.datePanel.add(this.toDateLabel);
-		//this.datePanel.add(this.toDateTextBox);
-		
-//		this.toDatePicker.addValueChangeHandler(new ValueChangeHandler() {
-//			public void onValueChange(ValueChangeEvent event) {
-//				DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
-//				Date date = (Date)event.getValue();
-//				String dateString = formatter.format(date);
-//				toDateTextBox.setText(dateString);
-//			}
-//		});
 		
 		this.toDatePicker.setFormat(new DateBox.DefaultFormat(formatter));
 		this.datePanel.add(this.toDatePicker);
@@ -373,10 +339,8 @@ public class NewRuleView {
 		this.fromTimePanel.add(this.fromTimeLabel);
 		this.hourTextBoxF.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxF, true));
 		this.fromTimePanel.add(this.hourTextBoxF);
-		//this.fromTimePanel.add(new Label(":"));
 		this.minuteTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxF, true, true));
 		this.fromTimePanel.add(this.minuteTextBoxF);
-		//this.fromTimePanel.add(new Label(":"));
 		this.secondsTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxF, true, false));
 		this.fromTimePanel.add(this.secondsTextBoxF);		
 		this.fromTimePanel.add(this.ampmListBoxF);
@@ -385,10 +349,8 @@ public class NewRuleView {
 		this.tillTimePanel.add(this.tillTimeLabel);
 		this.hourTextBoxT.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxT, false));
 		this.tillTimePanel.add(this.hourTextBoxT);
-		//this.tillTimePanel.add(new Label(":"));
 		this.minuteTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxT, false, true));
 		this.tillTimePanel.add(this.minuteTextBoxT);
-		//this.tillTimePanel.add(new Label(":"));
 		this.secondsTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxT, false, false));
 		this.tillTimePanel.add(this.secondsTextBoxT);
 		this.tillTimePanel.add(this.ampmListBoxT);
@@ -430,14 +392,9 @@ public class NewRuleView {
 		
 		this.disabledFunctionalities = new ArrayList<String>();
 		this.disabledFunctionalitiesTable.removeAllRows();
-		
-//		this.disabledFunctionalitiesTable.clear();
-//		this.disabledFunctionalitiesTable.clear(true);
 	}
 	
 	public void addDisabledFunctionality() {
-		//this.disabledFunctionalitiesListBox.setSelectedIndex(0);
-
 		// Don't add the disabled functionality if it's already in the table.
 		final String selectedDisabledFunc = this.disabledFunctionalitiesListBox.getItemText(this.disabledFunctionalitiesListBox.getSelectedIndex());
 		if (this.disabledFunctionalities.contains(selectedDisabledFunc)) {
@@ -451,13 +408,7 @@ public class NewRuleView {
 
 		// Add a button to enable this functionality.
 		Button enableFuncButton = new Button("Enable");
-		enableFuncButton.addClickHandler(new ClickHandler() {
-			public void onClick(ClickEvent event) {
-				int removedIndex = disabledFunctionalities.indexOf(selectedDisabledFunc);
-				disabledFunctionalities.remove(removedIndex);
-				disabledFunctionalitiesTable.removeRow(removedIndex);
-			}
-		});
+		enableFuncButton.addClickHandler(new EnableFunctionalityClickHandler(selectedDisabledFunc, this.disabledFunctionalities, this.disabledFunctionalitiesTable));
 		
 		disabledFunctionalitiesTable.setWidget(row, 1, enableFuncButton);
 	}
@@ -490,6 +441,8 @@ public class NewRuleView {
 			auxDate = toDatePicker.getTextBox().getText() + " " + hourTextBoxT.getText() + ":" + minuteTextBoxT.getText() + ":" + secondsTextBoxT.getText() + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
 			newRule.setEndDate(auxDate);
 			
+			newRule.setType(ruleTypeListBox.getSelectedIndex());
+			
 			AddRuleCallbackHandler addRuleCallback = new AddRuleCallbackHandler(baseViewHandler, newRule, this.cookieId, this.smartphone.getKeyId());
 			AddRuleServiceAsync addRuleService = GWT.create(AddRuleService.class);
 			addRuleService.addRule(this.cookieId, this.smartphone.getKeyId(), newRule, addRuleCallback);			
@@ -510,8 +463,6 @@ public class NewRuleView {
 		this.ruleTypeListBox.setSelectedIndex(0);
 		this.ruleNameTextBox.setText("");
 		this.disabledFunctionalitiesListBox.setSelectedIndex(0);
-//		this.fromDateTextBox.setText("");
-//		this.toDateTextBox.setText("");
 		this.fromDatePicker.getTextBox().setText("");
 		this.toDatePicker.getTextBox().setText("");
 		this.hourTextBoxF.setText("");

@@ -1,17 +1,11 @@
 package com.ing3nia.parentalcontrol.client.views;
 
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.safehtml.shared.SafeUri;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.ClickListener;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.PCLoginUIBinder;
+import com.ing3nia.parentalcontrol.client.PCRegisterUIBinder;
 
 public class LoadingView{
 	
@@ -27,8 +21,22 @@ public class LoadingView{
 		loadingView.add(loadingLabel);
 	}
 	
+	public static void setLoadingView(PCRegisterUIBinder pcregister, String text, Image loadingImage){
+		FlowPanel loadingView = pcregister.getLoadingBlock();
+		loadingView.clear();
+		loadingView.setStyleName("loadingView");
+		loadingView.add(loadingImage);
+		Label loadingLabel = new Label(text);
+		loadingLabel.setStyleName("loadingLabel");
+		loadingView.add(loadingLabel);
+	}
+	
 	public static void clearLoadingView(PCLoginUIBinder pclogin){
 		pclogin.getLoadingBlock().clear();
+	}
+	
+	public static void clearLoadingView(PCRegisterUIBinder pcregister){
+		pcregister.getLoadingBlock().clear();
 	}
 	
 	public static void changeLoadingMessage(PCLoginUIBinder pclogin, String text){

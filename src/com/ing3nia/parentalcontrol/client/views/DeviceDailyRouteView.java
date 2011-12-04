@@ -124,17 +124,22 @@ public class DeviceDailyRouteView {
 	    LatLng[] locationArray = new LatLng[deviceRoute.size()];
 	    int locCounter = 0;
 	    
-	    for (GeoPtModel devLoc : deviceRoute) {
-	    	
-	    	locationArray[locCounter] = LatLng.newInstance(deviceRoute.get(locCounter).getLatitude(), deviceRoute.get(locCounter).getLongitude());
-	    	locCounter++;
-	    	
-	    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
-	    	//map.addOverlay(new Marker(deviceLoc));	 
-	    	    	
-	    	DeviceRouteLocationCallbackHandler locationCallback = new DeviceRouteLocationCallbackHandler(baseViewHandler.getMenuSetter().getParentSmartphoneButton(), this.routePanelBody);
-      	    	geocoder.getLocations(deviceLoc, locationCallback);	    	
-	    }
+		for (GeoPtModel devLoc : deviceRoute) {
+
+			locationArray[locCounter] = LatLng.newInstance(
+					deviceRoute.get(locCounter).getLatitude(),
+					deviceRoute.get(locCounter).getLongitude());
+			locCounter++;
+
+			deviceLoc = LatLng.newInstance(devLoc.getLatitude(),
+					devLoc.getLongitude());
+			// map.addOverlay(new Marker(deviceLoc));
+
+			DeviceRouteLocationCallbackHandler locationCallback = new DeviceRouteLocationCallbackHandler(
+					baseViewHandler.getMenuSetter().getParentSmartphoneButton(),
+					this.routePanelBody);
+			geocoder.getLocations(deviceLoc, locationCallback);
+		}
 	    
 	    //Polyline polyline = new Polyline(locationArray);
 	    //map.addOverlay(polyline);
@@ -145,9 +150,7 @@ public class DeviceDailyRouteView {
 	    	waypoints[i] = new Waypoint(latlng);
 	    	i++;
 	    }
-	    
 	    loadDirectionsRoute(waypoints);
-
 	}
 	
 

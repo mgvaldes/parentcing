@@ -1,4 +1,6 @@
-package com.ing3nia.parentalcontrol.services.models;
+package com.ing3nia.parentalcontrol.client.models;
+
+import java.io.Serializable;
 
 /**
  * Represents parent user in central system.
@@ -12,7 +14,7 @@ package com.ing3nia.parentalcontrol.services.models;
  *
  */
 
-public class UserModel {
+public class UserModel implements Serializable {
 	/**
 	 * The user's key.
 	 */

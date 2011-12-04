@@ -11,20 +11,19 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 
 public class PCLoginUIBinder extends Composite {
 
 	@UiField Label notice;
 	@UiField Button signInButton;
+	@UiField Button registerButton;
 	@UiField TextBox emailField;
 	@UiField PasswordTextBox passField;
 	@UiField FlowPanel loginFieldsBox;
 	@UiField FlowPanel loadingBlock;
 	@UiField CheckBox rememberMeBox;
 	
-	private static PCLoginUIBinderUiBinder uiBinder = GWT
-			.create(PCLoginUIBinderUiBinder.class);
+	private static PCLoginUIBinderUiBinder uiBinder = GWT.create(PCLoginUIBinderUiBinder.class);
 
 	interface PCLoginUIBinderUiBinder extends UiBinder<Widget, PCLoginUIBinder> {
 	}
@@ -47,6 +46,14 @@ public class PCLoginUIBinder extends Composite {
 
 	public void setSignInButton(Button signInButton) {
 		this.signInButton = signInButton;
+	}
+
+	public Button getRegisterButton() {
+		return registerButton;
+	}
+
+	public void setRegisterButton(Button registerButton) {
+		this.registerButton = registerButton;
 	}
 
 	public TextBox getEmailField() {
@@ -88,8 +95,4 @@ public class PCLoginUIBinder extends Composite {
 	public void setRememberMeBox(CheckBox rememberMeBox) {
 		this.rememberMeBox = rememberMeBox;
 	}
-
-
-	
-	
 }

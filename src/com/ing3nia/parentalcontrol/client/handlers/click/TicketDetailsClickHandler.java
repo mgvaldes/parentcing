@@ -32,13 +32,13 @@ public class TicketDetailsClickHandler implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 
-		baseViewHandler.toggleTicketCenterMenu(CenterMenuOptionsClassNames.TicketDetails);
-		
-		//TicketDetailsView view = new TicketDetailsView(centerContent, subject, comment, date);		
-		TicketDetailsView view = new TicketDetailsView(centerContent, ticket, userKey, isAdmin);
-		
-		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
-		view.initTicketDetailsView(ticket.getSubject(), ticket.getComment(), formatter.format(ticket.getDate()));
+//		baseViewHandler.toggleTicketCenterMenu(CenterMenuOptionsClassNames.TicketList);
+//		
+//		//TicketDetailsView view = new TicketDetailsView(centerContent, subject, comment, date);		
+//		TicketDetailsView view = new TicketDetailsView(centerContent, ticket, userKey, isAdmin);
+//		
+//		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+//		view.initTicketDetailsView(ticket.getSubject(), ticket.getComment(), formatter.format(ticket.getDate()));
 	}
 }
 	

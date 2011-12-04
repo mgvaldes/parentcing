@@ -7,14 +7,23 @@ import java.util.List;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.UserTicketListService;
+import com.ing3nia.parentalcontrol.client.rpc.UserTicketListServiceAsync;
+import com.ing3nia.parentalcontrol.client.views.async.CloseTicketCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.UserTicketListCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.EditAdminUserHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.TicketDetailsViewHandler;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
 
 public class TicketListView {
@@ -85,14 +94,14 @@ public class TicketListView {
 		// Setting up open tickets table 
 		
 		// Add a text column to show the id.
-		TextColumn<TicketModel> idColumn = new TextColumn<TicketModel>() {
-			@Override
-			public String getValue(TicketModel object) {
-				return String.valueOf(object.getId());
-			}
-		};
-		
-		openTicketsTable.addColumn(idColumn, "ID");
+//		TextColumn<TicketModel> idColumn = new TextColumn<TicketModel>() {
+//			@Override
+//			public String getValue(TicketModel object) {
+//				return String.valueOf(object.getId());
+//			}
+//		};
+//		
+//		openTicketsTable.addColumn(idColumn, "ID");
 		
 		// Add a text column to show the category.
 		TextColumn<TicketModel> categoryColumn = new TextColumn<TicketModel>() {
@@ -141,6 +150,9 @@ public class TicketListView {
 			}
 		});
 	    
+		TicketDetailsViewHandler ticketDetailsHandler = new TicketDetailsViewHandler(baseView, false, true);
+		viewColumn.setFieldUpdater(ticketDetailsHandler);
+		
 	    openTicketsTable.addColumn(viewColumn, "");
 	    
 	    // Add an view column to show the view button.
@@ -155,7 +167,7 @@ public class TicketListView {
 	    closeColumn.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
 			@Override
 			public void update(int index, TicketModel object, String value) {
-				closeTicket(object.getKey());
+				closeTicket(object);
 			}
 		});
 	    
@@ -178,14 +190,14 @@ public class TicketListView {
 		// Setting up closed tickets table 
 		
 		// Add a text column to show the id.
-		TextColumn<TicketModel> idColumnC = new TextColumn<TicketModel>() {
-			@Override
-			public String getValue(TicketModel object) {
-				return String.valueOf(object.getId());
-			}
-		};
-		
-		closedTicketsTable.addColumn(idColumnC, "ID");
+//		TextColumn<TicketModel> idColumnC = new TextColumn<TicketModel>() {
+//			@Override
+//			public String getValue(TicketModel object) {
+//				return String.valueOf(object.getId());
+//			}
+//		};
+//		
+//		closedTicketsTable.addColumn(idColumnC, "ID");
 		
 		// Add a text column to show the category.
 		TextColumn<TicketModel> categoryColumnC = new TextColumn<TicketModel>() {
@@ -227,12 +239,8 @@ public class TicketListView {
 	    	}
 	    };
 	    
-		viewColumnC.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
-			@Override
-			public void update(int index, TicketModel object, String value) {
-				// The user clicked on the view button.
-			}
-		});
+		TicketDetailsViewHandler ticketDetailsHandlerC = new TicketDetailsViewHandler(baseView, false, false);
+		viewColumnC.setFieldUpdater(ticketDetailsHandlerC);
 	    
 		closedTicketsTable.addColumn(viewColumnC, "");
 	    
@@ -250,8 +258,10 @@ public class TicketListView {
 	    
 	}
 	
-	public void closeTicket(String tiketKey) {
-		
+	public void closeTicket(TicketModel ticket) {
+		CloseTicketCallbackHandler closeTicketCallback = new CloseTicketCallbackHandler(this.baseView, ticket);
+		CloseTicketServiceAsync closeTicketService = GWT.create(CloseTicketService.class);
+		closeTicketService.closeTicket(ticket.getKey(), this.baseView.getUser().getKey(), closeTicketCallback);
 	}
 	
 	public void initUserTicketList(){

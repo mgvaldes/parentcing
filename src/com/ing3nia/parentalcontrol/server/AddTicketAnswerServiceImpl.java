@@ -32,18 +32,23 @@ public class AddTicketAnswerServiceImpl extends RemoteServiceServlet implements 
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
 		try {
-			Key tickKey = KeyFactory.stringToKey(ticketKey);
+			logger.info("[AddTicketAnswerService] searching for ticket with key: " + ticketKey);
+			Key tickKey = KeyFactory.stringToKey(ticketKey);			
 			PCHelpdeskTicket ticket = (PCHelpdeskTicket)pm.getObjectById(PCHelpdeskTicket.class, tickKey);
+			
+			logger.info("[AddTicketAnswerService] Creating new ticket answer.");
 			PCHelpdeskTicketAnswer helpdeskAnswer = new PCHelpdeskTicketAnswer();
-			Key userOrAdminKey = KeyFactory.stringToKey(answer.getUser());
+			Key userOrAdminKey = KeyFactory.stringToKey(answer.getUserKey());
 			
 			if (isAdmin) {
-				PCAdmin admin = (PCAdmin)pm.getObjectById(PCAdmin.class, userOrAdminKey);
-				helpdeskAnswer.setAdmin(admin);
+				logger.info("[AddTicketAnswerService] User who answered is admin");
+				helpdeskAnswer.setAdmin(userOrAdminKey);
+				helpdeskAnswer.setUser(null);
 			}
 			else {
-				PCUser user = (PCUser)pm.getObjectById(PCUser.class, userOrAdminKey);
-				helpdeskAnswer.setUser(user);
+				logger.info("[AddTicketAnswerService] User who answered is parent");
+				helpdeskAnswer.setUser(userOrAdminKey);
+				helpdeskAnswer.setAdmin(null);
 			}
 			
 			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -51,14 +56,17 @@ public class AddTicketAnswerServiceImpl extends RemoteServiceServlet implements 
 			helpdeskAnswer.setDate(formatter.parse(answer.getDate()));
 			helpdeskAnswer.setAnswer(answer.getAnswer());
 			
+			logger.info("[AddTicketAnswerService] Saving answer.");
 			pm.makePersistent(helpdeskAnswer);
 			
 			answerKey = KeyFactory.keyToString(helpdeskAnswer.getKey());
+			logger.info("[AddTicketAnswerService] Answer key: " + answerKey);
 			
-			ticket.getAnswers().add(helpdeskAnswer);
+			ticket.getAnswers().add(helpdeskAnswer.getKey());
+			logger.info("[AddTicketAnswerService] Asociating answer to ticket.");
 		}
 		catch (Exception ex) {
-			
+			logger.info("[AddTicketAnswerService] An error occured. " + ex.getMessage());
 		}
 		finally {
 			pm.close();

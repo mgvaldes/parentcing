@@ -54,14 +54,14 @@ public class AdminClosedTicketListView {
 		// Setting up open tickets table 
 		
 		// Add a text column to show the id.
-		TextColumn<TicketModel> idColumn = new TextColumn<TicketModel>() {
-			@Override
-			public String getValue(TicketModel object) {
-				return String.valueOf(object.getId());
-			}
-		};
-		
-		closedTicketsTable.addColumn(idColumn, "ID");
+//		TextColumn<TicketModel> idColumn = new TextColumn<TicketModel>() {
+//			@Override
+//			public String getValue(TicketModel object) {
+//				return String.valueOf(object.getId());
+//			}
+//		};
+//		
+//		closedTicketsTable.addColumn(idColumn, "ID");
 		
 		// Add a text column to show the category.
 		TextColumn<TicketModel> categoryColumn = new TextColumn<TicketModel>() {

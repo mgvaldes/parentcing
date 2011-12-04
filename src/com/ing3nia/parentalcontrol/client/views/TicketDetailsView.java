@@ -4,6 +4,7 @@ package com.ing3nia.parentalcontrol.client.views;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.core.client.GWT;
@@ -18,10 +19,15 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
 import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketServiceAsync;
+import com.ing3nia.parentalcontrol.client.views.async.AddTicketAnswerCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.CloseTicketCallbackHandler;
 
 public class TicketDetailsView {
 	/**
@@ -141,13 +147,19 @@ public class TicketDetailsView {
 	
 	private boolean isAdmin;
 	
-	public TicketDetailsView(HTMLPanel centerContent, TicketModel ticket, String userKey, boolean isAdmin) {
-		this.centerContent = centerContent;
+	private BaseViewHandler baseView;
+	
+	private boolean openOrClosed;
+	
+	public TicketDetailsView(BaseViewHandler baseView, TicketModel ticket, boolean isAdmin, boolean openOrClosed) {
+		this.baseView = baseView;
+		this.centerContent = this.baseView.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.ticket = ticket;
 		this.ticketAnswers = this.ticket.getAnswers();
-		this.userKey = userKey;
+		this.userKey = this.baseView.getUser().getKey();
 		this.isAdmin = isAdmin;
+		this.openOrClosed = openOrClosed;
 		
 		this.ticketContent = new HTMLPanel("");
 		
@@ -174,48 +186,37 @@ public class TicketDetailsView {
 		
 		this.clearButton = new Button("Clear");
 		DOM.setElementProperty(clearButton.getElement(), "id", "clearTicketDetailsButton");
-		
-		
-		DateTimeFormat  formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
-		String stringDate = formatter.format(this.ticket.getDate());
-		
-		//addTestTicketAnswers();
-		//initTicketDetailsView(this.ticket.getSubject(), this.ticket.getComment(), stringDate);
-	}
-
-	public void addTestTicketAnswers() {
-		TicketAnswerModel answer = new TicketAnswerModel("13/11/2011 2:48:00 AM", "Conejo", "Hayaaaaaa!");
-		ticketAnswers.add(answer);
-		
-		answer = new TicketAnswerModel("13/11/2011 2:49:00 AM", "Conejo", "My name is El Coune...");
-		ticketAnswers.add(answer);
+	
 	}
 	
-	public void initTicketDetailsView(String subject, String comment, String date) {
+	public void initTicketDetailsView() {
 		// Adding ticket details
 		this.ticketContent.add(this.ticketMessageLabel);
 		
 		this.ticketDetailsContent.add(this.ticketSubjectLabel);
-		this.ticketSubject = new Label(subject);
+		this.ticketSubject = new Label(this.ticket.getSubject());
 		this.ticketDetailsContent.add(this.ticketSubject);
 		
 		this.ticketDetailsContent.add(this.ticketQuestionLabel);
-		this.ticketQuestion = new Label(comment);
+		this.ticketQuestion = new Label(this.ticket.getComment());
 		this.ticketDetailsContent.add(this.ticketQuestion);
 		
 		this.ticketDetailsContent.add(this.ticketDateLabel);
-		this.ticketDate = new Label(date);
+		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+		this.ticketDate = new Label(formatter.format(this.ticket.getDate()));
 		this.ticketDetailsContent.add(this.ticketDate);
 		
 		this.ticketContent.add(this.ticketDetailsContent);
 		
-		this.clearButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		closeTicket(ticket.getKey());
-	    	}
-	    });
-		
-		this.ticketContent.add(this.closeButton);
+		if (this.openOrClosed) {
+			this.closeButton.addClickHandler(new ClickHandler() {
+		    	public void onClick(ClickEvent event) {
+		    		closeTicket();
+		    	}
+		    });
+			
+			this.ticketContent.add(this.closeButton);
+		}
 		
 		this.centerContent.add(this.ticketContent);
 		
@@ -225,56 +226,45 @@ public class TicketDetailsView {
 		
 		this.centerContent.add(this.ticketAnswersContent);
 		
-		this.ticketReplyContent.add(this.replyTicketLabel);
-		this.ticketReplyContent.add(this.replyTextArea);
-		
-		saveButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		saveTicketReply();
-	    	}
-	    });
-		
-		buttonPanel.add(saveButton);
-		
-		clearButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		clearTextBoxes();
-	    	}
-	    });
-		
-		buttonPanel.add(clearButton);
-		this.ticketReplyContent.add(this.buttonPanel);
-		
-		this.centerContent.add(this.ticketReplyContent);
+		if (this.openOrClosed) {
+			this.ticketReplyContent.add(this.replyTicketLabel);
+			this.ticketReplyContent.add(this.replyTextArea);
+			
+			saveButton.addClickHandler(new ClickHandler() {
+		    	public void onClick(ClickEvent event) {
+		    		saveTicketReply();
+		    	}
+		    });
+			
+			buttonPanel.add(saveButton);
+			
+			clearButton.addClickHandler(new ClickHandler() {
+		    	public void onClick(ClickEvent event) {
+		    		clearTextBoxes();
+		    	}
+		    });
+			
+			buttonPanel.add(clearButton);
+			this.ticketReplyContent.add(this.buttonPanel);
+			
+			this.centerContent.add(this.ticketReplyContent);
+		}
 	}
 	
-	public void closeTicket(String tiketKey) {
-		
+	public void closeTicket() {
+		CloseTicketCallbackHandler closeTicketCallback = new CloseTicketCallbackHandler(this.baseView, ticket);
+		CloseTicketServiceAsync closeTicketService = GWT.create(CloseTicketService.class);
+		closeTicketService.closeTicket(ticket.getKey(), this.baseView.getUser().getKey(), closeTicketCallback);
 	}
 	
 	public void saveTicketReply() {
-//		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
-//		
-//		final TicketAnswerModel answer = new TicketAnswerModel(formatter.format(Calendar.getInstance().getTime()), this.userKey, this.replyTextArea.getText());
-//		
-//		AddTicketAnswerServiceAsync addAnswerService = GWT.create(AddTicketAnswerService.class);
-//		addAnswerService.addTicketAnswer(answer, this.ticket.getKey(), this.isAdmin, 
-//				new AsyncCallback<String>() {
-//					public void onFailure(Throwable error) {
-//					}
-//		
-//					public void onSuccess(String result) {
-//						if (result != null) {
-//							ArrayList<TicketAnswerModel> answers = ticket.getAnswers();
-//							answers.add(answer);
-//							ticket.setAnswers(answers);
-//						}
-//						else {
-//							Window.alert("An error occured. The new ticket answer couldn't be saved.");
-//						}
-//					}
-//				}
-//		);
+		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		final TicketAnswerModel answer = new TicketAnswerModel(formatter.format(new Date()), this.userKey, this.replyTextArea.getText(), this.baseView.getUser().getUsername());
+		
+		AddTicketAnswerCallbackHandler addAnswerCallback = new AddTicketAnswerCallbackHandler(baseView, answer, ticket, isAdmin, openOrClosed);
+		AddTicketAnswerServiceAsync addAnswerService = GWT.create(AddTicketAnswerService.class);
+		addAnswerService.addTicketAnswer(answer, ticket.getKey(), isAdmin, addAnswerCallback);
 	}
 	
 	public void clearTextBoxes() {
@@ -286,10 +276,10 @@ public class TicketDetailsView {
 		Label answerInfo;
 		Label answer;
 		
-		for (TicketAnswerModel ans : ticketAnswers) {
+		for (TicketAnswerModel ans : this.ticket.getAnswers()) {
 			ticketAnswerContent = new HTMLPanel("");
 			
-			answerInfo = new Label(ans.getDate() + " by " + ans.getUser());
+			answerInfo = new Label(ans.getDate() + " by " + ans.getUsername());
 			ticketAnswerContent.add(answerInfo);
 			
 			answer = new Label(ans.getAnswer());

@@ -18,11 +18,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import com.google.appengine.api.datastore.Key;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.models.UserModel;
 import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
@@ -45,9 +45,7 @@ import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 @Path("register")
 public class ParentRegisterResource {
 	
-	private static final Logger logger = Logger
-	.getLogger(ParentTestResource.class.getName());
-
+	private static final Logger logger = Logger.getLogger(ParentTestResource.class.getName());
 	
 	public ParentRegisterResource() {
 		//logger.addHandler(new ConsoleHandler());

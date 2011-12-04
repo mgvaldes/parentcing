@@ -3,9 +3,13 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 
 public class TicketAnswerModel implements Serializable  {
+	private String key;
+	
 	private String date;
 	
-	private String user;
+	private String userKey;
+	
+	private String username;
 	
 	private String answer;
 
@@ -13,11 +17,20 @@ public class TicketAnswerModel implements Serializable  {
 		
 	}
 	
-	public TicketAnswerModel(String date, String user, String answer) {
+	public TicketAnswerModel(String date, String userKey, String answer, String username) {
 		super();
 		this.date = date;
-		this.user = user;
+		this.userKey = userKey;
 		this.answer = answer;
+		this.username = username;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public String getDate() {
@@ -28,12 +41,12 @@ public class TicketAnswerModel implements Serializable  {
 		this.date = date;
 	}
 
-	public String getUser() {
-		return user;
+	public String getUserKey() {
+		return userKey;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public void setUserKey(String userKey) {
+		this.userKey = userKey;
 	}
 
 	public String getAnswer() {
@@ -42,5 +55,13 @@ public class TicketAnswerModel implements Serializable  {
 
 	public void setAnswer(String answer) {
 		this.answer = answer;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

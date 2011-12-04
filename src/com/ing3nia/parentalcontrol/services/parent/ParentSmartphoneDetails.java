@@ -1,10 +1,8 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
-import javax.jdo.Query;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -15,10 +13,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.KeyFactory;
 //import com.google.appengine.api.datastore.Query;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.ing3nia.parentalcontrol.models.PCFunctionality;
-import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSession;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;

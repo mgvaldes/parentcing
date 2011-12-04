@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-	<g:HTMLPanel styleName="mainPanel">
 
+	<g:HTMLPanel styleName="mainPanel">
 		<g:HTMLPanel styleName="bodyPanel">
 			<g:HTMLPanel styleName="centerPanelLogin">
 				<g:HTMLPanel styleName="centerPanelLoginContent">
@@ -22,6 +22,8 @@
 						<g:FlowPanel styleName="signInButton">
 							<g:Button ui:field="signInButton" text="Sign In"
 								styleName="selectedShinnyButton" />
+							<g:Button ui:field="registerButton" text="Register"
+								styleName="selectedShinnyButton" />
 						</g:FlowPanel>
 						<g:FlowPanel styleName="loadingBlock" ui:field="loadingBlock"></g:FlowPanel>
 						<g:Label styleName="notice" ui:field="notice"></g:Label>
@@ -40,4 +42,5 @@
 			</g:FlowPanel>
 		</g:FlowPanel>
 	</g:HTMLPanel>
+	
 </ui:UiBinder>

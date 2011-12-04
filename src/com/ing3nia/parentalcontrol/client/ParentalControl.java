@@ -9,10 +9,12 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.HelpDeskUserClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.LogoImageClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.LoginRegisterButtonClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.SignInButtonClickHandler;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
 import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
@@ -54,18 +56,22 @@ public class ParentalControl implements EntryPoint {
 		
 		// Check if user session is active
 		String userCookie = CookieHandler.getPCCookie();
-		if(userCookie == null){
-			
+		
+		if (userCookie == null) {			
 			PCLoginUIBinder loginUI = new PCLoginUIBinder();
 			RootPanel.get().add(loginUI);
 			ClientUserModel userModel = new ClientUserModel();
 			SignInButtonClickHandler signInHandler =  new SignInButtonClickHandler(loginUI, userModel, loadingImage);
 			loginUI.getSignInButton().addClickHandler(signInHandler);
 			
+			LoginRegisterButtonClickHandler registerHandler = new LoginRegisterButtonClickHandler(loadingImage);
+			loginUI.getRegisterButton().addClickHandler(registerHandler);
+			
 			//If remembered credentials 
 			String remUser = CookieHandler.getMailRemeberedCredential();
 			String remPass = CookieHandler.getPasswordRemeberedCredential();
-			if(remUser !=null && remPass !=null){
+			
+			if (remUser !=null && remPass !=null) {
 				
 				TextBox emailfield = loginUI.getEmailField();
 				PasswordTextBox passfield = loginUI.getPassField();
@@ -75,7 +81,6 @@ public class ParentalControl implements EntryPoint {
 				passfield.setText(remPass);
 				passfield.setSelectionRange(0, passfield.getText().length());
 			}
-			
 		}
 		else{
 			//TODO retrieve user details and start the thing
@@ -129,7 +134,7 @@ public class ParentalControl implements EntryPoint {
 		  pcbase.getPclogo().addClickHandler(logoClickHandler);
  
 		  //TODO ask for user type
-		  HelpDeskUserClickHandler helpDeskClickHandler =  new HelpDeskUserClickHandler(baseViewHandler);
+		  HelpDeskUserClickHandler helpDeskClickHandler =  new HelpDeskUserClickHandler(baseViewHandler, false);
 		  helpDeskClickHandler.setUserHelpDeskClickHandlers();
 		  pcbase.getHelpDesk().addClickHandler(helpDeskClickHandler);
 	  

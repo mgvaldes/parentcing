@@ -15,19 +15,22 @@ public class RuleModel implements Serializable {
 	private ArrayList<Integer> disabledFunctionalities;
 	
 	private String creationDate;
+	
+	private int type;
 
 	public RuleModel() {
 		super();
 	}
 
 	public RuleModel(String keyId, String startDate, String endDate,
-			ArrayList<Integer> disabledFunctionalities, String name) {
+			ArrayList<Integer> disabledFunctionalities, String name, int type) {
 		super();
 		this.keyId = keyId;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.disabledFunctionalities = disabledFunctionalities;
 		this.name = name;
+		this.type = type;
 	}
 	
 	public RuleModel(String startDate, String endDate,
@@ -87,5 +90,13 @@ public class RuleModel implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 }

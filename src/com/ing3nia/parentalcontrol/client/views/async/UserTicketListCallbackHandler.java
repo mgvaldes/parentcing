@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
-import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
-import com.ing3nia.parentalcontrol.client.views.AdminUserListView;
 import com.ing3nia.parentalcontrol.client.views.TicketListView;
 import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
 
@@ -32,12 +29,6 @@ public class UserTicketListCallbackHandler implements AsyncCallback<HashMap<Stri
 			ClientUserModel userModel = baseView.getUser();
 			userModel.setOpenTickets(result.get("opened"));
 			userModel.setClosedTickets(result.get("closed"));
-			
-			baseView.getBaseBinder().getCenterContent().clear();
-			baseView.getMenuSetter().clearMenuOptions();
-			
-			baseView.initTicketUserCenterMenu();
-			baseView.toggleTicketCenterMenu(CenterMenuOptionsClassNames.OpenTickets);
 			
 			TicketListView view = new TicketListView(baseView, userModel.getOpenTickets(), userModel.getClosedTickets());	
 			view.initUserTicketList();

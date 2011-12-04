@@ -199,16 +199,19 @@ public class SmartphoneUtils {
 		JsonArray rulesArray = new JsonArray();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		PCRule auxRule;
+		String ruleKey;
 		
 		if (smartphone.getRules() != null) {
 			for (Key rule : smartphone.getRules()) {
 				auxRule = pm.getObjectById(PCRule.class, rule);
 				JsonObject ruleJson = new JsonObject();
 
-				ruleJson.addProperty("keyId", KeyFactory.keyToString(rule));
+				ruleKey = KeyFactory.keyToString(rule);
+				ruleJson.addProperty("keyId", ruleKey);
 				ruleJson.addProperty("startDate", formatter.format(auxRule.getStartDate()));
 				ruleJson.addProperty("endDate", formatter.format(auxRule.getEndDate()));
 				ruleJson.addProperty("name", auxRule.getName());
+				ruleJson.addProperty("type", auxRule.getType());
 
 				JsonArray funcArray = new JsonArray();
 				//ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectsById(auxRule.getDisabledFunctionalities());

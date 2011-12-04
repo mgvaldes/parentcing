@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
@@ -17,41 +16,37 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.reflect.TypeToken;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
-import com.ing3nia.parentalcontrol.client.rpc.UserRegisterService;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
+import com.ing3nia.parentalcontrol.client.rpc.RegisterUserService;
+import com.ing3nia.parentalcontrol.client.utils.PCURLMapper;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
-import com.ing3nia.parentalcontrol.services.models.UserModel;
 
-public class UserRegisterServiceImpl extends RemoteServiceServlet implements UserRegisterService {
+public class RegisterUserServiceImpl extends RemoteServiceServlet implements RegisterUserService {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger(UserRegisterServiceImpl.class.getName());
+	private static Logger logger = Logger.getLogger(RegisterUserServiceImpl.class.getName());
 	
-	public UserRegisterServiceImpl() {
+	public RegisterUserServiceImpl() {
 		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override
-	public Boolean register(String username, String password, String email, String name) {
-		boolean saveResult = false;
+	public Boolean registerUser(UserModel user) {
+		boolean registerResult = false;
 		
 		URL url;
 		URLConnection conn;
 		
 		try {
-			UserModel userModel = new UserModel();
-			userModel.setUsr(username);
-			userModel.setPass(password);
-			userModel.setEmail(email);
-			userModel.setName(name);
-			
-			url = new URL("https://localhost:8888/resources/register");
+			url = new URL(PCURLMapper.CURRENT_BASE_URL + "/resources/register");
 			conn = url.openConnection();
-			conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
+			conn.setConnectTimeout(60000);
 			conn.setDoOutput(true);
+			conn.setRequestProperty("Content-Type","application/json; charset=utf-8");
 			
 			Gson jsonBuilder = new Gson();
-			Type userType = new TypeToken<UserModel>(){}.getType();
-			String postParams = jsonBuilder.toJson(userModel, userType);
+			Type userModelType = new TypeToken<UserModel>(){}.getType();
+			String postParams = jsonBuilder.toJson(user, userModelType);
 			
 			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 			wr.write(postParams);
@@ -75,22 +70,22 @@ public class UserRegisterServiceImpl extends RemoteServiceServlet implements Use
 			String code = ((JsonPrimitive)jsonResponseStatus.get("code")).getAsString(); 
 			
 			if (code.equals(WSStatus.OK.getCode())) {
-				saveResult = true;
-				logger.info("[UserRegisterService] UserRegister resource returnes successfully.");
+				registerResult = true;
+				logger.info("[RegisterUserService] RegisterUser resource returnes successfully.");
 			}
 			else {
 				String verbose = ((JsonPrimitive)jsonResponseStatus.get("verbose")).getAsString();
 				String msg = ((JsonPrimitive)jsonResponseStatus.get("msg")).getAsString();
-				logger.info("[UserRegisterService] An error occured calling UserRegister resource. CODE: " + code + " VERBOSE: " + verbose + " MSG: " + msg);
+				logger.info("[RegisterUserService] An error occured calling RegisterUser resource. CODE: " + code + " VERBOSE: " + verbose + " MSG: " + msg);
 			}
 		} 
 		catch (MalformedURLException e) {
-			logger.info("[UserRegisterService] An error occured creating resource's url. " + e); 
+			logger.info("[RegisterUserService] An error occured creating resource's url. " + e); 
 		}	
 		catch (IOException e) {
-			logger.info("[UserRegisterService] An error occured writing to OutputotStreamWriteror reading from BufferedReader. " + e);
+			logger.info("[RegisterUserService] An error occured writing to OutputotStreamWriteror reading from BufferedReader. " + e);
 		}
 		
-		return saveResult;
+		return registerResult;
 	}
 }
