@@ -9,7 +9,6 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.rpc.SendEmailService;
 import com.ing3nia.parentalcontrol.client.rpc.SendEmailServiceAsync;
-import com.ing3nia.parentalcontrol.client.utils.EmailSender;
 
 public class WeekAlertsCallbackHandler implements AsyncCallback<ArrayList<AlertModel>> {
 	
