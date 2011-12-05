@@ -11,7 +11,6 @@ import com.ing3nia.parentalcontrol.client.rpc.SendEmailService;
 import com.ing3nia.parentalcontrol.client.rpc.SendEmailServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsService;
 import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsServiceAsync;
-import com.ing3nia.parentalcontrol.client.utils.EmailSender;
 
 public class SendEmailCallbackHandler implements AsyncCallback<Boolean> {
 	
