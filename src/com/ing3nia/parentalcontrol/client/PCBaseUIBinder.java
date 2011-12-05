@@ -45,8 +45,7 @@ public class PCBaseUIBinder extends Composite {
 					<g:Button styleName="centerMenuButton" text="Add User" ui:field="addUserButton"></g:Button>
 	 */
 	
-	private static PCBaseUIBinderUiBinder uiBinder = GWT
-			.create(PCBaseUIBinderUiBinder.class);
+	private static PCBaseUIBinderUiBinder uiBinder = GWT.create(PCBaseUIBinderUiBinder.class);
 
 	interface PCBaseUIBinderUiBinder extends UiBinder<Widget, PCBaseUIBinder> {
 	}

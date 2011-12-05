@@ -1,5 +1,7 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.util.ArrayList;
+
 /**
  * Class that represents a single input in the admin user list view.
  * 

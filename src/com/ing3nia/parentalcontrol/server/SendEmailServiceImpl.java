@@ -1,28 +1,24 @@
 package com.ing3nia.parentalcontrol.server;
 
-import java.text.SimpleDateFormat;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
-import javax.jdo.PersistenceManager;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.google.appengine.api.datastore.Key;
-import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.rpc.SendEmailService;
-import com.ing3nia.parentalcontrol.models.PCUser;
-import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class SendEmailServiceImpl extends RemoteServiceServlet implements SendEmailService {
 
@@ -34,43 +30,80 @@ public class SendEmailServiceImpl extends RemoteServiceServlet implements SendEm
 	}
 
 	@Override
-	public Boolean sendEmail(String loggedUserKey, String smartName, ArrayList<AlertModel> alerts) {
+	public Boolean sendEmail(String toEmail, String content) {
 		Boolean result = false;
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		final String fromEmail = "mgvaldesgraterol@gmail.com";
-		final String fromPassword = "m4churucut0082009";
 		
-		try {
-			Key userKey = KeyFactory.stringToKey(loggedUserKey);
-			PCUser user = (PCUser)pm.getObjectById(PCUser.class, userKey);
-			
-			Properties props = new Properties();
-			props.put("mail.smtp.host", "smtp.gmail.com");
-			props.put("mail.smtp.socketFactory.port", "465");
-			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-			props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.port", "465");
-	 
-			Session session = Session.getDefaultInstance(props,
+		final String fromEmail = "prc.daddytext@gmail.com";
+		final String fromPass = "p4r3nt4l";
+		
+		Properties props = new Properties();
+		props.put("mail.smtp.host", "smtp.gmail.com");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", "465");
+        
+		Session session = Session.getDefaultInstance(props,
 				new javax.mail.Authenticator() {
 					protected PasswordAuthentication getPasswordAuthentication() {
-						return new PasswordAuthentication(fromEmail, fromPassword);
+						return new PasswordAuthentication(fromEmail, fromPass);
 					}
 				}
-			);
-			
+		);
+
+		try {
+
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(fromEmail));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(user.getEmail()));
-			message.setSubject("[PRC] Weekly alerts for smartphone: " + smartName);
-			message.setText(loadSmartAlerts(smartName, currentWeekAlerts(alerts)));
- 
+			message.setRecipients(Message.RecipientType.TO,InternetAddress.parse(toEmail));
+			message.setSubject("[Parental Control] Weekly Alerts");
+			
+			logger.info("[SendEmailService] Content: " + content);
+			
+			message.setText(content);
+
 			Transport.send(message);
 			result = true;
+		} 
+		catch (MessagingException e) {
+			result = false;
 		}
-		catch (Exception ex) {
-			
-		}
+		
+//		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+//		final String fromEmail = "mgvaldesgraterol@gmail.com";
+//		final String fromPassword = "m4churucut0082009";
+//		
+//		try {
+//			Key userKey = KeyFactory.stringToKey(loggedUserKey);
+//			PCUser user = (PCUser)pm.getObjectById(PCUser.class, userKey);
+//			
+//			Properties props = new Properties();
+//			props.put("mail.smtp.host", "smtp.gmail.com");
+//			props.put("mail.smtp.socketFactory.port", "465");
+//			props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//			props.put("mail.smtp.auth", "true");
+//			props.put("mail.smtp.port", "465");
+//	 
+//			Session session = Session.getDefaultInstance(props,
+//				new javax.mail.Authenticator() {
+//					protected PasswordAuthentication getPasswordAuthentication() {
+//						return new PasswordAuthentication(fromEmail, fromPassword);
+//					}
+//				}
+//			);
+//			
+//			Message message = new MimeMessage(session);
+//			message.setFrom(new InternetAddress(fromEmail));
+//			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(user.getEmail()));
+//			message.setSubject("[PRC] Weekly alerts for smartphone: " + smartName);
+//			message.setText(loadSmartAlerts(smartName, currentWeekAlerts(alerts)));
+// 
+//			Transport.send(message);
+//			result = true;
+//		}
+//		catch (Exception ex) {
+//			
+//		}
 		
 		return result;
 	}

@@ -1,0 +1,38 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	<g:HTMLPanel styleName="mainPanel">
+	
+		<g:FlowPanel styleName="headerPanel">
+			<g:Image styleName="pclogo" url="/media/images/pclogo.png" ui:field="pclogo"/>
+			<g:FlowPanel styleName="sessionButtons">				
+				<g:Button styleName="logout" text="Logout" ui:field="logout"></g:Button>
+			</g:FlowPanel>
+		</g:FlowPanel>
+		
+		<g:HTMLPanel styleName="bodyPanel">
+			<g:HTMLPanel styleName="centerPanel">
+				<g:FlowPanel styleName="centerPanelHeader">
+					<g:FlowPanel styleName="navigationPanel" ui:field="navigationPanel"/>
+					<g:FlowPanel styleName="centerMenuOptions" ui:field="centerMenuOptions">
+	
+					</g:FlowPanel>
+				</g:FlowPanel>
+				<g:HTMLPanel styleName="centerContent" ui:field="centerContent">
+					<g:Label styleName="notice" ui:field="notice"></g:Label>
+				</g:HTMLPanel>
+			</g:HTMLPanel>
+		</g:HTMLPanel>
+		
+		<g:FlowPanel styleName="clearingDiv" />
+		
+		<g:FlowPanel styleName="footer">
+			<g:FlowPanel styleName="footerText">
+			<g:Label styleName="daddyText" text="&#169;2011 DaddyText"/>
+			<g:Label styleName="footerSep" text="-"/>
+			<g:Label styleName="footerClick" text="Terms and Conditions"/>
+			</g:FlowPanel>
+		</g:FlowPanel>
+		
+	</g:HTMLPanel>
+</ui:UiBinder> 

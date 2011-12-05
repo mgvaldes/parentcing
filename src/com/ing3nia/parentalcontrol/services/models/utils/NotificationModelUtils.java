@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 
 import javax.jdo.PersistenceManager;
 
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.client.models.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.models.PCNotification;
@@ -39,6 +40,10 @@ public class NotificationModelUtils {
 		notfModel.setDate(formatter.format(notf.getDate()));
 		
 		return notfModel;
+	}
+	
+	public static AlertModel convertToAlertModel(PCNotification notf, String device){
+		return new AlertModel(notf.getDate(), device, notf.getMessage());
 	}
 	
 	public static void savePCNotification(PCNotification notification) {

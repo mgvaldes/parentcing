@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -10,7 +11,12 @@ import java.util.Date;
  * @author Ing3nia.
  *
  */
-public class AlertModel {
+public class AlertModel implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Date when the alert was created.
 	 */
@@ -25,6 +31,10 @@ public class AlertModel {
 	 * Message associated to this alert.
 	 */
 	private String message;
+	
+	public AlertModel() {
+		
+	}
 	
 	public AlertModel(Date date, String device, String message) {
 		this.date = date;
@@ -54,5 +64,5 @@ public class AlertModel {
 
 	public void setMessage(String message) {
 		this.message = message;
-	}	
+	}
 }

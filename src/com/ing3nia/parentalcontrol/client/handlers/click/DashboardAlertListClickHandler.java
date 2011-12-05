@@ -40,7 +40,7 @@ public class DashboardAlertListClickHandler implements ClickHandler {
 		this.menuSetter.getDashboardAlertList().setStyleName(
 				"selectedShinnyButton");
 
-		AlertListView view = new AlertListView(centerContent, alertList);
+		AlertListView view = new AlertListView(this.baseView, alertList);
 		view.initAlertListView();
 		/*
 		DeviceAlertListView view = new DeviceAlertListView(

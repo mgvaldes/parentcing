@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.models;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.jdo.annotations.IdGeneratorStrategy;
 import javax.jdo.annotations.PersistenceCapable;
@@ -29,37 +30,40 @@ public class PCActivityStatistics {
     @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
     private Key key;
 	
-	/**
-	 * 
-	 */
 	@Persistent
-	private PCSmartphone smartphone;
+	private Date date;
 	
 	/**
 	 * 
 	 */
 	@Persistent
-	private PCRoute route;
+	private Key smartphone;
 	
 	/**
 	 * 
 	 */
 	@Persistent
-	private ArrayList<PCNotification> notifications;
+	private Key route;
 	
 	/**
 	 * 
 	 */
 	@Persistent
-	private ArrayList<PCServiceStatistics> serviceStats;
+	private ArrayList<Key> notifications;
+	
+	/**
+	 * 
+	 */
+	@Persistent
+	private ArrayList<Key> serviceStats;
 
 	public PCActivityStatistics() {
 		super();
 	}
 
-	public PCActivityStatistics(Key key, PCSmartphone smartphone,
-			PCRoute route, ArrayList<PCNotification> notifications,
-			ArrayList<PCServiceStatistics> serviceStats) {
+	public PCActivityStatistics(Key key, Key smartphone,
+			Key route, ArrayList<Key> notifications,
+			ArrayList<Key> serviceStats) {
 		super();
 		this.key = key;
 		this.smartphone = smartphone;
@@ -76,35 +80,43 @@ public class PCActivityStatistics {
 		this.key = key;
 	}
 
-	public PCSmartphone getSmartphone() {
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	public Key getSmartphone() {
 		return smartphone;
 	}
 
-	public void setSmartphone(PCSmartphone smartphone) {
+	public void setSmartphone(Key smartphone) {
 		this.smartphone = smartphone;
 	}
 
-	public PCRoute getRoute() {
+	public Key getRoute() {
 		return route;
 	}
 
-	public void setRoute(PCRoute route) {
+	public void setRoute(Key route) {
 		this.route = route;
 	}
 
-	public ArrayList<PCNotification> getNotifications() {
+	public ArrayList<Key> getNotifications() {
 		return notifications;
 	}
 
-	public void setNotifications(ArrayList<PCNotification> notifications) {
+	public void setNotifications(ArrayList<Key> notifications) {
 		this.notifications = notifications;
 	}
 
-	public ArrayList<PCServiceStatistics> getServiceStats() {
+	public ArrayList<Key> getServiceStats() {
 		return serviceStats;
 	}
 
-	public void setServiceStats(ArrayList<PCServiceStatistics> serviceStats) {
+	public void setServiceStats(ArrayList<Key> serviceStats) {
 		this.serviceStats = serviceStats;
 	}
 }

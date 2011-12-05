@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.client.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ClientAdminUserModel implements Serializable{
 	/**
@@ -22,6 +23,13 @@ public class ClientAdminUserModel implements Serializable{
 	 * Admin user's password.
 	 */
 	String password;
+	
+	/**
+	 * Admin help desk tickets
+	 */
+	ArrayList<TicketModel> openTickets;
+	
+	ArrayList<TicketModel> closedTickets;
 	
 	public ClientAdminUserModel(){
 		
@@ -60,5 +68,21 @@ public class ClientAdminUserModel implements Serializable{
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public ArrayList<TicketModel> getOpenTickets() {
+		return openTickets;
+	}
+
+	public void setOpenTickets(ArrayList<TicketModel> openTickets) {
+		this.openTickets = openTickets;
+	}
+
+	public ArrayList<TicketModel> getClosedTickets() {
+		return closedTickets;
+	}
+
+	public void setClosedTickets(ArrayList<TicketModel> closedTickets) {
+		this.closedTickets = closedTickets;
 	}
 }
