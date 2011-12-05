@@ -62,7 +62,7 @@ public class SmartphoneClickHandler implements ClickHandler{
 		//this.button.setStyleName("selectedSmartphoneButton");
 		
 		
-		DeviceAlertListView view = new DeviceAlertListView(centerContent, SmartphoneModel.getUserAlertList(smartphoneModel));	
+		DeviceAlertListView view = new DeviceAlertListView(this.baseView, SmartphoneModel.getUserAlertList(smartphoneModel));	
 		//DeviceAlertListView view = new DeviceAlertListView(centerContent, smartphoneModel.getAlerts());
 		view.initDeviceAlertListView();
 	}

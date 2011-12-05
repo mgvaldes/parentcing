@@ -53,6 +53,23 @@ public class InitResource {
 	public Response doGet() {
 
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		
+		PCSmartphone smart = pm.getObjectById(PCSmartphone.class, "ahBwYXJlbnRhbC1jb250cm9schILEgxQQ1NtYXJ0cGhvbmUYUAw");
+		
+		PCActivityStatistics stats = new PCActivityStatistics();
+		stats.setDate(new Date());
+		stats.setNotifications(smart.getNotifications());
+		stats.setSmartphone(smart.getKey());
+		
+		pm.makePersistent(stats);
+		
+		pm.close();
+		
+		ResponseBuilder rbuilder;
+		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);
+		
+		return rbuilder.build();
+		
 		//createDummyApplication();
 		/*
 		try {
@@ -75,7 +92,7 @@ public class InitResource {
 		PCSmartphone smart = (PCSmartphone)pm.getObjectById(PCSmartphone.class, smartKey);
 	*/
 		
-		createDummyApplication(pm);
+		//createDummyApplication(pm);
 		
 //		PCFunctionality func;
 //		//pm = ServiceUtils.PMF.getPersistenceManager();
@@ -101,12 +118,12 @@ public class InitResource {
 //			logger.info("categoria: " + categ.getKey());
 //		}
 		
-		pm.close();
-		
-		ResponseBuilder rbuilder;
-		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);
-		
-		return rbuilder.build();
+//		pm.close();
+//		
+//		ResponseBuilder rbuilder;
+//		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);
+//		
+//		return rbuilder.build();
 		
 //		String rule = "aglub19hcHBfaWRyKgsSBlBDVXNlchgBDAsSDFBDU21hcnRwaG9uZRhXDAsSBlBDUnVsZRhgDA";
 		

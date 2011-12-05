@@ -1,22 +1,31 @@
 package com.ing3nia.parentalcontrol.client.views;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.shared.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
 
-import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
+import com.ing3nia.parentalcontrol.client.rpc.DeleteRuleService;
+import com.ing3nia.parentalcontrol.client.rpc.DeleteRuleServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsService;
+import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsServiceAsync;
+import com.ing3nia.parentalcontrol.client.views.async.DeleteRuleCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.WeekAlertsCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
 
 public class AlertListView {
@@ -41,9 +50,12 @@ public class AlertListView {
 	 * Table where the alerts are displayed.
 	 */
 	private CellTable<AlertModel> alertTable;
+	
+	private BaseViewHandler baseView;
 
-	public AlertListView(HTMLPanel centerContent, ArrayList<AlertModel> alertList) {
-		this.centerContent = centerContent;
+	public AlertListView(BaseViewHandler baseView, ArrayList<AlertModel> alertList) {
+		this.baseView = baseView;
+		this.centerContent = this.baseView.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		viewContent = new HTMLPanel("");
 		this.alertTable = new CellTable<AlertModel>(10);

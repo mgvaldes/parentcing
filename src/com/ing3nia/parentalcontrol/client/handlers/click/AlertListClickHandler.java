@@ -42,7 +42,7 @@ public class AlertListClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
 		//AlertListView view = new AlertListView(centerContent);
-		AlertListView view = new AlertListView(centerContent, alertList);
+		AlertListView view = new AlertListView(this.baseView, alertList);
 		view.initAlertListView();
 	}
 }

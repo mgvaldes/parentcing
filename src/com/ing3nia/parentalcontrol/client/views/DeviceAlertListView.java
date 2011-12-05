@@ -6,15 +6,25 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
 
+import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsService;
+import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsServiceAsync;
+import com.ing3nia.parentalcontrol.client.views.async.WeekAlertsCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
 
 public class DeviceAlertListView {
@@ -35,20 +45,24 @@ public class DeviceAlertListView {
 	 */
 	private List<AlertModel> alerts;
 	
-	private final String dateNow =  "16/11/2011 - 14:13:11 PM";
-	
 	/**
 	 * Table where the alerts are displayed.
 	 */
 	private CellTable<AlertModel> alertTable;
 	
-	public DeviceAlertListView(HTMLPanel centerContent, ArrayList<AlertModel> alertList) {
-		this.centerContent = centerContent;
+	private Button sendEmailButton;
+	
+	private BaseViewHandler baseView;
+	
+	public DeviceAlertListView(BaseViewHandler baseView, ArrayList<AlertModel> alertList) {
+		this.baseView = baseView;
+		this.centerContent = this.baseView.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		viewContent = new HTMLPanel("");
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");
 		this.alerts = alertList;
+		this.sendEmailButton = new Button("Send Email Test");
 		this.centerContent.clear();
 		
 		//addTestDeviceAlerts();
@@ -72,8 +86,14 @@ public class DeviceAlertListView {
 	}
 	
 	public void initDeviceAlertListView() {
-		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy - KK:mm:ss a");
-	    
+		sendEmailButton.addClickHandler(new ClickHandler() {
+	    	public void onClick(ClickEvent event) {
+	    		sendWeeklyAlertsEmail();
+	    	}
+	    });
+		
+		this.viewContent.add(sendEmailButton);
+		
 		//Setting alert table style
 		alertTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
@@ -81,8 +101,8 @@ public class DeviceAlertListView {
 		TextColumn<AlertModel> dateColumn = new TextColumn<AlertModel>() {
 			@Override
 			public String getValue(AlertModel object) {
-				return dateNow;
-				//return formatter.format(object.getDate());
+				DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+				return formatter.format(object.getDate());
 			}
 		};
 		
@@ -133,5 +153,13 @@ public class DeviceAlertListView {
 		
 		centerContent.clear();
 		centerContent.add(viewContent);
+	}
+	
+	public void sendWeeklyAlertsEmail() {
+		SmartphoneModel smart = this.baseView.getUser().getSmartphones().get(this.baseView.getClickedSmartphoneIndex());
+		
+		WeekAlertsCallbackHandler weekAlertsCallback = new WeekAlertsCallbackHandler(this.baseView);
+		WeekAlertsServiceAsync weekAlertsService = GWT.create(WeekAlertsService.class);
+		weekAlertsService.weekAlerts(smart.getKeyId(), new Date(), weekAlertsCallback);
 	}
 }

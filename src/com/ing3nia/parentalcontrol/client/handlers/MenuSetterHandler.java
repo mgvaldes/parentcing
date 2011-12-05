@@ -2,12 +2,14 @@ package com.ing3nia.parentalcontrol.client.handlers;
 
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.ing3nia.parentalcontrol.client.PCAdminHelpdeskUIBinder;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
 
 
 public class MenuSetterHandler {
 	private PCBaseUIBinder baseBinder;
+	private PCAdminHelpdeskUIBinder helpdeskBinder;
 	private FlowPanel centerMenuOptions;
 	
 	private Button addUser;
@@ -45,6 +47,15 @@ public class MenuSetterHandler {
 		this.adminClosedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());
 		this.adminOpenTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.OpenTickets.getClassname(), CenterMenuOptionsClassNames.OpenTickets.getText());
 	}
+	
+	public MenuSetterHandler(PCAdminHelpdeskUIBinder helpdeskBinder){
+		this.helpdeskBinder = helpdeskBinder;
+		this.centerMenuOptions = baseBinder.getCenterMenuOptions();
+		
+		this.adminClosedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());
+		this.adminOpenTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.OpenTickets.getClassname(), CenterMenuOptionsClassNames.OpenTickets.getText());
+	}
+	
 	/*
 	public initCenterMenuOptionsHandlers(){
 		

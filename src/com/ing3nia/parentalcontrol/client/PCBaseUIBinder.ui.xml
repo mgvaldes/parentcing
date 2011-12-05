@@ -1,7 +1,7 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
 	xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+	
 <g:HTMLPanel styleName="mainPanel">
-
 	<g:FlowPanel styleName="headerPanel">
 		<g:Image styleName="pclogo" url="/media/images/pclogo.png" ui:field="pclogo"/>
 		<g:FlowPanel styleName="alertBlock">
