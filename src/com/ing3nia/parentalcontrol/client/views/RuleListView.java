@@ -24,6 +24,7 @@ import com.ing3nia.parentalcontrol.client.views.subviews.EditRuleView;
 import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView;
 
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.AddNewRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
@@ -73,13 +74,8 @@ public class RuleListView {
 	}
 	
 	public void initRuleListView() {
-		addRuleButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		//loadNewRule();
-	    		loadAddRuleView();
-	    	}
-	    });
-		
+		AddNewRuleClickHandler addRuleClickHandler = new AddNewRuleClickHandler(this);
+		addRuleButton.addClickHandler(addRuleClickHandler);
 		viewContent.add(addRuleButton);
 		
 		//Setting alert table style

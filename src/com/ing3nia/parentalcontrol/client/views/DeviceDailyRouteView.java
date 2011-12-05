@@ -77,18 +77,20 @@ public class DeviceDailyRouteView {
 		deviceRoute = new ArrayList<GeoPtModel>();
 		deviceRouteNames = new ArrayList<String>();
 		this.routePanelBody = routePanelBody;
+		this.map = baseViewHandler.getMapWidget();
 	}
 
 	public void initDeviceLocationLoad() {
 		this.centerContent.clear();
+		
 		if (!Maps.isLoaded()) {
 			Maps.loadMapsApi(ViewUtils.mapsKey, "2", false, new Runnable() {
 				public void run() {
-					loadDeviceRoute();
+					loadDeviceRoute(map);
 				}
 			});
 		}else{
-			loadDeviceRoute();
+			loadDeviceRoute(map);
 		}
 		
 	}
@@ -111,14 +113,27 @@ public class DeviceDailyRouteView {
 	}
 	
 	
-	public void loadDeviceRoute() {
+	public void loadDeviceRoute(MapWidget mapWidget) {
 		this.centerContent.clear();
 		LatLng deviceLoc = LatLng.newInstance(deviceRoute.get(0).getLatitude(), deviceRoute.get(0).getLongitude());
+	
+		if(mapWidget == null){
+			this.map = new MapWidget(deviceLoc,11);
+		    this.map.setSize("100%", "100%");	  
+		    this.map.addControl(new LargeMapControl());
+		    this.map.setStyleName("googleMap");
+		    this.baseViewHandler.setMapWidget(map);
+		}else{
+			this.map = mapWidget;
+			this.map.clearOverlays();
+			this.map.setCenter(deviceLoc);
+		}
 		
-	    map = new MapWidget(deviceLoc, 15);
+	    /*
+		map = new MapWidget(deviceLoc, 15);
 	    map.setSize("100%", "100%");	  
 	    map.addControl(new LargeMapControl());
-
+	     */
 	    Geocoder geocoder = new Geocoder();
 
 	    LatLng[] locationArray = new LatLng[deviceRoute.size()];

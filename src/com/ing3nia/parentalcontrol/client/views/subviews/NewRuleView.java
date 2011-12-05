@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.EnableFunctionalityClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.SaveRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
@@ -290,7 +291,7 @@ public class NewRuleView {
 		this.clearButton = new Button("Clear");
 		
 		this.centerContent.clear();
-		initNewRuleView();
+		//initNewRuleView();
 	}
 	
 	public void initNewRuleView() {
@@ -356,11 +357,8 @@ public class NewRuleView {
 		this.tillTimePanel.add(this.ampmListBoxT);
 		this.newRuleContent.add(this.tillTimePanel);
 		
-		saveButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		saveRule();
-	    	}
-	    });
+		SaveRuleClickHandler saveRuleClickHandler = new SaveRuleClickHandler(this);
+		saveButton.addClickHandler(saveRuleClickHandler);
 		
 		buttonPanel.add(saveButton);
 		

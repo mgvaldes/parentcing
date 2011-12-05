@@ -43,6 +43,10 @@ public class SmartphoneClickHandler implements ClickHandler{
 		
 		//setting clicked smartphone index
 		baseView.setClickedSmartphoneIndex(this.smartphoneIndex);
+		
+		baseView.getBaseBinder().getCenterMenuOptions().clear();
+		this.menuSetter = new MenuSetterHandler(baseView.getBaseBinder());
+		baseView.setMenuSetter(this.menuSetter);
 		baseView.initDeviceMenuClickHandlers();
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();

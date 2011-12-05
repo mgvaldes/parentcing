@@ -42,6 +42,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class ParentalControl implements EntryPoint {
 
 	public Image loadingImage;
+	//public ClientUserModel userModel; 
 	
 	/**
 	 * Entry point method.
@@ -84,7 +85,10 @@ public class ParentalControl implements EntryPoint {
 		}
 		else{
 			//TODO retrieve user details and start the thing
-			ClientUserModel userModel = new ClientUserModel(); 
+			/*if(userModel==null){
+				userModel = new ClientUserModel();
+			} */
+			ClientUserModel userModel=new ClientUserModel();
 			RootPanel.get().clear();
 			loadPCAdmin(userModel);
 		}
