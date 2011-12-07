@@ -37,8 +37,7 @@ public class DashboardAlertListClickHandler implements ClickHandler {
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
 		menuOptions.add(this.menuSetter.getDashboardDeviceMap());
 		menuOptions.add(this.menuSetter.getDashboardAlertList());
-		this.menuSetter.getDashboardAlertList().setStyleName(
-				"selectedShinnyButton");
+		this.menuSetter.getDashboardAlertList().setStyleName("selectedShinnyButton");
 
 		AlertListView view = new AlertListView(this.baseView, alertList);
 		view.initAlertListView();

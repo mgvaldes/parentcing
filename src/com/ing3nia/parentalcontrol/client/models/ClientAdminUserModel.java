@@ -3,7 +3,7 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ClientAdminUserModel implements Serializable{
+public class ClientAdminUserModel implements Serializable {
 	/**
 	 * 
 	 */

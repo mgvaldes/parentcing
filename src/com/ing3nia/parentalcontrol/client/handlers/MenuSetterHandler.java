@@ -50,7 +50,7 @@ public class MenuSetterHandler {
 	
 	public MenuSetterHandler(PCAdminHelpdeskUIBinder helpdeskBinder){
 		this.helpdeskBinder = helpdeskBinder;
-		this.centerMenuOptions = baseBinder.getCenterMenuOptions();
+		this.centerMenuOptions = helpdeskBinder.getCenterMenuOptions();
 		
 		this.adminClosedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());
 		this.adminOpenTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.OpenTickets.getClassname(), CenterMenuOptionsClassNames.OpenTickets.getText());
@@ -70,8 +70,18 @@ public class MenuSetterHandler {
 		centerMenuOptions.clear();
 	}
 	
+	public void clearHelpdeskMenuOptions(){
+		AdminHelpdeskViewHandler.clearAllStyles(centerMenuOptions);
+		centerMenuOptions.clear();
+	}
+	
 	public FlowPanel getCenterMenuOptions(){
 		FlowPanel centerMenu = baseBinder.getCenterMenuOptions();
+		return centerMenu;
+	}
+	
+	public FlowPanel getHelpdeskCenterMenuOptions(){
+		FlowPanel centerMenu = helpdeskBinder.getCenterMenuOptions();
 		return centerMenu;
 	}
 	
