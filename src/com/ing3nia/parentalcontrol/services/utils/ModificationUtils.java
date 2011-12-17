@@ -189,7 +189,6 @@ public class ModificationUtils {
 		logger.info("[ParentModifications] Adding inactive contacts modifications");
 		// if the parent disabled any contact, add it to smartphone and
 		// modifications
-
 		modActiveList = pcmodification.getActiveContacts();
 		modInactiveList = pcmodification.getInactiveContacts();
 		for (SimpleContactModel contact : inactiveContacts) {
