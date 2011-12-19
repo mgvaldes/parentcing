@@ -38,6 +38,13 @@ public class DailyRouteClickHandler implements ClickHandler{
 	
 	@Override
 	public void onClick(ClickEvent event) {
+		activateDailyRouteClickHandler();
+		
+		//logger.info("Devices Loaded. Displaying route Names "+view.getDeviceRouteNames().size()+" ex: "+view.getDeviceRouteNames().get(0));
+		//displayRouteNames(menuSetter.getParentSmartphoneButton(), deviceChoiceList, view.getDeviceRouteNames());
+	}
+	
+	public void activateDailyRouteClickHandler(){
 		this.centerContent.clear();
 		this.menuSetter.clearMenuOptions();
 
@@ -69,12 +76,7 @@ public class DailyRouteClickHandler implements ClickHandler{
 		DeviceDailyRouteView view = new DeviceDailyRouteView(baseBinder, baseView, scrollBody);		
 		view.setDeviceRoute(getDummyDeviceRoute());
 		view.initDeviceLocationLoad();
-		
-		
-		//logger.info("Devices Loaded. Displaying route Names "+view.getDeviceRouteNames().size()+" ex: "+view.getDeviceRouteNames().get(0));
-		//displayRouteNames(menuSetter.getParentSmartphoneButton(), deviceChoiceList, view.getDeviceRouteNames());
 	}
-	
 	
 	public ScrollPanel initRouteNamesDisplay(Button smpButton, FlowPanel deviceChoiceList){
 		if(smpButton==null) return null;

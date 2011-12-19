@@ -20,18 +20,20 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.view.client.ListDataProvider;
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
+import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 public class DeviceEmergencyNumberListView {
-	/**
-	 * Center Panel containing all the widgets of the 
-	 * device contact list view.
-	 */
+	
+	
+	private BaseViewHandler baseViewHandler;
+	
 	private HTMLPanel centerContent;
 	
 	/**
@@ -60,6 +62,8 @@ public class DeviceEmergencyNumberListView {
 	 */
 	private Button emergencyContactsButton;
 	
+	private Button addEmergencyButton;
+	
 	/**
 	 * List of contacts of device.
 	 */
@@ -82,14 +86,15 @@ public class DeviceEmergencyNumberListView {
 	
 	private Button saveButton;
 	
-	public DeviceEmergencyNumberListView(HTMLPanel centerContent, String cookieId, SmartphoneModel smartphone) {
+	public DeviceEmergencyNumberListView(BaseViewHandler baseViewHandler, String cookieId, SmartphoneModel smartphone) {
+		this.baseViewHandler = baseViewHandler;
 		this.cookieId = cookieId;
 		this.smartphone = smartphone;
 		this.emergencyNumbers = new ArrayList<EmergencyNumberModel>();
 		loadEmergencyNumbers();		
 		this.addedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
 		this.deletedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
-		this.centerContent = centerContent;
+		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
 		this.emergencyNumbersLabel = new Label("Emergency Numbers:");
@@ -105,14 +110,19 @@ public class DeviceEmergencyNumberListView {
 		this.saveButton = new Button("Save");
 		DOM.setElementProperty(saveButton.getElement(), "id", "saveEmergencyNumbersButton");
 		
+		this.addEmergencyButton = new Button("Add Emergency Number");
+		DOM.setElementProperty(contactsButton.getElement(), "id", "addEmergencyNumber");
+		
 		this.centerContent.clear();
 		
-		addTestDeviceEmergencyNumbers();
-		initDeviceEmergencyNumberListView();
+		//addTestDeviceEmergencyNumbers();
+		//initDeviceEmergencyNumberListView();
 	}
 	
 	public void loadDeviceContacts() {
-		
+		baseViewHandler.getBaseBinder().getCenterContent().clear();
+		DeviceContactListView contactView = new DeviceContactListView(baseViewHandler, cookieId, smartphone);
+		contactView.initDeviceContactListView();
 	}
 	
 	public void loadDeviceEmergencyContacts() {
@@ -121,6 +131,8 @@ public class DeviceEmergencyNumberListView {
 	
 	public void initDeviceEmergencyNumberListView() {
 		this.viewContent.add(this.emergencyNumbersLabel);
+		
+		this.emergencyNumberTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
 		contactsButton.addClickHandler(new ClickHandler() {
 	    	public void onClick(ClickEvent event) {
@@ -170,15 +182,15 @@ public class DeviceEmergencyNumberListView {
 		emergencyNumberTable.addColumn(descColumn, "Description");		
 
 		// Add an edit column to show the disallow button.
-		ButtonCell disallowCell = new ButtonCell();
-		Column<EmergencyNumberModel, String> disallowColumn = new Column<EmergencyNumberModel, String>(disallowCell) {
+		ButtonCell deleteCell = new ButtonCell();
+		Column<EmergencyNumberModel, String> deleteColumn = new Column<EmergencyNumberModel, String>(deleteCell) {
 			@Override
 			public String getValue(EmergencyNumberModel object) {
-				return "Disallow";
+				return "Delete";
 			}
 		};
 
-		disallowColumn.setFieldUpdater(new FieldUpdater<EmergencyNumberModel, String>() {
+		deleteColumn.setFieldUpdater(new FieldUpdater<EmergencyNumberModel, String>() {
 			@Override
 			public void update(int index, EmergencyNumberModel object, String value) {
 				//Change button's style
@@ -194,34 +206,9 @@ public class DeviceEmergencyNumberListView {
 		});
 		
 
-		emergencyNumberTable.addColumn(disallowColumn, "Allow");
-		
-		// Add an edit column to show the disallow button.
-		ButtonCell allowCell = new ButtonCell();
-		Column<EmergencyNumberModel, String> allowColumn = new Column<EmergencyNumberModel, String>(allowCell) {
-			@Override
-			public String getValue(EmergencyNumberModel object) {
-				return "Allow";
-			}
-		};
+		emergencyNumberTable.addColumn(deleteColumn, "");
 
-		allowColumn.setFieldUpdater(new FieldUpdater<EmergencyNumberModel, String>() {
-			@Override
-			public void update(int index, EmergencyNumberModel object, String value) {
-				//Change button's style
-				TableRowElement row = emergencyNumberTable.getRowElement(index);
-				
-				//Add to added emergency numbers;
-				if (deletedEmergencyNumbers.contains(object)) {
-					deletedEmergencyNumbers.remove(object);
-				}
-				
-				addedEmergencyNumbers.add(object);
-			}
-		});
-		
-
-		emergencyNumberTable.addColumn(allowColumn, "Access");		
+	
 
 		// Set the total row count. This isn't strictly necessary, but it
 		// affects paging calculations, so its good habit to keep the row
@@ -241,6 +228,8 @@ public class DeviceEmergencyNumberListView {
 		viewContent.add(pager);
 		viewContent.add(emergencyNumberTable);		
 		viewContent.add(pager);
+		
+		viewContent.add(addEmergencyButton);
 		
 		saveButton.addClickHandler(new ClickHandler() {
 			

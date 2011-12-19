@@ -11,6 +11,7 @@ import com.ing3nia.parentalcontrol.client.handlers.click.HelpDeskUserClickHandle
 import com.ing3nia.parentalcontrol.client.handlers.click.LogoImageClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.LoginRegisterButtonClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.SignInButtonClickHandler;
+import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
@@ -42,7 +43,7 @@ import com.google.gwt.user.client.ui.TextBox;
 public class ParentalControl implements EntryPoint {
 
 	public Image loadingImage;
-	//public ClientUserModel userModel; 
+	public ClientUserModel userModel; 
 	
 	/**
 	 * Entry point method.
@@ -61,7 +62,7 @@ public class ParentalControl implements EntryPoint {
 		if (userCookie == null) {			
 			PCLoginUIBinder loginUI = new PCLoginUIBinder();
 			RootPanel.get().add(loginUI);
-			ClientUserModel userModel = new ClientUserModel();
+			userModel = new ClientUserModel();
 			SignInButtonClickHandler signInHandler =  new SignInButtonClickHandler(loginUI, userModel, loadingImage);
 			loginUI.getSignInButton().addClickHandler(signInHandler);
 			
@@ -85,10 +86,10 @@ public class ParentalControl implements EntryPoint {
 		}
 		else{
 			//TODO retrieve user details and start the thing
-			/*if(userModel==null){
+			if(userModel==null){
 				userModel = new ClientUserModel();
-			} */
-			ClientUserModel userModel=new ClientUserModel();
+			}
+			//ClientUserModel userModel=new ClientUserModel();
 			RootPanel.get().clear();
 			loadPCAdmin(userModel);
 		}
@@ -149,9 +150,26 @@ public class ParentalControl implements EntryPoint {
 		  baseViewHandler.setLogoutButton();
 		  baseViewHandler.setAdminUserListView();
 		  baseViewHandler.setNewAdminUserViewHandler();
+		  
+		  loadLastAlert(user, baseViewHandler);
 	}
 
-
+	public static void loadLastAlert(ClientUserModel userModel, BaseViewHandler baseViewHandler){
+		AlertModel alertModel = null;
+		ArrayList<AlertModel> alertList = userModel.getUserAlertList();
+		
+		
+		if(alertList.size() != 0){
+			alertModel = alertList.get(alertList.size()-1);
+		}
+		
+		if(alertModel != null){
+			baseViewHandler.getBaseBinder().getAlertDeviceName().setText(alertModel.getDevice());
+			baseViewHandler.getBaseBinder().getAlertMessage().setText(alertModel.getMessage());	
+		}
+	}
+	
+	
 	public Image getLoadingImage() {
 		return loadingImage;
 	}

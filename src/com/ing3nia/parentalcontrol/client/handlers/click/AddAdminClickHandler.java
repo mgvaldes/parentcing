@@ -25,9 +25,14 @@ public class AddAdminClickHandler implements ClickHandler {
 
 	public void onClick(ClickEvent event) {
 
+		// Clean center menu
 		FlowPanel centerMenu = menuSetter.getCenterMenuOptions();
 		menuSetter.getCenterMenuOptions().clear();
-		// Clean center menu
+		
+		//Clear smartphone routes panel
+		baseView.getBaseBinder().setDeviceChoiceList(BaseViewHandler
+		.clearRouteNamesPanels(baseView.getBaseBinder().getDeviceChoiceList()));
+		
 
 		Button addUser = menuSetter.getAddUser();
 		addUser.setStyleName("selectedShinnyButton");

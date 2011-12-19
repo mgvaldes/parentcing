@@ -31,6 +31,10 @@ public class DeviceSettingsClickHandler implements ClickHandler{
 		this.centerContent.clear();
 		this.menuSetter.clearMenuOptions();
 		
+		//Clear smartphone routes panel
+		baseView.getBaseBinder().setDeviceChoiceList(BaseViewHandler
+		.clearRouteNamesPanels(baseView.getBaseBinder().getDeviceChoiceList()));
+		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
 		menuOptions.add(this.menuSetter.getDailyRoute());
 		menuOptions.add(this.menuSetter.getAlertList());

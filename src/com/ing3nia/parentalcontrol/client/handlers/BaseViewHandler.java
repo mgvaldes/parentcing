@@ -198,7 +198,6 @@ public class BaseViewHandler {
 			smartphone.setRules(new ArrayList<RuleModel>());
 		}
 		
-		
 		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this, smartphone.getRules());
 		alertRulesButton.addClickHandler(alertRulesHandler);
 		

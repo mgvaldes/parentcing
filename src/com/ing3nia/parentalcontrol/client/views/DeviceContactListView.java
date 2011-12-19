@@ -37,6 +37,7 @@ import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames
 
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.ContactListRangeChangeHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.SaveContactsClickHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
@@ -264,7 +265,7 @@ public class DeviceContactListView {
 				// Set contact as disabled in boolean list
 				activeInactiveIndexList.set(index, false);
 				
-				Window.alert("ACTIVE: "+activeContacts.size()+" INACTIVE: "+inactiveContacts.size());
+				//Window.alert("ACTIVE: "+activeContacts.size()+" INACTIVE: "+inactiveContacts.size());
 			}
 		});
 		
@@ -301,7 +302,7 @@ public class DeviceContactListView {
 				// Set contact as disabled in boolean list
 				activeInactiveIndexList.set(index, true);
 				
-				Window.alert("ACTIVE: "+activeContacts.size()+" INACTIVE: "+inactiveContacts.size());
+				//Window.alert("ACTIVE: "+activeContacts.size()+" INACTIVE: "+inactiveContacts.size());
 			}
 		});
 		
@@ -354,13 +355,8 @@ public class DeviceContactListView {
 		viewContent.add(contactTable);		
 		viewContent.add(pager);
 		
-		saveButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				saveContacts();
-			}
-		});
+		SaveContactsClickHandler saveContactsClickHandler = new SaveContactsClickHandler(this);
+		saveButton.addClickHandler(saveContactsClickHandler);
 
 		this.viewContent.add(saveButton);
 		this.centerContent.add(this.viewContent);
@@ -692,10 +688,12 @@ public class DeviceContactListView {
 	
 	
 	public void loadDeviceContacts() {
-		
+
 	}
 	
 	public void loadDeviceEmergencyContacts() {
-		
+		baseViewHandler.getBaseBinder().getCenterContent().clear();
+		DeviceEmergencyNumberListView emergencyView = new DeviceEmergencyNumberListView(baseViewHandler, cookieId, smartphone);
+		emergencyView.initDeviceEmergencyNumberListView();
 	}
 }

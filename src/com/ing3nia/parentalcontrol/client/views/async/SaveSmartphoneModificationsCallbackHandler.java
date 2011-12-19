@@ -85,6 +85,17 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 			else if (this.option == 2) { //SaveMod contacts
 				
 			}
+			else if (this.option == 3) { //SaveMod edit rule
+				ArrayList<RuleModel> rules = smartphone.getRules();
+				baseView.getBaseBinder().getCenterContent().clear();
+				
+				Button ruleList = baseView.getMenuSetter().getAlertRules();
+				ruleList.setStyleName("selectedShinnyButton");
+				BaseViewHandler.clearOthersStyle(CenterMenuOptionsClassNames.AlertRules, baseView.getMenuSetter().getCenterMenuOptions());
+
+				RuleListView ruleListView = new RuleListView(baseView, rules);
+				ruleListView.initRuleListView();
+			}
 		}
 		else {
 			if (this.option == 0) {
@@ -105,18 +116,27 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 		FlowPanel deviceChoiceList = baseView.getBaseBinder()
 				.getDeviceChoiceList();
 		int count = 0;
+		boolean breakAll = false;
 		for (int i = 0; i < deviceChoiceList.getWidgetCount(); i++) {
 			Widget w = deviceChoiceList.getWidget(i);
 			if (w instanceof FlowPanel) {
 				FlowPanel flowpanel = (FlowPanel) w;
 				for (int j = 0; j < flowpanel.getWidgetCount(); j++) {
 					Widget w2 = flowpanel.getWidget(j);
-					if (count == index) {
-						Button b = (Button) w2;
-						b.setText(newName);
-						break;
+					if (w2 instanceof Button) {
+						if (count == index) {
+							Button b = (Button) w2;
+							b.setText(newName);
+							// augment if loop will break
+							count++;
+							breakAll = true;
+							break;
+						}
+						count++;
 					}
-					count++;
+				}
+				if(breakAll){
+					break;
 				}
 			}
 		}

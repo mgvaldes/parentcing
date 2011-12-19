@@ -184,7 +184,7 @@ public class DeviceSettingsView {
 		DOM.setElementProperty(clearButton.getElement(), "id", "clearSettingsButton");
 		
 		this.centerContent.clear();
-		initDeviceSettingsView();
+		//initDeviceSettingsView();
 	}
 	
 	public String loadSpeedLimit() {

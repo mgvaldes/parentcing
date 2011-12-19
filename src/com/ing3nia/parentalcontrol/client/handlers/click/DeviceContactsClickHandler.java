@@ -33,6 +33,10 @@ public class DeviceContactsClickHandler implements ClickHandler{
 		this.centerContent.clear();
 		this.menuSetter.clearMenuOptions();
 		
+		//Clear smartphone routes panel
+		baseView.getBaseBinder().setDeviceChoiceList(BaseViewHandler
+		.clearRouteNamesPanels(baseView.getBaseBinder().getDeviceChoiceList()));
+		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
 		menuOptions.add(this.menuSetter.getDailyRoute());
 		menuOptions.add(this.menuSetter.getAlertList());
@@ -42,7 +46,7 @@ public class DeviceContactsClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
 		//DeviceContactListView view = new DeviceContactListView(centerContent);
-		DeviceContactListView view = new DeviceContactListView(baseView, CookieHandler.getPCCookie(), smartphone);
+		DeviceContactListView view = new DeviceContactListView(baseView, baseView.getUser().getCid(), smartphone);
 		view.initDeviceContactListView();
 	}
 }

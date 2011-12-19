@@ -8,8 +8,8 @@
 			<g:HorizontalPanel styleName="alertInfo">
 				<g:Image styleName="alertImage" url="/media/images/alert.png"/>
 				<g:Label styleName="alertType">Alert:</g:Label>
-				<g:Label styleName="deviceName">Device Name [6]</g:Label>
-				<g:Label styleName="alertType">LOW BATTERY</g:Label>
+				<g:Label styleName="deviceName" ui:field="alertDeviceName">-</g:Label>
+				<g:Label styleName="alertType" ui:field="alertMessage">No Alerts</g:Label>
 			</g:HorizontalPanel>
 		</g:FlowPanel>
 		<g:FlowPanel styleName="sessionButtons">
