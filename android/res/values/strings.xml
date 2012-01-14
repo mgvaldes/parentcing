@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, ParentalControlAndroidActivity!</string>
+    <string name="app_name">Parental Control</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="base_url">http://parental-control.appspot.com/resources/</string>
+    <string name="progress_dialog_login">Logging in</string>
+    <string name="progress_dialog_login_cancel">Canceling login</string>
+    <string name="dialog_intent_ok">com.ing3nia.parentalcontrol.ui.components.dialog.ok</string>
+    <string name="login_url">login</string>
+    <string name="logout_url">logout</string>
+    <string name="smartphoneName">Name</string>
+
+</resources>
