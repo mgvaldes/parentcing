@@ -12,5 +12,9 @@
     <string name="login_url">login</string>
     <string name="logout_url">logout</string>
     <string name="smartphoneName">Name</string>
+    <string name="progress_dialog_register_smartphone">Registering smartphone</string>
+    <string name="progress_dialog_register_smartphone_cancel">Canceling register smatphone</string>
+    <string name="register_url">register</string>
+    <string name="generic_error">An error occurred. Try later.</string>
 
 </resources>

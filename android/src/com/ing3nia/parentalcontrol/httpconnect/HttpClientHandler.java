@@ -208,6 +208,61 @@ public class HttpClientHandler extends Application {
 	}
 	
 	/**
+	 {
+	 	“usr”:”JohnDoe”,
+	 	”pass”:” 45f2d93cd80e3e1df23e8e07021d8177”,
+		“smartphone”:{
+			“location”:{“latitude”:”10,239”, “longitude”:”12,8745”}, 
+			“activeContacts”:[
+				{“firstName”:”Pedro”,”lastName”:”Perez”,”phones”:[{“type”:1,”phoneNumber”:”02129762345”}]}, 
+				{“firstName”:”Maria”,”lastName”:”Vicentini”,”phones”:[{“type”:2,”phoneNumber”:”04123456789”}]}
+			], 
+			“name”:”PPSmart”, 
+			“device”:{“model”:”9000”,”version”:”5.2”,”type”:3}, 
+			”serial”:”AX1-BBMPA2”, 
+			“appVersion”:”1.0.0”}}
+	 */
+	
+	/**
+	 * Verifica el login y devuelve el resumen de cuentas si es exitoso el login
+	 * 
+	 * @param userName
+	 *            nombre de usuario
+	 * @param password
+	 *            contraseÒa
+	 * @return Resumen de cuenta
+	 */
+	public InputStream registerSmartphone(String pcSmartphoneName) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.register_url);
+		
+//		try {
+//			JSONObject userModel = new JSONObject();
+//			userModel.put("usr", pcUsername);
+//			userModel.put("pass", pcPassword);
+//			
+//			StringEntity postEntity = new StringEntity(userModel.toString());
+//			postEntity.setContentType("application/json");
+//			
+//			responseEntityPostStream = obtenerDatosServidor(new URI(URL), postEntity);
+//		} 
+//		catch (URISyntaxException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//		catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} 
+//		catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		return responseEntityPostStream;
+	}
+	
+	/**
 	 * Getter para el cliente
 	 * 
 	 * @return httpClient
@@ -389,5 +444,27 @@ public class HttpClientHandler extends Application {
 		if (sessionTimer != null) {
 			sessionTimer.cancel();
 		}
+	}
+	
+	public String mensajeParaError() {
+//		if (responseCode == 401) {
+//			//No autorizado
+//			return loginContext.getString(R.string.conex_error_401);
+//		} 
+//		else if (responseCode == 408) {
+//			//Timeout
+//			return loginContext.getString(R.string.conex_error_408);
+//		} 
+//		else if (responseCode == 500) {
+//			//Internal server error
+//			return loginContext.getString(R.string.conex_error_500);
+//		} 
+//		else if (responseCode == -1){
+//			//Sin conexion
+//			return loginContext.getString(R.string.conex_error_sin_conexion);
+//		}
+		
+		//Cualquier otro.
+		return loginContext.getString(R.string.generic_error);
 	}
 }

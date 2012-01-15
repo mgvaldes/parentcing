@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.DialogInterface.OnCancelListener;
 import android.os.AsyncTask;
@@ -160,8 +161,10 @@ public class Login extends Activity {
 		String pcUsername = textViewUsername.getText().toString();
 		String pcPassword = textViewPass.getText().toString();
 		
-		showProcessDialog();
-		asyncLoginThread = new LoginThread().execute(pcUsername, pcPassword);
+//		showProcessDialog();
+//		asyncLoginThread = new LoginThread().execute(pcUsername, pcPassword);
+		Intent i = new Intent(Login.this, SmartphoneList.class);
+		startActivity(i);
 	}
 	
 	/**
@@ -232,16 +235,7 @@ public class Login extends Activity {
 		}
 
 		protected void onPostExecute(Boolean result) {
-			if (result) {
-				processDialog.dismiss();
-				
-//				if(httpClientHandlerApp.conexionSinErrores()){
-//					evaluarExistenciaActualizacion();
-//				}
-//				else{
-//					UiUtils.levantarDialog(Login.this,UiUtils.DIALOG_OK,httpClientHandlerApp.mensajeParaError());
-//				}
-			}
+			processDialog.dismiss();
 		}
 	}
 }
