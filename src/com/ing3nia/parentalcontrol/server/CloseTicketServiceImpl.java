@@ -9,6 +9,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
+import com.ing3nia.parentalcontrol.models.PCAdmin;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
@@ -26,21 +27,45 @@ public class CloseTicketServiceImpl extends RemoteServiceServlet implements Clos
 	public Boolean closeTicket(String ticketKey, String loggedUserKey) {
 		boolean result = false;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		boolean isAdmin = false;
 		
-		try {						
+		try {					
+			logger.info("[CloseTicketService] Searching for user.");
 			PCUser user = pm.getObjectById(PCUser.class, loggedUserKey);
 			
-			Key closingTicketKey = KeyFactory.stringToKey(ticketKey);
-			user.getOpenTickets().remove(closingTicketKey);
-			
-			if (user.getClosedTickets() == null) {
-				user.setClosedTickets(new ArrayList<Key>());
+			if (user != null) {
+				logger.info("[CloseTicketService] Logged user found. It is not admin.");
+				Key closingTicketKey = KeyFactory.stringToKey(ticketKey);
+				user.getOpenTickets().remove(closingTicketKey);
+				
+				if (user.getClosedTickets() == null) {
+					user.setClosedTickets(new ArrayList<Key>());
+				}
+				
+				user.getClosedTickets().add(closingTicketKey);
 			}
-			
-			user.getClosedTickets().add(closingTicketKey);
-			
+		}
+		catch (Exception ex) {
+			isAdmin = true;
+		}
+		
+		try {
+			logger.info("[CloseTicketService] Closing ticket.");
 			PCHelpdeskTicket ticket = pm.getObjectById(PCHelpdeskTicket.class, ticketKey);
 			ticket.setStatus(false);
+			
+			if (isAdmin) {
+				PCUser auxUser = pm.getObjectById(PCUser.class, ticket.getUser());
+				
+				Key closingTicketKey = KeyFactory.stringToKey(ticketKey);
+				auxUser.getOpenTickets().remove(closingTicketKey);
+				
+				if (auxUser.getClosedTickets() == null) {
+					auxUser.setClosedTickets(new ArrayList<Key>());
+				}
+				
+				auxUser.getClosedTickets().add(closingTicketKey);
+			}
 			
 			result = true;
 		}

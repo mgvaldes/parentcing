@@ -10,6 +10,7 @@ import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
 
 public class DashboardDeviceMapClickHandler implements ClickHandler{
@@ -38,12 +39,16 @@ public class DashboardDeviceMapClickHandler implements ClickHandler{
 	public void onClick(ClickEvent event) {
 		this.centerContent.clear();
 		this.menuSetter.clearMenuOptions();
+		BaseViewHandler.clearSmartphoneListStyle(this.baseBinder.getDeviceChoiceList());
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
 		menuOptions.add(this.menuSetter.getDashboardDeviceMap());
 		menuOptions.add(this.menuSetter.getDashboardAlertList());
 		this.menuSetter.getDashboardDeviceMap().setStyleName("selectedShinnyButton");
 
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setDashboardNavigation(baseView.getBaseBinder().getNavigationPanel());
+		
 		DeviceMapView view = new DeviceMapView(baseBinder,baseView);		
 		view.setDeviceLocations(this.deviceLocations);
 		view.initDeviceLocationLoad();

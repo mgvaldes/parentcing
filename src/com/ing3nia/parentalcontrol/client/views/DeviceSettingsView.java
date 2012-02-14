@@ -166,21 +166,25 @@ public class DeviceSettingsView {
 		
 		blockPhonePanel = new FlowPanel();
 		blockPhoneButton = new Button("Block Phone");
+		blockPhoneButton.setStyleName("blockPhoneButton");
 		DOM.setElementProperty(blockPhoneButton.getElement(), "id", "blockPhoneButton");
 		
 		blockPhoneLabel = new Label("(In the case your mobile phone is stolen, you must report the theft inmediately to your operator)");
 		
 		restorePhonePanel = new FlowPanel();
 		restorePhoneButton = new Button("Restore Phone");
+		restorePhoneButton.setStyleName("restorePhoneButton");
 		DOM.setElementProperty(restorePhoneButton.getElement(), "id", "restorePhoneButton");
 		
 		restorePhoneLabel = new Label("(Restore phone to default settings before installing PRC)");
 		
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
+		this.saveButton.setStyleName("saveButton");
 		DOM.setElementProperty(saveButton.getElement(), "id", "saveSettingsButton");
 	
 		this.clearButton = new Button("Clear");
+		this.clearButton.setStyleName("clearButton");
 		DOM.setElementProperty(clearButton.getElement(), "id", "clearSettingsButton");
 		
 		this.centerContent.clear();

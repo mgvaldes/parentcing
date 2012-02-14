@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceContactListView;
 
 public class DeviceContactsClickHandler implements ClickHandler{
@@ -44,6 +44,9 @@ public class DeviceContactsClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceContacts());
 		this.menuSetter.getDeviceContacts().setStyleName("selectedShinnyButton");
 		menuOptions.add(this.menuSetter.getDeviceSettings());
+		
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
 		
 		//DeviceContactListView view = new DeviceContactListView(centerContent);
 		DeviceContactListView view = new DeviceContactListView(baseView, baseView.getUser().getCid(), smartphone);

@@ -19,11 +19,11 @@ import com.google.appengine.api.datastore.Key;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.UserModel;
+import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 

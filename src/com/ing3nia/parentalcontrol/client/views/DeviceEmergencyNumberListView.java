@@ -23,11 +23,19 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.rpc.AddEmergencyContactService;
+import com.ing3nia.parentalcontrol.client.rpc.AddEmergencyContactServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
+import com.ing3nia.parentalcontrol.client.views.async.AddEmergencyContactCallBackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
+import com.ing3nia.parentalcontrol.client.views.subviews.AddEmergencyContactView;
+import com.ing3nia.parentalcontrol.client.views.subviews.EditEmergencyContactView;
+import com.ing3nia.parentalcontrol.client.views.subviews.EditRuleView;
 
 public class DeviceEmergencyNumberListView {
 	
@@ -101,9 +109,11 @@ public class DeviceEmergencyNumberListView {
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");
 		DOM.setElementProperty(contactsButton.getElement(), "id", "normalContactButton");
+		this.contactsButton.setStyleName("contactButton");
 
 		this.emergencyContactsButton = new Button("Emergency Contacts");
 		DOM.setElementProperty(emergencyContactsButton.getElement(), "id", "emergencyContactsButton");
+		this.emergencyContactsButton.setStyleName("selectedContactButton");
 		
 		this.emergencyNumberTable = new CellTable<EmergencyNumberModel>(10);
 		this.pager = new SimplePager();
@@ -112,6 +122,7 @@ public class DeviceEmergencyNumberListView {
 		
 		this.addEmergencyButton = new Button("Add Emergency Number");
 		DOM.setElementProperty(contactsButton.getElement(), "id", "addEmergencyNumber");
+		this.addEmergencyButton.setStyleName("addContactButton");
 		
 		this.centerContent.clear();
 		
@@ -181,7 +192,26 @@ public class DeviceEmergencyNumberListView {
 
 		emergencyNumberTable.addColumn(descColumn, "Description");		
 
-		// Add an edit column to show the disallow button.
+		// Add an edit column
+		ButtonCell editCell = new ButtonCell();
+		Column<EmergencyNumberModel, String> editColumn = new Column<EmergencyNumberModel, String>(editCell) {
+			@Override
+			public String getValue(EmergencyNumberModel object) {
+				return "Edit";
+			}
+		};
+
+		editColumn.setFieldUpdater(new FieldUpdater<EmergencyNumberModel, String>() {
+			@Override
+			public void update(int index, EmergencyNumberModel object, String value) {
+				editEmergencyContact(object);
+			}
+		});
+		
+
+		emergencyNumberTable.addColumn(editColumn, "");
+		
+		// Add an delete column to show the disallow button.
 		ButtonCell deleteCell = new ButtonCell();
 		Column<EmergencyNumberModel, String> deleteColumn = new Column<EmergencyNumberModel, String>(deleteCell) {
 			@Override
@@ -228,16 +258,18 @@ public class DeviceEmergencyNumberListView {
 		viewContent.add(pager);
 		viewContent.add(emergencyNumberTable);		
 		viewContent.add(pager);
-		
+
 		viewContent.add(addEmergencyButton);
-		
-		saveButton.addClickHandler(new ClickHandler() {
-			
+		addEmergencyButton.addClickHandler(new ClickHandler() {
+
 			@Override
 			public void onClick(ClickEvent event) {
-				saveEmergencyNumbers();
+				baseViewHandler.getBaseBinder().getCenterContent().clear();
+				AddEmergencyContactView addEm = new AddEmergencyContactView(baseViewHandler,smartphone);
+				addEm.initAddEmergencyContactView();
 			}
 		});
+
 		
 		this.centerContent.add(this.viewContent);
 	}
@@ -337,6 +369,15 @@ public class DeviceEmergencyNumberListView {
 	public void addTestDeviceEmergencyNumbers() {
 		
 	}
+	
+	public void editEmergencyContact(EmergencyNumberModel emergencyContact) {
+		baseViewHandler.getBaseBinder().getCenterContent().clear();
+		SmartphoneModel smart = this.baseViewHandler.getUser().getSmartphones().get(this.baseViewHandler.getClickedSmartphoneIndex()); 
+
+		EditEmergencyContactView editView = new EditEmergencyContactView(baseViewHandler, smart, emergencyContact);
+		editView.initEditEmergencyContactView();
+	}
+	
 	
 	public void loadEmergencyNumbers() {
 		this.emergencyNumbers.addAll(this.smartphone.getAddedEmergencyNumbers());

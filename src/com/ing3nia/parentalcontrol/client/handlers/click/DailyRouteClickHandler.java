@@ -15,6 +15,7 @@ import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceDailyRouteView;
 
 public class DailyRouteClickHandler implements ClickHandler{
@@ -39,6 +40,10 @@ public class DailyRouteClickHandler implements ClickHandler{
 	@Override
 	public void onClick(ClickEvent event) {
 		activateDailyRouteClickHandler();
+		
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
+		
 		
 		//logger.info("Devices Loaded. Displaying route Names "+view.getDeviceRouteNames().size()+" ex: "+view.getDeviceRouteNames().get(0));
 		//displayRouteNames(menuSetter.getParentSmartphoneButton(), deviceChoiceList, view.getDeviceRouteNames());

@@ -128,15 +128,17 @@ public class DeviceContactListView {
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");
 		DOM.setElementProperty(contactsButton.getElement(), "id", "contactsButton");
+		this.contactsButton.setStyleName("selectedContactButton");
 		
 		this.emergencyContactsButton = new Button("Emergency Contacts");
 		DOM.setElementProperty(emergencyContactsButton.getElement(), "id", "emergencyContactButton");
-		
+		this.emergencyContactsButton.setStyleName("contactButton");
 		
 		this.contactTable = new CellTable<ClientSimpleContactModel>(smartphone.getActiveContacts().size()+smartphone.getInactiveContacts().size());
 		this.pager = new SimplePager();	
 		
 		this.saveButton = new Button("Save");
+		this.saveButton.setStyleName("saveButton");
 		DOM.setElementProperty(saveButton.getElement(), "id", "saveContactsButton");
 		
 		this.centerContent.clear();

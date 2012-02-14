@@ -11,6 +11,7 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.rpc.UserTicketListService;
 import com.ing3nia.parentalcontrol.client.rpc.UserTicketListServiceAsync;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.async.UserTicketListCallbackHandler;
 
 public class HelpDeskUserClickHandler implements ClickHandler {
@@ -32,7 +33,10 @@ public class HelpDeskUserClickHandler implements ClickHandler {
 		this.centerContent.clear();
 		this.menuSetter.clearMenuOptions();
 		
+		BaseViewHandler.clearSmartphoneListStyle(this.baseViewHandler.getBaseBinder().getDeviceChoiceList());
+
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
+		
 		
 		if (isAdmin) {
 			menuOptions.add(this.menuSetter.getAdminOpenTickets());
@@ -50,6 +54,10 @@ public class HelpDeskUserClickHandler implements ClickHandler {
 			UserTicketListServiceAsync ticketService = GWT.create(UserTicketListService.class);
 			ticketService.getUserTicketList(this.baseViewHandler.getUser().getKey(), ticketsCallback);
 		}
+		
+		NavigationHandler navHandler = new NavigationHandler(baseViewHandler);
+		navHandler.setHelpdesk(baseViewHandler.getBaseBinder().getNavigationPanel());
+		
 	}
 	
 	public void setUserHelpDeskClickHandlers(){

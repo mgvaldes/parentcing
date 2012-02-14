@@ -18,12 +18,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.UserModel;
+import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCSession;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
-import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 
@@ -127,41 +127,55 @@ public class ParentLoginResource {
 			logger.info("[Parent Login] Updating last activity from found session");
 			//updating last activity
 			session.setLastUpdate(new Date());
-			pm.close();
 			
+			// Not creating new session cookie
+			/*
+			try {
+				session.setCookieId(SessionUtils.calculateSessionCookie());
+			} catch (EncodingException e) {
+				logger.warning("[Parent Login] An error ocurred while creating the cookie hash.");
+				rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+				return rbuilder.build();
+			}*/
+			pm.close();
+
 			// ok response. user succesfully registered
 			logger.info("[Parent Login] Ok Response. User succesfully logged in");
 			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
 			okResponse.addProperty("cid", session.getCookieId());
-			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			rbuilder = Response.ok(okResponse.toString(),
+					MediaType.APPLICATION_JSON);
 			return rbuilder.build();
 		}
-		    
+		//no need for else statement
+		
 		logger.info("[Parent Login] Creating session object");
-		//register model in datastore
-		session =  new PCSession();
+		// register model in datastore
+		session = new PCSession();
 		session.setUser(user.getKey());
 		session.setLastUpdate(new Date());
 		try {
 			session.setCookieId(SessionUtils.calculateSessionCookie());
 		} catch (EncodingException e1) {
 			logger.warning("[Parent Login] An error ocurred while creating the cookie hash.");
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
 		}
 
 		logger.info("[Parent Login] Persisting new session in datastore");
 		try {
 			pm.makePersistent(session);
-		} catch(Exception e){
-			logger.warning("[Parent Login] An error ocurred while persisting the session data. "+e.getMessage());
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+		} catch (Exception e) {
+			logger.warning("[Parent Login] An error ocurred while persisting the session data. "
+					+ e.getMessage());
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
-		} 
-		finally {
+		} finally {
 			pm.close();
 		}
-		
+
 		// ok response. user succesfully logged in
 		logger.info("[Parent Login] Ok Response. User succesfully logged in");
 		JsonObject okResponse = WSStatus.OK.getStatusAsJson();

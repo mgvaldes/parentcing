@@ -8,6 +8,7 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceSettingsView;
 
 public class DeviceSettingsClickHandler implements ClickHandler{
@@ -42,6 +43,9 @@ public class DeviceSettingsClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getDeviceContacts());
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		this.menuSetter.getDeviceSettings().setStyleName("selectedShinnyButton");
+		
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
 		
 		//DeviceSettingsView view = new DeviceSettingsView(centerContent, smartphone);
 		DeviceSettingsView view = new DeviceSettingsView(baseView, smartphone, baseView.getUser().getCid());

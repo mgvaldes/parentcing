@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.RuleListView;
 
 public class AlertRulesClickHandler implements ClickHandler{
@@ -24,8 +25,7 @@ public class AlertRulesClickHandler implements ClickHandler{
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.menuSetter = baseView.getMenuSetter();
-		this.ruleList = ruleList;
-		
+		this.ruleList = ruleList;	
 	}
 	
 	@Override
@@ -48,6 +48,11 @@ public class AlertRulesClickHandler implements ClickHandler{
 		
 		//RuleListView view = new RuleListView(centerContent);		
 		RuleListView view = new RuleListView(baseView, ruleList);
+		
+		//set navigation bar
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
+		
 		view.initRuleListView();
 	}
 }

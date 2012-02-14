@@ -8,11 +8,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.DeviceSettingsClickHandler;
+import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.client.views.AdminUserListView;
+import com.ing3nia.parentalcontrol.client.views.DeviceContactListView;
+import com.ing3nia.parentalcontrol.client.views.DeviceEmergencyNumberListView;
 import com.ing3nia.parentalcontrol.client.views.DeviceSettingsView;
 import com.ing3nia.parentalcontrol.client.views.RuleListView;
 import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
@@ -20,6 +23,7 @@ import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClas
 public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback<Boolean> {
 	private BaseViewHandler baseView;
 	private RuleModel newRule;
+	private EmergencyNumberModel emergencyModel;
 	private int option;
 	private String deviceName;
 	private String speedLimit;
@@ -29,6 +33,13 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 		this.newRule = newRule;
 		this.option = option;
 	}
+	
+	public SaveSmartphoneModificationsCallbackHandler(BaseViewHandler baseView, EmergencyNumberModel emergencyNumber, int option) {
+		this.baseView = baseView;
+		this.emergencyModel = emergencyNumber;
+		this.option = option;
+	}
+	
 	
 	public SaveSmartphoneModificationsCallbackHandler(BaseViewHandler baseView, String deviceName, String speedLimit, int option) {
 		this.baseView = baseView;
@@ -96,6 +107,15 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 				RuleListView ruleListView = new RuleListView(baseView, rules);
 				ruleListView.initRuleListView();
 			}
+			else if (this.option == 4) { //SaveMod Add Emergency Contact
+				smartphone.getAddedEmergencyNumbers().add(emergencyModel);
+				baseView.getBaseBinder().getCenterContent().clear();
+
+				BaseViewHandler.clearOthersStyle(CenterMenuOptionsClassNames.DeviceContacts, baseView.getMenuSetter().getCenterMenuOptions());
+
+				DeviceEmergencyNumberListView deviceListView = new DeviceEmergencyNumberListView(baseView, baseView.getUser().getCid(), smartphone);
+				deviceListView.initDeviceEmergencyNumberListView();			
+			}
 		}
 		else {
 			if (this.option == 0) {
@@ -105,7 +125,11 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 				baseView.getBaseBinder().getNotice().setText("An error occured. The device settings couldn't be saved.");
 			}
 			else if (this.option == 3) {
+				baseView.getBaseBinder().getNotice().setText("An error occured. The rule couldn't be edited.");
 				
+			}
+			if (this.option == 4) {
+				baseView.getBaseBinder().getNotice().setText("An error occured. The new emergency contact couldn't be saved.");
 			}
 			
 			baseView.getBaseBinder().getCenterContent().add(baseView.getBaseBinder().getNotice());
@@ -143,6 +167,14 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 	}
 	
 	
+	public EmergencyNumberModel getEmergencyModel() {
+		return emergencyModel;
+	}
+
+	public void setEmergencyModel(EmergencyNumberModel emergencyModel) {
+		this.emergencyModel = emergencyModel;
+	}
+
 	public PropertyModel findSpeedLimitProperty(SmartphoneModel smartphone) {
 		PropertyModel speedLimitProp = null;
 		ArrayList<PropertyModel> props = smartphone.getProperties();

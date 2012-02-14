@@ -7,6 +7,8 @@ public class AsyncronousCallsMessages {
 	public static String LOADING_REGISTER = "Registering user";
 	public static String UNPROCESSED_REQUEST = "The request could not be processed";
 	public static String REQUESTING_DATA = "Requesting user data";
+	public static String PROCESSING_USER_DATA = "Processing user data";
+	public static String REQUESTING_SMP_DATA = "Requesting data from user smartphones";
 	public static String ERROR_REQUESTING_DATE = "The request could not be processed";
 	public static String LOADING_DEVICES_MAP = "Loading Devices Map";
 	public static String SAVING_DEVICE_CONTACTS = "Saving contacts settings";

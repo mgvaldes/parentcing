@@ -255,6 +255,7 @@ public class NewRuleView {
 		this.disabledFunctionalitiesPanel = new HTMLPanel("");
 		this.disabledFunctionalitiesListBox = new ListBox();		
 		this.disabledFunctionalityAddButton = new Button("Disable");
+		this.disabledFunctionalityAddButton.setStyleName("disableButton");
 		this.disabledFunctionalitiesTable = new FlexTable();
 		this.disabledFunctionalities = new ArrayList<String>();
 		
@@ -288,7 +289,9 @@ public class NewRuleView {
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
 		DOM.setElementAttribute(this.saveButton.getElement(), "id", "saveRuleButton");
+		this.saveButton.setStyleName("saveButton");
 		this.clearButton = new Button("Clear");
+		this.clearButton.setStyleName("clearButton");
 		
 		this.centerContent.clear();
 		//initNewRuleView();

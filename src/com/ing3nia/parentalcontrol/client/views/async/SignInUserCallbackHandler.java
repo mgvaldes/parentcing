@@ -8,6 +8,7 @@ import com.ing3nia.parentalcontrol.client.rpc.LoginService;
 import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyService;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyServiceAsync;
+import com.ing3nia.parentalcontrol.client.utils.LoadingBarImageEnum;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
 
 public class SignInUserCallbackHandler implements AsyncCallback<String> {
@@ -33,7 +34,9 @@ public class SignInUserCallbackHandler implements AsyncCallback<String> {
 	public void onSuccess(String userKey) {
 		if(userKey!=null){
 			//pclogin.getNotice().setText("GOING OK "+userKey);
-			LoadingView.changeLoadingMessage(pclogin, AsyncronousCallsMessages.REQUESTING_DATA);		
+			//LoadingView.changeLoadingMessage(pclogin, AsyncronousCallsMessages.REQUESTING_DATA);		
+			LoadingView.setLoadingView(pclogin, AsyncronousCallsMessages.REQUESTING_SMP_DATA, LoadingBarImageEnum.STAGE3);
+			
 			LoginAsyncCallbackHandler loginAsyncCallback = new LoginAsyncCallbackHandler(pclogin, userModel);
 			LoginServiceAsync loginService = GWT.create(LoginService.class);
 			userModel.setKey(userKey);

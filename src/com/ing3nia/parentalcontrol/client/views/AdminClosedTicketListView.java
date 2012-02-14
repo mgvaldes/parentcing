@@ -6,12 +6,19 @@ import java.util.Date;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.ing3nia.parentalcontrol.client.handlers.AdminHelpdeskViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.TicketDetailsViewHandler;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketServiceAsync;
+import com.ing3nia.parentalcontrol.client.views.async.AdminCloseTicketCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.CloseTicketCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 public class AdminClosedTicketListView {
@@ -42,14 +49,20 @@ public class AdminClosedTicketListView {
 	 */
 	private CellTable<TicketModel> closedTicketsTable = new CellTable<TicketModel>();
 	
-	public AdminClosedTicketListView(HTMLPanel centerContent, ArrayList<TicketModel> closedTickets) {
+	private AdminHelpdeskViewHandler helpdeskViewHandler;
+	
+	public AdminClosedTicketListView(AdminHelpdeskViewHandler helpdeskViewHandler, ArrayList<TicketModel> closedTickets) {
 		
 		//Setting alert table style
 		closedTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
-		this.centerContent =  centerContent;
+		this.helpdeskViewHandler = helpdeskViewHandler;
+		this.centerContent =  helpdeskViewHandler.getHelpdeskBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.closedTickets = closedTickets;
+	}
+	
+	public void initAdminClosedTicketListView() {
 		
 		// Setting up open tickets table 
 		
@@ -103,8 +116,8 @@ public class AdminClosedTicketListView {
 		};
 	    
 		closedTicketsTable.addColumn(dateColumn, "Date");
-		
-		// Add an view column to show the view button.
+	    
+	    // Add an view column to show the view button.
 	    ButtonCell viewCell = new ButtonCell();
 	    Column<TicketModel, String> viewColumn = new Column<TicketModel, String>(viewCell) {
 	    	@Override
@@ -113,32 +126,10 @@ public class AdminClosedTicketListView {
 	    	}
 	    };
 	    
-		viewColumn.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
-			@Override
-			public void update(int index, TicketModel object, String value) {
-				// The user clicked on the view button.
-			}
-		});
+	    TicketDetailsViewHandler ticketDetailsHandler = new TicketDetailsViewHandler(helpdeskViewHandler, true, false);
+		viewColumn.setFieldUpdater(ticketDetailsHandler);
 	    
-		closedTicketsTable.addColumn(viewColumn, "");
-	    
-	    // Add an view column to show the view button.
-	    ButtonCell closeCell = new ButtonCell();
-	    Column<TicketModel, String> closeColumn = new Column<TicketModel, String>(closeCell) {
-	    	@Override
-	    	public String getValue(TicketModel object) {
-	    		return "Close";
-	    	}
-	    };
-	    
-	    closeColumn.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
-			@Override
-			public void update(int index, TicketModel object, String value) {
-				closeTicket(object.getKey());
-			}
-		});
-	    
-	    closedTicketsTable.addColumn(closeColumn, "");
+	    closedTicketsTable.addColumn(viewColumn, "");
 	    
 		// Set the total row count. This isn't strictly necessary, but it
 		// affects paging calculations, so its good habit to keep the row 
@@ -153,9 +144,5 @@ public class AdminClosedTicketListView {
 	    closedTicketsViewContent.add(closedTicketsTable);
 	    
 	    centerContent.add(closedTicketsViewContent);
-	}
-	
-	public void closeTicket(String tiketKey) {
-		
 	}
 }

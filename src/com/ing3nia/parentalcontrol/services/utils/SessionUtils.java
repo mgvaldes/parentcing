@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.google.appengine.api.datastore.Key;
+import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCSession;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -130,6 +131,28 @@ public class SessionUtils {
 				logger.info("[SessionUtils] Returning found PCSession");
 				return results.get(0);
 			}else{
+				//retry after 3.5 seconds (for high replication)
+				/*long t0,t1;
+				t0 = System.currentTimeMillis();
+				do{
+					t1=System.currentTimeMillis();
+				}while(t1-t0<3500);
+				
+				try {
+					results = (List<PCSession>) query.execute(cookie);
+					if (!results.isEmpty()) {
+						logger.info("[SessionUtils] Returning found PCSession");
+						return results.get(0);
+					}else{
+						//fail
+						logger.info("[SessionUtils] No session for the cookie "+cookie+" was found.");
+						throw new SessionQueryException();
+					}
+				} catch (Exception e) {
+					logger.info("[SessionUtils] An error ocurred while finding the PCSession by cookie "+ e.getMessage()+ "for second time");
+					throw new SessionQueryException();
+				}  */
+				
 				logger.info("[SessionUtils] No session for the cookie "+cookie+" was found.");
 				throw new SessionQueryException();
 			}

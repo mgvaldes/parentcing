@@ -17,11 +17,19 @@ import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
 import com.ing3nia.parentalcontrol.client.models.UserModel;
 import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
+import com.ing3nia.parentalcontrol.client.rpc.CheckAdminUserService;
+import com.ing3nia.parentalcontrol.client.rpc.CheckAdminUserServiceAsync;
+import com.ing3nia.parentalcontrol.client.rpc.GetUserSessionCredentialsService;
+import com.ing3nia.parentalcontrol.client.rpc.GetUserSessionCredentialsServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.LoadingBarImageEnum;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.LoginView;
+import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
+import com.ing3nia.parentalcontrol.client.views.async.CheckAdminUserCallbackHandler;
+import com.ing3nia.parentalcontrol.client.views.async.GetUserSessionCredentialsCallBackHandler;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
@@ -75,6 +83,11 @@ public class ParentalControl implements EntryPoint {
 			
 			if (remUser !=null && remPass !=null) {
 				
+				String remBox = CookieHandler.getRememberPass();
+				if(remBox.equals("True")){
+					loginUI.getRememberMeBox().setValue(true);
+				}
+				
 				TextBox emailfield = loginUI.getEmailField();
 				PasswordTextBox passfield = loginUI.getPassField();
 				
@@ -86,15 +99,29 @@ public class ParentalControl implements EntryPoint {
 		}
 		else{
 			//TODO retrieve user details and start the thing
-			if(userModel==null){
-				userModel = new ClientUserModel();
-			}
-			//ClientUserModel userModel=new ClientUserModel();
-			RootPanel.get().clear();
-			loadPCAdmin(userModel);
+			userModel = new ClientUserModel();
+			userModel.setCid(userCookie);
+			
+			GetUserSessionCredentialsCallBackHandler getUserCallback = new GetUserSessionCredentialsCallBackHandler(userModel);
+			GetUserSessionCredentialsServiceAsync getUserService = GWT.create(GetUserSessionCredentialsService.class);
+			getUserService.getSessionCredentials(userCookie, getUserCallback);
 		}
 	}
 
+	public static void initLogin(ClientUserModel userModel){
+		
+		PCLoginUIBinder pclogin = new PCLoginUIBinder();
+		pclogin.getCenterPanelLoginContent().clear();
+		pclogin.getCenterPanelLoginContent().add(pclogin.getLoadingBlock());
+		RootPanel.get().add(pclogin);
+
+		LoadingView.setLoadingView(pclogin, AsyncronousCallsMessages.LOADING_LOGIN, LoadingBarImageEnum.STAGE1);
+		
+		CheckAdminUserCallbackHandler checkAdminUserCallback = new CheckAdminUserCallbackHandler(pclogin, userModel);
+		CheckAdminUserServiceAsync checkAdminUserService = GWT.create(CheckAdminUserService.class);
+		checkAdminUserService.checkAdminUser(userModel.getUsername(), userModel.getPassword(), checkAdminUserCallback);
+	}
+	
 	private ClientUserModel getDummyUser() {
 		ClientUserModel user = new ClientUserModel();
 		user.setUsername("javierfdr@gmail.com");

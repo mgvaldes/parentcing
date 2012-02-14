@@ -69,12 +69,13 @@ public class RuleListView {
 		this.rules = ruleList;
 		this.addRuleButton = new Button("Add Rule");
 		DOM.setElementProperty(addRuleButton.getElement(), "id", "addRuleButton");
+		this.addRuleButton.setStyleName("addRuleButton");
 		
 		this.pager = new SimplePager();
 	}
 	
 	public void initRuleListView() {
-		AddNewRuleClickHandler addRuleClickHandler = new AddNewRuleClickHandler(this);
+		AddNewRuleClickHandler addRuleClickHandler = new AddNewRuleClickHandler(this, baseViewHandler);
 		addRuleButton.addClickHandler(addRuleClickHandler);
 		viewContent.add(addRuleButton);
 		
@@ -131,7 +132,7 @@ public class RuleListView {
 		
 		ruleTable.addColumn(editColumn, "");
 		
-		// Add an edit column to show the edit button.
+		// Add an delete column to show the delete button.
 		ButtonCell deleteCell = new ButtonCell();
 		Column<RuleModel, String> deleteColumn = new Column<RuleModel, String>(
 				deleteCell) {

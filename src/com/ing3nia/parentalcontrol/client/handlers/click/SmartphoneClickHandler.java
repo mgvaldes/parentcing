@@ -10,6 +10,9 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationViewList;
 import com.ing3nia.parentalcontrol.client.views.DeviceAlertListView;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
@@ -61,6 +64,14 @@ public class SmartphoneClickHandler implements ClickHandler{
 		
 		deviceChoiceList = BaseViewHandler
 		.clearRouteNamesPanels(deviceChoiceList);
+		
+		this.deviceChoiceList = BaseViewHandler.clearSmartphoneListStyle(this.deviceChoiceList);
+		this.button.setStyleName("selectedSmartphone", true);
+		
+		//set navigation smarpthone button
+		NavigationViewList.setSmartphoneButton(baseView.getUser().getSmartphones().get(smartphoneIndex).getName(), this);
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
 		
 		//TODO set selected button style
 		//this.button.setStyleName("selectedSmartphoneButton");

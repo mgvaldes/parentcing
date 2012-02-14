@@ -143,13 +143,6 @@ public class TicketListView {
 	    	}
 	    };
 	    
-		viewColumn.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
-			@Override
-			public void update(int index, TicketModel object, String value) {
-				// The user clicked on the view button.
-			}
-		});
-	    
 		TicketDetailsViewHandler ticketDetailsHandler = new TicketDetailsViewHandler(baseView, false, true);
 		viewColumn.setFieldUpdater(ticketDetailsHandler);
 		

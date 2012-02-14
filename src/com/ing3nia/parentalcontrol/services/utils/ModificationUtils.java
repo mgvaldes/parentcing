@@ -189,7 +189,6 @@ public class ModificationUtils {
 		logger.info("[ParentModifications] Adding inactive contacts modifications");
 		// if the parent disabled any contact, add it to smartphone and
 		// modifications
-
 		modActiveList = pcmodification.getActiveContacts();
 		modInactiveList = pcmodification.getInactiveContacts();
 		for (SimpleContactModel contact : inactiveContacts) {
@@ -227,8 +226,8 @@ public class ModificationUtils {
 			Key emergencyKey = KeyFactory.stringToKey(emergencyContact
 					.getKeyId());
 			pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
-			if(!pcsmartphone.getActiveContacts().contains(emergencyKey)){
-				pcsmartphone.getActiveContacts().add(emergencyKey);
+			if(!pcsmartphone.getAddedEmergencyNumbers().contains(emergencyKey)){
+				pcsmartphone.getAddedEmergencyNumbers().add(emergencyKey);
 			}
 
 			// check if added emergency contact existed in modification, if

@@ -155,7 +155,7 @@ public class SmartphoneUtils {
 			contactJson.addProperty("keyId", KeyFactory.keyToString(contactKey));
 			contactJson.addProperty("country",contact.getCountry());
 			contactJson.addProperty("description", contact.getDescription());
-			contactJson.addProperty("number", contact.getNumber().getNumber());
+			contactJson.addProperty("number", contact.getNumber());
 			
 			emergencyArray.add(contactJson);
 		}
@@ -170,7 +170,7 @@ public class SmartphoneUtils {
 			contactJson.addProperty("keyId", KeyFactory.keyToString(contactKey));
 			contactJson.addProperty("country",contact.getCountry());
 			contactJson.addProperty("description", contact.getDescription());
-			contactJson.addProperty("number", contact.getNumber().getNumber());
+			contactJson.addProperty("number", contact.getNumber());
 			
 			emergencyDeletedArray.add(contactJson);
 		}

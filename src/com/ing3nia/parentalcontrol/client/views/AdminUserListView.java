@@ -19,6 +19,7 @@ import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.EditAdminUs
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.views.classnames.AdminUserListViewClassName;
+import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 
@@ -79,6 +80,10 @@ public class AdminUserListView {
 	}
 	
 	public void initAdminUserListView() {
+		
+		BaseViewHandler.clearOthersStyle(CenterMenuOptionsClassNames.UserList,
+				baseViewHandler.getMenuSetter().getCenterMenuOptions());
+		this.baseViewHandler.getMenuSetter().getUserList().setStyleName("selectedShinnyButton");
 		
 		//Setting alert table style
 		adminUserTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());

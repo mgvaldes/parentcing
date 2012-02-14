@@ -14,6 +14,7 @@ public class LogoImageClickHandler implements ClickHandler{
 	
 	@Override
 	public void onClick(ClickEvent event) {
+		BaseViewHandler.clearSmartphoneListStyle(this.baseViewHandler.getBaseBinder().getDeviceChoiceList());
 		this.baseViewHandler.initDashboard();		
 	}	
 }

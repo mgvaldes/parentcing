@@ -43,6 +43,8 @@ public class LoginAsyncCallbackHandler implements AsyncCallback<ClientUserModel>
 			if (pclogin.getRememberMeBox().getValue()) {
 				CookieHandler.setCredentialsRemember(pclogin.getEmailField()
 						.getText(), pclogin.getPassField().getText());
+			}else{
+				CookieHandler.clearCredentialsRemember();
 			}
 
 			RootPanel.get().clear();

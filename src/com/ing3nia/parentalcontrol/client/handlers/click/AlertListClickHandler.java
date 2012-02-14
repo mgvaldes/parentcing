@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.AlertListView;
 
 
@@ -44,6 +45,9 @@ public class AlertListClickHandler implements ClickHandler{
 		menuOptions.add(this.menuSetter.getAlertRules());
 		menuOptions.add(this.menuSetter.getDeviceContacts());
 		menuOptions.add(this.menuSetter.getDeviceSettings());
+		
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
 		
 		//AlertListView view = new AlertListView(centerContent);
 		AlertListView view = new AlertListView(this.baseView, alertList);

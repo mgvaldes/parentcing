@@ -9,6 +9,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.AlertListView;
 import com.ing3nia.parentalcontrol.client.views.DeviceAlertListView;
 
@@ -37,9 +38,12 @@ public class DashboardAlertListClickHandler implements ClickHandler {
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
 		menuOptions.add(this.menuSetter.getDashboardDeviceMap());
 		menuOptions.add(this.menuSetter.getDashboardAlertList());
-		this.menuSetter.getDashboardAlertList().setStyleName(
-				"selectedShinnyButton");
+		this.menuSetter.getDashboardAlertList().setStyleName("selectedShinnyButton");
 
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setDashboardNavigation(baseView.getBaseBinder().getNavigationPanel());
+		
+		
 		AlertListView view = new AlertListView(this.baseView, alertList);
 		view.initAlertListView();
 		/*

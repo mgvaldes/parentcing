@@ -6,12 +6,18 @@ import java.util.Date;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.ing3nia.parentalcontrol.client.handlers.AdminHelpdeskViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.TicketDetailsViewHandler;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
+import com.ing3nia.parentalcontrol.client.rpc.CloseTicketServiceAsync;
+import com.ing3nia.parentalcontrol.client.views.async.AdminCloseTicketCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 public class AdminOpenTicketListView {
@@ -42,14 +48,20 @@ public class AdminOpenTicketListView {
 	 */
 	private CellTable<TicketModel> openTicketsTable = new CellTable<TicketModel>();
 	
-	public AdminOpenTicketListView(HTMLPanel centerContent, ArrayList<TicketModel> openTickets) {
+	private AdminHelpdeskViewHandler helpdeskViewHandler;
+	
+	public AdminOpenTicketListView(AdminHelpdeskViewHandler helpdeskViewHandler, ArrayList<TicketModel> openTickets) {
+		this.helpdeskViewHandler = helpdeskViewHandler;
 		
 		//Setting alert table style
 		openTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
-		this.centerContent =  centerContent;
+		this.centerContent = helpdeskViewHandler.getHelpdeskBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.openTickets = openTickets;
+	}
+	
+	public void initAdminOpenTicketListView() {
 		
 		// Setting up open tickets table 
 		
@@ -113,12 +125,8 @@ public class AdminOpenTicketListView {
 	    	}
 	    };
 	    
-		viewColumn.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
-			@Override
-			public void update(int index, TicketModel object, String value) {
-				// The user clicked on the view button.
-			}
-		});
+	    TicketDetailsViewHandler ticketDetailsHandler = new TicketDetailsViewHandler(helpdeskViewHandler, true, true);
+		viewColumn.setFieldUpdater(ticketDetailsHandler);
 	    
 	    openTicketsTable.addColumn(viewColumn, "");
 	    
@@ -134,7 +142,7 @@ public class AdminOpenTicketListView {
 	    closeColumn.setFieldUpdater(new FieldUpdater<TicketModel, String>() {
 			@Override
 			public void update(int index, TicketModel object, String value) {
-				closeTicket(object.getKey());
+				closeTicket(object);
 			}
 		});
 	    
@@ -155,7 +163,9 @@ public class AdminOpenTicketListView {
 	    centerContent.add(openTicketsViewContent);
 	}
 	
-	public void closeTicket(String tiketKey) {
-		
+	public void closeTicket(TicketModel ticket) {
+		AdminCloseTicketCallbackHandler closeTicketCallback = new AdminCloseTicketCallbackHandler(this.helpdeskViewHandler, ticket);
+		CloseTicketServiceAsync closeTicketService = GWT.create(CloseTicketService.class);
+		closeTicketService.closeTicket(ticket.getKey(), this.helpdeskViewHandler.getUser().getKey(), closeTicketCallback);
 	}
 }

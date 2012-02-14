@@ -171,6 +171,10 @@ public class BaseViewHandler {
 		//view.setDeviceLocations(user.getDeviceLocations());
 		view.initDeviceLocationLoad();
 
+		NavigationHandler navHandler = new NavigationHandler(this);
+		navHandler.setDashboardNavigation(this.getBaseBinder().getNavigationPanel());
+		
+		
 		//AlertListView view = new AlertListView(baseBinder.getCenterContent());		
 		//view.initAlertListView();
 	}
@@ -263,6 +267,10 @@ public class BaseViewHandler {
 			}	
 	}
 	
+	public static void clearSmartphoneStyles(FlowPanel SmarpthonesPanel){
+		
+	}
+	
 	public void initTicketAdminCenterMenu(){
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
@@ -327,6 +335,27 @@ public class BaseViewHandler {
 		}
 		for(int j:removeList){
 			deviceChoiceList.remove(j);
+		}
+		return deviceChoiceList;
+	}
+	
+	public static FlowPanel clearSmartphoneListStyle(FlowPanel deviceChoiceList){
+		int widgetCount = deviceChoiceList.getWidgetCount();
+		for(int i = 0; i<widgetCount; i++){
+			Widget w = deviceChoiceList.getWidget(i);
+			if(w instanceof FlowPanel){
+				FlowPanel smphPanel = (FlowPanel)w;
+				int widgetcount2 =smphPanel.getWidgetCount();
+				for(int j=0; j<widgetcount2; j++){
+					Widget w2 = smphPanel.getWidget(j);
+					if(w2 instanceof Button){
+						Button wbutton = (Button)w2;
+						wbutton.setStyleName("buttonFromList");
+					}
+					
+				}
+
+			}
 		}
 		return deviceChoiceList;
 	}

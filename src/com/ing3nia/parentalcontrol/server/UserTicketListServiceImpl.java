@@ -77,8 +77,8 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 	    				userAdminKey = KeyFactory.keyToString(ans.getUser());
 	    			}
 	    			else {
-	    				adminR = pm.getObjectById(PCAdmin.class, ans.getAdmin());
-	    				username = adminR.getUsername();
+	    				//adminR = pm.getObjectById(PCAdmin.class, ans.getAdmin());
+	    				username = "Admin";//adminR.getUsername();
 	    				userAdminKey = KeyFactory.keyToString(ans.getAdmin());
 	    			}
 	    			
@@ -108,8 +108,8 @@ public class UserTicketListServiceImpl extends RemoteServiceServlet implements U
 	    				userAdminKey = KeyFactory.keyToString(ans.getUser());
 	    			}
 	    			else {
-	    				adminR = pm.getObjectById(PCAdmin.class, ans.getAdmin());
-	    				username = adminR.getUsername();
+	    				//adminR = pm.getObjectById(PCAdmin.class, ans.getAdmin());
+	    				username = "Admin";//adminR.getUsername();
 	    				userAdminKey = KeyFactory.keyToString(ans.getAdmin());
 	    			}
 	    			
