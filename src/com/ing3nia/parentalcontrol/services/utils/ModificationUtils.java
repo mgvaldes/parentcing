@@ -12,12 +12,14 @@ import javax.jdo.Query;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.PhoneNumber;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
+import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCProperty;
@@ -216,31 +218,45 @@ public class ModificationUtils {
 		// if the parent enabled any emergency number, add it to smartphone and
 		// modifications
 
-		ArrayList<Key> modAddedEmergency = pcmodification
-				.getAddedEmergencyNumbers();
-		ArrayList<Key> modDeletedEmergency = pcmodification
-				.getDeletedEmergencyNumbers();
+		ArrayList<Key> modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
+		ArrayList<Key> modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
 		for (EmergencyNumberModel emergencyContact : addedEmergencyNumbers) {
-			// remove contact from deleted emergency number and add to added
-			// emergency in smartphone
-			Key emergencyKey = KeyFactory.stringToKey(emergencyContact
-					.getKeyId());
-			pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
-			if(!pcsmartphone.getActiveContacts().contains(emergencyKey)){
-				pcsmartphone.getActiveContacts().add(emergencyKey);
+			if (emergencyContact.getKeyId() == null) {
+				//New emergency contact. First save. Then process.
+				PCEmergencyNumber newEmergencyNumber = new PCEmergencyNumber();
+				newEmergencyNumber.setCountry(emergencyContact.getCountry());
+				newEmergencyNumber.setNumber(new PhoneNumber(emergencyContact.getNumber()));
+				newEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
+				pm.makePersistent(newEmergencyNumber);
+				
+				pcsmartphone.getAddedEmergencyNumbers().add(newEmergencyNumber.getKey());
+				modAddedEmergency.add(newEmergencyNumber.getKey());
 			}
+			else {
+				// remove contact from deleted emergency number and add to added
+				// emergency in smartphone
+				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
+				pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
+				
+				if(!pcsmartphone.getAddedEmergencyNumbers().contains(emergencyKey)){
+					pcsmartphone.getAddedEmergencyNumbers().add(emergencyKey);
+				}
 
-			// check if added emergency contact existed in modification, if
-			// deleted
-			// then remove it and add it to added, otherwise add it to added
-			// emergency list
-			if (modAddedEmergency.contains(emergencyKey)) {
-				// skip
-			} else if (modDeletedEmergency.contains(emergencyKey)) {
-				modDeletedEmergency.remove(emergencyKey);
-				modAddedEmergency.add(emergencyKey);
-			} else {
-				modAddedEmergency.add(emergencyKey);
+				// check if added emergency contact existed in modification, if
+				// deleted
+				// then remove it and add it to added, otherwise add it to added
+				// emergency list
+				if (modAddedEmergency.contains(emergencyKey)) {
+					// skip
+				} 
+				else if (modDeletedEmergency.contains(emergencyKey)) {
+					modDeletedEmergency.remove(emergencyKey);
+					modAddedEmergency.add(emergencyKey);
+				} 
+				else {
+					modAddedEmergency.add(emergencyKey);
+				}
 			}
 		}
 		
@@ -289,14 +305,19 @@ public class ModificationUtils {
 		
 		// parsing rule modifications
 		logger.info("[ParentModifications] Adding rules modifications");
-		for (RuleModel ruleModel : modifications.getRules()) {
+		for (RuleModel ruleModel : rules) {
 			PCRule rule;
 			
-			try {
-				rule = pm.getObjectById(PCRule.class, KeyFactory.stringToKey(ruleModel.getKeyId()));
-			} 
-			catch (Exception e) {
-				throw new ModificationParsingException("Could not get rule from key: " + ruleModel.getKeyId() + " " + e.getMessage());
+			if (ruleModel.getKeyId() == null) {
+				rule = new PCRule();
+			}
+			else {
+				try {
+					rule = pm.getObjectById(PCRule.class, KeyFactory.stringToKey(ruleModel.getKeyId()));
+				} 
+				catch (Exception e) {
+					throw new ModificationParsingException("Could not get rule from key: " + ruleModel.getKeyId() + " " + e.getMessage());
+				}
 			}
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -336,6 +357,10 @@ public class ModificationUtils {
 			logger.info("[ParentModifications] Setting new funcionalities to rules");
 			ArrayList<Key> newDisabledFuncionalities = getNewFuncionalitiesAsKeys(pm, ruleModel);
 			rule.setDisabledFunctionalities(newDisabledFuncionalities);		
+			
+			if (ruleModel.getKeyId() == null) {
+				pm.makePersistent(rule);
+			}
 			
 			pcModRules.add(rule.getKey());
 		}

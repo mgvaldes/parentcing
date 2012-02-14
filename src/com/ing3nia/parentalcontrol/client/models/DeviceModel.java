@@ -2,7 +2,9 @@ package com.ing3nia.parentalcontrol.client.models;
 
 import java.io.Serializable;
 
-public class DeviceModel implements Serializable{
+public class DeviceModel implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private String model;
 
 	private String version;

@@ -133,7 +133,7 @@ public class DeviceDailyRouteView {
 	    	//map.addOverlay(new Marker(deviceLoc));	 
 	    	    	
 	    	DeviceRouteLocationCallbackHandler locationCallback = new DeviceRouteLocationCallbackHandler(baseViewHandler.getMenuSetter().getParentSmartphoneButton(), this.routePanelBody);
-      	    	geocoder.getLocations(deviceLoc, locationCallback);	    	
+	    	geocoder.getLocations(deviceLoc, locationCallback);	    	
 	    }
 	    
 	    //Polyline polyline = new Polyline(locationArray);

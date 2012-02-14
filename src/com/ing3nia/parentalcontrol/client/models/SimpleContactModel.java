@@ -3,7 +3,8 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class SimpleContactModel implements Serializable{
+public class SimpleContactModel implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	private String keyId;
 
