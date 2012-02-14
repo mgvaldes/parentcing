@@ -2,9 +2,11 @@ package com.ing3nia.parentalcontrol.client.models;
 
 import java.io.Serializable;
 
-
 public class NotificationModel implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private int type;
+	
 	private String date;
 
 	public NotificationModel() {

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/vertical_hfill_vfill"
+	android:background="@color/blanco">
+	
+	<ImageView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:src="@drawable/pclogo" />
+	
+	<LinearLayout 
+	    style="@style/vertical_hfill_vwrap"
+		android:paddingLeft="3dp" 
+		android:paddingRight="3dp">
+		
+		<LinearLayout style="@style/vertical_hfill_vwrap">
+		    
+			<TextView 
+			    style="@style/texto_estandar_bold"
+				android:text="Register New Smartphone"
+				android:layout_gravity="left"
+				android:paddingTop="15dp" 
+				android:paddingBottom="10dp" />
+			
+			<RelativeLayout 
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:gravity="left"
+				android:padding="2dp">
+				
+				<TextView 
+				    android:id="@+id/textViewSmartphoneName" 
+				    style="@style/texto_estandar"
+					android:text="@string/smartphoneName"
+					android:layout_alignBaseline="@+id/editTextSmartphoneName"
+					android:gravity="right" 
+					android:paddingRight="7dp" />
+				
+				<TextView 
+				    android:id="@+id/textViewEmpty" 
+				    style="@style/texto_estandar"
+					android:text="" 
+					android:layout_alignBaseline="@+id/buttonRegisterSmartphone"
+					android:gravity="right" />
+				
+				<EditText 
+				    android:id="@+id/editTextSmartphoneName"
+					android:layout_width="200dp" 
+					android:layout_height="wrap_content"
+					android:singleLine="true" 
+					android:layout_toRightOf="@id/textViewSmartphoneName"
+					android:inputType="text" />
+				
+				<Button 
+				    android:id="@+id/buttonRegisterSmartphone"
+				    android:text="Register" 
+				    android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:onClick="onRegisterClick"
+					android:layout_below="@id/editTextSmartphoneName"
+					android:layout_toRightOf="@id/textViewPass"
+					android:layout_alignLeft="@id/editTextSmartphoneName" />
+
+			</RelativeLayout>
+			
+		</LinearLayout>
+	</LinearLayout>				
+</LinearLayout>

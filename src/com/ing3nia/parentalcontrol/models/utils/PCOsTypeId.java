@@ -4,7 +4,8 @@ public enum PCOsTypeId {
 	
 	IPHONE(1, "iPhone"),
 	ANDROID(2, "Android"),
-	BLACKBERRY(3, "Blackberry");
+	BLACKBERRY(3, "Blackberry"),
+	WINDOWS(4, "Windows");
 	
 	private int id;
 	

@@ -3,6 +3,7 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 
 public class PropertyModel implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
 	private String keyId;
 	

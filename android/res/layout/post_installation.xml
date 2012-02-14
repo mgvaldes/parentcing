@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/vertical_hfill_vfill"
+	android:background="@color/blanco">
+	
+	<ImageView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:src="@drawable/pclogo" />
+	
+	<LinearLayout 
+	    style="@style/vertical_hfill_vwrap"
+		android:paddingLeft="3dp" 
+		android:paddingRight="3dp">
+		
+		<LinearLayout style="@style/vertical_hfill_vwrap">
+		    
+			<TextView
+			    style="@style/texto_estandar_bold"
+			    android:layout_height="fill_parent"
+			    android:layout_gravity="center_horizontal"
+			    android:text="Parent or Son?"
+			    android:paddingTop="15dp" 
+				android:paddingBottom="10dp" />
+			
+			<LinearLayout 
+			    android:id="@+id/buttonContainer" 
+			    style="@style/horizontal_hfill_vwrap"
+				android:gravity="center_horizontal" 
+				android:paddingTop="3dip"
+				android:paddingBottom="2dip">
+				
+				<Button 
+				    android:text="Parent" 
+				    android:layout_width="80dp"
+					android:layout_height="wrap_content" 
+					android:onClick="onParentClick" />
+				
+				<Button 
+				    android:text="Child" 
+				    android:layout_width="80dp"
+					android:layout_height="wrap_content" 
+					android:onClick="onChildClick" />
+			</LinearLayout>
+			
+		</LinearLayout>
+	</LinearLayout>				
+</LinearLayout>

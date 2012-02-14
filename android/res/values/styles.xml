@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	
+	<style name="boton_dashboard">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:layout_gravity">center</item>
+		<item name="android:gravity">center</item>
+		<item name="android:background">@null</item>
+	</style>
+	
+	<style name="texto_estandar">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:textColor">@color/negro</item>
+		<item name="android:textSize">@dimen/texto_estandar</item>
+	</style>
+	
+	<style name="texto_estandar_bold" parent="texto_estandar">
+		<item name="android:textStyle">bold</item>
+	</style>
+	
+	<style name="texto_pequeno" parent="texto_estandar">
+		<item name="android:textSize">@dimen/texto_pequeno</item>
+	</style>
+	
+	<style name="texto_pequeno_bold" parent="texto_pequeno">
+		<item name="android:textStyle">bold</item>
+	</style>
+	
+	<style name="texto_pequeno_italic" parent="texto_pequeno">
+		<item name="android:textStyle">italic</item>
+	</style>
+	
+	<style name="texto_extra_pequeno" parent="texto_estandar">
+		<item name="android:textSize">@dimen/texto_extra_pequeno</item>
+	</style>
+	
+	<style name="texto_extra_pequeno_bold" parent="texto_extra_pequeno">
+		<item name="android:textStyle">bold</item>
+	</style>
+	
+	<style name="vertical_hfill_vfill">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">fill_parent</item>
+	</style>
+	
+	<style name="horizontal_hfill_vfill">
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">fill_parent</item>
+	</style>
+	
+	<style name="vertical_hwrap_vfill">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">fill_parent</item>
+	</style>
+	
+	<style name="horizontal_hwrap_vfill">
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">fill_parent</item>
+	</style>
+	
+	<style name="vertical_hfill_vwrap">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+	</style>
+	
+	<style name="horizontal_hfill_vwrap">
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+	</style>
+	
+	<style name="vertical_hwrap_vwrap">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+	</style>
+	
+	<style name="horizontal_hwrap_vwrap">
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+	</style>
+
+
+</resources>

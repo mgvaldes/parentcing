@@ -139,6 +139,7 @@ public class DeviceDailyRouteView {
 	    LatLng[] locationArray = new LatLng[deviceRoute.size()];
 	    int locCounter = 0;
 	    
+
 		for (GeoPtModel devLoc : deviceRoute) {
 
 			locationArray[locCounter] = LatLng.newInstance(
@@ -155,6 +156,7 @@ public class DeviceDailyRouteView {
 					this.routePanelBody);
 			geocoder.getLocations(deviceLoc, locationCallback);
 		}
+
 	    
 	    //Polyline polyline = new Polyline(locationArray);
 	    //map.addOverlay(polyline);

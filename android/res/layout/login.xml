@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/vertical_hfill_vfill"
+	android:background="@color/blanco">
+	
+	<ImageView
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center_horizontal"
+	    android:src="@drawable/pclogo" />
+	
+	<LinearLayout 
+	    style="@style/vertical_hfill_vwrap"
+		android:paddingLeft="3dp" 
+		android:paddingRight="3dp">
+		
+		<LinearLayout style="@style/vertical_hfill_vwrap">
+		    
+			<TextView 
+			    style="@style/texto_estandar_bold"
+				android:text=""
+				android:layout_gravity="center_horizontal" />
+			
+			<RelativeLayout 
+			    android:layout_width="fill_parent"
+				android:layout_height="wrap_content" 
+				android:gravity="center_horizontal"
+				android:padding="2dp">
+				
+				<TextView 
+				    android:id="@+id/textViewUsername" 
+				    style="@style/texto_estandar"
+					android:text="@string/username"
+					android:layout_alignBaseline="@+id/editTextUsername"
+					android:gravity="right" 
+					android:paddingRight="7dp" />
+				
+				<TextView 
+				    android:id="@+id/textViewPass" 
+				    style="@style/texto_estandar"
+					android:text="@string/password" 
+					android:layout_alignBaseline="@+id/editTextPass"
+					android:gravity="right" />
+				
+				<EditText 
+				    android:id="@+id/editTextUsername"
+					android:layout_width="200dp" 
+					android:layout_height="wrap_content"
+					android:singleLine="true" 
+					android:layout_toRightOf="@id/textViewUsername"
+					android:inputType="text" />
+				
+				<EditText 
+				    android:id="@+id/editTextPass"
+					android:layout_width="200dp" 
+					android:layout_height="wrap_content"
+					android:singleLine="true" 
+					android:layout_below="@id/editTextUsername"
+					android:layout_toRightOf="@id/textViewPass"
+					android:layout_alignLeft="@id/editTextUsername" 
+					android:password="true" />
+			</RelativeLayout>
+			
+			<LinearLayout 
+			    android:id="@+id/buttonContainer" 
+			    style="@style/horizontal_hfill_vwrap"
+				android:gravity="center_horizontal" 
+				android:paddingTop="3dip"
+				android:paddingBottom="2dip">
+				
+				<Button 
+				    android:text="Limpiar" 
+				    android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:onClick="onLimpiarClick" />
+				
+				<Button 
+				    android:text="Aceptar" 
+				    android:layout_width="wrap_content"
+					android:layout_height="wrap_content" 
+					android:onClick="onAceptarClick" />
+			</LinearLayout>
+			
+		</LinearLayout>
+	</LinearLayout>				
+</LinearLayout>

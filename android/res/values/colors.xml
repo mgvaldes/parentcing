@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+     <!-- Definicion de los colores estandares-->
+    <color name="blanco">#ffffff</color>
+    <color name="negro">#000000</color>
+    <color name="gris">#b2b2b2</color>
+    <color name="rojo">#ac2829</color>
+    <color name="verdeTest">#24ff00</color>
+</resources>

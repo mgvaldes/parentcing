@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1">
+    <TableRow>
+        <TextView
+            android:id="@+id/smartphoneName"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+	    	android:layout_height="wrap_content"
+	    	android:text="Michael"
+	    	android:textSize="20sp"
+	    	android:textStyle="bold" />
+        <ImageView
+		    android:id="@+id/deviceType"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:gravity="right"
+		    android:src="@drawable/android"
+		    android:padding="10dp"
+		    android:scaleType="fitEnd" />
+    </TableRow>
+    <TableRow>
+        <LinearLayout 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:padding="10dp" >
+			
+         	<TextView
+	            android:id="@+id/newAlerts"
+	            android:layout_width="wrap_content"
+	    		android:layout_height="wrap_content"
+	    		android:text="4"
+	    		android:textSize="20sp" />
+         	
+         	<ImageView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:src="@drawable/alert"
+			    android:paddingLeft="10dp"
+			    android:layout_alignBaseline="@+id/newAlerts" />            
+		</LinearLayout>
+        
+        <TextView
+            android:id="@+id/lastAlert"
+            android:gravity="right"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:text="Low Battery"
+		    android:textSize="20sp" />
+    </TableRow>
+</TableLayout>

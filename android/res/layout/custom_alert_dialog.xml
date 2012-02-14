@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="wrap_content" 
+	android:background="@color/rojo" 
+	android:id="@+id/custom_alert_dialog_root">
+	
+	<TextView 
+	    android:id="@+id/text_view_texto_alerta" 
+	    style="@style/texto_estandar_bold"
+		android:gravity="center_horizontal" 
+		android:padding="@dimen/padding_contenedor_transferencias"/>
+	
+	<View 
+	    style="@style/horizontal_hfill_vfill" 
+	    android:background="@color/gris"
+		android:layout_height="1px" 
+		android:paddingBottom="100dp"/>
+	
+	<View 
+	    style="@style/horizontal_hfill_vfill"
+		android:layout_height="7dp"/>
+	
+	<Button 
+	    android:id="@+id/boton_ok" 
+	    android:text="Ok" android:minWidth="100dp" 
+	    android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal"/>
+	
+	<LinearLayout 
+	    android:id="@+id/contenedor_botones_si_no" 
+	    style="@style/horizontal_hfill_vwrap" 
+	    android:gravity="center_horizontal">
+	    
+		<Button 
+		    android:id="@+id/boton_no" 
+		    android:text="No" android:minWidth="70dp" 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"/>
+		
+		<Button 
+		    android:id="@+id/boton_si" 
+		    android:text="Si" 
+		    android:minWidth="70dp" 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"/>
+		
+	</LinearLayout>
+	
+	<View 
+	    style="@style/horizontal_hfill_vfill"
+		android:layout_height="7dp"/>
+</LinearLayout>
