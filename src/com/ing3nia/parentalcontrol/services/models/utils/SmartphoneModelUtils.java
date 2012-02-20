@@ -47,7 +47,13 @@ public class SmartphoneModelUtils {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 
 		for (ContactModel contact : smartphoneModel.getActiveContacts()) {
-			pcOriginalContacts.add(ContactModelUtils.convertToPCContact(contact));
+			Key pcContact;
+			try{
+				pcContact = ContactModelUtils.convertToPCContact(contact);
+			}catch(Exception e){
+				continue;
+			}
+			pcOriginalContacts.add(pcContact);
 			pcActiveContacts.addAll(ContactModelUtils.saveAsPCSimpleContact(contact));
 		}
 
@@ -252,6 +258,7 @@ public class SmartphoneModelUtils {
 		originalSmartphone.setDeletedEmergencyNumbers(updateSmart.getDeletedEmergencyNumbers());
 		originalSmartphone.setProperties(updateSmart.getProperties());
 		originalSmartphone.setRules(updateSmart.getRules());
+		originalSmartphone.setRoutes(updateSmart.getRoutes());
 	}
 
 }

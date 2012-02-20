@@ -2,6 +2,8 @@ package com.ing3nia.parentalcontrol.services.child;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
@@ -14,17 +16,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
+import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -90,6 +95,7 @@ public class InternalModificationsResource {
 		}
 		catch (Exception e) {
 			logger.warning("[Internal Modifications Service] InternalModificationsModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+			logger.severe("[Internal Modifications Service] Caugth exception: "+e.getMessage()+" "+e);
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
@@ -112,7 +118,7 @@ public class InternalModificationsResource {
 			return rbuilder.build();
 		}
 		catch (SessionQueryException ex) {
-			logger.warning("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key or adding contact. " + ex.getMessage());
+			logger.severe("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key or adding contact. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
@@ -130,8 +136,55 @@ public class InternalModificationsResource {
 			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
 			
 			//savedSmartphone.setLocation(internalModsModel.getLocation().convertToGeoPt());
-			savedSmartphone.setLocation(LocationModelUtils.convertToGeoPt(internalModsModel.getLocation()));
+			logger.info("[Internal Modifications Service] Setting location "+internalModsModel.getLocation());
+			if(internalModsModel.getLocation() != null){
+				GeoPt geopt = LocationModelUtils.convertToGeoPt(internalModsModel.getLocation());
+				savedSmartphone.setLocation(geopt);
+				
+				logger.info("[Internal Modifications Service] Adding location to route list");
+				if(savedSmartphone.getRoutes() !=null){
+					int size = savedSmartphone.getRoutes().size();
+					if(size > 0){					
+						logger.info("[Internal Modifications Service] Obtaining last PCRoute");
+						Key routeKey = savedSmartphone.getRoutes().get(size-1);
+						PCRoute route = pm.getObjectById(PCRoute.class, routeKey);
+						
+						Date currentDate = new Date();
+						Date routeDate = route.getDate();
+						
+						Calendar currentCalendar = Calendar.getInstance();
+						currentCalendar.setTime(currentDate);
+						
+						Calendar routeCalendar = Calendar.getInstance();
+						routeCalendar.setTime(routeDate);
+						
+						int currentDay = currentCalendar.get(Calendar.DATE);
+						int routeDay = routeCalendar.get(Calendar.DATE);
+						
+						if(currentDay == routeDay){
+							logger.info("[Internal Modifications Service] Adding geo point to current route");
+							route.getRoute().add(geopt);
+						}else{
+							logger.info("[Internal Modifications Service] Adding geo point to new route");
+							PCRoute newRoute = new PCRoute();
+							newRoute.getRoute().add(geopt);
+							pm.makePersistent(newRoute);
+							savedSmartphone.getRoutes().add(newRoute.getKey());
+						}
+					
+					}else{
+						logger.info("[Internal Modifications Service] No Route in route list, creating new one and adding GeoPt");
+						PCRoute newRoute = new PCRoute();
+						newRoute.getRoute().add(geopt);
+						pm.makePersistent(newRoute);
+						savedSmartphone.getRoutes().add(newRoute.getKey());
+					}
+				}else{
+					logger.warning("[Internal Modifications Service] Smartphone routes is null");
+				}
+			}
 			
+			logger.info("[Internal Modifications Service] Getting modification from from saved smartphone");
 			Key modificationKey = savedSmartphone.getModification();
 			PCModification modification = pm.getObjectById(PCModification.class, modificationKey);
 			
@@ -142,18 +195,47 @@ public class InternalModificationsResource {
 				savedSmartphone.setModification(modification.getKey());
 			}
 			
-			checkAddedContacts(internalModsModel.getModification().getActiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);
-			checkDeletedContacts(internalModsModel.getModification().getInactiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);
-			checkDeletedEmergencyNumbers(internalModsModel.getModification().getDeletedEmergencyNumbers(), savedSmartphone.getAddedEmergencyNumbers(), modification);
+			if(internalModsModel.getModification() == null){
+				logger.info("[Internal Modifications Service] Sent Modification is null. Setting to empty");
+				internalModsModel.setModification(new ModificationModel());
+			}
 			
+			logger.info("[Internal Modifications Service] Checking Added and Deleted contacts ");
+			if(internalModsModel.getModification().getActiveContacts() != null && internalModsModel.getModification().getInactiveContacts()!= null){
+				if(internalModsModel.getModification().getActiveContacts().size() >0){
+					logger.info("Checking added Contacts");
+					checkAddedContacts(internalModsModel.getModification().getActiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);
+				}
+				
+				if(internalModsModel.getModification().getInactiveContacts().size() > 0){
+					logger.info("Checking deleted contacts");
+					checkDeletedContacts(internalModsModel.getModification().getInactiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);
+				}
+				}else{
+				logger.info("[Internal Modifications Service] No contact present");
+			}
+			logger.info("[Internal Modifications Service] Setting emergency contacts");
+			if(internalModsModel.getModification().getAddedEmergencyNumbers() != null && internalModsModel.getModification().getDeletedEmergencyNumbers()!= null){
+				if(internalModsModel.getModification().getDeletedEmergencyNumbers().size() >0){
+					logger.info("Checking deleted emergency Contacts");
+					checkDeletedEmergencyNumbers(internalModsModel.getModification().getDeletedEmergencyNumbers(), savedSmartphone.getAddedEmergencyNumbers(), modification);
+				}
+				
+			}else{
+				logger.info("[Internal Modifications Service] No emergency contact present");
+			}
 			pm.close();
 		}
 		catch (IllegalArgumentException ex) {
+	    	logger.severe("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());
 			throw ex;
 		}
-		catch (Exception ex) {
-	    	logger.info("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());
+		catch (NullPointerException ex){
+	    	logger.severe("[Internal Modifications Service] A null pointer exception ocurred "+ internalModsModel+" "+internalModsModel.getModification()+" "+ ex.getMessage());
 	    	
+		}
+		catch (Exception ex) {
+	    	logger.severe("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());
 			throw new SessionQueryException();
 	    }		
 	}
@@ -266,6 +348,8 @@ public class InternalModificationsResource {
 		PCSimpleContact newContact;
 		PCPhone phone;
 		ArrayList<PhoneModel> phones;
+		
+		logger.info("Iterating Modification Active Contacts");
 		
 		for (SimpleContactModel mc : internalModAddedContacts) {
 			phones = mc.getPhones();

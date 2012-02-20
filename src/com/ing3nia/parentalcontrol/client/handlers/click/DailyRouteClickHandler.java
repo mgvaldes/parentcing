@@ -114,6 +114,10 @@ public class DailyRouteClickHandler implements ClickHandler{
 	
 	public ArrayList<GeoPtModel> getDummyDeviceRoute(){
 		ArrayList<GeoPtModel> deviceLocations = new ArrayList<GeoPtModel>();
+		
+		
+		
+		/*
 		GeoPtModel geo = new GeoPtModel();
 		geo.setLatitude(25.74626466540882);
 		geo.setLongitude(-80.270254611969);
@@ -142,7 +146,7 @@ public class DailyRouteClickHandler implements ClickHandler{
 		geo = new GeoPtModel();
 		geo.setLatitude(25.719033937358773);
 		geo.setLongitude(-80.27860164642334);
-		deviceLocations.add(geo);
+		deviceLocations.add(geo);*/
 		
 		return deviceLocations;
 		

@@ -362,6 +362,7 @@ public class ModificationUtils {
 			
 			if (ruleModel.getKeyId() == null) {
 				pm.makePersistent(rule);
+				pcsmartphone.getRules().add(rule.getKey());
 			}
 			
 			pcModRules.add(rule.getKey());

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 public class RouteModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	private String keyId;
+	
 	private ArrayList<LocationModel> points;
 	
 	private String date;
@@ -14,8 +16,9 @@ public class RouteModel implements Serializable {
 		super();
 	}
 
-	public RouteModel(ArrayList<LocationModel> points, String date) {
+	public RouteModel(String keyId, ArrayList<LocationModel> points, String date) {
 		super();
+		this.keyId = keyId;
 		this.points = points;
 		this.date = date;
 	}
@@ -35,4 +38,13 @@ public class RouteModel implements Serializable {
 	public void setDate(String date) {
 		this.date = date;
 	}
+
+	public String getKeyId() {
+		return keyId;
+	}
+
+	public void setKeyId(String keyId) {
+		this.keyId = keyId;
+	}
+
 }
