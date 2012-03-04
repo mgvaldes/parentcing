@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.EnableFunctionalityClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.SaveRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
@@ -254,6 +255,7 @@ public class NewRuleView {
 		this.disabledFunctionalitiesPanel = new HTMLPanel("");
 		this.disabledFunctionalitiesListBox = new ListBox();		
 		this.disabledFunctionalityAddButton = new Button("Disable");
+		this.disabledFunctionalityAddButton.setStyleName("disableButton");
 		this.disabledFunctionalitiesTable = new FlexTable();
 		this.disabledFunctionalities = new ArrayList<String>();
 		
@@ -287,10 +289,12 @@ public class NewRuleView {
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
 		DOM.setElementAttribute(this.saveButton.getElement(), "id", "saveRuleButton");
+		this.saveButton.setStyleName("saveButton");
 		this.clearButton = new Button("Clear");
+		this.clearButton.setStyleName("clearButton");
 		
 		this.centerContent.clear();
-		initNewRuleView();
+		//initNewRuleView();
 	}
 	
 	public void initNewRuleView() {
@@ -356,11 +360,8 @@ public class NewRuleView {
 		this.tillTimePanel.add(this.ampmListBoxT);
 		this.newRuleContent.add(this.tillTimePanel);
 		
-		saveButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		saveRule();
-	    	}
-	    });
+		SaveRuleClickHandler saveRuleClickHandler = new SaveRuleClickHandler(this);
+		saveButton.addClickHandler(saveRuleClickHandler);
 		
 		buttonPanel.add(saveButton);
 		
@@ -435,10 +436,10 @@ public class NewRuleView {
 			DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");			
 			newRule.setCreationDate(formatter.format(new Date()));
 						
-			String auxDate = fromDatePicker.getTextBox().getText() + " " + hourTextBoxF.getText() + ":" + minuteTextBoxF.getText() + ":" + secondsTextBoxF.getText() + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
+			String auxDate = fromDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxF.getText()) + ":" + addDigit(minuteTextBoxF.getText()) + ":" + addDigit(secondsTextBoxF.getText()) + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
 			newRule.setStartDate(auxDate);
 			
-			auxDate = toDatePicker.getTextBox().getText() + " " + hourTextBoxT.getText() + ":" + minuteTextBoxT.getText() + ":" + secondsTextBoxT.getText() + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
+			auxDate = toDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxT.getText()) + ":" + addDigit(minuteTextBoxT.getText()) + ":" + addDigit(secondsTextBoxT.getText()) + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
 			newRule.setEndDate(auxDate);
 			
 			newRule.setType(ruleTypeListBox.getSelectedIndex());
@@ -447,6 +448,18 @@ public class NewRuleView {
 			AddRuleServiceAsync addRuleService = GWT.create(AddRuleService.class);
 			addRuleService.addRule(this.cookieId, this.smartphone.getKeyId(), newRule, addRuleCallback);			
 		}				
+	}
+	
+	public String addDigit(String text) {
+		String newText = "";
+		
+		if (text.length() == 1) {
+			newText += "0";
+		}
+		
+		newText += text;
+		
+		return newText;
 	}
 	
 	public ArrayList<Integer> loadFunctionalityIds() {

@@ -221,17 +221,19 @@ public class ModificationUtils {
 		ArrayList<Key> modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
 		ArrayList<Key> modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
 		for (EmergencyNumberModel emergencyContact : addedEmergencyNumbers) {
+
 			if (emergencyContact.getKeyId() == null) {
 				//New emergency contact. First save. Then process.
 				PCEmergencyNumber newEmergencyNumber = new PCEmergencyNumber();
 				newEmergencyNumber.setCountry(emergencyContact.getCountry());
-				newEmergencyNumber.setNumber(new PhoneNumber(emergencyContact.getNumber()));
+				newEmergencyNumber.setNumber(emergencyContact.getNumber());
 				newEmergencyNumber.setDescription(emergencyContact.getDescription());
 				
 				pm.makePersistent(newEmergencyNumber);
 				
 				pcsmartphone.getAddedEmergencyNumbers().add(newEmergencyNumber.getKey());
 				modAddedEmergency.add(newEmergencyNumber.getKey());
+
 			}
 			else {
 				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));

@@ -19,6 +19,7 @@ import com.ing3nia.parentalcontrol.client.rpc.DeleteRuleService;
 import com.ing3nia.parentalcontrol.client.rpc.DeleteRuleServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsService;
 import com.ing3nia.parentalcontrol.client.rpc.WeekAlertsServiceAsync;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.async.DeleteRuleCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.async.WeekAlertsCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
@@ -83,6 +84,7 @@ public class AlertListView {
 	}
 	
 	public void initAlertListView() {
+		
 		//final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		final DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
 		

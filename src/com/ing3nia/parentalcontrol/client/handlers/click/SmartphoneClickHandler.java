@@ -10,6 +10,9 @@ import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationViewList;
 import com.ing3nia.parentalcontrol.client.views.DeviceAlertListView;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
@@ -43,6 +46,10 @@ public class SmartphoneClickHandler implements ClickHandler{
 		
 		//setting clicked smartphone index
 		baseView.setClickedSmartphoneIndex(this.smartphoneIndex);
+		
+		baseView.getBaseBinder().getCenterMenuOptions().clear();
+		this.menuSetter = new MenuSetterHandler(baseView.getBaseBinder());
+		baseView.setMenuSetter(this.menuSetter);
 		baseView.initDeviceMenuClickHandlers();
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
@@ -58,13 +65,23 @@ public class SmartphoneClickHandler implements ClickHandler{
 		deviceChoiceList = BaseViewHandler
 		.clearRouteNamesPanels(deviceChoiceList);
 		
+		this.deviceChoiceList = BaseViewHandler.clearSmartphoneListStyle(this.deviceChoiceList);
+		this.button.setStyleName("selectedSmartphone", true);
+		
+		//set navigation smarpthone button
+		NavigationViewList.setSmartphoneButton(baseView.getUser().getSmartphones().get(smartphoneIndex).getName(), this);
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
+		
 		//TODO set selected button style
 		//this.button.setStyleName("selectedSmartphoneButton");
 		
 		
-		DeviceAlertListView view = new DeviceAlertListView(this.baseView, SmartphoneModel.getUserAlertList(smartphoneModel));	
+		DailyRouteClickHandler dailyRouteClickHandler = new DailyRouteClickHandler(baseView.getUser().getKey(), baseView);
+		dailyRouteClickHandler.activateDailyRouteClickHandler();
+		//DeviceAlertListView view = new DeviceAlertListView(this.baseView, SmartphoneModel.getUserAlertList(smartphoneModel));	
 		//DeviceAlertListView view = new DeviceAlertListView(centerContent, smartphoneModel.getAlerts());
-		view.initDeviceAlertListView();
+		//view.initDeviceAlertListView();
 	}
 
 	public int getSmartphoneIndex() {

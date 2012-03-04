@@ -3,6 +3,7 @@ package com.ing3nia.parentalcontrol.client.views;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -80,6 +81,7 @@ public class NewAdminUserView {
 	 */
 	private Button saveButton = new Button("Save");
 	
+	
 	/**
 	 * Clear button.
 	 */
@@ -121,8 +123,10 @@ public class NewAdminUserView {
 	    	}
 	    });
 		
+		DOM.setElementProperty(saveButton.getElement(), "id", "saveNewAdminButton");
 		buttonPanel.add(saveButton);
 		
+		DOM.setElementProperty(clearButton.getElement(), "id", "clearNewAdminButton");
 		clearButton.addClickHandler(new ClickHandler() {
 	    	public void onClick(ClickEvent event) {
 	    		clearTextBoxes();

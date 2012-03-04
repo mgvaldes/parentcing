@@ -8,8 +8,8 @@ import javax.jdo.PersistenceManager;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserService;
+import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCUser;
-import com.ing3nia.parentalcontrol.services.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AddAdminUserServiceImpl extends RemoteServiceServlet implements AddAdminUserService {

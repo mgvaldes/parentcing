@@ -15,12 +15,11 @@ public class AdminLoginCallbackHandler implements AsyncCallback<String> {
 	
 	PCLoginUIBinder pclogin;
 	ClientAdminUserModel adminModel;
-	Image loadingImage;
 	
-	public AdminLoginCallbackHandler(PCLoginUIBinder pclogin, ClientAdminUserModel adminModel, Image loadingImage) {
+	public AdminLoginCallbackHandler(PCLoginUIBinder pclogin, ClientAdminUserModel adminModel) {
 		this.pclogin = pclogin;
 		this.adminModel = adminModel;
-		this.loadingImage = loadingImage;
+
 	}
 	
 	public void onFailure(Throwable error) {
@@ -32,7 +31,7 @@ public class AdminLoginCallbackHandler implements AsyncCallback<String> {
 		if (result != null) {
 			adminModel.setKey(result);
 			
-			AdminClosedTicketListCallbackHandler adminClosedTicketListCallback = new AdminClosedTicketListCallbackHandler(pclogin, adminModel, loadingImage);
+			AdminClosedTicketListCallbackHandler adminClosedTicketListCallback = new AdminClosedTicketListCallbackHandler(pclogin, adminModel);
 			AdminClosedTicketListServiceAsync adminClosedTicketListService = GWT.create(AdminClosedTicketListService.class);
 			adminClosedTicketListService.adminClosedTicketList(adminClosedTicketListCallback);
 		}

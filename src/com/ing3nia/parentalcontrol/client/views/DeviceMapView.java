@@ -58,18 +58,23 @@ public class DeviceMapView {
 		this.centerContent.setStyleName("mapCenterContent");
 		viewContent = new HTMLPanel("");
 		deviceLocations = new ArrayList<GeoPtModel>();
+		this.map = baseView.getMapWidget();
 	}
 	
 	public void initDeviceLocationLoad(){
-		Maps.loadMapsApi(ViewUtils.mapsKey, "2", false, new Runnable() {
-			public void run() {
-				loadDeviceLocations();
-			}
-		});
+		this.centerContent.clear();
+		if (!Maps.isLoaded()) {
+			Maps.loadMapsApi(ViewUtils.mapsKey, "2", false, new Runnable() {
+				public void run() {
+					loadDeviceLocations(map);
+				}
+			});
+		}else{
+			loadDeviceLocations(map);
+		}
 	}
 	
-	public void loadDeviceLocations() {
-	    
+	public void loadDeviceLocations(MapWidget mapWidget) {	    
 		//LoadingView.setLoadingView(this.baseBinder, AsyncronousCallsMessages.LOADING_DEVICES_MAP, this.baseViewHandler.getLoadingImage());
 		LatLng deviceLoc;
 		if(deviceLocations ==null || deviceLocations.size() == 0){
@@ -77,10 +82,16 @@ public class DeviceMapView {
 		}else{
 			deviceLoc = LatLng.newInstance(deviceLocations.get(0).getLatitude(), deviceLocations.get(0).getLongitude());
 		}
-	    map = new MapWidget(deviceLoc,11);
-	    map.setSize("100%", "100%");	  
-	    map.addControl(new LargeMapControl());
-	    map.setStyleName("googleMap");
+		if(mapWidget == null){
+			this.map = new MapWidget(deviceLoc,11);
+		    this.map.setSize("100%", "100%");	  
+		    this.map.addControl(new LargeMapControl());
+		    baseViewHandler.setMapWidget(this.map);
+		}else{
+			this.map = mapWidget;
+			this.map.clearOverlays();
+			this.map.setCenter(deviceLoc);
+		}
 
 	    int deviceCount = 0;
 	    for (GeoPtModel devLoc : deviceLocations) {
@@ -92,7 +103,7 @@ public class DeviceMapView {
 	    	MarkerOptions options = MarkerOptions.newInstance();
 	    	options.setIcon(icon);
 	    	  	
-	    	map.addOverlay(new Marker(deviceLoc,options));
+	    	this.map.addOverlay(new Marker(deviceLoc,options));
 	    	deviceCount++;
 	    }
 	    
@@ -100,8 +111,9 @@ public class DeviceMapView {
 	    //Marker marker = new Marker(deviceLoc);
 	    //map.addOverlay(marker);
 
-	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PX);
-	    dock.addNorth(this.map, 490);
+	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PCT);
+	    dock.setStyleName("mapPanel");
+	    dock.addNorth(this.map, 100);
 	    
 	    this.viewContent.add(dock);
 	    this.centerContent.clear();

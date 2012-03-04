@@ -46,7 +46,7 @@ public class DeleteRuleCallbackHandler implements AsyncCallback<Boolean> {
 			ruleListView.initRuleListView();
 		} 
 		else {
-			baseView.getBaseBinder().getNotice().setText("An error occured. The ticket couldn't be closed.");
+			baseView.getBaseBinder().getNotice().setText("An error occured. The rule couldn't be deleted.");
 			baseView.getBaseBinder().getCenterContent().add(baseView.getBaseBinder().getNotice());
 		}
 	}

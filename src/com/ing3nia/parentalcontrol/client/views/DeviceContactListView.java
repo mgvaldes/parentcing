@@ -21,6 +21,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -31,9 +32,12 @@ import com.google.gwt.view.client.Range;
 import com.google.gwt.view.client.RangeChangeEvent;
 
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
+import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
+import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.ContactListRangeChangeHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.SaveContactsClickHandler;
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientSimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
@@ -46,6 +50,13 @@ import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService
 
 
 public class DeviceContactListView {
+	
+	/**
+	 * Handler to control the entire base view interface
+	 */
+	private BaseViewHandler baseViewHandler;
+	
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * device contact list view.
@@ -102,24 +113,34 @@ public class DeviceContactListView {
 	
 	private ArrayList<Boolean> activeInactiveIndexList;
 	
-	public DeviceContactListView(HTMLPanel centerContent, String cookieId, SmartphoneModel smartphone) {
+	public DeviceContactListView(BaseViewHandler baseViewHandler, String cookieId, SmartphoneModel smartphone) {
+		this.baseViewHandler = baseViewHandler;
 		this.cookieId = cookieId;
 		this.smartphone = smartphone;
 		this.contacts = new ArrayList<ClientSimpleContactModel>();
 		loadSmartphoneContacts();		
 		this.activeContacts = new ArrayList<ClientSimpleContactModel>();
 		this.inactiveContacts = new ArrayList<ClientSimpleContactModel>();
-		this.centerContent = centerContent;	
+		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();	
 		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
 		this.contactsLabel = new Label("Contacts:");
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");
+		DOM.setElementProperty(contactsButton.getElement(), "id", "contactsButton");
+		this.contactsButton.setStyleName("selectedContactButton");
+		
 		this.emergencyContactsButton = new Button("Emergency Contacts");
+		DOM.setElementProperty(emergencyContactsButton.getElement(), "id", "emergencyContactButton");
+		this.emergencyContactsButton.setStyleName("contactButton");
+		
 		this.contactTable = new CellTable<ClientSimpleContactModel>(smartphone.getActiveContacts().size()+smartphone.getInactiveContacts().size());
 		this.pager = new SimplePager();	
 		
 		this.saveButton = new Button("Save");
+		this.saveButton.setStyleName("saveButton");
+		DOM.setElementProperty(saveButton.getElement(), "id", "saveContactsButton");
+		
 		this.centerContent.clear();
 		
 		this.activeInactiveIndexList = new ArrayList<Boolean>(smartphone.getActiveContacts().size() + smartphone.getInactiveContacts().size());
@@ -139,7 +160,8 @@ public class DeviceContactListView {
 				
 		for (ContactModel c : smartContacts) {
 			for (PhoneModel p : c.getPhones()) {
-				auxSimpleContact = new ClientSimpleContactModel(c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
+				auxSimpleContact = new ClientSimpleContactModel(c.getKeyId(),c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
+				auxSimpleContact.setWasOriginallyActive(true);
 				contacts.add(auxSimpleContact);
 			}
 		}
@@ -148,7 +170,8 @@ public class DeviceContactListView {
 		
 		for (ContactModel c : smartContacts) {
 			for (PhoneModel p : c.getPhones()) {
-				auxSimpleContact = new ClientSimpleContactModel(c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
+				auxSimpleContact = new ClientSimpleContactModel(c.getKeyId(), c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
+				auxSimpleContact.setWasOriginallyActive(false);
 				contacts.add(auxSimpleContact);
 			}
 		}
@@ -231,14 +254,13 @@ public class DeviceContactListView {
 				
 				contactTable.getRowElement(newIndex).getCells().getItem(3).getFirstChildElement().setInnerHTML(DisallowButtonCell.opaqueButtonFullString);				
 				contactTable.getRowElement(newIndex).getCells().getItem(4).getFirstChildElement().setInnerHTML(AllowButtonCell.transpButtonFullString);							
-				
-				
+						
 				//Add to inactive contacts;
 				if (activeContacts.contains(object)) {
 					activeContacts.remove(object);
 				}
 				
-				if(!inactiveContacts.contains(object)){
+				if(!inactiveContacts.contains(object) && object.getWasOriginallyActive()){
 					inactiveContacts.add(object);
 				}
 				
@@ -275,7 +297,7 @@ public class DeviceContactListView {
 				if (inactiveContacts.contains(object)) {
 					inactiveContacts.remove(object);
 				}
-				if(!activeContacts.contains(object)){
+				if(!activeContacts.contains(object) && !object.getWasOriginallyActive()){
 					activeContacts.add(object);
 				}
 				
@@ -324,47 +346,19 @@ public class DeviceContactListView {
 	    contactTable.setVisibleRangeAndClearData(new Range(0, 2), true);
 
 		
-		/*
-		int rowSize = contactTable.getRowCount();
-		int activeSize = smartphone.getActiveContacts().size();
-		int inactiveSize = smartphone.getInactiveContacts().size();
-		
-		int rowCount =0;
-		int innerCount =0;
-		// filtering allow (opacity to disallow)
-		
-		while(rowCount<rowSize && innerCount<activeSize){
-			contactTable.getRowElement(rowCount).getCells().getItem(3).getFirstChildElement().setInnerHTML(DisallowButtonCell.transpButtonFullString);				
-			innerCount++;
-			rowCount++;
-		}
-		
-		// filtering disallow (opacity to allow)
-		innerCount =0;
-		while(rowCount<rowSize && innerCount<inactiveSize){
-			contactTable.getRowElement(rowCount).getCells().getItem(4).getFirstChildElement().setInnerHTML(AllowButtonCell.transpButtonFullString);				
-			innerCount++;
-			rowCount++;
-		}
-		*/
 		
 		//creating paging controls		
 		pager.setDisplay(contactTable);
 		pager.setStylePrimaryName("tablePager");
 		pager.setStyleName("");
-		pager.setPageSize(10);
+		pager.setPageSize(5);
 		
 		viewContent.add(pager);
 		viewContent.add(contactTable);		
 		viewContent.add(pager);
 		
-		saveButton.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				saveContacts();
-			}
-		});
+		SaveContactsClickHandler saveContactsClickHandler = new SaveContactsClickHandler(this);
+		saveButton.addClickHandler(saveContactsClickHandler);
 
 		this.viewContent.add(saveButton);
 		this.centerContent.add(this.viewContent);
@@ -382,6 +376,10 @@ public class DeviceContactListView {
 	}
 	
 	public void saveContacts() {
+		baseViewHandler.getBaseBinder().getNotice().setText("");
+		LoadingView.clearLoadingView(baseViewHandler.getBaseBinder());
+		LoadingView.setLoadingView(baseViewHandler.getBaseBinder(), AsyncronousCallsMessages.SAVING_DEVICE_CONTACTS, LoadingView.loadingImage);
+				
 		if (!activeContacts.isEmpty() || !inactiveContacts.isEmpty()) {
 			ModificationModel auxMod = new ModificationModel();
 			
@@ -391,7 +389,7 @@ public class DeviceContactListView {
 			ArrayList<PhoneModel> auxPhones;
 			
 			for (ClientSimpleContactModel contact : activeContacts) {
-				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
+				auxContactName = contact.getFirstName() + "|" + contact.getLastName() + "|" +contact.getKeyId();
 				
 				if (activeHash.containsKey(auxContactName)) {
 					auxPhones = (ArrayList<PhoneModel>)activeHash.get(auxContactName);					
@@ -405,7 +403,7 @@ public class DeviceContactListView {
 			}
 			
 			for (ClientSimpleContactModel contact : inactiveContacts) {
-				auxContactName = contact.getFirstName() + "|" + contact.getLastName();
+				auxContactName = contact.getFirstName() + "|" + contact.getLastName() + "|" +contact.getKeyId();
 				
 				if (inactiveHash.containsKey(auxContactName)) {
 					auxPhones = (ArrayList<PhoneModel>)inactiveHash.get(auxContactName);					
@@ -428,7 +426,7 @@ public class DeviceContactListView {
 		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
 
 		        auxName = ((String)pair.getKey()).split("\\|");
-		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
+		        auxContact = new SimpleContactModel(auxName[2], auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
 		        simpleActiveContacts.add(auxContact);
 		    }
 		    
@@ -441,7 +439,7 @@ public class DeviceContactListView {
 		        pair = (Map.Entry<String, ArrayList<PhoneModel>>)it.next();	        
 
 		        auxName = ((String)pair.getKey()).split("\\|");
-		        auxContact = new SimpleContactModel(auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
+		        auxContact = new SimpleContactModel(auxName[2], auxName[0], auxName[1], (ArrayList<PhoneModel>)pair.getValue());
 		        simpleInactiveContacts.add(auxContact);
 		    }
 		    
@@ -451,6 +449,8 @@ public class DeviceContactListView {
 			saveModService.saveSmartphoneModifications(this.cookieId, this.smartphone.getKeyId(), auxMod, 
 					new AsyncCallback<Boolean>() {
 						public void onFailure(Throwable error) {
+							LoadingView.clearLoadingView(baseViewHandler.getBaseBinder());
+							baseViewHandler.getBaseBinder().getNotice().setText("Contact settings couldn't be stored");
 						}
 			
 						public void onSuccess(Boolean result) {
@@ -459,6 +459,8 @@ public class DeviceContactListView {
 							}
 							else {
 								//Window.alert("An error occured. The change in contacts couldn't be applied.");
+								LoadingView.clearLoadingView(baseViewHandler.getBaseBinder());
+								baseViewHandler.getBaseBinder().getNotice().setText("Contact settings couldn't be stored");
 							}
 						}
 					}
@@ -476,7 +478,9 @@ public class DeviceContactListView {
 		PhoneModel auxPhone;
 		
 		for (ClientSimpleContactModel cscm : this.activeContacts) {
+			
 			for (ContactModel contact : smartActiveContacts) {
+			//for(ContactModel contact : smartInactiveContacts){
 				if (contact.getFirstName().equals(cscm.getFirstName()) && contact.getLastName().equals(cscm.getLastName())) {
 					auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
 					
@@ -501,28 +505,43 @@ public class DeviceContactListView {
 					break;
 				}
 			}
-			
+
 			if (!isActive) {
 				auxPhones = new ArrayList<PhoneModel>();
 				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
 				auxPhones.add(auxPhone);
-				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
+				auxContact = new ContactModel(cscm.getKeyId(),cscm.getFirstName(), cscm.getLastName(), auxPhones);
 				auxContact.setEmails(cscm.getEmails());
 				auxContact.setAddresses(cscm.getAddresses());
 				auxContact.setOrganizations(cscm.getOrganizations());
 				this.smartphone.getActiveContacts().add(auxContact);
-				
+								
+				ContactModel foundInactiveContact = null;
 				for (ContactModel contact3 : smartInactiveContacts) {
 					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
-						if (contact3.getPhones().contains(auxPhone)) {
-							contact3.getPhones().remove(auxPhone);
-						}								
+						//find phone
+						boolean didfoundPhone = false;
+						PhoneModel foundPhone = null;
+						for(PhoneModel cph : contact3.getPhones()){
+							if(cph.getPhoneNumber().equals(auxPhone.getPhoneNumber())){
+								didfoundPhone=true;
+								foundPhone = cph;
+								break;
+							}
+						}
+						if(didfoundPhone){
+							contact3.getPhones().remove(foundPhone);
+						}							
 						else {
 							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto inactivo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
 						}
-						
+						// If contact is out of phones remove from list
+						foundInactiveContact = contact3;
 						break;
 					}
+				}
+				if(foundInactiveContact != null && foundInactiveContact.getPhones().size() == 0){
+					this.smartphone.getInactiveContacts().remove(foundInactiveContact);
 				}
 			}
 			
@@ -555,33 +574,57 @@ public class DeviceContactListView {
 					break;
 				}
 			}
+			//Assuming is active
+			//isInactive = false;
 			
 			if (!isInactive) {
 				auxPhones = new ArrayList<PhoneModel>();
 				auxPhone = new PhoneModel(cscm.getPhoneType(), cscm.getPhone());
 				auxPhones.add(auxPhone);
-				auxContact = new ContactModel(cscm.getFirstName(), cscm.getLastName(), auxPhones);
+				auxContact = new ContactModel(cscm.getKeyId(), cscm.getFirstName(), cscm.getLastName(), auxPhones);
 				auxContact.setEmails(cscm.getEmails());
 				auxContact.setAddresses(cscm.getAddresses());
 				auxContact.setOrganizations(cscm.getOrganizations());
 				this.smartphone.getInactiveContacts().add(auxContact);
 				
+				ContactModel foundActiveContact = null;
 				for (ContactModel contact3 : smartActiveContacts) {
 					if (contact3.getFirstName().equals(cscm.getFirstName()) && contact3.getLastName().equals(cscm.getLastName())) {
-						if (contact3.getPhones().contains(auxPhone)) {
-							contact3.getPhones().remove(auxPhone);
+						
+						boolean didfoundPhone = false;
+						PhoneModel foundPhone = null;
+						for(PhoneModel cph : contact3.getPhones()){
+							if(cph.getPhoneNumber().equals(auxPhone.getPhoneNumber())){
+								didfoundPhone=true;
+								foundPhone = cph;
+								break;
+							}
+						}
+						if(didfoundPhone){
+							contact3.getPhones().remove(foundPhone);
 						}								
 						else {
 							ModelLogger.logger.info("[DeviceContactListView] Algo esta mal!, se deberia encontrar el telefono: " + auxPhone.getPhoneNumber() + " en el contacto activo de nombre: " + contact3.getFirstName() + " " + contact3.getLastName());
 						}
 						
+						// If contact is out of phones remove from list
+						foundActiveContact = contact3;
 						break;
 					}
+				}
+				if(foundActiveContact != null && foundActiveContact.getPhones().size() == 0){
+					this.smartphone.getActiveContacts().remove(foundActiveContact);
 				}
 			}
 			
 			isInactive = false;
 		}
+		
+		this.centerContent.clear();
+		DeviceContactListView newContactListView = new DeviceContactListView(baseViewHandler, cookieId, smartphone);
+		newContactListView.initDeviceContactListView();
+		newContactListView.baseViewHandler.getBaseBinder().getCenterContent().add(newContactListView.baseViewHandler.getBaseBinder().getNotice());
+		newContactListView.baseViewHandler.getBaseBinder().getNotice().setText("Contact settings successfully stored");
 	}
 	
 	private class DisallowButtonCell extends ButtonCell {
@@ -647,10 +690,12 @@ public class DeviceContactListView {
 	
 	
 	public void loadDeviceContacts() {
-		
+
 	}
 	
 	public void loadDeviceEmergencyContacts() {
-		
+		baseViewHandler.getBaseBinder().getCenterContent().clear();
+		DeviceEmergencyNumberListView emergencyView = new DeviceEmergencyNumberListView(baseViewHandler, cookieId, smartphone);
+		emergencyView.initDeviceEmergencyNumberListView();
 	}
 }

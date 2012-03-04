@@ -14,6 +14,7 @@ import com.ing3nia.parentalcontrol.client.rpc.LoginServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyService;
 import com.ing3nia.parentalcontrol.client.rpc.UserKeyServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.LoadingBarImageEnum;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.LoginView;
 import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
@@ -43,7 +44,11 @@ public class SignInButtonClickHandler implements ClickHandler {
 		userModel.setUsername(email);
 		userModel.setPassword(pass);
 		
-		CheckAdminUserCallbackHandler checkAdminUserCallback = new CheckAdminUserCallbackHandler(pclogin, userModel, loadingImage);
+		LoadingView.clearLoadingView(pclogin);
+		//LoadingView.setLoadingView(pclogin, AsyncronousCallsMessages.LOADING_LOGIN, loadingImage);
+		LoadingView.setLoadingView(pclogin, AsyncronousCallsMessages.LOADING_LOGIN, LoadingBarImageEnum.STAGE1);
+		
+		CheckAdminUserCallbackHandler checkAdminUserCallback = new CheckAdminUserCallbackHandler(pclogin, userModel);
 		CheckAdminUserServiceAsync checkAdminUserService = GWT.create(CheckAdminUserService.class);
 		checkAdminUserService.checkAdminUser(email, pass, checkAdminUserCallback);
 		

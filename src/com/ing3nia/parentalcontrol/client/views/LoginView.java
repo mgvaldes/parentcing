@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
@@ -92,6 +93,7 @@ public class LoginView {
 
 		rememberMeCheckBox = new CheckBox("Remember me");
 		signInButton = new Button("Sign In");
+		DOM.setElementProperty(signInButton.getElement(), "id", "signInButton");
 		
 		this.centerContent.clear();
 	}

@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.EnableFunctionalityClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.SaveEditRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
@@ -296,7 +297,7 @@ public class EditRuleView {
 		this.clearButton = new Button("Clear");
 		
 		this.centerContent.clear();
-		initEditRuleView();
+		//initEditRuleView();
 	}
 	
 	public void initEditRuleView() {
@@ -364,11 +365,8 @@ public class EditRuleView {
 		this.tillTimePanel.add(this.ampmListBoxT);
 		this.newRuleContent.add(this.tillTimePanel);
 		
-		saveButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		saveRule();
-	    	}
-	    });
+		SaveEditRuleClickHandler saveEditRule = new SaveEditRuleClickHandler(this);
+		saveButton.addClickHandler(saveEditRule);
 		
 		buttonPanel.add(saveButton);
 		
@@ -451,10 +449,10 @@ public class EditRuleView {
 			DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");			
 			newRule.setCreationDate(formatter.format(new Date()));
 						
-			String auxDate = fromDatePicker.getTextBox().getText() + " " + hourTextBoxF.getText() + ":" + minuteTextBoxF.getText() + ":" + secondsTextBoxF.getText() + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
+			String auxDate = fromDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxF.getText()) + ":" + addDigit(minuteTextBoxF.getText()) + ":" + addDigit(secondsTextBoxF.getText()) + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
 			newRule.setStartDate(auxDate);
 			
-			auxDate = toDatePicker.getTextBox().getText() + " " + hourTextBoxT.getText() + ":" + minuteTextBoxT.getText() + ":" + secondsTextBoxT.getText() + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
+			auxDate = toDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxT.getText()) + ":" + addDigit(minuteTextBoxT.getText()) + ":" + addDigit(secondsTextBoxT.getText()) + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
 			newRule.setEndDate(auxDate);
 			
 			newRule.setType(ruleTypeListBox.getSelectedIndex());
@@ -463,6 +461,18 @@ public class EditRuleView {
 			EditRuleServiceAsync editRuleService = GWT.create(EditRuleService.class);
 			editRuleService.editRule(newRule, editRuleCallback);
 		}				
+	}
+	
+	public String addDigit(String text) {
+		String newText = "";
+		
+		if (text.length() == 1) {
+			newText += "0";
+		}
+		
+		newText += text;
+		
+		return newText;
 	}
 	
 	public ArrayList<Integer> loadFunctionalityIds() {

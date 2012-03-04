@@ -38,7 +38,7 @@ public class PCEmergencyNumber {
 	 * Specifies the emergency phone number.
 	 */
 	@Persistent
-	private PhoneNumber number;
+	private String number;
 	
 	@Persistent
 	private String description;
@@ -47,7 +47,7 @@ public class PCEmergencyNumber {
 		super();
 	}
 
-	public PCEmergencyNumber(Key key, String country, PhoneNumber number,
+	public PCEmergencyNumber(Key key, String country, String number,
 			String description) {
 		super();
 		this.key = key;
@@ -72,11 +72,11 @@ public class PCEmergencyNumber {
 		this.country = country;
 	}
 
-	public PhoneNumber getNumber() {
+	public String getNumber() {
 		return number;
 	}
 
-	public void setNumber(PhoneNumber number) {
+	public void setNumber(String number) {
 		this.number = number;
 	}
 

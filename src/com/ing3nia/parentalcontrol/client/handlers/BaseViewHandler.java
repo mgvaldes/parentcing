@@ -7,6 +7,9 @@ import java.util.List;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.maps.client.MapWidget;
+import com.google.gwt.maps.client.Maps;
+import com.google.gwt.maps.client.control.LargeMapControl;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -45,6 +48,7 @@ import com.ing3nia.parentalcontrol.client.views.AlertListView;
 import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.NewAdminUserView;
+import com.ing3nia.parentalcontrol.client.views.ViewUtils;
 import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
 import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
 
@@ -59,6 +63,7 @@ public class BaseViewHandler {
 	private List<SmartphoneModel> slist;
 	private int clickedSmartphoneIndex = -1;
 	private Image loadingImage;
+	private MapWidget mapWidget;
 	
 	public BaseViewHandler(PCBaseUIBinder baseBinder){
 		this.baseBinder = baseBinder;
@@ -66,6 +71,26 @@ public class BaseViewHandler {
 		this.slist = new ArrayList<SmartphoneModel>();
 		//this.user = userModel;
 		this.loadingImage = new Image("/media/images/loading-black.gif");
+		this.initMapWidget();
+		
+	}
+	
+	public void initMapWidget() {
+		if (!Maps.isLoaded()) {
+			Maps.loadMapsApi(ViewUtils.mapsKey, "2", false, new Runnable() {
+				public void run() {
+					mapWidget = new MapWidget();
+					mapWidget.setZoomLevel(15);
+					mapWidget.setSize("100%", "100%");
+					mapWidget.addControl(new LargeMapControl());
+				}
+			});
+		} else {
+			this.mapWidget = new MapWidget();
+			this.mapWidget.setZoomLevel(15);
+			this.mapWidget.setSize("100%", "100%");
+			this.mapWidget.addControl(new LargeMapControl());
+		}
 	}
 
 	public void initBaseView(){
@@ -121,6 +146,8 @@ public class BaseViewHandler {
 		ArrayList<GeoPtModel> dummyDeviceLocations = this.getDummyDeviceLocations();
 		
 		this.baseBinder.getCenterContent().clear();
+		this.baseBinder.setDeviceChoiceList(BaseViewHandler.clearRouteNamesPanels(this.baseBinder.getDeviceChoiceList()));
+		
 		this.menuSetter.clearMenuOptions();
 		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
@@ -144,6 +171,10 @@ public class BaseViewHandler {
 		//view.setDeviceLocations(user.getDeviceLocations());
 		view.initDeviceLocationLoad();
 
+		NavigationHandler navHandler = new NavigationHandler(this);
+		navHandler.setDashboardNavigation(this.getBaseBinder().getNavigationPanel());
+		
+		
 		//AlertListView view = new AlertListView(baseBinder.getCenterContent());		
 		//view.initAlertListView();
 	}
@@ -162,21 +193,14 @@ public class BaseViewHandler {
 		
 		DailyRouteClickHandler dailyRouteHandler = new DailyRouteClickHandler(user.getKey(), this);
 		dailyRouteButton.addClickHandler(dailyRouteHandler);
-		
-		//AlertListClickHandler alertListHandler =  new AlertListClickHandler(user.getKey(), this);
-		
-		// TOOOOODOOOOOOOOOO  ----------------------------------------------------------------------
-		
+
 		AlertListClickHandler alertListHandler = new AlertListClickHandler(user.getKey(), this, SmartphoneModel.getUserAlertList(smartphone));
 		alertListButton.addClickHandler(alertListHandler);
-		
-		//AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this);
 		
 		//TODO
 		if(smartphone.getRules()==null){
 			smartphone.setRules(new ArrayList<RuleModel>());
 		}
-		
 		
 		AlertRulesClickHandler alertRulesHandler =  new AlertRulesClickHandler(user.getKey(), this, smartphone.getRules());
 		alertRulesButton.addClickHandler(alertRulesHandler);
@@ -241,6 +265,10 @@ public class BaseViewHandler {
 			Button b = (Button)menuOptions.getWidget(i);
 			b.setStyleName("");	
 			}	
+	}
+	
+	public static void clearSmartphoneStyles(FlowPanel SmarpthonesPanel){
+		
 	}
 	
 	public void initTicketAdminCenterMenu(){
@@ -311,6 +339,27 @@ public class BaseViewHandler {
 		return deviceChoiceList;
 	}
 	
+	public static FlowPanel clearSmartphoneListStyle(FlowPanel deviceChoiceList){
+		int widgetCount = deviceChoiceList.getWidgetCount();
+		for(int i = 0; i<widgetCount; i++){
+			Widget w = deviceChoiceList.getWidget(i);
+			if(w instanceof FlowPanel){
+				FlowPanel smphPanel = (FlowPanel)w;
+				int widgetcount2 =smphPanel.getWidgetCount();
+				for(int j=0; j<widgetcount2; j++){
+					Widget w2 = smphPanel.getWidget(j);
+					if(w2 instanceof Button){
+						Button wbutton = (Button)w2;
+						wbutton.setStyleName("buttonFromList");
+					}
+					
+				}
+
+			}
+		}
+		return deviceChoiceList;
+	}
+	
 	public PCBaseUIBinder getBaseBinder() {
 		return baseBinder;
 	}
@@ -358,5 +407,14 @@ public class BaseViewHandler {
 	public void setLoadingImage(Image loadingImage) {
 		this.loadingImage = loadingImage;
 	}
+
+	public MapWidget getMapWidget() {
+		return mapWidget;
+	}
+
+	public void setMapWidget(MapWidget mapWidget) {
+		this.mapWidget = mapWidget;
+	}
+	
 	
 }

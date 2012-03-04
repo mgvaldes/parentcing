@@ -16,12 +16,11 @@ public class AdminClosedTicketListCallbackHandler implements AsyncCallback<Array
 	
 	PCLoginUIBinder pclogin;
 	ClientAdminUserModel adminModel;
-	Image loadingImage;
 	
-	public AdminClosedTicketListCallbackHandler(PCLoginUIBinder pclogin, ClientAdminUserModel adminModel, Image loadingImage) {
+	public AdminClosedTicketListCallbackHandler(PCLoginUIBinder pclogin, ClientAdminUserModel adminModel) {
 		this.pclogin = pclogin;
 		this.adminModel = adminModel;
-		this.loadingImage = loadingImage;
+
 	}
 	
 	public void onFailure(Throwable error) {
@@ -36,7 +35,7 @@ public class AdminClosedTicketListCallbackHandler implements AsyncCallback<Array
 		if (result != null) {
 			adminModel.setClosedTickets(result);
 			
-			AdminOpenTicketListCallbackHandler adminOpenTicketListCallback = new AdminOpenTicketListCallbackHandler(pclogin, adminModel, loadingImage);
+			AdminOpenTicketListCallbackHandler adminOpenTicketListCallback = new AdminOpenTicketListCallbackHandler(pclogin, adminModel);
 			AdminOpenTicketListServiceAsync adminOpenTicketListService = GWT.create(AdminOpenTicketListService.class);
 			adminOpenTicketListService.adminOpenTicketList(adminOpenTicketListCallback);
 		} 

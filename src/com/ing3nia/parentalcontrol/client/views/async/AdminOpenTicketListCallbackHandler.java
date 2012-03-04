@@ -18,10 +18,9 @@ public class AdminOpenTicketListCallbackHandler implements AsyncCallback<ArrayLi
 	ClientAdminUserModel adminModel;
 	Image loadingImage;
 	
-	public AdminOpenTicketListCallbackHandler(PCLoginUIBinder pclogin, ClientAdminUserModel adminModel, Image loadingImage) {
+	public AdminOpenTicketListCallbackHandler(PCLoginUIBinder pclogin, ClientAdminUserModel adminModel) {
 		this.pclogin = pclogin;
 		this.adminModel = adminModel;
-		this.loadingImage = loadingImage;
 	}
 	
 	public void onFailure(Throwable error) {

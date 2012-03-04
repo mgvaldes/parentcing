@@ -37,12 +37,14 @@ public class LoginAsyncCallbackHandler implements AsyncCallback<ClientUserModel>
 			LoadingView.clearLoadingView(pclogin);
 			this.userModel.setCid(user.getCid());
 			this.userModel.setSmartphones(user.getSmartphones());
-			this.userModel.setAdmins(null);
+			this.userModel.setAdmins(user.getAdmins());
 			
-			CookieHandler.setPCCookie(this.userModel.getCid());
+			CookieHandler.setPCCookie(user.getCid());
 			if (pclogin.getRememberMeBox().getValue()) {
 				CookieHandler.setCredentialsRemember(pclogin.getEmailField()
 						.getText(), pclogin.getPassField().getText());
+			}else{
+				CookieHandler.clearCredentialsRemember();
 			}
 
 			RootPanel.get().clear();

@@ -35,6 +35,11 @@ public class PCBaseUIBinder extends Composite {
 	
 	@UiField Label notice;
 	
+	@UiField Label alertDeviceName;
+	
+	@UiField Label alertMessage;
+	
+	
 	/*
 	@UiField Button userListButton;
 	@UiField Button addUserButton;
@@ -127,5 +132,20 @@ public class PCBaseUIBinder extends Composite {
 		this.notice = notice;
 	}
 
+	public Label getAlertDeviceName() {
+		return alertDeviceName;
+	}
+
+	public void setAlertDeviceName(Label alertDeviceName) {
+		this.alertDeviceName = alertDeviceName;
+	}
+
+	public Label getAlertMessage() {
+		return alertMessage;
+	}
+
+	public void setAlertMessage(Label alertMessage) {
+		this.alertMessage = alertMessage;
+	}
 	
 }

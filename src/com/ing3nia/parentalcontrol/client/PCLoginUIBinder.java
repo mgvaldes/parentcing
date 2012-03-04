@@ -7,6 +7,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -22,6 +23,7 @@ public class PCLoginUIBinder extends Composite {
 	@UiField FlowPanel loginFieldsBox;
 	@UiField FlowPanel loadingBlock;
 	@UiField CheckBox rememberMeBox;
+	@UiField HTMLPanel centerPanelLoginContent;
 	
 	private static PCLoginUIBinderUiBinder uiBinder = GWT.create(PCLoginUIBinderUiBinder.class);
 
@@ -95,4 +97,14 @@ public class PCLoginUIBinder extends Composite {
 	public void setRememberMeBox(CheckBox rememberMeBox) {
 		this.rememberMeBox = rememberMeBox;
 	}
+
+	public HTMLPanel getCenterPanelLoginContent() {
+		return centerPanelLoginContent;
+	}
+
+	public void setCenterPanelLoginContent(HTMLPanel centerPanelLoginContent) {
+		this.centerPanelLoginContent = centerPanelLoginContent;
+	}
+	
+	
 }

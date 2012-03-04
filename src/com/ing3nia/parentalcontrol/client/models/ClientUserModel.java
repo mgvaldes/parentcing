@@ -9,6 +9,11 @@ import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 
 public class ClientUserModel implements Serializable {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * String that represents the key of this PCAdmin object.
 	 */
 	String key;

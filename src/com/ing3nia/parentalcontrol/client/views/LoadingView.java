@@ -6,8 +6,12 @@ import com.google.gwt.user.client.ui.Label;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.PCLoginUIBinder;
 import com.ing3nia.parentalcontrol.client.PCRegisterUIBinder;
+import com.ing3nia.parentalcontrol.client.utils.LoadingBarImageEnum;
+import com.ing3nia.parentalcontrol.client.utils.LoadingBarStyle;
 
 public class LoadingView{
+	
+	static Image loadingImage = new Image("/media/images/loading.gif");
 	
 	public static void setLoadingView(PCLoginUIBinder pclogin, String text, Image loadingImage){
 		FlowPanel loadingView = pclogin.getLoadingBlock();
@@ -17,6 +21,13 @@ public class LoadingView{
 		Label loadingLabel = new Label(text);
 		loadingLabel.setStyleName("loadingLabel");
 		loadingView.add(loadingLabel);
+	}
+	
+	public static void setLoadingView(PCLoginUIBinder pclogin, String text, LoadingBarImageEnum loadingBar){
+		FlowPanel loadingView = pclogin.getLoadingBlock();
+		loadingView.clear();
+		FlowPanel loadingBarView = LoadingBarStyle.getLoadingBarPanel(text, loadingBar.getId());
+		loadingView.add(loadingBarView);
 	}
 	
 	public static void setLoadingView(PCRegisterUIBinder pcregister, String text, Image loadingImage){
@@ -52,6 +63,7 @@ public class LoadingView{
 		loadingLabel.setStyleName("loadingLabel");
 		loadingView.add(loadingLabel);
 	}
+	
 	
 	public static void clearLoadingView(PCBaseUIBinder pcbase){
 		pcbase.getLoadingBlock().clear();

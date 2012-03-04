@@ -4,7 +4,7 @@
 	<g:HTMLPanel styleName="mainPanel">
 		<g:HTMLPanel styleName="bodyPanel">
 			<g:HTMLPanel styleName="centerPanelLogin">
-				<g:HTMLPanel styleName="centerPanelLoginContent">
+				<g:HTMLPanel styleName="centerPanelLoginContent" ui:field="centerPanelLoginContent">
 					<g:FlowPanel styleName="pclogoLoginContainer">
 						<g:Image styleName="pclogoLogin" url="/media/images/pclogo.png"
 							ui:field="pclogo" />

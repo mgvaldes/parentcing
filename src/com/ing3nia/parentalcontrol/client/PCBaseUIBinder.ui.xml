@@ -8,8 +8,8 @@
 			<g:HorizontalPanel styleName="alertInfo">
 				<g:Image styleName="alertImage" url="/media/images/alert.png"/>
 				<g:Label styleName="alertType">Alert:</g:Label>
-				<g:Label styleName="deviceName">Device Name [6]</g:Label>
-				<g:Label styleName="alertType">LOW BATTERY</g:Label>
+				<g:Label styleName="deviceName" ui:field="alertDeviceName">-</g:Label>
+				<g:Label styleName="alertType" ui:field="alertMessage">No Alerts</g:Label>
 			</g:HorizontalPanel>
 		</g:FlowPanel>
 		<g:FlowPanel styleName="sessionButtons">
@@ -23,7 +23,6 @@
 			<g:FlowPanel styleName="leftMenuHeader">
 				<g:Label styleName="deviceLabel" text="Device List"/>
 				<g:FlowPanel styleName="deviceOptions">
-					<g:FlowPanel styleName="loadingBlock" ui:field="loadingBlock"></g:FlowPanel>
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:FlowPanel styleName="deviceMenu">
@@ -40,6 +39,7 @@
 				</g:FlowPanel>
 			</g:FlowPanel>
 			<g:HTMLPanel styleName="centerContent" ui:field="centerContent">
+				<g:FlowPanel styleName="loadingBlock" ui:field="loadingBlock"></g:FlowPanel>
 				<g:Label styleName="notice" ui:field="notice"></g:Label>
 			</g:HTMLPanel>
 		</g:HTMLPanel>

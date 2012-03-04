@@ -6,6 +6,10 @@ import java.util.ArrayList;
 public class SimpleContactModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * 
+	 */
+
 	private String keyId;
 
 	private String firstName;
@@ -34,6 +38,8 @@ public class SimpleContactModel implements Serializable {
 		this.lastName = lastName;
 		this.phones = phones;
 	}
+	
+
 
 	public String getFirstName() {
 		return firstName;

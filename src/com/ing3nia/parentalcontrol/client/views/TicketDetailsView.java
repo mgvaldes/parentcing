@@ -9,6 +9,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
+
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -164,6 +169,7 @@ public class TicketDetailsView {
 		this.ticketQuestionLabel = new Label("Comment:");
 		this.ticketDateLabel = new Label("Date:");
 		this.closeButton = new Button("Close Ticket");
+		DOM.setElementProperty(closeButton.getElement(), "id", "closeTicketButton");
 		
 		this.ticketAnswersContent = new HTMLPanel("");
 		this.ticketAnswersDetailsContent = new HTMLPanel("");
@@ -176,7 +182,11 @@ public class TicketDetailsView {
 		
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
+		DOM.setElementProperty(saveButton.getElement(), "id", "saveTicketDetailsView");
+		
 		this.clearButton = new Button("Clear");
+		DOM.setElementProperty(clearButton.getElement(), "id", "clearTicketDetailsButton");
+	
 	}
 	
 	public void initTicketDetailsView() {
@@ -220,6 +230,7 @@ public class TicketDetailsView {
 			this.ticketReplyContent.add(this.replyTicketLabel);
 			this.ticketReplyContent.add(this.replyTextArea);
 			
+			
 			saveButton.addClickHandler(new ClickHandler() {
 		    	public void onClick(ClickEvent event) {
 		    		saveTicketReply();
@@ -240,6 +251,8 @@ public class TicketDetailsView {
 			this.centerContent.add(this.ticketReplyContent);
 		}
 	}
+	
+	
 	
 	public void closeTicket() {
 		CloseTicketCallbackHandler closeTicketCallback = new CloseTicketCallbackHandler(this.baseView, ticket);

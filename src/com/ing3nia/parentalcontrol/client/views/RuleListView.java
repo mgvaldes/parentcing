@@ -12,6 +12,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.view.client.ListDataProvider;
@@ -23,6 +24,7 @@ import com.ing3nia.parentalcontrol.client.views.subviews.EditRuleView;
 import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView;
 
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.AddNewRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
@@ -66,16 +68,15 @@ public class RuleListView {
 		this.centerContent.clear();
 		this.rules = ruleList;
 		this.addRuleButton = new Button("Add Rule");
+		DOM.setElementProperty(addRuleButton.getElement(), "id", "addRuleButton");
+		this.addRuleButton.setStyleName("addRuleButton");
+		
 		this.pager = new SimplePager();
 	}
 	
 	public void initRuleListView() {
-		addRuleButton.addClickHandler(new ClickHandler() {
-	    	public void onClick(ClickEvent event) {
-	    		loadAddRuleView();
-	    	}
-	    });
-		
+		AddNewRuleClickHandler addRuleClickHandler = new AddNewRuleClickHandler(this, baseViewHandler);
+		addRuleButton.addClickHandler(addRuleClickHandler);
 		viewContent.add(addRuleButton);
 		
 		//Setting alert table style
@@ -131,7 +132,7 @@ public class RuleListView {
 		
 		ruleTable.addColumn(editColumn, "");
 		
-		// Add an edit column to show the edit button.
+		// Add an delete column to show the delete button.
 		ButtonCell deleteCell = new ButtonCell();
 		Column<RuleModel, String> deleteColumn = new Column<RuleModel, String>(
 				deleteCell) {
@@ -172,7 +173,9 @@ public class RuleListView {
 		centerContent.add(viewContent);
 	}
 	
+	//public void loadNewRule() {
 	public void loadAddRuleView() {
+
 		baseViewHandler.getBaseBinder().getCenterContent().clear();
 		SmartphoneModel selectedSmart = baseViewHandler.getUser().getSmartphones().get(baseViewHandler.getClickedSmartphoneIndex());
 		

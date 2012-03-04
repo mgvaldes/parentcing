@@ -50,6 +50,7 @@ public class MenuSetterHandler {
 	
 	public MenuSetterHandler(PCAdminHelpdeskUIBinder helpdeskBinder){
 		this.helpdeskBinder = helpdeskBinder;
+		this.centerMenuOptions = baseBinder.getCenterMenuOptions();
 		this.centerMenuOptions = helpdeskBinder.getCenterMenuOptions();
 		
 		this.adminClosedTickets = getCenterMenuButton(centerMenuOptions, CenterMenuOptionsClassNames.ClosedTickets.getClassname(), CenterMenuOptionsClassNames.ClosedTickets.getText());

@@ -54,7 +54,7 @@ public class InitResource {
 
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		PCSmartphone smart = pm.getObjectById(PCSmartphone.class, "ahBwYXJlbnRhbC1jb250cm9schILEgxQQ1NtYXJ0cGhvbmUYUAw");
+		PCSmartphone smart = pm.getObjectById(PCSmartphone.class, "ahJzfnBhcmVudGFsLWNvbnRyb2xyEwsSDFBDU21hcnRwaG9uZRimTgw");
 		
 		PCActivityStatistics stats = new PCActivityStatistics();
 		stats.setDate(new Date());

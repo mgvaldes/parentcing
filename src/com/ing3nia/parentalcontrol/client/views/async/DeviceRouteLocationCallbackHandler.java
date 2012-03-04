@@ -29,12 +29,45 @@ public class DeviceRouteLocationCallbackHandler implements LocationCallback{
 
 	@Override
 	public void onSuccess(JsArray<Placemark> locations) {
-
-		String routeName = locations.get(0).getStreet();
-		if(routeName == null){
-			routeName = locations.get(0).getAddress();
-			if(routeName==null){
-				routeName = "address could not be loaded";
+		
+		String routeName = "address could not be loaded";
+		boolean totalBreak = false;
+		for(int i=0; i<locations.length(); i++){
+			Placemark p = locations.get(i);
+			if(p.getStreet() !=null){
+				routeName = p.getStreet();
+				totalBreak = true;
+				break;	
+			}
+		}
+		if (!totalBreak) {
+			for (int i = 0; i < locations.length(); i++) {
+				Placemark p = locations.get(i);
+				if (p.getAddress() != null) {
+					routeName = p.getAddress();
+					totalBreak = true;
+					break;
+				}
+			}
+		}
+		if (!totalBreak) {
+			for (int i = 0; i < locations.length(); i++) {
+				Placemark p = locations.get(i);
+				if (p.getLocality()!= null) {
+					routeName = p.getLocality();
+					totalBreak = true;
+					break;
+				}
+			}
+		}
+		if (!totalBreak) {
+			for (int i = 0; i < locations.length(); i++) {
+				Placemark p = locations.get(i);
+				if (p.getCity()!= null) {
+					routeName = p.getCity();
+					totalBreak = true;
+					break;
+				}
 			}
 		}
 		Label l = new Label(routeName);

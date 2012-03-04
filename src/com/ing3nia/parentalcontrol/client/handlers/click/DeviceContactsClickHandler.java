@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
+import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceContactListView;
 
 public class DeviceContactsClickHandler implements ClickHandler{
@@ -20,8 +20,8 @@ public class DeviceContactsClickHandler implements ClickHandler{
 	
 	public DeviceContactsClickHandler(String key, BaseViewHandler baseView, SmartphoneModel smartphone){
 		this.key = key;
-		this.centerContent = centerContent;
-		this.menuSetter = menuSetter;
+		this.centerContent = baseView.getBaseBinder().getCenterContent();
+		this.menuSetter = baseView.getMenuSetter();
 		this.baseView = baseView;
 		this.centerContent = baseView.getBaseBinder().getCenterContent();
 		this.menuSetter = baseView.getMenuSetter();
@@ -33,6 +33,10 @@ public class DeviceContactsClickHandler implements ClickHandler{
 		this.centerContent.clear();
 		this.menuSetter.clearMenuOptions();
 		
+		//Clear smartphone routes panel
+		baseView.getBaseBinder().setDeviceChoiceList(BaseViewHandler
+		.clearRouteNamesPanels(baseView.getBaseBinder().getDeviceChoiceList()));
+		
 		FlowPanel menuOptions = this.menuSetter.getCenterMenuOptions();
 		menuOptions.add(this.menuSetter.getDailyRoute());
 		menuOptions.add(this.menuSetter.getAlertList());
@@ -41,8 +45,11 @@ public class DeviceContactsClickHandler implements ClickHandler{
 		this.menuSetter.getDeviceContacts().setStyleName("selectedShinnyButton");
 		menuOptions.add(this.menuSetter.getDeviceSettings());
 		
+		NavigationHandler navHandler = new NavigationHandler(baseView);
+		navHandler.setSmartphoneNavigation(baseView.getBaseBinder().getNavigationPanel());
+		
 		//DeviceContactListView view = new DeviceContactListView(centerContent);
-		DeviceContactListView view = new DeviceContactListView(centerContent, CookieHandler.getPCCookie(), smartphone);
+		DeviceContactListView view = new DeviceContactListView(baseView, baseView.getUser().getCid(), smartphone);
 		view.initDeviceContactListView();
 	}
 }

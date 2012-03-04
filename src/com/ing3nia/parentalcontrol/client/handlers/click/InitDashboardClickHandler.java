@@ -9,10 +9,12 @@ public class InitDashboardClickHandler implements ClickHandler {
 		private BaseViewHandler baseViewHandler;
 		public InitDashboardClickHandler(BaseViewHandler baseViewHandler){
 			this.baseViewHandler = baseViewHandler;
+			
 		}
 		
 		@Override
 		public void onClick(ClickEvent event) {
+			BaseViewHandler.clearSmartphoneStyles(this.baseViewHandler.getBaseBinder().getDeviceChoiceList());
 			this.baseViewHandler.initDashboard();		
 		}	
 	}
