@@ -98,8 +98,8 @@ public class ParentSmartphoneDetails {
 		}
 		pm.close();
 	
-		logger.severe("SMARTPHONE RULES: "+smartphone.getRules());
-		logger.severe("SMARTPHONE PROPS: "+smartphone.getProperties());
+		logger.info("SMARTPHONE RULES: "+smartphone.getRules());
+		logger.info("SMARTPHONE PROPS: "+smartphone.getProperties());
 		
 		logger.info("[Parent Smartphone Details] Obtaining smarpthone details");
 		JsonObject smartphoneInfo = SmartphoneUtils.getSmartphoneDetails(smartphone);

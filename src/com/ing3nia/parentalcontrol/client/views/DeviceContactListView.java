@@ -143,19 +143,11 @@ public class DeviceContactListView {
 		
 		this.centerContent.clear();
 		
-		this.activeInactiveIndexList = new ArrayList<Boolean>(smartphone.getActiveContacts().size() + smartphone.getInactiveContacts().size());
-		for(int i=0;i<smartphone.getActiveContacts().size();i++){
-			this.activeInactiveIndexList.add(true);
-		}
-		
-		for(int i=0;i<smartphone.getInactiveContacts().size();i++){
-			this.activeInactiveIndexList.add(false);
-		}
-		
 	}
 	
 	public void loadSmartphoneContacts() {
-		ArrayList<ContactModel> smartContacts = smartphone.getActiveContacts();
+		this.activeInactiveIndexList = new ArrayList<Boolean>(this.smartphone.getActiveContacts().size() + this.smartphone.getInactiveContacts().size());
+		ArrayList<ContactModel> smartContacts = this.smartphone.getActiveContacts();
 		ClientSimpleContactModel auxSimpleContact;
 				
 		for (ContactModel c : smartContacts) {
@@ -163,6 +155,7 @@ public class DeviceContactListView {
 				auxSimpleContact = new ClientSimpleContactModel(c.getKeyId(),c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
 				auxSimpleContact.setWasOriginallyActive(true);
 				contacts.add(auxSimpleContact);
+				this.activeInactiveIndexList.add(true);
 			}
 		}
 		
@@ -173,6 +166,7 @@ public class DeviceContactListView {
 				auxSimpleContact = new ClientSimpleContactModel(c.getKeyId(), c.getFirstName(), c.getLastName(), p.getPhoneNumber(), p.getType(), c.getEmails(), c.getAddresses(), c.getOrganizations());
 				auxSimpleContact.setWasOriginallyActive(false);
 				contacts.add(auxSimpleContact);
+				this.activeInactiveIndexList.add(false);
 			}
 		}
 	}
@@ -344,8 +338,6 @@ public class DeviceContactListView {
 		ContactListRangeChangeHandler rangeChange = new ContactListRangeChangeHandler(contactTable, activeInactiveIndexList);
 		contactTable.addRangeChangeHandler(rangeChange);
 	    contactTable.setVisibleRangeAndClearData(new Range(0, 2), true);
-
-		
 		
 		//creating paging controls		
 		pager.setDisplay(contactTable);
@@ -645,8 +637,9 @@ public class DeviceContactListView {
 		@Override
 		public void render(final Context context, final SafeHtml data,
 				final SafeHtmlBuilder sb) {
-			sb.appendHtmlConstant("<button type=\"button\" class=\"disallowButton\" "
-					+ "tabindex=\"-1\">");
+			//sb.appendHtmlConstant("<button type=\"button\" class=\"disallowButton\" "
+			//		+ "tabindex=\"-1\">");
+			sb.appendHtmlConstant(opaqueButtonString);
 			
 			if (data != null) {
 				sb.append(data);

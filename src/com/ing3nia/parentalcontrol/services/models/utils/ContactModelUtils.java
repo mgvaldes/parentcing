@@ -32,12 +32,21 @@ public class ContactModelUtils {
 			pcSimpleContact = new PCSimpleContact(contact.getFirstName(), contact.getLastName(), pcphone.getKey());
 			pscList.add(pcSimpleContact);
 		}
-		pm.makePersistentAll(pscList);
+		//pm.makePersistentAll(pscList);
+		for(PCSimpleContact psc : pscList){
+			try{
+				pm.makePersistent(psc);
+				contactKeys.add(psc.getKey());
+			}catch(Exception e){
+				//continue
+			}
+		}
 
 		// getting and saving keys from every simple contact
+		/*
 		for(PCSimpleContact psc : pscList){
 			contactKeys.add(psc.getKey());
-		}
+		}*/
 		
 		pm.close();
 		return contactKeys;

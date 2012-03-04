@@ -151,10 +151,14 @@ public class UpdateSynchronizationResource {
 				Key modificationKey = KeyFactory.stringToKey(smartphoneModIdModel.getModKey());
 				
 				if (modificationKey.equals(savedSmartphone.getModification())) {
+					logger.info("[Update Synchronization Service] Modification Found, deleting");
 					found = true;
 					PCModification mod = pm.getObjectById(PCModification.class, savedSmartphone.getModification());
-					
-					pm.deletePersistent(mod);				
+					pm.deletePersistent(mod);
+				
+					PCModification newModification = new PCModification();
+					pm.makePersistent(newModification);
+					savedSmartphone.setModification(newModification.getKey());
 				}
 			}
 		}
@@ -167,8 +171,7 @@ public class UpdateSynchronizationResource {
 			throw new SessionQueryException();
 	    }
 		
-		pm.close();
-		
+		pm.close();	
 		return found;
 	}
 	

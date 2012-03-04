@@ -64,6 +64,35 @@ public class SessionUtils {
 	/**
 	 * Returns the PCUser matching the provided username and password, or null otherwise
 	 */
+	public static String getPCUserKey(PersistenceManager pm, String username_param, String pass_param) throws SessionQueryException{
+		//Query query = pm.newQuery(PCUser.class);
+		logger.info("Finding PCUser Key from DB");
+		Query query = pm.newQuery("select key from " + PCUser.class.getName());
+		query.setFilter("username == username_param && password == pass_param");
+	    query.declareParameters("String username_param, String pass_param");
+	    query.setRange(0, 1);
+
+	    logger.info("[SessionUtils] Finding user by username and password");
+		try {
+			//List<PCUser> results = (List<PCUser>) query.execute(username_param, pass_param);
+			List<String> results = (List<String>)query.execute(username_param, pass_param);
+			if (!results.isEmpty()) {
+				logger.info("[SessionUtils] Returning found PCuser");
+				return results.get(0);
+			}else{
+				logger.info("[SessionUtils] No user with the username "+username_param+", and password "+pass_param+" was found.");
+				return null;
+			}
+		} catch (Exception e) {
+			logger.info("[SessionUtils] An error ocurred while finding the PCUser by username and password "+ e.getMessage());
+			throw new SessionQueryException();
+		}  
+	}
+	
+	
+	/**
+	 * Returns the PCUser matching the provided username and password, or null otherwise
+	 */
 	public static PCUser getPCUser(PersistenceManager pm, String username_param, String pass_param) throws SessionQueryException{
 		Query query = pm.newQuery(PCUser.class);
 	    query.setFilter("username == username_param && password == pass_param");
@@ -73,6 +102,7 @@ public class SessionUtils {
 	    logger.info("[SessionUtils] Finding user by username and password");
 		try {
 			List<PCUser> results = (List<PCUser>) query.execute(username_param, pass_param);
+			//List<String> results = (List<String>)query.execute(username_param, pass_param);
 			if (!results.isEmpty()) {
 				logger.info("[SessionUtils] Returning found PCuser");
 				return results.get(0);

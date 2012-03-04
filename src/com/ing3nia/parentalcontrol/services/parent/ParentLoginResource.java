@@ -14,6 +14,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
@@ -96,8 +98,11 @@ public class ParentLoginResource {
 		}
 		
 		PCUser user;
+		//String userKey;
+		//Key userRealKey;
 		try {
 			user = SessionUtils.getPCUser(pm, username_param,pass_param);
+			//userKey = SessionUtils.getPCUserKey(pm, username_param,pass_param);
 		} catch (SessionQueryException e2) {
 			logger.warning("[Parent Login] An error ocurred while searching for username and email. "+e2.getMessage());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
@@ -116,7 +121,8 @@ public class ParentLoginResource {
 		PCSession session = null;
 		try {
 			session = SessionUtils.getPCSessionFromUser(pm, user.getKey());
-			
+			//userRealKey = KeyFactory.stringToKey(userKey);
+			//session = SessionUtils.getPCSessionFromUser(pm, userRealKey);
 		} catch (SessionQueryException e2) {
 			logger.warning("[Parent Login] An error occurred while looking for session from user key");
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
@@ -153,6 +159,7 @@ public class ParentLoginResource {
 		// register model in datastore
 		session = new PCSession();
 		session.setUser(user.getKey());
+		//session.setUser(userRealKey);
 		session.setLastUpdate(new Date());
 		try {
 			session.setCookieId(SessionUtils.calculateSessionCookie());

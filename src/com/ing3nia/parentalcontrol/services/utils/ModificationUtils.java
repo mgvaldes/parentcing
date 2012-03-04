@@ -238,7 +238,7 @@ public class ModificationUtils {
 			else {
 				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
 				savedEmergencyNumber.setCountry(emergencyContact.getCountry());
-				savedEmergencyNumber.setNumber(new PhoneNumber(emergencyContact.getNumber()));
+				savedEmergencyNumber.setNumber(emergencyContact.getNumber());
 				savedEmergencyNumber.setDescription(emergencyContact.getDescription());
 				
 				// remove contact from deleted emergency number and add to added
@@ -275,7 +275,7 @@ public class ModificationUtils {
 		for (EmergencyNumberModel emergencyContact : deletedEmergencyNumbers) {
 			PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
 			savedEmergencyNumber.setCountry(emergencyContact.getCountry());
-			savedEmergencyNumber.setNumber(new PhoneNumber(emergencyContact.getNumber()));
+			savedEmergencyNumber.setNumber(emergencyContact.getNumber());
 			savedEmergencyNumber.setDescription(emergencyContact.getDescription());
 			
 			// remove contact from added emergency number and add to deleted
@@ -299,6 +299,8 @@ public class ModificationUtils {
 				modDeletedEmergency.add(emergencyKey);
 			}
 		}
+		
+		
 			
 		// parsing property modifications
 		logger.info("[ParentModifications] Adding properties modifications");
@@ -371,6 +373,7 @@ public class ModificationUtils {
 			
 			if (ruleModel.getKeyId() == null) {
 				pm.makePersistent(rule);
+				pcsmartphone.getRules().add(rule.getKey());
 			}
 			
 			pcModRules.add(rule.getKey());

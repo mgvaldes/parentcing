@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCRule;
@@ -17,6 +18,8 @@ public class RuleModelUtils {
 		PCRule rule = pm.getObjectById(PCRule.class, ruleKey);
 		RuleModel ruleModel = new RuleModel();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		ruleModel.setKeyId(KeyFactory.keyToString(ruleKey));
 		
 		ruleModel.setStartDate(formatter.format(rule.getStartDate()));
 		ruleModel.setEndDate(formatter.format(rule.getEndDate()));

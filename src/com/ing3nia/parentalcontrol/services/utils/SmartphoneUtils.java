@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.JsonArray;
@@ -17,6 +18,7 @@ import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
+import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
@@ -225,6 +227,33 @@ public class SmartphoneUtils {
 			}
 		}
 		detailsJson.add("rules", rulesArray);
+		
+		
+		JsonArray routesArray = new JsonArray();
+		PCRoute auxRoute;
+		String routeKey;
+		if(smartphone.getRoutes() != null){
+			for(Key route : smartphone.getRoutes()){
+				
+				auxRoute = pm.getObjectById(PCRoute.class, route);
+				
+				JsonArray points = new JsonArray();
+				ArrayList<GeoPt> routePoints = auxRoute.getRoute();
+				for(GeoPt geopt : routePoints){
+					JsonObject locationObject = new JsonObject();
+					locationObject.addProperty("latitude", String.valueOf(geopt.getLatitude()));
+					locationObject.addProperty("longitude", String.valueOf(geopt.getLongitude()));
+					points.add(locationObject);
+				}	
+				JsonObject routeJson = new JsonObject();
+				
+				routeKey = KeyFactory.keyToString(route);
+				routeJson.addProperty("keyId", routeKey);
+				routeJson.add("points", points);
+				routesArray.add(routeJson);
+			}
+		}
+		detailsJson.add("routes", routesArray);
 
 		return detailsJson;
 	}

@@ -129,11 +129,6 @@ public class DeviceDailyRouteView {
 			this.map.setCenter(deviceLoc);
 		}
 		
-	    /*
-		map = new MapWidget(deviceLoc, 15);
-	    map.setSize("100%", "100%");	  
-	    map.addControl(new LargeMapControl());
-	     */
 	    Geocoder geocoder = new Geocoder();
 
 	    LatLng[] locationArray = new LatLng[deviceRoute.size()];
