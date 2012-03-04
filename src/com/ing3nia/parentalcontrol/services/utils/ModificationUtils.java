@@ -236,6 +236,11 @@ public class ModificationUtils {
 
 			}
 			else {
+				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
+				savedEmergencyNumber.setCountry(emergencyContact.getCountry());
+				savedEmergencyNumber.setNumber(emergencyContact.getNumber());
+				savedEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
 				// remove contact from deleted emergency number and add to added
 				// emergency in smartphone
 				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
@@ -268,6 +273,12 @@ public class ModificationUtils {
 		modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
 		modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
 		for (EmergencyNumberModel emergencyContact : deletedEmergencyNumbers) {
+			
+			PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
+			savedEmergencyNumber.setCountry(emergencyContact.getCountry());
+			savedEmergencyNumber.setNumber(emergencyContact.getNumber());
+			savedEmergencyNumber.setDescription(emergencyContact.getDescription());
+			
 			// remove contact from added emergency number and add to deleted
 			// emergency in smartphone
 			Key emergencyKey = KeyFactory.stringToKey(emergencyContact
@@ -290,6 +301,8 @@ public class ModificationUtils {
 				modDeletedEmergency.add(emergencyKey);
 			}
 		}
+		
+		
 			
 		// parsing property modifications
 		logger.info("[ParentModifications] Adding properties modifications");

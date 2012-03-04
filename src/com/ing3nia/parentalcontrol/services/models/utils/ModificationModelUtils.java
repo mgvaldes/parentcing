@@ -117,7 +117,9 @@ public class ModificationModelUtils {
 			//------------------------------------------------------------
 			// Loading rules
 			//------------------------------------------------------------
+			
 			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+			
 			ArrayList<Key> pcRules = modification.getRules();
 			PCRule auxRule;
 			

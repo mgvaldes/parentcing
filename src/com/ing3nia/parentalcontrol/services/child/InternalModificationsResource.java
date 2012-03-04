@@ -167,7 +167,11 @@ public class InternalModificationsResource {
 						}else{
 							logger.info("[Internal Modifications Service] Adding geo point to new route");
 							PCRoute newRoute = new PCRoute();
+							newRoute.setRoute(new ArrayList<GeoPt>());
+							newRoute.setDate(new Date());
 							newRoute.getRoute().add(geopt);
+							
+							logger.info("[Internal Modifications Service] Persistintg route and Adding new Route key");
 							pm.makePersistent(newRoute);
 							savedSmartphone.getRoutes().add(newRoute.getKey());
 						}
@@ -175,8 +179,13 @@ public class InternalModificationsResource {
 					}else{
 						logger.info("[Internal Modifications Service] No Route in route list, creating new one and adding GeoPt");
 						PCRoute newRoute = new PCRoute();
+						newRoute.setRoute(new ArrayList<GeoPt>());
 						newRoute.getRoute().add(geopt);
+						newRoute.setDate(new Date());
+						
+						logger.info("[Internal Modifications Service] Persisting new route ");
 						pm.makePersistent(newRoute);
+						logger.info("[Internal Modifications Service] Adding new Route key");
 						savedSmartphone.getRoutes().add(newRoute.getKey());
 					}
 				}else{
@@ -232,7 +241,7 @@ public class InternalModificationsResource {
 		}
 		catch (NullPointerException ex){
 	    	logger.severe("[Internal Modifications Service] A null pointer exception ocurred "+ internalModsModel+" "+internalModsModel.getModification()+" "+ ex.getMessage());
-	    	
+	    	throw ex;
 		}
 		catch (Exception ex) {
 	    	logger.severe("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());

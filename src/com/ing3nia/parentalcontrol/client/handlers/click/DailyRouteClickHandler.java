@@ -15,6 +15,9 @@ import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.models.LocationModel;
+import com.ing3nia.parentalcontrol.client.models.RouteModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
 import com.ing3nia.parentalcontrol.client.views.DeviceDailyRouteView;
 
@@ -27,6 +30,7 @@ public class DailyRouteClickHandler implements ClickHandler{
 	private MenuSetterHandler menuSetter;
 	private FlowPanel deviceChoiceList;
 	private static Logger logger = Logger.getLogger("Daily Route Logger");
+	private static int ROUTE_MAX_SIZE = 10;
 	
 	public DailyRouteClickHandler(String key, BaseViewHandler baseView){
 		this.key = key;
@@ -113,11 +117,68 @@ public class DailyRouteClickHandler implements ClickHandler{
 	}
 	
 	public ArrayList<GeoPtModel> getDummyDeviceRoute(){
+		
+		logger.info("Getting Device ROUTE");
 		ArrayList<GeoPtModel> deviceLocations = new ArrayList<GeoPtModel>();
 		
+		int smartphoneIndex = this.baseView.getClickedSmartphoneIndex();
+		SmartphoneModel smartphone = this.baseView.getUser().getSmartphones().get(smartphoneIndex);
+		ArrayList<RouteModel> routes = smartphone.getRoutes();
 		
+		if(smartphone.getRoutes() == null){
+			logger.warning("Smartphone ROUTE list is null");
+			GeoPtModel geopt = new GeoPtModel();
+			LocationModel currentLocation = smartphone.getLocation();
+			geopt.setLatitude(Double.valueOf(currentLocation.getLatitude()));
+			geopt.setLongitude(Double.valueOf(currentLocation.getLongitude()));
+			
+			deviceLocations.add(geopt);
+			
+			return deviceLocations;
+		}
+		if(smartphone.getRoutes().size() ==0){
+			logger.warning("Smartphone Route is empty");
+			GeoPtModel geopt = new GeoPtModel();
+			LocationModel currentLocation = smartphone.getLocation();
+			geopt.setLatitude(Double.valueOf(currentLocation.getLatitude()));
+			geopt.setLongitude(Double.valueOf(currentLocation.getLongitude()));
+			
+			deviceLocations.add(geopt);
+			
+			return deviceLocations;
+		}
+		RouteModel route = routes.get(routes.size()-1);
+		logger.info("Iterating last route "+route.getDate());
+		
+		ArrayList<LocationModel> points = route.getPoints();
+		int routeSize = points.size();
+		ArrayList<Integer> pointDistribution = getPointDistribution(routeSize, ROUTE_MAX_SIZE);
+		
+		for(Integer pos : pointDistribution){
+			LocationModel location = points.get(pos); 
+			GeoPtModel geo = new GeoPtModel();
+			Number lat = Float.valueOf(location.getLatitude());
+			Number lon = Float.valueOf(location.getLongitude());
+			
+			geo.setLatitude(lat.doubleValue());
+			geo.setLongitude(lon.doubleValue());
+			
+			deviceLocations.add(geo);
+		}
 		
 		/*
+		for(LocationModel location : route.getPoints()){
+			GeoPtModel geo = new GeoPtModel();
+			Number lat = Float.valueOf(location.getLatitude());
+			Number lon = Float.valueOf(location.getLongitude());
+			
+			geo.setLatitude(lat.doubleValue());
+			geo.setLongitude(lon.doubleValue());
+			
+			deviceLocations.add(geo);
+		}*/
+	
+	/*
 		GeoPtModel geo = new GeoPtModel();
 		geo.setLatitude(25.74626466540882);
 		geo.setLongitude(-80.270254611969);
@@ -131,8 +192,9 @@ public class DailyRouteClickHandler implements ClickHandler{
 		geo = new GeoPtModel();
 		geo.setLatitude(25.772397395383567);
 		geo.setLongitude(-80.25585651397705);
-		deviceLocations.add(geo);
+		deviceLocations.add(geo);*/
 		
+		/*
 		geo = new GeoPtModel();
 		geo.setLatitude(25.721083103539254);
 		geo.setLongitude(-80.2756404876709);
@@ -150,5 +212,31 @@ public class DailyRouteClickHandler implements ClickHandler{
 		
 		return deviceLocations;
 		
+	}
+	
+	public ArrayList<Integer> getPointDistribution(int routeSize, int maxSize){
+		ArrayList<Integer> pointDistribution = new ArrayList<Integer>(maxSize);
+
+		if(routeSize < maxSize){
+			int count=0;
+			while(count<routeSize){
+				pointDistribution.add(count);
+				count++;
+			}
+			return pointDistribution;
+		}
+		
+		// if maxSize is greater or equals maxSize
+		double sep = routeSize/maxSize;
+		double posDouble = 0.0;
+		int nextPos = 0;
+		
+		while(nextPos < routeSize){
+			pointDistribution.add(nextPos);
+			posDouble +=sep;
+			nextPos = (int) posDouble;
+		}
+		
+		return pointDistribution;
 	}
 }
