@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.services.child;
+ package com.ing3nia.parentalcontrol.services.child;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;

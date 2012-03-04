@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
 
-public class SmartphoneModel implements Serializable{
+public class SmartphoneModel implements Serializable {
 	/**
 	 * 
 	 */
@@ -132,8 +132,7 @@ public class SmartphoneModel implements Serializable{
 		return addedEmergencyNumbers;
 	}
 
-	public void setAddedEmergencyNumbers(
-			ArrayList<EmergencyNumberModel> addedEmergencyNumbers) {
+	public void setAddedEmergencyNumbers(ArrayList<EmergencyNumberModel> addedEmergencyNumbers) {
 		this.addedEmergencyNumbers = addedEmergencyNumbers;
 	}
 
@@ -141,8 +140,7 @@ public class SmartphoneModel implements Serializable{
 		return deletedEmergencyNumbers;
 	}
 
-	public void setDeletedEmergencyNumbers(
-			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers) {
+	public void setDeletedEmergencyNumbers(ArrayList<EmergencyNumberModel> deletedEmergencyNumbers) {
 		this.deletedEmergencyNumbers = deletedEmergencyNumbers;
 	}
 

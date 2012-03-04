@@ -58,6 +58,12 @@ public class UpdateSynchronizationResource {
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			return rbuilder.build();
 		}
+		catch (IllegalArgumentException ex) {
+			logger.warning("[Total Synchronization Service] An error ocurred while searching for smartphone. " + ex.getMessage());
+			
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			return rbuilder.build();
+		}
 		
 		logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
 		

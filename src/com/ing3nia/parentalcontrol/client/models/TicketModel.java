@@ -17,18 +17,12 @@ public class TicketModel implements Serializable {
 	 * Represents the next id correspondeing to the next
 	 * ticket created.
 	 */
+	private static final long serialVersionUID = 1L;	
 
-//	private static int nextId = 0;
-	
 	/**
 	 * Ticket's key.
 	 */
 	private String key;
-	
-	/**
-	 * Represents the id of a ticket.
-	 */
-//	private int id;
 	
 	/**
 	 * Indicates the category associated to a ticket.

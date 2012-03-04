@@ -234,6 +234,11 @@ public class ModificationUtils {
 				modAddedEmergency.add(newEmergencyNumber.getKey());
 			}
 			else {
+				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
+				savedEmergencyNumber.setCountry(emergencyContact.getCountry());
+				savedEmergencyNumber.setNumber(new PhoneNumber(emergencyContact.getNumber()));
+				savedEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
 				// remove contact from deleted emergency number and add to added
 				// emergency in smartphone
 				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
@@ -266,10 +271,14 @@ public class ModificationUtils {
 		modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
 		modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
 		for (EmergencyNumberModel emergencyContact : deletedEmergencyNumbers) {
+			PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
+			savedEmergencyNumber.setCountry(emergencyContact.getCountry());
+			savedEmergencyNumber.setNumber(new PhoneNumber(emergencyContact.getNumber()));
+			savedEmergencyNumber.setDescription(emergencyContact.getDescription());
+			
 			// remove contact from added emergency number and add to deleted
 			// emergency in smartphone
-			Key emergencyKey = KeyFactory.stringToKey(emergencyContact
-					.getKeyId());
+			Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
 			pcsmartphone.getAddedEmergencyNumbers().remove(emergencyKey);
 			if(!pcsmartphone.getDeletedEmergencyNumbers().contains(emergencyKey)){
 				pcsmartphone.getDeletedEmergencyNumbers().add(emergencyKey);
