@@ -603,7 +603,7 @@ public class DeviceContactListView {
 						foundActiveContact = contact3;
 						break;
 					}
-				}
+				}				
 				if(foundActiveContact != null && foundActiveContact.getPhones().size() == 0){
 					this.smartphone.getActiveContacts().remove(foundActiveContact);
 				}
