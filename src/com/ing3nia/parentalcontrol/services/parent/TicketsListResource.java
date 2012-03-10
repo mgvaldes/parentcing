@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
@@ -147,8 +148,8 @@ public class TicketsListResource {
 		Gson jsonBuilder = new Gson();
 		JsonParser jsonParser = new JsonParser();
 		Type type = new TypeToken<ArrayList<TicketModel>>(){}.getType();
-		JsonObject openTicketsObject = (JsonObject)jsonParser.parse(jsonBuilder.toJson(openedTickets, type));
-		JsonObject closedTicketsObject = (JsonObject)jsonParser.parse(jsonBuilder.toJson(closedTickets, type));
+		JsonArray openTicketsObject = (JsonArray)jsonParser.parse(jsonBuilder.toJson(openedTickets, type));
+		JsonArray closedTicketsObject = (JsonArray)jsonParser.parse(jsonBuilder.toJson(closedTickets, type));
 		JsonObject ticketsObject = new JsonObject();
 		ticketsObject.add("open", openTicketsObject);
 		ticketsObject.add("closed", closedTicketsObject);
