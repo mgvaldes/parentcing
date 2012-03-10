@@ -6,7 +6,6 @@ public class NotificationModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private int type;
-	
 	private String date;
 
 	public NotificationModel() {
