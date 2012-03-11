@@ -32,15 +32,17 @@ import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 @Path("tickets")
-public class TicketsListResource {
-	private static Logger logger = Logger.getLogger(TicketsListResource.class.getName());
+public class TicketListResource {
+	private static Logger logger = Logger.getLogger(TicketListResource.class.getName());
 	
-	public TicketsListResource() {
+	public TicketListResource() {
 	}
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response doPost(@QueryParam(value = "user") final String loggedUserKey) {		
+	public Response doPost(@QueryParam(value = "user") final String loggedUserKey) {
+		logger.info("[Tickets List Service] Version 1-2-22");
+		
 		ArrayList<TicketModel> openedTickets = new ArrayList<TicketModel>();
 		ArrayList<TicketModel> closedTickets = new ArrayList<TicketModel>();
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
@@ -142,7 +144,7 @@ public class TicketsListResource {
 			pm.close();
 		}
 		
-		logger.info("[Total Synchronization Service] Ok Response. Smartphone info succesfully sent.");
+		logger.info("[Tickets List Service] Ok Response. Ticket lists succesfully sent.");
 		
 		JsonObject okResponse = WSStatus.OK.getStatusAsJson();
 		Gson jsonBuilder = new Gson();
