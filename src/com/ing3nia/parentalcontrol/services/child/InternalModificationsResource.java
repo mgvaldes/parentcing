@@ -210,6 +210,23 @@ public class InternalModificationsResource {
 			}
 			
 			logger.info("[Internal Modifications Service] Checking Added and Deleted contacts ");
+			if(internalModsModel.getModification().getActiveContacts() == null){
+				internalModsModel.getModification().setActiveContacts(new ArrayList<SimpleContactModel>());
+			}
+			
+			if(internalModsModel.getModification().getInactiveContacts() == null){
+				internalModsModel.getModification().setInactiveContacts(new ArrayList<SimpleContactModel>());
+			}
+			
+			if(internalModsModel.getModification().getAddedEmergencyNumbers() == null){
+				internalModsModel.getModification().setAddedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			}
+			
+			if(internalModsModel.getModification().getDeletedEmergencyNumbers() == null){
+				internalModsModel.getModification().setDeletedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			}
+			
+			
 			if(internalModsModel.getModification().getActiveContacts() != null && internalModsModel.getModification().getInactiveContacts()!= null){
 				if(internalModsModel.getModification().getActiveContacts().size() >0){
 					logger.info("Checking added Contacts");
@@ -220,7 +237,8 @@ public class InternalModificationsResource {
 					logger.info("Checking deleted contacts");
 					checkDeletedContacts(internalModsModel.getModification().getInactiveContacts(), savedSmartphone.getActiveContacts(), savedSmartphone.getInactiveContacts(), modification);
 				}
-				}else{
+				}
+			else{
 				logger.info("[Internal Modifications Service] No contact present");
 			}
 			logger.info("[Internal Modifications Service] Setting emergency contacts");
