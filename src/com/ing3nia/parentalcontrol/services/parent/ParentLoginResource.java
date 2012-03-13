@@ -28,6 +28,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 /**
  * This class represents a restful web service to be called from the parent's application.
@@ -77,6 +78,7 @@ public class ParentLoginResource {
 		}catch(Exception e){
 			logger.warning("[Parent Login] UserModel couldn't be created from message "+WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -94,6 +96,7 @@ public class ParentLoginResource {
 		} catch (EncodingException e1) {
 			logger.severe("[Parent Login] An error occurred when encrypting the supplied password");
 			rbuilder = Response.ok(WSStatus.INVALID_PASSWORD_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -106,6 +109,7 @@ public class ParentLoginResource {
 		} catch (SessionQueryException e2) {
 			logger.warning("[Parent Login] An error ocurred while searching for username and email. "+e2.getMessage());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -114,6 +118,7 @@ public class ParentLoginResource {
 			rbuilder = Response.ok(WSStatus.NONEXISTING_USER
 					.getStatusAsJson().toString(),
 					MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 
@@ -126,6 +131,7 @@ public class ParentLoginResource {
 		} catch (SessionQueryException e2) {
 			logger.warning("[Parent Login] An error occurred while looking for session from user key");
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -151,6 +157,7 @@ public class ParentLoginResource {
 			okResponse.addProperty("cid", session.getCookieId());
 			rbuilder = Response.ok(okResponse.toString(),
 					MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		//no need for else statement

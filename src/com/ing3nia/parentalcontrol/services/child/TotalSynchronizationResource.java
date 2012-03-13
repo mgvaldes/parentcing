@@ -27,6 +27,7 @@ import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("total-sync")
 public class TotalSynchronizationResource {
@@ -52,6 +53,7 @@ public class TotalSynchronizationResource {
 			logger.warning("[Total Synchronization Service] An error ocurred while searching for smartphone. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -65,6 +67,7 @@ public class TotalSynchronizationResource {
 		okResponse.add("smartphone", smartphoneObject);
 		
 		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
 	}
 	

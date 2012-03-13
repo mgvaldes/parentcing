@@ -31,6 +31,7 @@ import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("reg-sph")
 public class RegisterSmartphoneResource {
@@ -62,6 +63,7 @@ public class RegisterSmartphoneResource {
 			logger.warning("[Register Smartphone Service] RegisterSmartphoneModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 
@@ -72,18 +74,21 @@ public class RegisterSmartphoneResource {
 			logger.severe("[Register Smartphone Service] An error occurred when encrypting the supplied password");
 			
 			rbuilder = Response.ok(WSStatus.INVALID_PASSWORD_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (SessionQueryException ex) {
 			logger.warning("[Register Smartphone Service] An error ocurred while searching for username and password or searching for application. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (IllegalArgumentException ex) {
 			logger.warning("[Register Smartphone Service] An error ocurred while converting the smartohone Key to String. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -91,6 +96,7 @@ public class RegisterSmartphoneResource {
 			logger.info("[Register Smartphone Service] No user exists for the provided credentials");
 			
 			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		else {
@@ -100,6 +106,7 @@ public class RegisterSmartphoneResource {
 			okResponse.addProperty("id", registeredSmartphoneKey);
 			
 			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}		
 	}

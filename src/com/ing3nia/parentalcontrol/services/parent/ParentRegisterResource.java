@@ -26,6 +26,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 /**
  * This class represents a restful web service to be called from the parent's application.
@@ -77,6 +78,7 @@ public class ParentRegisterResource {
 		}catch(Exception e){
 			logger.warning("[ParentRegisterResource] UserModel couldn't be created from message "+WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -94,6 +96,7 @@ public class ParentRegisterResource {
 		} catch (SessionQueryException e2) {
 			logger.warning("[Parent Register] An error ocurred while searching for username and email. "+e2.getMessage());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -102,6 +105,7 @@ public class ParentRegisterResource {
 			rbuilder = Response.ok(WSStatus.PREEXISTING_USER
 					.getStatusAsJson().toString(),
 					MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 
@@ -114,6 +118,7 @@ public class ParentRegisterResource {
 		} catch (EncodingException e1) {
 			logger.severe("[Parent Register] An error occurred when encrypting the supplied password");
 			rbuilder = Response.ok(WSStatus.INVALID_PASSWORD_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -130,6 +135,7 @@ public class ParentRegisterResource {
 		} catch(Exception e){
 			logger.warning("[ParentRegister] An error ocurred while persisting the user data. "+e.getMessage());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		} 
 		finally {
@@ -139,6 +145,7 @@ public class ParentRegisterResource {
 		// ok response. user succesfully registered
 		logger.info("[Parent Register] Ok Response. User succesfully registered");
 		rbuilder = Response.ok(WSStatus.OK.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
 	}
 }

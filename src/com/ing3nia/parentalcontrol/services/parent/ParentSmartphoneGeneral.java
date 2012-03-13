@@ -22,6 +22,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 /**
  * This class represents a restful web service to be called from the parent's application.
@@ -64,6 +65,7 @@ public class ParentSmartphoneGeneral {
 		} catch (SessionQueryException e) {
 			logger.warning("[Parent Smartphone General] No session exists for the given cookie. "+e.getMessage());
 			rbuilder = Response.ok(WSStatus.NONEXISTING_SESSION.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -75,6 +77,7 @@ public class ParentSmartphoneGeneral {
 		if(user==null){
 			logger.severe("[Parent Smartphone General] No user associated with a valid session");
 			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -84,6 +87,7 @@ public class ParentSmartphoneGeneral {
 		responseMsg.add("smartphones", smpGeneralInfoArray);
 		
 		rbuilder = Response.ok(responseMsg.toString(), MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
 	}
 }

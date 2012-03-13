@@ -27,6 +27,7 @@ import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
 import com.ing3nia.parentalcontrol.services.utils.ModificationUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 /**
  * This class represents a restful web service to be called from the parent's application.
@@ -72,6 +73,7 @@ public class ParentSmartphoneModifications {
 		catch (Exception e) {
 			logger.warning("[Parent Modifications] ModificationsModel couldn't be created from message " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -83,6 +85,7 @@ public class ParentSmartphoneModifications {
 		}else{
 			logger.warning("[Parent Modifications] The modifications parameters are not valid "+WSStatus.INVALID_DATA.getMsg());
 			rbuilder = Response.ok(WSStatus.INVALID_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -92,6 +95,7 @@ public class ParentSmartphoneModifications {
 		} catch (SessionQueryException e) {
 			logger.warning("[Parent Modifications] No session exists for the given cookie. "+e.getMessage());
 			rbuilder = Response.ok(WSStatus.NONEXISTING_SESSION.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -103,6 +107,7 @@ public class ParentSmartphoneModifications {
 		if(user==null){
 			logger.severe("[Parent Modifications] No user associated with a valid session");
 			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		pm.close();
@@ -117,6 +122,7 @@ public class ParentSmartphoneModifications {
 		if(smartphone == null){
 			logger.severe("[Parent Modifications] No smartphone found from the given key "+smartphoneId);
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -125,6 +131,7 @@ public class ParentSmartphoneModifications {
 		if(modifications == null){
 			logger.info("[Parent Modifications] Modifications are null, no change to commit");
 			rbuilder = Response.ok(WSStatus.OK.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -134,11 +141,13 @@ public class ParentSmartphoneModifications {
 		} catch (ModificationParsingException e) {
 			logger.severe("[Parent Modifications] An error occurred when processing modifications "+e.getMessage());
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
 		pmMod.close();
 		rbuilder = Response.ok(WSStatus.OK.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
 	}
 }

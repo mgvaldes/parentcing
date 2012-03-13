@@ -22,6 +22,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 /**
  * This class represents a restful web service to be called from the parent's application.
@@ -62,6 +63,7 @@ public class ParentSmartphoneDetails {
 		} catch (SessionQueryException e) {
 			logger.warning("[Parent Smartphone Details] No session exists for the given cookie. "+e.getMessage());
 			rbuilder = Response.ok(WSStatus.NONEXISTING_SESSION.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -73,6 +75,7 @@ public class ParentSmartphoneDetails {
 		if(user==null){
 			logger.severe("[Parent Smartphone Details] No user associated with a valid session");
 			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		pm.close();
@@ -88,12 +91,14 @@ public class ParentSmartphoneDetails {
 			 
 		} catch(IllegalArgumentException e){
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
 		if(smartphone == null){
 			logger.severe("[Parent Smartphone Details] No smartphone found from the given key "+smid);
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		pm.close();
@@ -108,6 +113,7 @@ public class ParentSmartphoneDetails {
 		responseMsg.add("smartphone", smartphoneInfo);
 		
 		rbuilder = Response.ok(responseMsg.toString(), MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
 	}
 }
