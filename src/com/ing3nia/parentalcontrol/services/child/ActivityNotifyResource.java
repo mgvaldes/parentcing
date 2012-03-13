@@ -32,6 +32,7 @@ import com.ing3nia.parentalcontrol.services.models.ActivityNotifyModel;
 import com.ing3nia.parentalcontrol.services.models.ServiceStatisticsModel;
 import com.ing3nia.parentalcontrol.services.models.utils.RouteModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("act-not")
 public class ActivityNotifyResource {
@@ -51,6 +52,7 @@ public class ActivityNotifyResource {
 		ActivityNotifyModel activityNotifyModel;
 		ResponseBuilder rbuilder;
 		
+		
 		logger.info("[Activity Notify Service] Parsing input parameters.");
 		
 		try {
@@ -60,6 +62,7 @@ public class ActivityNotifyResource {
 			logger.warning("[Activity Notify Service] ActivityNotifyModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -71,18 +74,21 @@ public class ActivityNotifyResource {
 			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
 			
 			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (IllegalArgumentException ex) {
 			logger.warning("[Activity Notify Service] An error ocurred while converting a Key to String. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (Exception ex) {
 			logger.warning("[Activity Notify Service] An error ocurred while finding the PCSmartphone by key or adding PCNotification. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 	}

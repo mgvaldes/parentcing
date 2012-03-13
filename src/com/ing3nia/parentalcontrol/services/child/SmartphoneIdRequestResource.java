@@ -22,6 +22,7 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("sph-id-req")
 public class SmartphoneIdRequestResource {
@@ -46,12 +47,14 @@ public class SmartphoneIdRequestResource {
 			logger.warning("[Smartphone Id Request Service] An error ocurred while searching for smartphone. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (IllegalArgumentException ex) {
 			logger.warning("[Smartphone Id Request Service] An error ocurred while converting the smartohone Key to String. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -59,6 +62,7 @@ public class SmartphoneIdRequestResource {
 			logger.info("[Smartphone Id Request Service] No smartohone found for the provided key");
 			
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		else {
@@ -68,6 +72,7 @@ public class SmartphoneIdRequestResource {
 			okResponse.addProperty("id", smartphoneKey);
 			
 			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 	}

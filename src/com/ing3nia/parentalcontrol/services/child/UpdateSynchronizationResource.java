@@ -31,6 +31,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.SmartphoneModificationIdModel;
 import com.ing3nia.parentalcontrol.services.models.utils.ModificationModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("upd-sync")
 public class UpdateSynchronizationResource {
@@ -56,12 +57,14 @@ public class UpdateSynchronizationResource {
 			logger.warning("[Total Synchronization Service] An error ocurred while searching for smartphone. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (IllegalArgumentException ex) {
 			logger.warning("[Total Synchronization Service] An error ocurred while searching for smartphone. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -75,6 +78,7 @@ public class UpdateSynchronizationResource {
 		okResponse.add("modification", modificationObject);
 		
 		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
 	}
 	

@@ -619,35 +619,6 @@ public class DeviceContactListView {
 		newContactListView.baseViewHandler.getBaseBinder().getNotice().setText("Contact settings successfully stored");
 	}
 	
-	private class DisallowButtonCell extends ButtonCell {
-		
-		static final String opaqueButtonString = "<button type=\"button\" class=\"disallowButton\" "
-		+ "tabindex=\"-1\">";
-		static final String opaqueButtonFullString= opaqueButtonString +"Disallow"+"</button>";
-		
-		static final String transpButtonString = "<button type=\"button\" class=\"disallowButton\" style=\"opacity:0.5;\" "
-			+ "tabindex=\"-1\">";
-		static final String transpButtonFullString= transpButtonString +"Disallow"+"</button>";
-		
-		
-		public DisallowButtonCell() {
-			super();
-		}
-
-		@Override
-		public void render(final Context context, final SafeHtml data,
-				final SafeHtmlBuilder sb) {
-			//sb.appendHtmlConstant("<button type=\"button\" class=\"disallowButton\" "
-			//		+ "tabindex=\"-1\">");
-			sb.appendHtmlConstant(opaqueButtonString);
-			
-			if (data != null) {
-				sb.append(data);
-			}
-			sb.appendHtmlConstant("</button>");
-		}
-	}
-	
 
 	private class AllowButtonCell extends ButtonCell {
 		
@@ -676,6 +647,37 @@ public class DeviceContactListView {
 			sb.appendHtmlConstant("</button>");
 		}
 	}
+	
+
+	private class DisallowButtonCell extends ButtonCell {
+		
+		static final String opaqueButtonString = "<button type=\"button\" class=\"disallowButton\" "
+		+ "tabindex=\"-1\">";
+		static final String opaqueButtonFullString= opaqueButtonString +"Disallow"+"</button>";
+		
+		static final String transpButtonString = "<button type=\"button\" class=\"disallowButton\" style=\"opacity:0.5;\" "
+			+ "tabindex=\"-1\">";
+		static final String transpButtonFullString= transpButtonString +"Disallow"+"</button>";
+
+		
+		public DisallowButtonCell() {
+			super();
+		}
+
+		@Override
+		public void render(final Context context, final SafeHtml data,
+				final SafeHtmlBuilder sb) {
+			//sb.appendHtmlConstant("<button type=\"button\" class=\"disallowButton\" "
+			//		+ "tabindex=\"-1\">");
+			sb.appendHtmlConstant(opaqueButtonString);
+			
+			if (data != null) {
+				sb.append(data);
+			}
+			sb.appendHtmlConstant("</button>");
+		}
+	}
+	
 	
 	public int getRealIndexFromPager(int tableIndex, SimplePager pager){
 		return tableIndex-pager.getPageStart();

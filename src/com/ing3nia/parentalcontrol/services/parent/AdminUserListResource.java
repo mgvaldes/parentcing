@@ -25,6 +25,7 @@ import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("users")
 public class AdminUserListResource {
@@ -60,12 +61,14 @@ private static Logger logger = Logger.getLogger(AdminUserListResource.class.getN
 			logger.warning("[Admin User List Service] An error ocurred while searching for user. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (Exception ex) {
 			logger.warning("[Admin User List Service] Unexpected error occurred. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.UNEXPECTED_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		finally {
@@ -82,6 +85,7 @@ private static Logger logger = Logger.getLogger(AdminUserListResource.class.getN
 		okResponse.add("admins", adminUsers);
 		
 		rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
 	}
 	

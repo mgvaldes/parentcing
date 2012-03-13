@@ -37,6 +37,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.InternalModificationsModel;
 import com.ing3nia.parentalcontrol.services.models.utils.LocationModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
+import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("int-mod")
 public class InternalModificationsResource {
@@ -98,6 +99,7 @@ public class InternalModificationsResource {
 			logger.severe("[Internal Modifications Service] Caugth exception: "+e.getMessage()+" "+e);
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		
@@ -109,18 +111,21 @@ public class InternalModificationsResource {
 			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
 			
 			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (IllegalArgumentException ex) {
 			logger.warning("[Internal Modifications Service] An error ocurred while converting a Key to String. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 		catch (SessionQueryException ex) {
 			logger.severe("[Internal Modifications Service] An error ocurred while finding the PCSmartphone by key or adding contact. " + ex.getMessage());
 			
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
 	}
