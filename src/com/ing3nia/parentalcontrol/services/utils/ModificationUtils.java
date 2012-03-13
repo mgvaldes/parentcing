@@ -273,30 +273,46 @@ public class ModificationUtils {
 		modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
 		modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
 		for (EmergencyNumberModel emergencyContact : deletedEmergencyNumbers) {
-			PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
-			savedEmergencyNumber.setCountry(emergencyContact.getCountry());
-			savedEmergencyNumber.setNumber(emergencyContact.getNumber());
-			savedEmergencyNumber.setDescription(emergencyContact.getDescription());
-			
-			// remove contact from added emergency number and add to deleted
-			// emergency in smartphone
-			Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
-			pcsmartphone.getAddedEmergencyNumbers().remove(emergencyKey);
-			if(!pcsmartphone.getDeletedEmergencyNumbers().contains(emergencyKey)){
-				pcsmartphone.getDeletedEmergencyNumbers().add(emergencyKey);
+			if (emergencyContact.getKeyId() == null) {
+				//New emergency contact. First save. Then process.
+				PCEmergencyNumber newEmergencyNumber = new PCEmergencyNumber();
+				newEmergencyNumber.setCountry(emergencyContact.getCountry());
+				newEmergencyNumber.setNumber(emergencyContact.getNumber());
+				newEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
+				pm.makePersistent(newEmergencyNumber);
+				
+				pcsmartphone.getDeletedEmergencyNumbers().add(newEmergencyNumber.getKey());
+				modDeletedEmergency.add(newEmergencyNumber.getKey());
 			}
-
-			// check if emergency contact existed in modification, if added
-			// then remove it and add it to deleted, otherwise add it to deleted
-			// emergency list
-
-			if (modDeletedEmergency.contains(emergencyKey)) {
-				// skip
-			} else if (modAddedEmergency.contains(emergencyKey)) {
-				modAddedEmergency.remove(emergencyKey);
-				modDeletedEmergency.add(emergencyKey);
-			} else {
-				modDeletedEmergency.add(emergencyKey);
+			else {
+				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
+				savedEmergencyNumber.setCountry(emergencyContact.getCountry());
+				savedEmergencyNumber.setNumber(emergencyContact.getNumber());
+				savedEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
+				// remove contact from added emergency number and add to deleted
+				// emergency in smartphone
+				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
+				pcsmartphone.getAddedEmergencyNumbers().remove(emergencyKey);
+				if(!pcsmartphone.getDeletedEmergencyNumbers().contains(emergencyKey)){
+					pcsmartphone.getDeletedEmergencyNumbers().add(emergencyKey);
+				}
+	
+				// check if emergency contact existed in modification, if added
+				// then remove it and add it to deleted, otherwise add it to deleted
+				// emergency list
+	
+				if (modDeletedEmergency.contains(emergencyKey)) {
+					// skip
+				} 
+				else if (modAddedEmergency.contains(emergencyKey)) {
+					modAddedEmergency.remove(emergencyKey);
+					modDeletedEmergency.add(emergencyKey);
+				} 
+				else {
+					modDeletedEmergency.add(emergencyKey);
+				}
 			}
 		}
 		
