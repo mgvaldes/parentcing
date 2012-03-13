@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Logger;
 
+import javax.jdo.JDOObjectNotFoundException;
 import javax.jdo.PersistenceManager;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -17,19 +18,25 @@ import org.datanucleus.store.mapped.expression.ArrayLiteral;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gson.JsonObject;
+import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
+import com.ing3nia.parentalcontrol.client.models.TicketModel;
 import com.ing3nia.parentalcontrol.client.utils.CategoryType;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
 import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.PCActivityStatistics;
+import com.ing3nia.parentalcontrol.models.PCAdmin;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.models.PCCategory;
 import com.ing3nia.parentalcontrol.models.PCContact;
+import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
+import com.ing3nia.parentalcontrol.models.PCHelpdeskTicketAnswer;
 import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.PCApplication.PCAppInfo;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCDevice.PCOs;
@@ -54,14 +61,48 @@ public class InitResource {
 
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		PCSmartphone smart = pm.getObjectById(PCSmartphone.class, "ahJzfnBhcmVudGFsLWNvbnRyb2xyEwsSDFBDU21hcnRwaG9uZRimTgw");
+		PCAdmin admin = new PCAdmin();
+		admin.setUsername("admin@prc.com");
+		admin.setPassword("@dm1np@ss");
 		
-		PCActivityStatistics stats = new PCActivityStatistics();
-		stats.setDate(new Date());
-		stats.setNotifications(smart.getNotifications());
-		stats.setSmartphone(smart.getKey());
+		pm.makePersistent(admin);
 		
-		pm.makePersistent(stats);
+//		PCUser user = pm.getObjectById(PCUser.class, KeyFactory.stringToKey("ahJzfnBhcmVudGFsLWNvbnRyb2xyDQsSBlBDVXNlchjQZQw"));
+//		PCHelpdeskTicket t;
+//		
+//		for (Key tKey : user.getClosedTickets()) {
+//			try {
+//				t = pm.getObjectById(PCHelpdeskTicket.class, tKey);    		
+//	    		logger.info("deleting key: " + KeyFactory.keyToString(tKey));
+//	    		pm.deletePersistent(t);
+//			}
+//			catch (JDOObjectNotFoundException ex) {
+//				
+//			}    		
+//    	}
+//		
+//		for (Key tKey : user.getOpenTickets()) {
+//			try {
+//				t = pm.getObjectById(PCHelpdeskTicket.class, tKey);
+//				logger.info("deleting key: " + KeyFactory.keyToString(tKey));
+//				pm.deletePersistent(t);
+//			}
+//			catch (JDOObjectNotFoundException ex) {
+//				
+//			}
+//    	}
+//		
+//		user.setClosedTickets(new ArrayList<Key>());
+//		user.setOpenTickets(new ArrayList<Key>());
+		
+//		PCSmartphone smart = pm.getObjectById(PCSmartphone.class, "ahJzfnBhcmVudGFsLWNvbnRyb2xyEwsSDFBDU21hcnRwaG9uZRimTgw");
+//		
+//		PCActivityStatistics stats = new PCActivityStatistics();
+//		stats.setDate(new Date());
+//		stats.setNotifications(smart.getNotifications());
+//		stats.setSmartphone(smart.getKey());
+//		
+//		pm.makePersistent(stats);
 		
 		pm.close();
 		
