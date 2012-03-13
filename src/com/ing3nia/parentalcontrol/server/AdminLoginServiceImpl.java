@@ -10,8 +10,6 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.rpc.AdminLoginService;
 import com.ing3nia.parentalcontrol.models.PCAdmin;
-import com.ing3nia.parentalcontrol.models.PCUser;
-import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AdminLoginServiceImpl extends RemoteServiceServlet implements AdminLoginService {

@@ -2,7 +2,6 @@ package com.ing3nia.parentalcontrol.client.views.async;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Image;
 import com.ing3nia.parentalcontrol.client.PCLoginUIBinder;
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;

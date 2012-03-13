@@ -86,6 +86,7 @@ public class AdminClosedTicketListServiceImpl extends RemoteServiceServlet imple
 	        }
 	    } 
 	    catch (Exception ex) {
+	    	logger.info("[AdminClosedTicketList] An error occured: " + ex.getMessage());
 	    	closedTickets = null;
 	    }
 	    finally {

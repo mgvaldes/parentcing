@@ -2,11 +2,7 @@ package com.ing3nia.parentalcontrol.client;
 
 import java.util.ArrayList;
 
-import org.apache.http.client.RedirectHandler;
-
-import com.ibm.icu.impl.CalendarAstronomer.Horizon;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
-import com.ing3nia.parentalcontrol.client.handlers.MenuSetterHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.HelpDeskUserClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.LogoImageClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.LoginRegisterButtonClickHandler;
@@ -14,9 +10,6 @@ import com.ing3nia.parentalcontrol.client.handlers.click.SignInButtonClickHandle
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
-import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
-import com.ing3nia.parentalcontrol.client.models.UserModel;
-import com.ing3nia.parentalcontrol.client.panels.PCDockLayoutPanel;
 import com.ing3nia.parentalcontrol.client.rpc.CheckAdminUserService;
 import com.ing3nia.parentalcontrol.client.rpc.CheckAdminUserServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.GetUserSessionCredentialsService;
@@ -24,21 +17,14 @@ import com.ing3nia.parentalcontrol.client.rpc.GetUserSessionCredentialsServiceAs
 import com.ing3nia.parentalcontrol.client.utils.CookieHandler;
 import com.ing3nia.parentalcontrol.client.utils.LoadingBarImageEnum;
 import com.ing3nia.parentalcontrol.client.utils.NavigationHandler;
-import com.ing3nia.parentalcontrol.client.views.DeviceMapView;
 import com.ing3nia.parentalcontrol.client.views.LoadingView;
-import com.ing3nia.parentalcontrol.client.views.LoginView;
 import com.ing3nia.parentalcontrol.client.views.async.AsyncronousCallsMessages;
 import com.ing3nia.parentalcontrol.client.views.async.CheckAdminUserCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.async.GetUserSessionCredentialsCallBackHandler;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;

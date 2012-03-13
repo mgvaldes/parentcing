@@ -86,6 +86,7 @@ public class AdminOpenTicketListServiceImpl extends RemoteServiceServlet impleme
 	        }
 	    } 
 	    catch (Exception ex) {
+	    	logger.info("[AdminOpenTicketList] An error occured: " + ex.getMessage());
 	    	openTickets = null;
 	    }
 	    finally {

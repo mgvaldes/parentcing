@@ -40,7 +40,7 @@ public class AdminOpenTicketListCallbackHandler implements AsyncCallback<ArrayLi
 			helpdeskViewHandler.initHelpdeskView();
 		} 
 		else {
-			LoadingView.clearLoadingView(pclogin);
+			LoadingView.clearLoadingView(pclogin);			
 			pclogin.getNotice().setText(AsyncronousCallsMessages.UNPROCESSED_REQUEST);
 		}
 	}
