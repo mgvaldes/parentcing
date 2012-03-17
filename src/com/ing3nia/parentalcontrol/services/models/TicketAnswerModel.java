@@ -1,4 +1,4 @@
-package com.ing3nia.parentalcontrol.client.models;
+package com.ing3nia.parentalcontrol.services.models;
 
 import java.io.Serializable;
 

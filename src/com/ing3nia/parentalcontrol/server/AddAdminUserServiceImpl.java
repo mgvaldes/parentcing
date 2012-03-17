@@ -1,6 +1,5 @@
 package com.ing3nia.parentalcontrol.server;
 
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;

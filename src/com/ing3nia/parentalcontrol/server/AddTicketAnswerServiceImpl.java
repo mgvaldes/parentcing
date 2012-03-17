@@ -1,7 +1,6 @@
 package com.ing3nia.parentalcontrol.server;
 
 import java.text.SimpleDateFormat;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -11,10 +10,8 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddTicketAnswerService;
-import com.ing3nia.parentalcontrol.models.PCAdmin;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicketAnswer;
-import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AddTicketAnswerServiceImpl extends RemoteServiceServlet implements AddTicketAnswerService {
