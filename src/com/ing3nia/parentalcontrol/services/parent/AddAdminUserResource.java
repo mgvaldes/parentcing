@@ -1,9 +1,11 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -56,17 +58,36 @@ public class AddAdminUserResource {
 			return rbuilder.build();
 		}
 		
+		logger.warning("[Add Admin User Service] Checking if PCUser exists with same username");
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		
+		Query query = pm.newQuery(PCUser.class);
+	    query.setFilter("username == username_param");
+	    query.declareParameters("String username_param");
+	    query.setRange(0, 1);
+
 		try {
-			String userKey = saveUser(addAdminUserModel);
-			
-			logger.info("[Add Admin User Service] Ok Response. Admin User saved succesfully.");
-			
-			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
-			okResponse.addProperty("key", userKey);
-			
-			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
-			return rbuilder.build();
+			List<PCUser> results = (List<PCUser>) query.execute(addAdminUserModel.getUser().getUsername());
+
+			if (results.isEmpty()) {
+				String userKey = saveUser(addAdminUserModel, pm);
+				
+				logger.info("[Add Admin User Service] Ok Response. Admin User saved succesfully.");
+				
+				JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+				okResponse.addProperty("key", userKey);
+				
+				rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
+				WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+				return rbuilder.build();
+			}
+			else{
+				logger.warning("[Add Admin User Service] A PCUser already exists with this username.");
+				
+				rbuilder = Response.ok(WSStatus.PREEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+				WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+				return rbuilder.build();
+			}						
 		}
 		catch (IllegalArgumentException ex) {
 			logger.warning("[Add Admin User Service] An error ocurred while converting a Key to String. " + ex.getMessage());
@@ -82,11 +103,13 @@ public class AddAdminUserResource {
 			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
 		}
+		finally {
+			pm.close();
+		}
 	}
 	
-	public String saveUser(AddAdminUserModel addAdminUserModel) throws SessionQueryException, IllegalArgumentException {
-		String adminKey = null;
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+	public String saveUser(AddAdminUserModel addAdminUserModel, PersistenceManager pm) throws SessionQueryException, IllegalArgumentException {
+		String adminKey = null;		
 		
 		logger.info("[Add Admin User Service] Creating new admin user from key: "+ addAdminUserModel.getKey());
 		
@@ -108,9 +131,6 @@ public class AddAdminUserResource {
 		}
 		catch (Exception ex) {
 			logger.severe("[Add Admin User Service] An unexpected while creating the new admin user "+ex);
-		}
-		finally {
-			pm.close();
 		}
 		
 		return adminKey;

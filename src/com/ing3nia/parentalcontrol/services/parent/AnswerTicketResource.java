@@ -1,7 +1,6 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
@@ -35,6 +34,16 @@ public class AnswerTicketResource {
 	public AnswerTicketResource() {
 		//logger.addHandler(new ConsoleHandler());
 	}
+	
+	/**
+	 * {
+		    "ticket": "ahJzfnBhcmVudGFsLWNvbnRyb2xyGAsSEFBDSGVscGRlc2tUaWNrZXQY5d0IDA",
+		    "answer": {
+		        "userKey": "ahJzfnBhcmVudGFsLWNvbnRyb2xyDQsSBlBDVXNlchjQZQw",
+		        "answer": "Prueba de respuesta."
+		    }
+	 * }
+	 */
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
