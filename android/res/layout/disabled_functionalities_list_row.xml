@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1"
+    android:paddingRight="11dp"
+    android:paddingTop="11dp"
+    android:paddingLeft="11dp"
+    android:paddingBottom="11dp"
+    android:background="@color/blanco" >
+    
+    <TableRow>
+
+        <TextView
+            android:id="@+id/disabledFuncName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mark Mathews"
+            android:textColor="@color/negro"
+            android:textSize="20sp" />
+        
+        <ImageView
+            android:id="@+id/disabledFuncStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_rule_disable" />
+
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tableRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+    </TableRow>
+
+</TableLayout>

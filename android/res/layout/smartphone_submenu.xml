@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/smartphoneMap"
+          android:icon="@drawable/ic_menu_devicemap"
+          android:title="@string/smartphone_map_menu_label" />
+    <item android:id="@+id/smartphoneList"
+          android:icon="@drawable/ic_menu_devicelist"
+          android:title="@string/smartphone_list_menu_label" />
+</menu>

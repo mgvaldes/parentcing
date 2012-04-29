@@ -1,55 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:stretchColumns="1">
-    <TableRow>
-        <TextView
-            android:id="@+id/smartphoneName"
-            android:padding="10dp"
-            android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:text="Michael"
-	    	android:textSize="20sp"
-	    	android:textStyle="bold" />
-        <ImageView
-		    android:id="@+id/deviceType"
-		    android:layout_width="wrap_content"
-		    android:layout_height="wrap_content"
-		    android:gravity="right"
-		    android:src="@drawable/android"
-		    android:padding="10dp"
-		    android:scaleType="fitEnd" />
-    </TableRow>
-    <TableRow>
+    android:layout_height="fill_parent" >
+    
+    <LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:id="@+id/firstLine">
+        
+        <LinearLayout
+            android:id="@+id/smartphone"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:orientation="horizontal"
+            android:paddingTop="7dp" >
+
+            <ImageView
+                android:id="@+id/smartphoneLetter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_devicelist_a" />
+
+            <TextView
+                android:id="@+id/smartphoneName"
+                android:layout_width="201dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.64"
+                android:paddingTop="4dp"
+                android:text="Carlitos Way con un nombre largo a ver que pasa"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/deviceType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_toRightOf="@+id/smartphone"
+                android:padding="7dp"
+                android:scaleType="fitEnd"
+                android:src="@drawable/ic_devicetype_android" />
+        </LinearLayout>
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_below="@+id/firstLine">
+        
         <LinearLayout 
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:orientation="horizontal"
-			android:padding="10dp" >
+			android:padding="8dp"
+			android:id="@+id/alerts" >
 			
          	<TextView
 	            android:id="@+id/newAlerts"
 	            android:layout_width="wrap_content"
 	    		android:layout_height="wrap_content"
 	    		android:text="4"
-	    		android:textSize="20sp" />
+	    		android:textSize="20sp"
+	    		android:paddingTop="3dp" />
          	
          	<ImageView
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
-			    android:src="@drawable/alert"
-			    android:paddingLeft="10dp"
-			    android:layout_alignBaseline="@+id/newAlerts" />            
+			    android:src="@drawable/ic_devicelist_alert" />            
 		</LinearLayout>
         
         <TextView
             android:id="@+id/lastAlert"
             android:gravity="right"
             android:padding="10dp"
+            android:paddingTop="12dp"
             android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:text="Low Battery"
+		    android:text="Device Low Battery"
 		    android:textSize="20sp" />
-    </TableRow>
-</TableLayout>
+        
+    </LinearLayout>
+</RelativeLayout>
+
+<!-- <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="fill_parent" -->
+<!--     android:stretchColumns="1"> -->
+<!--     <TableRow> -->
+<!--         <LinearLayout  -->
+<!-- 			android:layout_width="wrap_content" -->
+<!-- 			android:layout_height="wrap_content" -->
+<!-- 			android:orientation="horizontal" -->
+<!-- 			android:paddingTop="7dp"> -->
+			
+<!--             <ImageView -->
+<!--                 android:id="@+id/smartphoneLetter" -->
+<!-- 			    android:layout_width="wrap_content" -->
+<!-- 			    android:layout_height="wrap_content" -->
+<!-- 			    android:src="@drawable/ic_devicelist_a" />  -->
+            
+<!--             <TextView -->
+<!-- 	            android:id="@+id/smartphoneName" -->
+<!-- 	            android:layout_width="wrap_content" -->
+<!-- 		    	android:layout_height="wrap_content" -->
+<!-- 		    	android:textSize="20sp" -->
+<!-- 		    	android:textStyle="bold" -->
+<!-- 		    	android:text="Hola" /> -->
+<!-- 		</LinearLayout> -->
+        
+<!--         <ImageView -->
+<!-- 		    android:id="@+id/deviceType" -->
+<!-- 		    android:layout_width="wrap_content" -->
+<!-- 		    android:layout_height="wrap_content" -->
+<!-- 		    android:gravity="right" -->
+<!-- 		    android:src="@drawable/ic_devicetype_android" -->
+<!-- 		    android:padding="7dp" -->
+<!-- 		    android:scaleType="fitEnd" /> -->
+<!--     </TableRow> -->
+<!--     <TableRow> -->
+<!--         <LinearLayout  -->
+<!-- 			android:layout_width="wrap_content" -->
+<!-- 			android:layout_height="wrap_content" -->
+<!-- 			android:orientation="horizontal" -->
+<!-- 			android:padding="10dp" > -->
+<!--          	<TextView -->
+<!-- 	            android:id="@+id/newAlerts" -->
+<!-- 	            android:layout_width="wrap_content" -->
+<!-- 	    		android:layout_height="wrap_content" -->
+<!-- 	    		android:text="4" -->
+<!-- 	    		android:textSize="20sp" /> -->
+         	
+<!--          	<ImageView -->
+<!-- 			    android:layout_width="wrap_content" -->
+<!-- 			    android:layout_height="wrap_content" -->
+<!-- 			    android:src="@drawable/ic_devicelist_alert" />             -->
+<!-- 		</LinearLayout> -->
+        
+<!--         <TextView -->
+<!--             android:id="@+id/lastAlert" -->
+<!--             android:gravity="right" -->
+<!--             android:padding="10dp" -->
+<!--             android:paddingTop="12dp" -->
+<!--             android:layout_width="wrap_content" -->
+<!-- 		    android:layout_height="wrap_content" -->
+<!-- 		    android:text="Device Low Battery" -->
+<!-- 		    android:textSize="20sp" /> -->
+<!--     </TableRow> -->
+<!-- </TableLayout> -->

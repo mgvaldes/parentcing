@@ -5,16 +5,171 @@
     <string name="app_name">Parental Control</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="base_url">http://parental-control.appspot.com/resources/</string>
-    <string name="progress_dialog_login">Logging in</string>
+    <string name="progress_dialog_login">Authenticating user</string>
+    <string name="progress_dialog_smartphone_general_info">Requesting data from user smartphones</string>
+    <string name="progress_dialog_smartphone_details">Requesting smartphone details</string>
+    <string name="progress_dialog_save_changes">Saving changes</string>
+    <string name="progress_dialog_tickets_list">Requesting user tickets</string>
+    <string name="progress_dialog_admin_user_list">Requesting admin user list</string>
+    <string name="progress_dialog_answer_ticket">Saving ticket answer</string>
+    <string name="progress_dialog_new_ticket">Creating new ticket</string>
+    <string name="progress_dialog_new_user">Creating new admin user</string>
+    <string name="progress_dialog_close_ticket">Closing ticket</string>
+    <string name="progress_dialog_tickets_list_cancel">Canceling user tickets request</string>
+    <string name="progress_dialog_admin_user_list_cancel">Canceling admin user list request</string>
+    <string name="progress_dialog_answer_ticket_cancel">Canceling saving ticket answer</string>
+    <string name="progress_dialog_save_changes_cancel">Canceling saving changes</string>
+    <string name="progress_dialog_new_ticket_cancel">Canceling creation of new ticket</string>
+    <string name="progress_dialog_new_user_cancel">Canceling creation of new user</string>
+    <string name="progress_dialog_close_ticket_cancel">Canceling close of ticket</string>
+    <string name="progress_dialog_smartphone_details_cancel">Canceling smartphone details request</string>
     <string name="progress_dialog_login_cancel">Canceling login</string>
-    <string name="dialog_intent_ok">com.ing3nia.parentalcontrol.ui.components.dialog.ok</string>
     <string name="login_url">login</string>
+    <string name="user_key_url">user-key</string>
+    <string name="save_changes_url">parent-mod</string>
+    <string name="new_ticket_url">add-ticket</string>
+    <string name="answer_ticket_url">answer-ticket</string>
+    <string name="new_user_url">add-user</string>
+    <string name="smartphones_general_info_url">smartphone-grl</string>
+    <string name="smartphone_details_info_url">smartphone-details</string>
+    <string name="tickets_url">tickets</string>
+    <string name="users_url">users</string>
+    <string name="close_ticket_url">close-ticket</string>
     <string name="logout_url">logout</string>
     <string name="smartphoneName">Name</string>
     <string name="progress_dialog_register_smartphone">Registering smartphone</string>
     <string name="progress_dialog_register_smartphone_cancel">Canceling register smatphone</string>
     <string name="register_url">register</string>
     <string name="generic_error">An error occurred. Try later.</string>
+    <string name="edit_delete_dialog_rule_list">What do you want to do?</string>
+    <string name="daily_route_menu_label">Daily Route</string>
+    <string name="alert_list_menu_label">Alert List</string>
+    <string name="rule_list_menu_label">Rule List</string>
+    <string name="contacts_menu_label">Contacts</string>
+    <string name="smartphone_map_menu_label">Device Map</string>
+    <string name="smartphone_list_menu_label">Device List</string>
+    <string name="emergency_contacts_menu_label">Emergency Contacts</string>
+    <string name="settings_menu_label">Settings</string>
+    <string name="more_menu_label">More</string>
+    <string name="rule_type">Rule Type:</string>
+    <string name="rule_name">Name:</string>
+    <string name="disabled_func_label">Disabled Functionality</string>
+    <string name="rule_type_prompt">Select Rule Type</string>
+    <string name="country_prompt">Select Country</string>
+    <string name="disabled_func_prompt">Disabled Functionality</string>
+    <string name="disabled_func_initial_prompt">Select Disabled Functionalities</string>
+    <string name="rule_start_date">Date - From</string>
+    <string name="rule_end_date">Date - To</string>
+    <string name="rule_start_time">START</string>
+    <string name="rule_end_time">END</string>
+    <string name="save_rule_button_label">Save Rule</string>
+    <string name="save_contact_button_label">Save Contact</string>
+    <string name="save_ticket_button_label">Save Ticket</string>
+    <string name="reply_ticket_button_label">Reply</string>
+    <string name="save_user_button_label">Save User</string>    
+    <string name="save_changes_button_label">Save Changes</string>
+    <string name="block_phone_button_label">Block Phone</string>
+    <string name="restore_phone_button_label">Restore Phone</string>
+    <string name="country_label">Country</string>
+    <string name="category_label">Category</string>
+    <string name="subject_label">Subject</string>
+    <string name="comment_label">Comment</string>
+    <string name="device_name_label">Device Name</string>
+    <string name="phone_number_label">Phone Number</string>
+    <string name="speed_limit_label">Speed Limit (MPH)</string>
+    <string name="description_label">Description</string>
+    <string name="block_phone_label">If mobile phone is stolen</string>
+    <string name="restore_phone_label">Restore to Default</string>
+    <string-array name="country_options">
+        <item>United States</item>
+        <item>Venezuela</item>
+    </string-array>
+    <string-array name="rule_type_options">
+        <item>Normal</item>
+        <item>Speed Limit</item>
+    </string-array>
+    <string-array name="disable_func_normal_options">
+        <item>Browser Access</item>
+        <item>Outgoing Calls</item>
+        <item>Incoming Calls</item>
+        <item>Outgoing SMS</item>
+        <item>Incoming SMS</item>
+        <item>Total Block</item>
+    </string-array>
+    <string-array name="disable_func_speed_options">
+        <item>Browser Access</item>
+        <item>Outgoing Calls</item>
+        <item>Incoming Calls</item>
+        <item>Outgoing SMS</item>
+        <item>Incoming SMS</item>
+    </string-array>
+    <string-array name="category_options">
+        <item>Browser Access</item>
+        <item>Total Block</item>
+        <item>Calls</item>
+        <item>SMS</item>
+        <item>Contacts</item>
+        <item>Routes</item>
+        <item>Others</item>        
+    </string-array>
+    <string name="start_date_warning_dialog_new_rule">The start date must be earlier than the end date</string>
+    <string name="end_date_warning_dialog_new_rule">The end date must be later than the start date</string>
+    <string name="start_time_warning_dialog_new_rule">The start time must be earlier than the end time</string>
+    <string name="end_time_warning_dialog_new_rule">The end time must be later than the start time</string>
+    <string name="fill_edit_texts_warning_dialog_new_rule">You must fill al boxes to create a new rule</string>
+    <string name="prc_name">Parental Remote Control</string>
+    <string name="ingenia_name">Ing3nia</string>
+    <string name="post_installation_question">Are you a Parent or Child?</string>
+    <string name="add_rule">Add Rule</string>
+    <string name="register_smartphone_label">Register New Smartphone</string>
+    <string name="register_button_label">Register</string>
+    <string name="smartphone_map_label">Device Map</string>
+    <string name="smartphone_list_label">Device List</string>
+    <string name="route_label">Route</string>
+    <string name="device_map_menu_label">Device Map</string>
+    <string name="device_list_menu_label">Device List</string>
+    <string name="admin_users_list_menu_label">User List</string>
+    <string name="helpdesk_menu_label">Help Desk</string>
+    <string name="clear_label">Clear</string>
+    <string name="alert_list_label">Alert List</string>
+    <string name="rule_list_label">Rule List</string>
+    <string name="tickets_list_label">Tickets</string>
+    <string name="view_ticket_label">Tickets:</string>
+    <string name="open_tickets_list_label">Open Tickets</string>
+    <string name="ticket_message_label">Ticket Message</string>
+    <string name="date_label">Date</string>
+    <string name="closed_tickets_list_label">Closed Tickets</string>
+    <string name="ticket_commented_label">PRC Ticket, commented:</string>
+    <string name="ticket_reply_label">Reply:</string>
+    <string name="contact_list_label">Contacts</string>
+    <string name="user_list_label">User List</string>
+    <string name="emergency_contact_list_label">Emergency Contacts</string>
+    <string name="new_rule_label">New Rule:</string>
+    <string name="new_emergency_contact_label">Add Emergency Contact:</string>
+    <string name="smartphone_settings_label">Device Settings:</string>
+    <string name="edit_rule_label">Edit Rule:</string>
+    <string name="add_rule_label">Add Rule</string>
+    <string name="new_ticket_label">New Ticket</string>
+    <string name="reply_label">Reply</string>
+    <string name="new_ticket_label2">New Ticket:</string>
+    <string name="new_user_label">New User:</string>
+    <string name="new_user_label2">Add User</string>
+    <string name="alert_dialog_edit_button_label">Edit</string>
+    <string name="alert_dialog_close_ticket_button_label">Close Ticket</string>
+    <string name="alert_dialog_view_ticket_button_label">View</string>
+    <string name="rule_list_alert_dialog_message">What would you like to do?</string>
+    <string name="save_changes_alert_dialog_message">You have pending changes. Would you like to send them before living?</string>
+    <string name="alert_dialog_delete_button_label">Delete</string>
+    <string name="warning_label">Warning</string>
+    <string name="ok_button_label">Ok</string>
+    <string name="cancel_button_label">Cancel</string>
+    <string name="dialog_intent_si">com.ing3nia.parentalcontrol.ui.components.dialog.si</string>
+    <string name="dialog_intent_no">com.ing3nia.parentalcontrol.ui.components.dialog.no</string>
+    <string name="dialog_intent_ok">com.ing3nia.parentalcontrol.ui.components.dialog.ok</string>
+    <string name="quit_app">Do you want to quit the application?</string>
+    <string name="alert_dialog_yes_button_label">Yes</string>
+    <string name="alert_dialog_no_button_label">No</string>
 
 </resources>

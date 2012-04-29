@@ -2,86 +2,126 @@
 <LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
 	style="@style/vertical_hfill_vfill"
-	android:background="@color/blanco">
+	android:background="@drawable/bg">
+<!-- 	android:background="@color/negro"> -->
 	
-	<ImageView
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center_horizontal"
-	    android:src="@drawable/pclogo" />
+	<include layout="@layout/top_banner" />
 	
-	<LinearLayout 
-	    style="@style/vertical_hfill_vwrap"
-		android:paddingLeft="3dp" 
-		android:paddingRight="3dp">
+	<ScrollView 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
 		
-		<LinearLayout style="@style/vertical_hfill_vwrap">
+		<LinearLayout style="@style/vertical_hfill_vfill">
+		    
+		    <ImageView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center_horizontal"
+		        android:paddingLeft="20dp"
+		        android:paddingRight="20dp"
+		        android:src="@drawable/prc_logo_post_installation" />
 		    
 			<TextView 
 			    style="@style/texto_estandar_bold"
 				android:text=""
 				android:layout_gravity="center_horizontal" />
 			
-			<RelativeLayout 
-			    android:layout_width="fill_parent"
-				android:layout_height="wrap_content" 
-				android:gravity="center_horizontal"
-				android:padding="2dp">
-				
-				<TextView 
+			<LinearLayout
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="center_horizontal"
+			    android:orientation="vertical" >
+			   
+			    <TextView 
 				    android:id="@+id/textViewUsername" 
 				    style="@style/texto_estandar"
 					android:text="@string/username"
-					android:layout_alignBaseline="@+id/editTextUsername"
-					android:gravity="right" 
-					android:paddingRight="7dp" />
-				
-				<TextView 
-				    android:id="@+id/textViewPass" 
-				    style="@style/texto_estandar"
-					android:text="@string/password" 
-					android:layout_alignBaseline="@+id/editTextPass"
-					android:gravity="right" />
-				
-				<EditText 
+					android:textColor="@color/blanco" />
+			    
+			    <EditText 
 				    android:id="@+id/editTextUsername"
-					android:layout_width="200dp" 
+					android:layout_width="275dp" 
 					android:layout_height="wrap_content"
-					android:singleLine="true" 
-					android:layout_toRightOf="@id/textViewUsername"
+					android:singleLine="true"
 					android:inputType="text" />
-				
-				<EditText 
-				    android:id="@+id/editTextPass"
-					android:layout_width="200dp" 
+			    
+			    <TextView 
+				    android:id="@+id/textViewPassword" 
+				    style="@style/texto_estandar"
+					android:text="@string/password"
+					android:textColor="@color/blanco" />
+			    
+			    <EditText 
+				    android:id="@+id/editTextPassword"
+					android:layout_width="275dp" 
 					android:layout_height="wrap_content"
-					android:singleLine="true" 
-					android:layout_below="@id/editTextUsername"
-					android:layout_toRightOf="@id/textViewPass"
-					android:layout_alignLeft="@id/editTextUsername" 
+					android:singleLine="true"
+					android:inputType="text"
 					android:password="true" />
-			</RelativeLayout>
+			    
+			</LinearLayout>		
 			
 			<LinearLayout 
 			    android:id="@+id/buttonContainer" 
 			    style="@style/horizontal_hfill_vwrap"
 				android:gravity="center_horizontal" 
-				android:paddingTop="3dip"
+				android:paddingTop="25dip"
 				android:paddingBottom="2dip">
 				
 				<Button 
-				    android:text="Limpiar" 
-				    android:layout_width="wrap_content"
-					android:layout_height="wrap_content" 
-					android:onClick="onLimpiarClick" />
-				
-				<Button 
 				    android:text="Aceptar" 
-				    android:layout_width="wrap_content"
+				    android:layout_width="140dp"
 					android:layout_height="wrap_content" 
 					android:onClick="onAceptarClick" />
+				
+				<Button 
+				    android:text="Limpiar" 
+				    android:layout_width="140dp"
+					android:layout_height="wrap_content" 
+					android:onClick="onLimpiarClick" />
 			</LinearLayout>
-			
-		</LinearLayout>
-	</LinearLayout>				
+		</LinearLayout>		
+	</ScrollView>				
 </LinearLayout>
+
+<!-- 			<RelativeLayout  -->
+<!-- 			    android:layout_width="fill_parent" -->
+<!-- 				android:layout_height="wrap_content"  -->
+<!-- 				android:gravity="center_horizontal" -->
+<!-- 				android:padding="2dp"> -->
+				
+<!-- 				<TextView  -->
+<!-- 				    android:id="@+id/textViewUsername"  -->
+<!-- 				    style="@style/texto_estandar" -->
+<!-- 					android:text="@string/username" -->
+<!-- 					android:layout_alignBaseline="@+id/editTextUsername" -->
+<!-- 					android:gravity="right"  -->
+<!-- 					android:textColor="@color/blanco" -->
+<!-- 					android:paddingRight="7dp" /> -->
+				
+<!-- 				<TextView  -->
+<!-- 				    android:id="@+id/textViewPass"  -->
+<!-- 				    style="@style/texto_estandar" -->
+<!-- 					android:text="@string/password"  -->
+<!-- 					android:layout_alignBaseline="@+id/editTextPass" -->
+<!-- 					android:gravity="right" -->
+<!-- 					android:textColor="@color/blanco" /> -->
+				
+<!-- 				<EditText  -->
+<!-- 				    android:id="@+id/editTextUsername" -->
+<!-- 					android:layout_width="200dp"  -->
+<!-- 					android:layout_height="wrap_content" -->
+<!-- 					android:singleLine="true"  -->
+<!-- 					android:layout_toRightOf="@id/textViewUsername" -->
+<!-- 					android:inputType="text" /> -->
+				
+<!-- 				<EditText  -->
+<!-- 				    android:id="@+id/editTextPass" -->
+<!-- 					android:layout_width="200dp"  -->
+<!-- 					android:layout_height="wrap_content" -->
+<!-- 					android:singleLine="true"  -->
+<!-- 					android:layout_below="@id/editTextUsername" -->
+<!-- 					android:layout_toRightOf="@id/textViewPass" -->
+<!-- 					android:layout_alignLeft="@id/editTextUsername"  -->
+<!-- 					android:password="true" /> -->
+<!-- 			</RelativeLayout> -->

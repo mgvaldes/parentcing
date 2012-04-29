@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@layout/background_label3"
+    android:padding="11dp" >
+    
+    <LinearLayout 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:id="@+id/firstLine">
+        
+        <TextView
+            android:id="@+id/alertName"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"            
+            android:text="Unreachable Device"
+            android:textColor="@color/negro"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal"
+		android:layout_below="@+id/firstLine"
+		android:paddingTop="10dp">
+        
+        <TextView
+            android:id="@+id/deviceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Carlitos Way"
+            android:textColor="#6b6b6b"
+            android:textSize="15sp"
+            android:layout_weight="1"
+            android:gravity="left" />
+        
+        <TextView
+            android:id="@+id/alertDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="30/11/2011 03:00:00 PM"
+            android:textColor="#6b6b6b"
+            android:textSize="15sp"
+            android:layout_weight="1"
+            android:gravity="right" />
+    </LinearLayout>
+</RelativeLayout>
+
+<!-- <?xml version="1.0" encoding="utf-8"?> -->
+<!-- <TableLayout xmlns:android="http://schemas.android.com/apk/res/android" -->
+<!--     android:layout_width="fill_parent" -->
+<!--     android:layout_height="fill_parent" -->
+<!--     android:stretchColumns="1" -->
+<!--     android:background="@layout/background_label3"> -->
+<!--     <TableRow> -->
+<!--        	<TextView -->
+<!--             android:id="@+id/alertName" -->
+<!--             android:layout_width="wrap_content" -->
+<!-- 	    	android:layout_height="wrap_content" -->
+<!-- 	    	android:textSize="20sp" -->
+<!-- 	    	android:textStyle="bold" -->
+<!-- 	    	android:text="Unreachable Device" -->
+<!-- 	    	android:paddingTop="10dp" -->
+<!-- 	    	android:paddingLeft="10dp" -->
+<!-- 	    	android:textColor="@color/negro" /> -->
+        
+<!--         <TextView -->
+<!--             android:layout_width="wrap_content" -->
+<!-- 	    	android:layout_height="wrap_content" -->
+<!-- 	    	android:text="" /> -->
+<!--     </TableRow> -->
+<!--     <TableRow> -->
+<!--         <TextView -->
+<!--             android:id="@+id/deviceName" -->
+<!--             android:layout_width="wrap_content" -->
+<!--     		android:layout_height="wrap_content" -->
+<!--     		android:text="4" -->
+<!--     		android:textSize="15sp" -->
+<!--     		android:padding="10dp" -->
+<!--     		android:textColor="#6b6b6b" /> -->
+        
+<!--         <TextView -->
+<!--             android:id="@+id/alertDate" -->
+<!--             android:gravity="right" -->
+<!--             android:paddingTop="10dp" -->
+<!--             android:layout_width="wrap_content" -->
+<!-- 		    android:layout_height="wrap_content" -->
+<!-- 		    android:text="30/11/2011 03:00:00 PM" -->
+<!-- 		    android:textSize="15sp" -->
+<!-- 		    android:textColor="#6b6b6b" /> -->
+<!--     </TableRow> -->
+<!-- </TableLayout> -->

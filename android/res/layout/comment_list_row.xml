@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1"
+    android:paddingRight="11dp"
+    android:paddingTop="11dp"
+    android:paddingLeft="11dp"
+    android:paddingBottom="11dp"
+    android:orientation="vertical" >
+    
+    <TextView
+        android:id="@+id/subject"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Browser Access"
+        android:textColor="@color/blanco"
+        android:textSize="20sp" />
+       
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="cant browse"
+        android:textSize="15sp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textColor="@color/blanco" />
+    
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Wednesday, 2011 December 14"
+        android:textSize="15sp"
+        android:textColor="#878787" />
+</LinearLayout>
