@@ -2,7 +2,6 @@
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -30,7 +29,6 @@ import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
-import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("reg-sph")

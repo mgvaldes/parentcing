@@ -2,7 +2,6 @@ package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -46,7 +45,7 @@ import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 @Path("register")
 public class ParentRegisterResource {
 	
-	private static final Logger logger = Logger.getLogger(ParentTestResource.class.getName());
+	private static final Logger logger = Logger.getLogger(ParentRegisterResource.class.getName());
 	
 	public ParentRegisterResource() {
 		//logger.addHandler(new ConsoleHandler());
