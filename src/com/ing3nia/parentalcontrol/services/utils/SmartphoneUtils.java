@@ -2,8 +2,10 @@ package com.ing3nia.parentalcontrol.services.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.jdo.PersistenceManager;
+import javax.jdo.Query;
 
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
@@ -128,10 +130,26 @@ public class SmartphoneUtils {
 		//Obtaining and parsing active contacts
 		JsonArray activeArray = new JsonArray();
 		
-		for(Key contactKey : smartphone.getActiveContacts()){
+		
+		ArrayList<Key> activeKeys = smartphone.getActiveContacts();
+		//Query q= pm.newQuery("select from " + PCSimpleContact.class.getName() + " where :keys.contains(key)");
+	    //Query q = pm.newQuery("select from " + PCSimpleContact.class.getName() + " where key == :keys");
+		//List<PCSimpleContact> simpleContacts = (List<PCSimpleContact>) q.execute(activeKeys);
+		List<Object> keyObjectList = new ArrayList<Object>();
+		for(Key key : activeKeys){
+			keyObjectList.add(pm.newObjectIdInstance(PCSimpleContact.class, key));
+		}
+
+		List<PCSimpleContact> simpleContacts = (List<PCSimpleContact>) pm.getObjectsById(keyObjectList);
+
+		//List<PCSimpleContact> simpleContacts = (List<PCSimpleContact>) pm.getObjectsById(activeKeys);
+		
+		//for(Key contactKey : smartphone.getActiveContacts()){
+		for(PCSimpleContact contact : simpleContacts){
 			JsonObject contactJson = new JsonObject();
-			PCSimpleContact contact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, contactKey);
-			contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
+			//PCSimpleContact contact = (PCSimpleContact)pm.getObjectById(PCSimpleContact.class, contactKey);
+			//contactJson.addProperty("id", KeyFactory.keyToString(contactKey));
+			contactJson.addProperty("id", KeyFactory.keyToString(contact.getKey()));
 			contactJson.addProperty("fname",contact.getFirstName());
 			contactJson.addProperty("lname", contact.getLastName());
 			
