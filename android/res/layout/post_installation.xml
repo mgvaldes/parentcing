@@ -2,26 +2,31 @@
 <LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
 	style="@style/vertical_hfill_vfill"
-	android:background="@color/blanco">
+	android:background="@drawable/bg">
+<!-- 	android:background="@color/negro"> -->
 	
-	<ImageView
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center_horizontal"
-	    android:src="@drawable/pclogo" />
+	<include layout="@layout/top_banner" />
 	
-	<LinearLayout 
-	    style="@style/vertical_hfill_vwrap"
-		android:paddingLeft="3dp" 
-		android:paddingRight="3dp">
+	<ScrollView 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
 		
 		<LinearLayout style="@style/vertical_hfill_vwrap">
+		    
+		    <ImageView
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="center_horizontal"			    
+			    android:src="@drawable/prc_logo_post_installation"
+			    android:paddingLeft="20dp"
+			    android:paddingRight="20dp" />
 		    
 			<TextView
 			    style="@style/texto_estandar_bold"
 			    android:layout_height="fill_parent"
 			    android:layout_gravity="center_horizontal"
-			    android:text="Parent or Son?"
+			    android:text="@string/post_installation_question"
+			    android:textColor="@color/blanco"
 			    android:paddingTop="15dp" 
 				android:paddingBottom="10dp" />
 			
@@ -34,17 +39,17 @@
 				
 				<Button 
 				    android:text="Parent" 
-				    android:layout_width="80dp"
+				    android:layout_width="140dp"
 					android:layout_height="wrap_content" 
 					android:onClick="onParentClick" />
 				
 				<Button 
 				    android:text="Child" 
-				    android:layout_width="80dp"
+				    android:layout_width="140dp"
 					android:layout_height="wrap_content" 
 					android:onClick="onChildClick" />
 			</LinearLayout>
 			
 		</LinearLayout>
-	</LinearLayout>				
+	</ScrollView>				
 </LinearLayout>

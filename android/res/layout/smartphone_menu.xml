@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/dailyRoute"
+          android:icon="@drawable/ic_menu_daily_route"
+          android:title="@string/daily_route_menu_label" />
+    <item android:id="@+id/alertList"
+          android:icon="@drawable/ic_menu_alert_list"
+          android:title="@string/alert_list_menu_label" />
+    <item android:id="@+id/ruleList"
+          android:icon="@drawable/ic_menu_rule_list"
+          android:title="@string/rule_list_menu_label" />
+    <item android:id="@+id/contactList"
+          android:icon="@drawable/ic_menu_contacts"
+          android:title="@string/contacts_menu_label" />
+    <item android:id="@+id/deviceSettings"
+          android:icon="@drawable/ic_menu_settings"
+          android:title="@string/settings_menu_label" />
+<!--     <item android:id="@+id/more" -->
+<!--           android:icon="@drawable/ic_menu_more" -->
+<!--           android:title="@string/more_menu_label" /> -->
+    <item android:id="@+id/deviceMap"
+          android:title="@string/device_map_menu_label" />
+    <item android:id="@+id/deviceList"
+          android:title="@string/device_list_menu_label" />
+    <item android:id="@+id/adminUsersList"         
+          android:title="@string/admin_users_list_menu_label" />
+    <item android:id="@+id/helpdesk"
+          android:title="@string/helpdesk_menu_label" />
+</menu>

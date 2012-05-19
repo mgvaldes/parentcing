@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/contactList"
+          android:icon="@drawable/ic_menu_contacts"
+          android:title="@string/contacts_menu_label" />
+    <item android:id="@+id/emergencyContactList"
+          android:icon="@drawable/ic_menu_emergencycontacts"
+          android:title="@string/emergency_contacts_menu_label" />
+</menu>

@@ -19,10 +19,10 @@ import com.google.gson.JsonObject;
 public enum WSStatus {
 	OK("00", "OK", "OK"),
 	INVALID_ID("01", "INVALID_PHONE_ID", "The supplied unique id is not valid"),
-	NONEXISTING_USER("09","NONEXISTING_USER","The supplied credentials do not match with any existing user"),
+	NONEXISTING_USER("09","NONEXISTING_USER","The username or password you entered is incorrect"),
 	PREEXISTING_USER("10","PREEXISTING_USER_CREDENTIALS","The supplied username and/or email already exists"),
-	INVALID_PASSWORD("11","INVALID_SUPPLIED_PASSWORD","The supplied password does not correspond to the given user"),
-	INVALID_PASSWORD_DATA("12","INVALID_PASSWORD_DATA","The supplied password is not valid. Please insert a different one"),
+	INVALID_PASSWORD("11","INVALID_SUPPLIED_PASSWORD","The username or password you entered is incorrect"),
+	INVALID_PASSWORD_DATA("12","INVALID_PASSWORD_DATA","The username or password you entered is incorrect"),
 	NONEXISTING_SESSION("13","NONEXISTING_USER_SESSION","You are not logged in"),
 	INVALID_DATA("14","INVALID_DATA_GENERAL","Some of the supplied data is not valid"),
 	INVALID_SMARTPHONE("15","INVALID_SMARTPHONE","The supplied smartphone is not valid"),

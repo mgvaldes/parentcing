@@ -3,18 +3,25 @@ package com.ing3nia.parentalcontrol.httpconnect;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ClientConnectionManager;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
@@ -23,6 +30,7 @@ import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -31,12 +39,20 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.R;
+import com.ing3nia.parentalcontrol.models.AddTicketModel;
+import com.ing3nia.parentalcontrol.models.ModificationModel;
+import com.ing3nia.parentalcontrol.models.ParentModificationsModel;
+import com.ing3nia.parentalcontrol.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.models.TicketAnswerModel;
+import com.ing3nia.parentalcontrol.models.TicketModel;
 import com.ing3nia.parentalcontrol.ui.Login;
 
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -50,7 +66,7 @@ public class HttpClientHandler extends Application {
 	/**
 	 * Contiene el cookie de sesion
 	 */
-	String sessionCookie = "";
+	public String sessionCookie;
 
 	/**
 	 * URL Base para el servidor
@@ -95,6 +111,17 @@ public class HttpClientHandler extends Application {
 	 * Indica si la aplicacion se debe regresar al login al ser despertada
 	 */
 	public boolean reset;
+	
+	public String userKey;
+	public String username;
+	public ArrayList<SmartphoneModel> smartphonesGeneral;
+	public int selected;
+	public SmartphoneModel smartphone;
+	public boolean pendingChanges;
+	public int lastView;
+	public ArrayList<TicketModel> openTickets;
+	public ArrayList<TicketModel> closedTickets;
+	public ArrayList<String> adminUsers;
 	
 	public void setSessionCookie(String cookie) {
 		sessionCookie = cookie;
@@ -189,7 +216,38 @@ public class HttpClientHandler extends Application {
 			StringEntity postEntity = new StringEntity(userModel.toString());
 			postEntity.setContentType("application/json");
 			
-			responseEntityPostStream = obtenerDatosServidor(new URI(URL), postEntity);
+			responseEntityPostStream = sendPOSTRequest(new URI(URL), postEntity);
+		} 
+		catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	public InputStream userKey(String pcUsername, String pcPassword) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.user_key_url);
+		sessionCookie = "";
+		
+		try {
+			JSONObject userModel = new JSONObject();
+			userModel.put("usr", pcUsername);
+			userModel.put("pass", pcPassword);
+			
+			StringEntity postEntity = new StringEntity(userModel.toString());
+			postEntity.setContentType("application/json");
+			
+			responseEntityPostStream = sendPOSTRequest(new URI(URL), postEntity);
 		} 
 		catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
@@ -208,6 +266,164 @@ public class HttpClientHandler extends Application {
 	}
 	
 	/**
+	 * Hace logout del servidor
+	 * @return Fecha y hora del logout. Realmente nunca es usado en esta app.
+	 */
+	public InputStream logout() {
+		InputStream resEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.logout_url);
+		
+		try {
+			JSONObject container = new JSONObject();
+			container.put("cid",sessionCookie);
+			StringEntity postEntity = new StringEntity(container.toString());
+			postEntity.setContentType("application/json");
+			resEntityPostStream = sendPOSTRequest(new URI(URL), postEntity);
+		} 
+		catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		sessionCookie="";
+		
+		return resEntityPostStream;
+	}
+	
+	/**
+	 * Verifica el login y devuelve el resumen de cuentas si es exitoso el login
+	 * 
+	 * @param userName
+	 *            nombre de usuario
+	 * @param password
+	 *            contraseña
+	 * @return Resumen de cuenta
+	 */
+	public InputStream smartphonesGeneralInfo() {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.smartphones_general_info_url) + "?";
+		URL += loadLoginGETParameters();
+		System.out.println("-------------------COOKIE: " + this.sessionCookie);
+		System.out.println("-------------------smartphone-grl request: " + URL);
+		
+		try {
+			responseEntityPostStream = sendGETRequest(new URI(URL));
+		} 
+		catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	protected String loadLoginGETParameters(){
+	    List<NameValuePair> params = new LinkedList<NameValuePair>();
+
+	    System.out.println("-------------------COOKIE: " + this.sessionCookie);
+	    params.add(new BasicNameValuePair("cid", this.sessionCookie));
+
+	    return URLEncodedUtils.format(params, "utf-8");
+	}
+	
+	public InputStream smartphonesDetailsInfo(String smartphoneKey) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.smartphone_details_info_url) + "?";
+		URL += loadSmartphoneDetailsGETParameters(smartphoneKey);
+		System.out.println("--------------------URL: " + URL);
+		
+		try {
+			responseEntityPostStream = sendGETRequest(new URI(URL));
+		} 
+		catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	public InputStream ticketsList(String userKey) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.tickets_url) + "?";
+		URL += loadTicketsListGETParameters(userKey);
+		System.out.println("--------------------URL: " + URL);
+		
+		try {
+			responseEntityPostStream = sendGETRequest(new URI(URL));
+		} 
+		catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	public InputStream adminUserList() {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.users_url) + "?";
+		URL += loadTicketsListGETParameters(userKey);
+		System.out.println("--------------------URL: " + URL);
+		
+		try {
+			responseEntityPostStream = sendGETRequest(new URI(URL));
+		} 
+		catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	public InputStream closeTicket(String ticketKey) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.close_ticket_url) + "?";
+		URL += loadCloseTicketGETParameters(ticketKey);
+		System.out.println("--------------------URL: " + URL);
+		
+		try {
+			responseEntityPostStream = sendGETRequest(new URI(URL));
+		} 
+		catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	protected String loadSmartphoneDetailsGETParameters(String smartphoneKey){
+	    List<NameValuePair> params = new LinkedList<NameValuePair>();
+
+	    params.add(new BasicNameValuePair("cid", sessionCookie));
+	    params.add(new BasicNameValuePair("smid", smartphoneKey));
+
+	    return URLEncodedUtils.format(params, "utf-8");
+	}
+
+	protected String loadTicketsListGETParameters(String userKey){
+	    List<NameValuePair> params = new LinkedList<NameValuePair>();
+
+	    params.add(new BasicNameValuePair("user", userKey));
+
+	    return URLEncodedUtils.format(params, "utf-8");
+	}
+	
+	protected String loadCloseTicketGETParameters(String ticketKey){
+	    List<NameValuePair> params = new LinkedList<NameValuePair>();
+
+	    params.add(new BasicNameValuePair("user", userKey));
+	    params.add(new BasicNameValuePair("ticket", ticketKey));
+
+	    return URLEncodedUtils.format(params, "utf-8");
+	}
+	
+	/**
 	 {
 	 	ÒusrÓ:ÓJohnDoeÓ,
 	 	ÓpassÓ:Ó 45f2d93cd80e3e1df23e8e07021d8177Ó,
@@ -222,45 +438,6 @@ public class HttpClientHandler extends Application {
 			ÓserialÓ:ÓAX1-BBMPA2Ó, 
 			ÒappVersionÓ:Ó1.0.0Ó}}
 	 */
-	
-	/**
-	 * Verifica el login y devuelve el resumen de cuentas si es exitoso el login
-	 * 
-	 * @param userName
-	 *            nombre de usuario
-	 * @param password
-	 *            contraseña
-	 * @return Resumen de cuenta
-	 */
-	public InputStream registerSmartphone(String pcSmartphoneName) {
-		InputStream responseEntityPostStream = null;
-		String URL = baseURL + this.getString(R.string.register_url);
-		
-//		try {
-//			JSONObject userModel = new JSONObject();
-//			userModel.put("usr", pcUsername);
-//			userModel.put("pass", pcPassword);
-//			
-//			StringEntity postEntity = new StringEntity(userModel.toString());
-//			postEntity.setContentType("application/json");
-//			
-//			responseEntityPostStream = obtenerDatosServidor(new URI(URL), postEntity);
-//		} 
-//		catch (URISyntaxException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
-//		catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} 
-//		catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		return responseEntityPostStream;
-	}
 	
 	/**
 	 * Getter para el cliente
@@ -309,7 +486,7 @@ public class HttpClientHandler extends Application {
 	 *            Request post formateado apropiadamente
 	 * @return la respuesta del servidor en formato de inputStream
 	 */
-	public InputStream obtenerDatosServidor(URI URL, HttpEntity postEntity) {
+	public InputStream sendPOSTRequest(URI URL, HttpEntity postEntity) {
 		// Cancelar el timer de la sesión para que no se cierra mientras
 		// comunica
 		cancelTimer();
@@ -328,6 +505,91 @@ public class HttpClientHandler extends Application {
 				if (postEntity != null) {
 					request.setEntity(postEntity);
 				}
+				
+				HttpResponse response = client.execute(request);
+				responseCode = response.getStatusLine().getStatusCode();
+				CookieStore cookieStore = getCookieStore();
+				
+				if (responseCode == 200) {
+					HttpEntity resEntityPost = response.getEntity();
+					
+//					if (sessionCookie.equalsIgnoreCase("")) {
+//						if(response.getHeaders("CookieId").length > 0) {
+//							sessionCookie = response.getHeaders("CookieId")[0].getValue();
+//						}
+//					}
+					
+					resEntityPostStream = resEntityPost.getContent();
+					cookieStore.clear();
+				} 
+				else {
+					
+				}
+//				else if ((responseCode == 302) || (responseCode == 304)) {
+//					String url_nueva = response.getHeaders("Location")[0].getValue();
+//					URI uri = null;
+//					
+//					try {
+//						uri = new URI(url_nueva);
+//					} 
+//					catch (URISyntaxException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					
+//					cookieStore.clear();
+//					return obtenerDatosServidor(uri, postEntity);
+//				}
+			} 
+			catch (IllegalStateException e) {
+				e.printStackTrace();
+				
+				return null;
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+				
+				return null;
+			}
+
+		}
+		
+		String stringURL = URL.toASCIIString();
+		String stringLogout = baseURL + this.getString(R.string.logout_url);
+		
+		if (!stringURL.equalsIgnoreCase(stringLogout)) {
+			initTimer();
+		}
+		
+		return resEntityPostStream;
+	}
+	
+	/**
+	 * Funcion encargada de hacer la comunicacion con el servidor, todas las
+	 * funciones de comunicacion arman su propio postEntity y llaman a esta
+	 * funcion.
+	 * 
+	 * @param URL
+	 *            Url al cual lanzar el request
+	 * @param postEntity
+	 *            Request post formateado apropiadamente
+	 * @return la respuesta del servidor en formato de inputStream
+	 */
+	public InputStream sendGETRequest(URI URL) {
+		// Cancelar el timer de la sesión para que no se cierra mientras
+		// comunica
+		cancelTimer();
+		
+		HttpClient client = getHttpClient();
+		HttpGet request = new HttpGet();
+		InputStream resEntityPostStream = null;
+		
+		if (!conexionDisponible()) {
+			responseCode = -1;
+		} 
+		else {
+			try {
+				request.setURI(URL);
 				
 				HttpResponse response = client.execute(request);
 				responseCode = response.getStatusLine().getStatusCode();
@@ -466,5 +728,135 @@ public class HttpClientHandler extends Application {
 		
 		//Cualquier otro.
 		return loginContext.getString(R.string.generic_error);
+	}
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////
+	public InputStream saveChanges(String smid, ModificationModel modifications) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.save_changes_url);
+		
+		try {
+			ParentModificationsModel parentMod = new ParentModificationsModel(sessionCookie, smid, modifications);
+			
+			Gson jsonBuilder = new Gson();
+			Type modificationType = new TypeToken<ParentModificationsModel>(){}.getType();
+			String postParams = jsonBuilder.toJson(parentMod, modificationType);
+			System.out.println("-------------------------request: " + postParams);
+			
+			StringEntity postEntity = new StringEntity(postParams);
+			postEntity.setContentType("application/json");
+			
+			responseEntityPostStream = sendPOSTRequest(new URI(URL), postEntity);
+		} 
+		catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	//{'key':'ahJzfnBhcmVudGFsLWNvbnRyb2xyDQsSBlBDVXNlchjQZQw', 'ticket':{'category':'Browser Access', 'subject':'Prueba2', 'comment':'Esto es un comentario de prueba2'}}
+	public InputStream saveNewTicket(TicketModel newTicket) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.new_ticket_url);
+		
+		try {
+			AddTicketModel addTicketModel = new AddTicketModel(userKey, newTicket);
+			
+			Gson jsonBuilder = new Gson();
+			Type addTicketType = new TypeToken<AddTicketModel>(){}.getType();
+			String postParams = jsonBuilder.toJson(addTicketModel, addTicketType);
+			System.out.println("-------------------------request: " + postParams);
+			
+			StringEntity postEntity = new StringEntity(postParams);
+			postEntity.setContentType("application/json");
+			
+			responseEntityPostStream = sendPOSTRequest(new URI(URL), postEntity);
+		} 
+		catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	public InputStream saveNewAdminUser(String username, String password) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.new_user_url);
+		
+		try {
+			JsonObject newUserRequest = new JsonObject();
+			newUserRequest.addProperty("key", userKey);
+			
+			JsonObject newUserObject = new JsonObject();
+			newUserObject.addProperty("usr", username);
+			newUserObject.addProperty("pass", password);
+			
+			newUserRequest.add("user", newUserObject);
+			
+			Gson jsonBuilder = new Gson();
+			String postParams = jsonBuilder.toJson(newUserRequest);
+			System.out.println("-------------------------request: " + postParams);
+			
+			StringEntity postEntity = new StringEntity(postParams);
+			postEntity.setContentType("application/json");
+			
+			responseEntityPostStream = sendPOSTRequest(new URI(URL), postEntity);
+		} 
+		catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
+	}
+	
+	public InputStream answerTicket(TicketAnswerModel answer, String ticketKey) {
+		InputStream responseEntityPostStream = null;
+		String URL = baseURL + this.getString(R.string.answer_ticket_url);
+		
+		try {
+			JsonObject newUserRequest = new JsonObject();
+			newUserRequest.addProperty("ticket", ticketKey);
+			
+			JsonObject newAnswerObject = new JsonObject();
+			newAnswerObject.addProperty("userKey", answer.getUserKey());
+			newAnswerObject.addProperty("answer", answer.getAnswer());
+			
+			newUserRequest.add("answer", newAnswerObject);
+			
+			Gson jsonBuilder = new Gson();
+			String postParams = jsonBuilder.toJson(newUserRequest);
+			System.out.println("-------------------------request: " + postParams);
+			
+			StringEntity postEntity = new StringEntity(postParams);
+			postEntity.setContentType("application/json");
+			
+			responseEntityPostStream = sendPOSTRequest(new URI(URL), postEntity);
+		} 
+		catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return responseEntityPostStream;
 	}
 }

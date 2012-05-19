@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/vertical_hfill_vfill"
+	android:background="@color/negro">
+
+    <ListView
+	  	android:id="@+id/funcList"
+	  	android:layout_width="wrap_content"
+	  	android:layout_height="wrap_content"
+	  	android:divider="#404040"
+	  	android:dividerHeight="2px" >
+	</ListView>
+</LinearLayout>

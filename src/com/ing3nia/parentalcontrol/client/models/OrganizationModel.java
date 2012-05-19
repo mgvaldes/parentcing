@@ -3,6 +3,8 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 
 public class OrganizationModel implements Serializable {
+	private static final long serialVersionUID = 1L;
+
 	private String name;
 	
 	private String title;

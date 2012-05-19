@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical" android:layout_width="fill_parent"
 	android:layout_height="wrap_content" 
-	android:background="@color/rojo" 
+	android:background="#da6409" 
 	android:id="@+id/custom_alert_dialog_root">
 	
 	<TextView 
@@ -44,6 +44,29 @@
 		<Button 
 		    android:id="@+id/boton_si" 
 		    android:text="Si" 
+		    android:minWidth="70dp" 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"/>
+		
+	</LinearLayout>
+	
+	<LinearLayout 
+	    android:id="@+id/contenedor_botones_edit_delete" 
+	    style="@style/horizontal_hfill_vwrap" 
+	    android:gravity="center_horizontal">
+	    
+		<Button 
+		    android:id="@+id/boton_edit" 
+		    android:text="Edit" 
+		    android:minWidth="70dp" 
+		    android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"/>
+		
+		<Button 
+		    android:id="@+id/boton_delete" 
+		    android:text="Delete" 
 		    android:minWidth="70dp" 
 		    android:layout_width="wrap_content"
 			android:layout_height="wrap_content"

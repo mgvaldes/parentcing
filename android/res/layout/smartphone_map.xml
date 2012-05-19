@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/vertical_hfill_vfill">
+	
+	<LinearLayout 
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="80px"
+	    android:background="@color/negro"
+	    android:id="@+id/topBanner" >
+	
+	    <RelativeLayout
+	        android:layout_width="fill_parent"
+			android:layout_height="fill_parent" >
+		    
+		    <ImageView
+		        android:id="@+id/background"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_alignParentBottom="true"
+		        android:background="@drawable/tiled_background" />
+		    
+		    <ImageView 
+		        android:id="@+id/prcLogo"
+		        android:layout_height="80px"
+				android:layout_width="wrap_content"
+				android:src="@drawable/logo_letters"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp" />
+		    
+		    <TextView
+		        android:id="@+id/appName"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/prc_name"
+		        android:textStyle="bold"
+		        android:textSize="16dp"
+		        android:paddingLeft="100dp"
+		        android:paddingTop="18dp" >
+		    </TextView>
+	    </RelativeLayout>      
+	</LinearLayout>
+	
+	<RelativeLayout 
+	    android:layout_width="fill_parent" 
+	    android:layout_height="fill_parent">
+	
+	    <com.google.android.maps.MapView
+	        xmlns:android="http://schemas.android.com/apk/res/android"
+	        android:id="@+id/smartphoneMap" 
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent" 
+	        android:layout_centerInParent="true" 
+	        android:clickable="true"
+	        android:apiKey="0bB-rENMRPzTJGuETS3GAj42x5xQhLW8uN2EFrg">
+	    </com.google.android.maps.MapView>
+	    
+<!-- 	    <LinearLayout  -->
+<!-- 	        style="@style/horizontal_hwrap_vwrap" -->
+<!-- 	        android:padding="15dp"> -->
+	        
+<!-- 	        <Button  -->
+<!-- 		        android:layout_width="wrap_content" -->
+<!-- 		        android:layout_height="wrap_content"  -->
+<!-- 		        android:text="@string/smartphone_list_label" -->
+<!-- 		        android:layout_alignParentLeft="true" -->
+<!-- 		        android:layout_alignParentTop="true" -->
+<!-- 		        android:background="@layout/round_button" -->
+<!-- 		        android:padding="8dp" -->
+<!-- 		        android:onClick="onDeviceListClick" /> -->
+	        
+<!-- 	        <Button  -->
+<!-- 		        android:layout_width="wrap_content" -->
+<!-- 		        android:layout_height="wrap_content"  -->
+<!-- 		        android:text="@string/smartphone_map_label" -->
+<!-- 		        android:layout_alignParentLeft="true" -->
+<!-- 		        android:layout_alignParentTop="true"  -->
+<!-- 		        android:id="@+id/smartphoneMapButton" -->
+<!-- 		        android:background="@layout/round_button_left" -->
+<!-- 		        android:padding="8dp" -->
+<!-- 		        android:onClick="onDeviceMapClick" /> -->
+	        
+<!-- 	        <Button  -->
+<!-- 		        android:layout_width="wrap_content" -->
+<!-- 		        android:layout_height="wrap_content"  -->
+<!-- 		        android:text="@string/smartphone_list_label" -->
+<!-- 		        android:layout_alignParentLeft="true" -->
+<!-- 		        android:layout_alignParentTop="true"  -->
+<!-- 		        android:id="@+id/smartphoneListButton" -->
+<!-- 		        android:background="@layout/round_button_right" -->
+<!-- 		        android:padding="8dp" -->
+<!-- 		        android:onClick="onDeviceListClick" /> -->
+	        
+<!-- 	    </LinearLayout>	     -->
+	
+	</RelativeLayout>
+</LinearLayout>

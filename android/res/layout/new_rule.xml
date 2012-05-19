@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/vertical_hfill_vfill"
+	android:background="@color/negro">
+	
+	<LinearLayout 
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="80px"
+	    android:background="@color/negro"
+	    android:id="@+id/topBanner" >
+	
+	    <RelativeLayout
+	        android:layout_width="fill_parent"
+			android:layout_height="fill_parent" >
+		    
+		    <ImageView
+		        android:id="@+id/background"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_alignParentBottom="true"
+		        android:background="@drawable/tiled_background" />
+		    
+		    <ImageView 
+		        android:id="@+id/prcLogo"
+		        android:layout_height="80px"
+				android:layout_width="wrap_content"
+				android:src="@drawable/logo_letters"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp" />
+		    
+		    <TextView
+		        android:id="@+id/appName"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:text="@string/prc_name"
+		        android:textStyle="bold"
+		        android:textSize="16dp"
+		        android:paddingLeft="100dp"
+		        android:paddingTop="18dp" >
+		    </TextView>
+	    </RelativeLayout>      
+	</LinearLayout>
+	
+	<LinearLayout 
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="80px"
+	    android:background="@color/negro"
+	    android:id="@+id/topBannerSaveChanges" >
+	    
+	    <RelativeLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:layout_gravity="center_horizontal" >
+		    
+		    <ImageView
+		        android:id="@+id/background"
+		        android:layout_width="fill_parent"
+		        android:layout_height="fill_parent"
+		        android:layout_alignParentBottom="true"
+		        android:background="@drawable/tiled_background" />
+		    
+		    <ImageView 
+		        android:id="@+id/prcLogo"
+		        android:layout_height="80px"
+				android:layout_width="wrap_content"
+				android:src="@drawable/logo_letters"
+				android:paddingTop="10dp"
+				android:paddingBottom="10dp"
+				android:paddingLeft="10dp"/>
+		    
+		    <LinearLayout 
+		        style="@style/horizontal_hfill_vfill"
+		        android:layout_toRightOf="@id/prcLogo"
+		        android:gravity="right"
+		        android:paddingRight="10dp"
+		        android:layout_height="80px">
+		        
+		        <Button
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content"
+		            android:layout_gravity="center_vertical"
+		            android:background="@layout/save_button"
+		            android:drawableLeft="@drawable/ic_save"
+		            android:onClick="onSaveChangesClick"
+		            android:paddingBottom="4dp"
+		            android:paddingLeft="4dp"
+		            android:paddingRight="10dp"
+		            android:paddingTop="4dp"
+		            android:text="Save Changes"
+		            android:textColor="@color/blanco" />
+			</LinearLayout>    
+	    </RelativeLayout>      
+	</LinearLayout>
+	
+	<TextView
+	    android:id="@+id/newRuleTitle" 
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+		android:text="@string/new_rule_label"
+		android:textColor="#dfdfdf"
+		android:textSize="25sp"
+		android:gravity="left"
+		android:padding="15dp"
+		android:background="@layout/background_label2" />
+	
+	<ScrollView
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" >
+	    
+	    <LinearLayout 
+	        style="@style/vertical_hfill_vfill"
+	        android:paddingBottom="15dp">
+	        
+	        <RelativeLayout 
+			    style="@style/vertical_hfill_vfill"
+			    android:gravity="center"
+			    android:paddingTop="10dp"
+			    android:paddingBottom="10dp">
+			    
+				<TextView 
+				    android:id="@+id/textViewRuleType" 
+				    style="@style/texto_estandar"
+					android:text="@string/rule_type"
+					android:paddingRight="10dp"
+					android:textColor="@color/blanco" />
+			    
+				<Spinner 
+			        android:id="@+id/spinnerRuleType"
+			        android:layout_width="250dp"
+			        android:layout_height="wrap_content"
+			        android:layout_below="@id/textViewRuleType"
+			        android:prompt="@string/rule_type_prompt" />
+				
+				<TextView 
+				    android:id="@+id/textViewRuleName" 
+				    style="@style/texto_estandar"
+					android:text="@string/rule_name" 
+					android:layout_below="@+id/spinnerRuleType"
+					android:textColor="@color/blanco" />	
+					
+				<EditText 
+				    android:id="@+id/editTextRuleName"
+					android:layout_width="250dp" 
+					android:layout_height="wrap_content"
+					android:singleLine="true" 
+					android:layout_below="@id/textViewRuleName" />	
+					
+				<TextView 
+				    android:id="@+id/disabledFunc" 
+				    style="@style/texto_estandar"
+					android:text="@string/disabled_func_label" 
+					android:layout_below="@+id/editTextRuleName"
+					android:textColor="@color/blanco" />
+				
+				<Button
+				    android:id="@+id/disabledFuncButton"
+	                android:layout_width="250dp"
+	                android:layout_height="wrap_content"
+	                android:layout_below="@+id/disabledFunc"
+	                android:onClick="onSelectDisabledFuncsClick"
+	                android:text="@string/disabled_func_initial_prompt" />
+				
+<!-- 				<com.ing3nia.parentalcontrol.ui.fields.MultiSpinner -->
+<!-- 				    android:id="@+id/spinnerDisabledFunc" -->
+<!-- 				    android:layout_width="250dp" -->
+<!-- 			        android:layout_height="wrap_content" -->
+<!-- 			        android:prompt="@string/disabled_func_prompt" -->
+<!-- 			        android:layout_below="@+id/disabledFunc" /> -->
+							
+<!-- 				<Spinner  -->
+<!-- 			        android:id="@+id/spinnerDisabledFunc" -->
+<!-- 			        android:layout_width="250dp" -->
+<!-- 			        android:layout_height="wrap_content" -->
+<!-- 			        android:prompt="@string/disabled_func_prompt" -->
+<!-- 			        android:layout_below="@+id/disabledFunc" /> -->
+				
+				<LinearLayout 
+				    android:id="@+id/dates"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:orientation="horizontal"
+				    android:layout_below="@+id/disabledFuncButton">
+				   
+				    <RelativeLayout
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content">
+				    
+				        <TextView 
+						    android:id="@+id/dateFrom" 
+						    style="@style/texto_estandar"
+							android:text="@string/rule_start_date" 
+							android:textColor="@color/blanco" />
+				        
+				        <EditText 
+						    android:id="@+id/editTextDateFrom"
+							android:layout_width="125dp" 
+							android:layout_height="wrap_content"
+							android:singleLine="true" 
+							android:layout_below="@id/dateFrom" />
+					</RelativeLayout>
+					
+				    <RelativeLayout
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content">
+				    
+				        <TextView 
+						    android:id="@+id/dateTo" 
+						    style="@style/texto_estandar"
+							android:text="@string/rule_end_date" 
+							android:textColor="@color/blanco" />
+				        
+				        <EditText 
+						    android:id="@+id/editTextDateTo"
+							android:layout_width="125dp" 
+							android:layout_height="wrap_content"
+							android:singleLine="true" 
+							android:layout_below="@id/dateTo" />
+					</RelativeLayout>
+				</LinearLayout>
+				
+				<LinearLayout 
+				    android:id="@+id/times"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:orientation="horizontal"
+				    android:layout_below="@+id/dates">
+				   
+				    <RelativeLayout
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content">
+				    
+				        <TextView 
+						    android:id="@+id/timeStart" 
+						    style="@style/texto_estandar"
+							android:text="@string/rule_start_time" 
+							android:textColor="@color/blanco" />
+				        
+				        <EditText 
+						    android:id="@+id/editTextStartTime"
+							android:layout_width="125dp" 
+							android:layout_height="wrap_content"
+							android:singleLine="true" 
+							android:layout_below="@id/timeStart" />
+					</RelativeLayout>
+					
+				    <RelativeLayout
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content">
+				    
+				        <TextView 
+						    android:id="@+id/timeEnd" 
+						    style="@style/texto_estandar"
+							android:text="@string/rule_end_time" 
+							android:textColor="@color/blanco" />
+				        
+				        <EditText 
+						    android:id="@+id/editTextEndTime"
+							android:layout_width="125dp" 
+							android:layout_height="wrap_content"
+							android:singleLine="true" 
+							android:layout_below="@id/timeEnd" />
+					</RelativeLayout>
+				</LinearLayout>
+			</RelativeLayout>
+			
+            <Button
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:onClick="onSaveRuleClick"
+                android:text="@string/save_rule_button_label" />
+	
+	    </LinearLayout>
+	</ScrollView>				
+</LinearLayout>
+
+<!-- <RelativeLayout  -->
+<!--     android:layout_width="fill_parent" -->
+<!-- 	android:layout_height="wrap_content"  -->
+<!-- 	android:gravity="left" -->
+<!-- 	android:padding="10dp" > -->
+	
+<!-- 	<TextView  -->
+<!-- 	    android:id="@+id/textViewRuleType"  -->
+<!-- 	    style="@style/texto_estandar" -->
+<!-- 		android:text="@string/rule_type" -->
+<!-- 		android:layout_alignBaseline="@+id/spinnerRuleType" -->
+<!-- 		android:gravity="right" -->
+<!-- 		android:paddingRight="10dp" -->
+<!-- 		android:textColor="@color/blanco" /> -->
+	
+<!-- 	<TextView  -->
+<!-- 	    android:id="@+id/textViewRuleName"  -->
+<!-- 	    style="@style/texto_estandar" -->
+<!-- 		android:text="@string/rule_name"  -->
+<!-- 		android:layout_alignBaseline="@+id/editTextRuleName" -->
+<!-- 		android:gravity="right" -->
+<!-- 		android:textColor="@color/blanco" /> -->
+	
+<!-- 	<Spinner  -->
+<!--         android:id="@+id/spinnerDisabledFunc" -->
+<!--         android:layout_width="200dp" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_alignBaseline="@+id/buttonDisable" -->
+<!--         android:prompt="@string/disabled_func_prompt" -->
+<!--         android:gravity="right" /> -->
+	
+<!-- 	<TextView  -->
+<!-- 	    android:id="@+id/textViewStartDate"  -->
+<!-- 	    style="@style/texto_estandar" -->
+<!-- 		android:text="@string/rule_start_date"  -->
+<!-- 		android:layout_alignBaseline="@+id/editTextStartDate" -->
+<!-- 		android:gravity="right" -->
+<!-- 		android:textColor="@color/blanco" /> -->
+	
+<!-- 	<TextView  -->
+<!-- 	    android:id="@+id/textViewEndDate"  -->
+<!-- 	    style="@style/texto_estandar" -->
+<!-- 		android:text="@string/rule_end_date"  -->
+<!-- 		android:layout_alignBaseline="@+id/editTextEndDate" -->
+<!-- 		android:gravity="right" -->
+<!-- 		android:textColor="@color/blanco" /> -->
+	
+<!-- 	<TextView  -->
+<!-- 	    android:id="@+id/textViewStartTime"  -->
+<!-- 	    style="@style/texto_estandar" -->
+<!-- 		android:text="@string/rule_start_time"  -->
+<!-- 		android:layout_alignBaseline="@+id/editTextStartTime" -->
+<!-- 		android:gravity="right" -->
+<!-- 		android:textColor="@color/blanco" /> -->
+	
+<!-- 	<TextView  -->
+<!-- 	    android:id="@+id/textViewEndTime"  -->
+<!-- 	    style="@style/texto_estandar" -->
+<!-- 		android:text="@string/rule_end_time"  -->
+<!-- 		android:layout_alignBaseline="@+id/editTextEndTime" -->
+<!-- 		android:gravity="right" -->
+<!-- 		android:textColor="@color/blanco" /> -->
+	
+<!-- 	<Spinner  -->
+<!--         android:id="@+id/spinnerRuleType" -->
+<!--         android:layout_width="150dp" -->
+<!--         android:layout_height="wrap_content" -->
+<!--         android:layout_toRightOf="@id/textViewRuleType" -->
+<!--         android:prompt="@string/rule_type_prompt" /> -->
+	
+<!-- 	<EditText  -->
+<!-- 	    android:id="@+id/editTextRuleName" -->
+<!-- 		android:layout_width="150dp"  -->
+<!-- 		android:layout_height="wrap_content" -->
+<!-- 		android:singleLine="true"  -->
+<!-- 		android:layout_below="@id/spinnerRuleType" -->
+<!-- 		android:layout_toRightOf="@id/textViewRuleName" -->
+<!-- 		android:layout_alignLeft="@id/spinnerRuleType" /> -->
+	
+<!-- 	<Button  -->
+<!-- 	    android:id="@+id/buttonDisable" -->
+<!-- 	    android:text="Disable"  -->
+<!-- 	    android:layout_width="wrap_content" -->
+<!-- 		android:layout_height="wrap_content"  -->
+<!-- 		android:onClick="onDisableClick" -->
+<!-- 		android:layout_below="@id/editTextRuleName" -->
+<!-- 		android:layout_toRightOf="@id/spinnerDisabledFunc" /> -->
+	
+<!-- 	<EditText  -->
+<!-- 	    android:id="@+id/editTextStartDate" -->
+<!-- 		android:layout_width="150dp"  -->
+<!-- 		android:layout_height="wrap_content" -->
+<!-- 		android:singleLine="true"  -->
+<!-- 		android:layout_below="@id/buttonDisable" -->
+<!-- 		android:layout_toRightOf="@id/textViewStartDate" -->
+<!-- 		android:layout_alignLeft="@id/editTextRuleName" -->
+<!-- 		android:editable="false" /> -->
+	
+<!-- 	<ImageButton  -->
+<!-- 	    android:id="@+id/startDatePickerButton" -->
+<!-- 	    android:layout_width="wrap_content" -->
+<!-- 	    android:layout_height="wrap_content" -->
+<!-- 	    android:layout_toRightOf="@id/editTextStartDate" -->
+<!-- 	    android:layout_below="@id/buttonDisable" -->
+<!-- 	    android:src="@drawable/calendar" -->
+<!-- 	    android:background="@android:color/transparent" -->
+<!-- 	    android:paddingTop="5dp" -->
+<!-- 	    android:paddingLeft="3dp" /> -->
+	
+<!-- 	<EditText  -->
+<!-- 	    android:id="@+id/editTextEndDate" -->
+<!-- 		android:layout_width="150dp"  -->
+<!-- 		android:layout_height="wrap_content" -->
+<!-- 		android:singleLine="true"  -->
+<!-- 		android:layout_below="@id/editTextStartDate" -->
+<!-- 		android:layout_toRightOf="@id/textViewEndDate" -->
+<!-- 		android:layout_alignLeft="@id/editTextStartDate" -->
+<!-- 		android:editable="false" /> -->
+	
+<!-- 	<ImageButton  -->
+<!-- 	    android:id="@+id/endDatePickerButton" -->
+<!-- 	    android:layout_width="wrap_content" -->
+<!-- 	    android:layout_height="wrap_content" -->
+<!-- 	    android:layout_toRightOf="@id/editTextEndDate" -->
+<!-- 	    android:layout_below="@id/editTextStartDate" -->
+<!-- 	    android:src="@drawable/calendar" -->
+<!-- 	    android:background="@android:color/transparent" -->
+<!-- 	    android:paddingTop="5dp" -->
+<!-- 	    android:paddingLeft="3dp" /> -->
+	
+<!-- 	<EditText  -->
+<!-- 	    android:id="@+id/editTextStartTime" -->
+<!-- 		android:layout_width="150dp"  -->
+<!-- 		android:layout_height="wrap_content" -->
+<!-- 		android:singleLine="true"  -->
+<!-- 		android:layout_below="@id/editTextEndDate" -->
+<!-- 		android:layout_toRightOf="@id/textViewStartTime" -->
+<!-- 		android:layout_alignLeft="@id/editTextEndDate" -->
+<!-- 		android:editable="false" /> -->
+	
+<!-- 	<ImageButton  -->
+<!-- 	    android:id="@+id/startTimePickerButton" -->
+<!-- 	    android:layout_width="wrap_content" -->
+<!-- 	    android:layout_height="wrap_content" -->
+<!-- 	    android:layout_toRightOf="@id/editTextStartTime" -->
+<!-- 	    android:layout_below="@id/editTextEndDate" -->
+<!-- 	    android:src="@drawable/clock" -->
+<!-- 	    android:background="@android:color/transparent" -->
+<!-- 	    android:paddingTop="5dp" -->
+<!-- 	    android:paddingLeft="3dp" /> -->
+	
+<!-- 	<EditText  -->
+<!-- 	    android:id="@+id/editTextEndTime" -->
+<!-- 		android:layout_width="150dp"  -->
+<!-- 		android:layout_height="wrap_content" -->
+<!-- 		android:singleLine="true"  -->
+<!-- 		android:layout_below="@id/editTextStartTime" -->
+<!-- 		android:layout_toRightOf="@id/textViewEndTime" -->
+<!-- 		android:layout_alignLeft="@id/editTextStartTime" -->
+<!-- 		android:editable="false" /> -->
+	
+<!-- 	<ImageButton  -->
+<!-- 	    android:id="@+id/endTimePickerButton" -->
+<!-- 	    android:layout_width="wrap_content" -->
+<!-- 	    android:layout_height="wrap_content" -->
+<!-- 	    android:layout_toRightOf="@id/editTextEndTime" -->
+<!-- 	    android:layout_below="@id/editTextStartTime" -->
+<!-- 	    android:src="@drawable/clock" -->
+<!-- 	    android:background="@android:color/transparent" -->
+<!-- 	    android:paddingTop="5dp" -->
+<!-- 	    android:paddingLeft="3dp" /> -->
+	
+<!-- </RelativeLayout> -->
+
+<!--    <LinearLayout  -->
+<!--     android:id="@+id/buttonContainer"  -->
+<!--     style="@style/horizontal_hfill_vwrap" -->
+<!-- 	android:gravity="center_horizontal"  -->
+<!-- 	android:paddingTop="10dip" -->
+<!-- 	android:paddingBottom="2dip"> -->
+	
+<!-- 	<Button  -->
+<!-- 	    android:text="Limpiar"  -->
+<!-- 	    android:layout_width="140dp" -->
+<!-- 		android:layout_height="wrap_content"  -->
+<!-- 		android:onClick="onLimpiarClick" /> -->
+	
+<!-- 	<Button  -->
+<!-- 	    android:text="Aceptar"  -->
+<!-- 	    android:layout_width="140dp" -->
+<!-- 		android:layout_height="wrap_content"  -->
+<!-- 		android:onClick="onAceptarClick" /> -->
+<!-- </LinearLayout> -->

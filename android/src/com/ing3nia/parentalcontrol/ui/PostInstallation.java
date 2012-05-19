@@ -25,7 +25,7 @@ public class PostInstallation extends Activity {
 	}
 
 	public void onChildClick(View view) {
-		Intent i = new Intent(PostInstallation.this, RegisterSmartphone.class);
-		startActivity(i);		
+//		Intent i = new Intent(PostInstallation.this, RegisterSmartphone.class);
+//		startActivity(i);		
 	}
 }

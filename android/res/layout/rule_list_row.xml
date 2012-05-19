@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1"
+    android:paddingRight="15dp"
+    android:paddingTop="15dp"
+    android:paddingLeft="9dp"
+    android:paddingBottom="9dp" >
+    <TableRow>
+        <TextView
+	        android:id="@+id/ruleName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="Disable Calls Rule"
+	        android:textColor="@color/blanco"
+	        android:textSize="20sp"
+	        android:textStyle="bold" />
+        
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+    </TableRow>
+    <TableRow>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+			
+            <TextView
+                android:id="@+id/startLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="START: "
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/startDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ruleName"
+                android:text="12/01/2011 - 10:00:00 AM"
+                android:textSize="13sp" />          
+		</LinearLayout>
+        
+        <ImageView
+            android:id="@+id/ruleStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:src="@drawable/ic_rule_allow" />
+
+    </TableRow>
+    <TableRow>
+        <LinearLayout 
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal" >
+			
+            <TextView
+                android:id="@+id/endLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="END: "
+                android:textSize="13sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/endDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/startDate"
+                android:text="30/11/2011 - 01:00:00 AM"
+                android:textSize="13sp" />          
+		</LinearLayout>
+        
+        <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" />
+    </TableRow>
+</TableLayout>
+    
+<!--     <TableRow> -->
+<!--         <TextView -->
+<!--             android:id="@+id/ruleName" -->
+<!--             android:padding="10dp" -->
+<!--             android:layout_width="fill_parent" -->
+<!-- 	    	android:layout_height="wrap_content" -->
+<!-- 	    	android:text="Disable Calls Rule" -->
+<!-- 	    	android:textSize="20sp" -->
+<!-- 	    	android:textStyle="bold" -->
+<!-- 	    	android:textColor="@color/orange" /> -->
+        
+<!--     </TableRow> -->
+<!--     <TableRow> -->
+<!--         <LinearLayout  -->
+<!-- 			android:layout_width="fill_parent" -->
+<!-- 			android:layout_height="wrap_content" -->
+<!-- 			android:orientation="horizontal" > -->
+			
+<!--             <LinearLayout  -->
+<!-- 				android:layout_width="wrap_content" -->
+<!-- 				android:layout_height="wrap_content" -->
+<!-- 				android:orientation="vertical" -->
+<!-- 				android:gravity="left" > -->
+				
+<!-- 	         	<TextView -->
+<!-- 	         	    android:id="@+id/startDate" -->
+<!-- 	         	    android:layout_width="wrap_content" -->
+<!-- 	         	    android:layout_height="wrap_content" -->
+<!-- 	         	    android:text="12/01/2011" -->
+<!-- 	         	    android:textSize="20sp" /> -->
+	         	
+<!-- 	         	<TextView -->
+<!-- 		            android:id="@+id/startTime" -->
+<!-- 		            android:layout_width="wrap_content" -->
+<!-- 		    		android:layout_height="wrap_content" -->
+<!-- 		    		android:text="10:00:00 AM" -->
+<!-- 		    		android:textSize="20sp" /> -->
+	            
+<!-- 			</LinearLayout> -->
+			
+<!-- 	       	<TextView -->
+<!-- 	            android:id="@+id/separator" -->
+<!-- 	            android:layout_width="wrap_content" -->
+<!-- 		    	android:layout_height="wrap_content" -->
+<!-- 		    	android:text="-" -->
+<!-- 		    	android:gravity="center" -->
+<!-- 		    	android:textSize="50sp" /> -->
+	        
+<!-- 	        <LinearLayout  -->
+<!-- 				android:layout_width="fill_parent" -->
+<!-- 				android:layout_height="wrap_content" -->
+<!-- 				android:orientation="vertical" -->
+<!-- 				android:gravity="right" > -->
+				
+<!-- 	         	<TextView -->
+<!-- 	         	    android:id="@+id/endDate" -->
+<!-- 	         	    android:layout_width="wrap_content" -->
+<!-- 	         	    android:layout_height="wrap_content" -->
+<!-- 	         	    android:text="15/01/2011" -->
+<!-- 	         	    android:textSize="20sp" /> -->
+	         	
+<!-- 	         	<TextView -->
+<!-- 		            android:id="@+id/endTime" -->
+<!-- 		            android:layout_width="wrap_content" -->
+<!-- 		    		android:layout_height="wrap_content" -->
+<!-- 		    		android:text="10:30:00 AM" -->
+<!-- 		    		android:textSize="20sp" /> -->
+	            
+<!-- 			</LinearLayout> -->
+		
+<!-- 		</LinearLayout> -->
+<!--     </TableRow> -->
+<!-- </TableLayout> -->

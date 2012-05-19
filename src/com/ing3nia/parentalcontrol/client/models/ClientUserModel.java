@@ -3,10 +3,6 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.ing3nia.parentalcontrol.services.models.utils.GeoPtModelUtils;
-import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
-
 public class ClientUserModel implements Serializable {
 	/**
 	 * 

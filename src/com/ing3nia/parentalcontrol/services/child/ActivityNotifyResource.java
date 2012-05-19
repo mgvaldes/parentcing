@@ -3,7 +3,6 @@ package com.ing3nia.parentalcontrol.services.child;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
@@ -23,7 +22,6 @@ import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.client.models.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.models.PCNotification;
-import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCServiceStatistics;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;

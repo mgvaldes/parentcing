@@ -7,16 +7,12 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import com.google.appengine.api.datastore.Key;
 import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCSession;
 import com.ing3nia.parentalcontrol.models.PCUser;
-import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
-import com.ing3nia.parentalcontrol.services.exceptions.NonexistingUserException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.parent.ParentTestResource;
 
