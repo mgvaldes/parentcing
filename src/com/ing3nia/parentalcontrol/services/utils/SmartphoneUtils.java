@@ -3,6 +3,7 @@ package com.ing3nia.parentalcontrol.services.utils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 import javax.jdo.Query;
@@ -10,9 +11,16 @@ import javax.jdo.Query;
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.ing3nia.parentalcontrol.client.models.NotificationModel;
+import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
@@ -25,6 +33,8 @@ import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
+import com.ing3nia.parentalcontrol.services.child.RegisterSmartphoneResource;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 
 
 /**
@@ -38,6 +48,8 @@ import com.ing3nia.parentalcontrol.models.PCUser;
  *
  */
 public class SmartphoneUtils {
+	
+	private static Logger logger = Logger.getLogger(SmartphoneUtils.class.getName());
 	
 	/**
 	 * Returns smartphone general information as a json object
@@ -80,6 +92,111 @@ public class SmartphoneUtils {
 		return smpJson;
 	}
 	
+	/**
+	 * Returns smartphone general information as a json object
+	 */
+	public static JsonObject getSmartphoneGeneralInfoCache(Key pcSmartKey){
+		
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		String smid = KeyFactory.keyToString(pcSmartKey);
+		
+	    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+	    //System.out.println("Looking in cache "+SmartphoneCacheParams.SMARTPHONE+smid);
+	    
+	    SmartphoneCacheModel smphCacheModel = null;
+	    PCSmartphone pcSmart = null;
+	    IdentifiableValue ident = syncCache.getIdentifiable(SmartphoneCacheParams.SMARTPHONE+smid);
+	    
+	    if(ident==null){
+	    	logger.info("Smartphone: "+smid+" not in cache. Getting from datastore");
+	    	pcSmart = pm.getObjectById(PCSmartphone.class, pcSmartKey);
+	    	logger.info("Setting smartphone to cache and continuing");
+	    	WriteToCache.writeSmartphoneToCache(pcSmart);
+	    }else{
+	    	smphCacheModel = (SmartphoneCacheModel) ident.getValue();
+	    	logger.info("Smartphone: "+smid+" found in cache");
+	    }
+	    
+		JsonObject smpJson = new JsonObject();
+		smpJson.addProperty("keyId", KeyFactory.keyToString(pcSmartKey));
+		
+		if(smphCacheModel != null){
+			smpJson.addProperty("name",smphCacheModel.getName());
+		}else{
+			smpJson.addProperty("name", pcSmart.getName());
+		}
+		
+		if(smphCacheModel != null){
+			JsonObject deviceJson = new JsonObject();
+			deviceJson.addProperty("model", smphCacheModel.getDevice().getModel());
+			deviceJson.addProperty("version", smphCacheModel.getDevice().getVersion());
+			deviceJson.addProperty("type", smphCacheModel.getDevice().getType());
+			smpJson.add("device", deviceJson);
+		}else{
+			JsonObject deviceJson = new JsonObject();
+			PCDevice device = pm.getObjectById(PCDevice.class, pcSmart.getDevice());
+			deviceJson.addProperty("model", device.getModel());
+			deviceJson.addProperty("version", device.getVersion());
+			deviceJson.addProperty("type", device.getOs().getId());
+			smpJson.add("device", deviceJson);
+		}
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		JsonArray alertsJson = new JsonArray();
+		
+		logger.info("Looking in cache for alerts" + smid
+				+ SmartphoneCacheParams.ALERTS);
+		ident = syncCache.getIdentifiable(smid
+				+ SmartphoneCacheParams.ALERTS);
+		
+		if (smphCacheModel != null && ident != null) {
+
+			ArrayList<NotificationModel> notifications = (ArrayList<NotificationModel>) ident
+					.getValue();
+
+			for (NotificationModel alertModel : notifications) {
+				JsonObject alert = new JsonObject();
+				alert.addProperty("type", alertModel.getType());
+				alert.addProperty("date",
+						formatter.format(alertModel.getDate()));
+				alertsJson.add(alert);
+
+			}
+			smpJson.add("alerts", alertsJson);		
+		}else{
+			ArrayList<PCNotification> pcNotificationList = new ArrayList<PCNotification>();
+			for(Key notKey : pcSmart.getNotifications()){
+				PCNotification notif = (PCNotification) pm.getObjectById(PCNotification.class, notKey);
+				JsonObject alert = new JsonObject();
+				alert.addProperty("type", notif.getType());
+				alert.addProperty("date", formatter.format(notif.getDate()));
+				alertsJson.add(alert);
+				
+				pcNotificationList.add(notif);
+			}
+			smpJson.add("alerts", alertsJson);
+			logger.info("Writing smartphone alerts to cache");
+			WriteToCache.writeSmartphoneAlertsToCache(pcSmart.getKey(), pcNotificationList);
+		}
+
+		
+		JsonObject locJson = new JsonObject();
+		
+		if(smphCacheModel != null && smphCacheModel.getLocation() != null){
+			locJson.addProperty("latitude", smphCacheModel.getLocation().getLatitude());
+			locJson.addProperty("longitude", smphCacheModel.getLocation().getLongitude());
+		}else{
+			locJson.addProperty("latitude", pcSmart.getLocation().getLatitude());
+			locJson.addProperty("longitude", pcSmart.getLocation().getLongitude());			
+		}
+		
+		smpJson.add("location", locJson);
+		pm.close();
+		
+		return smpJson;
+	}
+	
 	
 	/**
 	 * Returns a json array containing the general information of the children smartphones 
@@ -90,6 +207,22 @@ public class SmartphoneUtils {
 		
 		for(Key smartphoneKey : user.getSmartphones()){
 			JsonObject smpGrlInfo = getSmartphoneGeneralInfo(smartphoneKey);
+			smpList.add(smpGrlInfo);
+		}
+		
+		return smpList;
+	}
+	
+	
+	/**
+	 * Returns a json array containing the general information of the children smartphones 
+	 * corresponding to the given user, getting info from cache
+	 */
+	public static JsonArray getChildrenSmartphonesInfoCache(PCUser user){
+		JsonArray smpList = new JsonArray();
+		
+		for(Key smartphoneKey : user.getSmartphones()){
+			JsonObject smpGrlInfo = getSmartphoneGeneralInfoCache(smartphoneKey);
 			smpList.add(smpGrlInfo);
 		}
 		
