@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.services.models.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.jdo.PersistenceManager;
 
@@ -21,5 +22,27 @@ public class PropertyModelUtils {
 		pm.close();
 		
 		return p;
+	}
+	
+	public static void removeProperty(ArrayList<PropertyModel> properties, String keyId) {
+		int position = 0;
+		boolean found = false;
+		int size = properties.size();
+		
+		for (int i = 0; i < size; i++) {
+			if (properties.get(i).getKeyId().equals(keyId)) {
+				position = i;
+				found = true;
+				break;
+			}
+		}
+		
+		if (found) {
+			properties.remove(position);
+		}
+	}
+	
+	public static void addProperty(PersistenceManager pm, ArrayList<PropertyModel> properties, Key keyId) {
+		properties.add(convertToPropertyModel(keyId));
 	}
 }

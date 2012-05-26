@@ -156,7 +156,8 @@ public class SessionUtils {
 			if (!results.isEmpty()) {
 				logger.info("[SessionUtils] Returning found PCSession");
 				return results.get(0);
-			}else{
+			}
+			else{
 				//retry after 3.5 seconds (for high replication)
 				/*long t0,t1;
 				t0 = System.currentTimeMillis();

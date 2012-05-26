@@ -8,8 +8,10 @@ import javax.jdo.PersistenceManager;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
+import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCRule;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class RuleModelUtils {
@@ -40,5 +42,27 @@ public class RuleModelUtils {
 		pm.close();
 		
 		return ruleModel;
+	}
+	
+	public static void removeRule(ArrayList<RuleModel> rules, String keyId) {
+		int position = 0;
+		boolean found = false;
+		int size = rules.size();
+		
+		for (int i = 0; i < size; i++) {
+			if (rules.get(i).getKeyId().equals(keyId)) {
+				position = i;
+				found = true;
+				break;
+			}
+		}
+		
+		if (found) {
+			rules.remove(position);
+		}
+	}
+	
+	public static void addRule(PersistenceManager pm, ArrayList<RuleModel> rules, Key keyId) {
+		rules.add(convertToRuleModel(keyId));
 	}
 }

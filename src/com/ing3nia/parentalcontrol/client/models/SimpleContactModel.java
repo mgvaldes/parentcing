@@ -3,6 +3,10 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import javax.jdo.PersistenceManager;
+
+import com.google.appengine.api.datastore.Key;
+
 public class SimpleContactModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
