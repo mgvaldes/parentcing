@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,7 +22,7 @@ import com.google.appengine.api.datastore.Key;
  *
  */
 @PersistenceCapable
-public class PCContact {
+public class PCContact{
 	/**
 	 * Unique key that identifies the contact.
 	 */

@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.services.models.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +10,9 @@ import java.util.Map;
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
@@ -18,8 +22,12 @@ import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.client.models.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
+import com.ing3nia.parentalcontrol.client.models.RouteModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
+import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.client.utils.PCPropertyType;
 import com.ing3nia.parentalcontrol.models.PCApplication;
@@ -91,7 +99,117 @@ public class SmartphoneModelUtils {
 		return smartphone;
 
 	}
+	
+	// stores pcSmartphone and sets info for smartphoneCacheModel
+	public static void convertToPCSmartphoneAndSetCache(PCSmartphone smartphone, SmartphoneModel smartphoneModel, String smartphoneKey, SmartphoneCacheModel smartphoneCacheModel) throws SessionQueryException {
 
+		ArrayList<Key> pcActiveContacts = new ArrayList<Key>();
+		ArrayList<Key> pcOriginalContacts = new ArrayList<Key>();
+		
+		ArrayList<SimpleContactModel> cacheActiveContacts = new ArrayList<SimpleContactModel>();
+		ArrayList<SimpleContactModel> cacheOriginalContacts = new ArrayList<SimpleContactModel>();
+		
+		
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+
+		for (ContactModel contact : smartphoneModel.getActiveContacts()) {
+			Key pcContact;
+			try{
+				pcContact = ContactModelUtils.convertToPCContact(contact);
+			}catch(Exception e){
+				continue;
+			}
+			pcOriginalContacts.add(pcContact);
+			pcActiveContacts.addAll(ContactModelUtils.saveAsPCSimpleContact(contact));
+			
+			// obtaining contact as simple contact for cache
+			String contactKeyString = KeyFactory.keyToString(pcContact);
+			SimpleContactModel simpleContact = ContactModelUtils.contactModelToSimpleContact(contact, contactKeyString);
+			cacheActiveContacts.add(simpleContact);
+			cacheOriginalContacts.add(simpleContact);
+		}
+
+		smartphone.setLocation(LocationModelUtils.convertToGeoPt(smartphoneModel.getLocation()));
+		smartphone.setActiveContacts(pcActiveContacts);
+		smartphone.setInactiveContacts(new ArrayList<Key>());
+		smartphone.setAddedEmergencyNumbers(new ArrayList<Key>());
+		smartphone.setDeletedEmergencyNumbers(new ArrayList<Key>());
+		smartphone.setRoutes(new ArrayList<Key>());
+		
+		PCProperty speedLimitProperty = new PCProperty();
+		speedLimitProperty.setCreationDate(new Date());
+		speedLimitProperty.setDescription("SPEED_LIMIT");
+		speedLimitProperty.setId(PCPropertyType.SPEED_LIMIT);
+		speedLimitProperty.setValue("5");
+		pm.makePersistent(speedLimitProperty);	
+
+		ArrayList<Key> props = new ArrayList<Key>();
+		props.add(speedLimitProperty.getKey());		
+		smartphone.setProperties(props);
+
+		// Catching properties info for cache
+		ArrayList<PropertyModel> cacheProperties = new ArrayList<PropertyModel>();
+		PropertyModel cacheProperty = new PropertyModel();
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		cacheProperty.setCreationDate(formatter.format(speedLimitProperty.getCreationDate()));
+		cacheProperty.setDescription(speedLimitProperty.getDescription());
+		cacheProperty.setId(speedLimitProperty.getId());
+		cacheProperty.setKeyId(KeyFactory.keyToString(speedLimitProperty.getKey()));
+		cacheProperty.setValue(speedLimitProperty.getValue());
+	
+		PCModification mod = new PCModification();
+		pm.makePersistent(mod);		
+		smartphone.setModification(mod.getKey());
+		
+		smartphone.setRules(new ArrayList<Key>());
+		smartphone.setNotifications(new ArrayList<Key>());
+		smartphone.setName(smartphoneModel.getName());
+		smartphone.setDevice(DeviceModelUtils.convertToPCDevice(smartphoneModel.getDevice()));
+		smartphone.setSerialNumber(smartphoneModel.getSerialNumber());
+		smartphone.setApplication(ApplicationModel.findPCApplicationByAppVersion(smartphoneModel.getAppVersion(), pm));
+		smartphone.setOriginalContacts(pcOriginalContacts);
+
+		// setting cache info
+		setCacheSmartphoneInfo(smartphoneCacheModel, smartphone, smartphoneKey, cacheActiveContacts, cacheOriginalContacts, cacheProperties, null, smartphoneModel.getDevice() );
+		
+		pm.close();
+
+	}
+
+	public static void setCacheSmartphoneInfo(SmartphoneCacheModel smartphoneCacheModel, PCSmartphone pcSmartphone, String smartphoneKey, ArrayList<SimpleContactModel> activeContacts, ArrayList<SimpleContactModel> originalContacts, ArrayList<PropertyModel> properties, ApplicationModel application, DeviceModel device){
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.ACTIVE_CONTACTS, activeContacts, null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.ORIGINAL_CONTACTS, originalContacts, null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.PROPERTIES,properties, null);
+		
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.INACTIVE_CONTACTS,new ArrayList<SimpleContactModel>(), null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.ADD_EMERGENCY_NUMBERS,new ArrayList<EmergencyNumberModel>(), null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.DELETE_EMERGENCY_NUMBERS,new ArrayList<EmergencyNumberModel>(), null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.ROUTES,new ArrayList<RouteModel>(), null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.RULES,new ArrayList<RuleModel>(), null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.ALERTS,new ArrayList<NotificationModel>(), null);
+		
+		smartphoneCacheModel.setKeyId(smartphoneKey);
+		smartphoneCacheModel.setName(pcSmartphone.getName());
+		smartphoneCacheModel.setSerialNumber(pcSmartphone.getSerialNumber());
+		//smartphoneCacheModel.setApplication(application); Not for the moment
+		smartphoneCacheModel.setDevice(device);
+		
+		System.out.println("SETTING IN CACHE "+SmartphoneCacheParams.SMARTPHONE+smartphoneKey);
+		System.out.println("SETTING IN CACHE "+smartphoneKey+SmartphoneCacheParams.ACTIVE_CONTACTS);
+		syncCache.put(SmartphoneCacheParams.SMARTPHONE+smartphoneKey, smartphoneCacheModel);
+	}
+	
+	public ArrayList<String> getKeyToString(ArrayList<Key> keyList){
+		ArrayList<String> stringList = new ArrayList<String>();
+		for(Key key : keyList){
+			stringList.add(KeyFactory.keyToString(key));
+		}
+		return stringList;
+	}
+	
 	public static ArrayList<ContactModel> convertContacts(ArrayList<PCSimpleContact> pcContacts) {
 		ArrayList<ContactModel> contactsList = new ArrayList<ContactModel>();
 		HashMap<String, ArrayList<PhoneModel>> auxContactsHashMap = new HashMap<String, ArrayList<PhoneModel>>();
