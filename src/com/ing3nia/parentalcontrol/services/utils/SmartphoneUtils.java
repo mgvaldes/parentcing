@@ -18,6 +18,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.ing3nia.parentalcontrol.client.models.NotificationModel;
+import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
@@ -145,26 +146,36 @@ public class SmartphoneUtils {
 		
 		JsonArray alertsJson = new JsonArray();
 		
-		logger.info("Looking in cache for alerts" + smid
-				+ SmartphoneCacheParams.ALERTS);
-		ident = syncCache.getIdentifiable(smid
-				+ SmartphoneCacheParams.ALERTS);
+		logger.info("Looking in cache for alerts: " + smid+ SmartphoneCacheParams.ALERTS);
+		ident = syncCache.getIdentifiable(smid + SmartphoneCacheParams.ALERTS);
 		
 		if (smphCacheModel != null && ident != null) {
 
 			ArrayList<NotificationModel> notifications = (ArrayList<NotificationModel>) ident
 					.getValue();
 
+			logger.info("Alerts found. Iterating through: "+notifications.size()+" alerts");
 			for (NotificationModel alertModel : notifications) {
 				JsonObject alert = new JsonObject();
 				alert.addProperty("type", alertModel.getType());
-				alert.addProperty("date",
-						formatter.format(alertModel.getDate()));
+				
+				
+				/*
+				String formattedDate;
+				try{
+					formattedDate = formatter.format(alertModel.getDate());
+				}catch(Exception e){
+					formattedDate = "00/00/0000 00:00:00 AM";
+					logger.warning("Alert Date could not be formatted properly: "+alertModel.getDate());
+				}*/
+				alert.addProperty("date",alertModel.getDate());
+				
 				alertsJson.add(alert);
 
 			}
 			smpJson.add("alerts", alertsJson);		
-		}else{
+		} else{
+			logger.info("Alerts not found in cache");
 			ArrayList<PCNotification> pcNotificationList = new ArrayList<PCNotification>();
 			for(Key notKey : pcSmart.getNotifications()){
 				PCNotification notif = (PCNotification) pm.getObjectById(PCNotification.class, notKey);
@@ -408,4 +419,318 @@ public class SmartphoneUtils {
 
 		return detailsJson;
 	}
+	
+	/**
+	 * Returns a json array containing detailed information about a given smartphone. 'smartphone' can be null
+	 */
+	public static JsonObject getSmartphoneDetailsCache(String smid, PCSmartphone smartphone){
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+
+		JsonObject detailsJson = new JsonObject();
+		
+		//Obtaining and parsing inactive contacts
+		JsonArray inactiveArray = new JsonArray();
+		
+		logger.info("[Smartphone Details - Cache] Getting inactive contacts");
+		ArrayList<SimpleContactModel> inactiveContacts = null;
+
+		IdentifiableValue ident = syncCache.getIdentifiable(smid
+				+ SmartphoneCacheParams.INACTIVE_CONTACTS);
+		if (ident == null) {
+			logger.info("[Smartphone Details - Cache] Inactive contacts: " + smid
+					+ " not in cache. Getting smartphone from datastore");
+			if (smartphone == null) {
+				Key pcSmartKey = KeyFactory.stringToKey(smid);
+				smartphone = pm.getObjectById(PCSmartphone.class, pcSmartKey);
+				logger.info("[Smartphone Details - Cache] Setting smartphone to cache and continuing");
+				WriteToCache.writeSmartphoneToCache(smartphone);
+			}
+			
+			logger.info("[Smartphone Details - Cache] Inactive contacts will be obtained from datastore and set to cache");
+
+		} else {
+			inactiveContacts = (ArrayList<SimpleContactModel>) ident.getValue();
+			logger.info("[Smartphone Details - Cache] Inactive contacts: " + smid
+					+ " found in cache. Size: " + inactiveContacts.size());
+		}
+
+		if (inactiveContacts != null) {
+			logger.info("[Smartphone Details - Cache] Iterating cache inactive contacts");
+			for(SimpleContactModel simpleContact : inactiveContacts){
+				JsonObject contactJson = new JsonObject();
+				contactJson.addProperty("id", simpleContact.getKeyId());
+				contactJson.addProperty("fname", simpleContact.getFirstName());
+				contactJson.addProperty("lname", simpleContact.getLastName());
+
+				JsonArray contactNumsJson = new JsonArray();
+
+				if (simpleContact.getPhones().size() > 0) {
+					PhoneModel phone = simpleContact.getPhones().get(0);
+					JsonObject phoneJson = new JsonObject();
+					phoneJson.addProperty("type", phone.getType());
+					phoneJson.addProperty("phone", phone.getPhoneNumber());
+					contactNumsJson.add(phoneJson);
+				}else{
+					JsonObject phoneJson = new JsonObject();
+					phoneJson.addProperty("type", "0");
+					phoneJson.addProperty("phone", "-");
+					contactNumsJson.add(phoneJson);
+				}
+
+				contactJson.add("num", contactNumsJson);
+				inactiveArray.add(contactJson);
+			}
+			
+		} else {
+			logger.info("[Smartphone Details - Cache] Obtaining inactive contacts from datastore");
+			ArrayList<PCSimpleContact> inactiveContactsDSList = new ArrayList<PCSimpleContact>();
+			ArrayList<PCPhone> inactiveContactsPhoneList = new ArrayList<PCPhone>();
+			for (Key contactKey : smartphone.getInactiveContacts()) {
+				JsonObject contactJson = new JsonObject();
+				PCSimpleContact contact = (PCSimpleContact) pm.getObjectById(
+						PCSimpleContact.class, contactKey);
+				inactiveContactsDSList.add(contact);
+				
+				contactJson.addProperty("id",
+						KeyFactory.keyToString(contactKey));
+				contactJson.addProperty("fname", contact.getFirstName());
+				contactJson.addProperty("lname", contact.getLastName());
+
+				JsonArray contactNumsJson = new JsonArray();
+
+				PCPhone p = (PCPhone) pm.getObjectById(PCPhone.class,
+						contact.getPhone());
+				inactiveContactsPhoneList.add(p);
+				
+				JsonObject phoneJson = new JsonObject();
+				phoneJson.addProperty("type", p.getType());
+				phoneJson.addProperty("phone", p.getPhoneNumber());
+				contactNumsJson.add(phoneJson);
+
+				contactJson.add("num", contactNumsJson);
+				inactiveArray.add(contactJson);
+			}
+			logger.info("[Smartphone Details - Cache] Writing to cache inactive contact list");
+			WriteToCache.writeSmartphoneInactiveContactsToCache(smid, inactiveContactsDSList, inactiveContactsPhoneList);
+		}
+
+		detailsJson.add("inactive_cts", inactiveArray);
+		
+		//Obtaining and parsing active contacts
+		JsonArray activeArray = new JsonArray();
+		
+		logger.info("[Smartphone Details - Cache] Getting Active contacts");
+		ArrayList<SimpleContactModel> activeContacts = null;
+
+		ident = syncCache.getIdentifiable(smid+ SmartphoneCacheParams.ACTIVE_CONTACTS);
+		if (ident == null) {
+			logger.info("[Smartphone Details - Cache] Active contacts: " + smid
+					+ " not in cache.");
+			
+			if (smartphone == null) {
+				Key pcSmartKey = KeyFactory.stringToKey(smid);
+				smartphone = pm.getObjectById(PCSmartphone.class, pcSmartKey);
+				logger.info("[Smartphone Details - Cache] Setting smartphone to cache and continuing");
+				WriteToCache.writeSmartphoneToCache(smartphone);
+			}
+			logger.info("[Smartphone Details - Cache] Active contacts will be obtained from datastore and set to cache");
+
+		} else {
+			activeContacts = (ArrayList<SimpleContactModel>) ident.getValue();
+			logger.info("[Smartphone Details - Cache] Active contacts: " + smid
+					+ " found in cache. Size: " + activeContacts.size());
+		}
+		
+		if (activeContacts != null) {
+			logger.info("[Smartphone Details - Cache] Iterating cache active contacts");
+			for(SimpleContactModel simpleContact : activeContacts){
+				JsonObject contactJson = new JsonObject();
+				contactJson.addProperty("id", simpleContact.getKeyId());
+				contactJson.addProperty("fname", simpleContact.getFirstName());
+				contactJson.addProperty("lname", simpleContact.getLastName());
+
+				JsonArray contactNumsJson = new JsonArray();
+
+				if (simpleContact.getPhones().size() > 0) {
+					PhoneModel phone = simpleContact.getPhones().get(0);
+					JsonObject phoneJson = new JsonObject();
+					phoneJson.addProperty("type", phone.getType());
+					phoneJson.addProperty("phone", phone.getPhoneNumber());
+					contactNumsJson.add(phoneJson);
+				}else{
+					JsonObject phoneJson = new JsonObject();
+					phoneJson.addProperty("type", "0");
+					phoneJson.addProperty("phone", "-");
+					contactNumsJson.add(phoneJson);
+				}
+
+				contactJson.add("num", contactNumsJson);
+				activeArray.add(contactJson);
+			}
+			
+		} else {
+			logger.info("[Smartphone Details - Cache] Obtaining Active contacts from datastore");
+			ArrayList<PCSimpleContact> activeContactsDSList = new ArrayList<PCSimpleContact>();
+			ArrayList<PCPhone> activeContactsPhoneList = new ArrayList<PCPhone>();
+
+			// for(Key contactKey : smartphone.getActiveContacts()){
+			 for (Key contactKey : smartphone.getActiveContacts()) {
+				PCSimpleContact contact = (PCSimpleContact) pm.getObjectById(
+						PCSimpleContact.class, contactKey);
+				activeContactsDSList.add(contact);
+				
+				JsonObject contactJson = new JsonObject();
+				// PCSimpleContact contact =
+				// (PCSimpleContact)pm.getObjectById(PCSimpleContact.class,
+				// contactKey);
+				// contactJson.addProperty("id",
+				// KeyFactory.keyToString(contactKey));
+				contactJson.addProperty("id",
+						KeyFactory.keyToString(contact.getKey()));
+				contactJson.addProperty("fname", contact.getFirstName());
+				contactJson.addProperty("lname", contact.getLastName());
+
+				JsonArray contactNumsJson = new JsonArray();
+
+				PCPhone p = (PCPhone) pm.getObjectById(PCPhone.class,
+						contact.getPhone());
+				activeContactsPhoneList.add(p);
+				
+				JsonObject phoneJson = new JsonObject();
+				phoneJson.addProperty("type", p.getType());
+				phoneJson.addProperty("phone", p.getPhoneNumber());
+				contactNumsJson.add(phoneJson);
+
+				contactJson.add("num", contactNumsJson);
+				activeArray.add(contactJson);
+				
+			}
+				logger.info("[Smartphone Details - Cache] Writing to cache active contact list");
+				WriteToCache.writeSmartphoneActiveContactsToCache(smid, activeContactsDSList, activeContactsPhoneList);
+		}
+		detailsJson.add("active_cts", activeArray);
+		
+		//Obtaining and parsing added emergency numbers
+		JsonArray emergencyArray = new JsonArray();
+		
+		if(smartphone==null){ /////// CAMBIAR
+			Key pcSmartKey = KeyFactory.stringToKey(smid);
+			smartphone = pm.getObjectById(PCSmartphone.class, pcSmartKey);
+		}
+		
+		
+		for(Key contactKey : smartphone.getAddedEmergencyNumbers()){
+			JsonObject contactJson = new JsonObject();
+			PCEmergencyNumber contact = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, contactKey);
+			contactJson.addProperty("keyId", KeyFactory.keyToString(contactKey));
+			contactJson.addProperty("country",contact.getCountry());
+			contactJson.addProperty("description", contact.getDescription());
+			contactJson.addProperty("number", contact.getNumber());
+			
+			emergencyArray.add(contactJson);
+		}
+		detailsJson.add("addedEmergencyNumbers", emergencyArray);
+		
+		//Obtaining and parsing deleted emergency numbers
+		JsonArray emergencyDeletedArray = new JsonArray();
+		
+		for(Key contactKey : smartphone.getDeletedEmergencyNumbers()){
+			JsonObject contactJson = new JsonObject();
+			PCEmergencyNumber contact = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, contactKey);
+			contactJson.addProperty("keyId", KeyFactory.keyToString(contactKey));
+			contactJson.addProperty("country",contact.getCountry());
+			contactJson.addProperty("description", contact.getDescription());
+			contactJson.addProperty("number", contact.getNumber());
+			
+			emergencyDeletedArray.add(contactJson);
+		}
+		detailsJson.add("deletedEmergencyNumbers", emergencyDeletedArray);
+		
+		//Obtaining and parsing properties
+		JsonArray propsArray = new JsonArray();
+		PCProperty auxProp;
+		
+		if (smartphone.getProperties() != null) {
+			for (Key property : smartphone.getProperties()) {
+				auxProp = pm.getObjectById(PCProperty.class, property);
+				JsonObject propertyJson = new JsonObject();
+
+				propertyJson.addProperty("keyId", KeyFactory.keyToString(property));
+				propertyJson.addProperty("id", auxProp.getId());
+				propertyJson.addProperty("description", auxProp.getDescription());
+				propertyJson.addProperty("value", auxProp.getValue());
+
+				propsArray.add(propertyJson);
+			}
+		}
+		detailsJson.add("properties", propsArray);
+
+		//Obtaining and parsing rules
+		JsonArray rulesArray = new JsonArray();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		PCRule auxRule;
+		String ruleKey;
+		
+		if (smartphone.getRules() != null) {
+			for (Key rule : smartphone.getRules()) {
+				auxRule = pm.getObjectById(PCRule.class, rule);
+				JsonObject ruleJson = new JsonObject();
+
+				ruleKey = KeyFactory.keyToString(rule);
+				ruleJson.addProperty("keyId", ruleKey);
+				ruleJson.addProperty("startDate", formatter.format(auxRule.getStartDate()));
+				ruleJson.addProperty("endDate", formatter.format(auxRule.getEndDate()));
+				ruleJson.addProperty("name", auxRule.getName());
+				ruleJson.addProperty("type", auxRule.getType());
+
+				JsonArray funcArray = new JsonArray();
+				//ArrayList<PCFunctionality> disabledFuncionalities = (ArrayList<PCFunctionality>)pm.getObjectsById(auxRule.getDisabledFunctionalities());
+				PCFunctionality auxFunc;
+				for (Key func : auxRule.getDisabledFunctionalities()) {
+					auxFunc = pm.getObjectById(PCFunctionality.class, func);
+					funcArray.add(new JsonPrimitive(auxFunc.getId()));
+				}
+				ruleJson.add("disabledFunctionalities", funcArray);
+				rulesArray.add(ruleJson);
+			}
+		}
+		detailsJson.add("rules", rulesArray);
+		
+		
+		JsonArray routesArray = new JsonArray();
+		PCRoute auxRoute;
+		String routeKey;
+		if(smartphone.getRoutes() != null && smartphone.getRoutes().size()>1){
+			
+			
+			//for(Key route : smartphone.getRoutes()){
+			
+			// just taking the last route - CHANGEEEEE
+			ArrayList<Key> routes = smartphone.getRoutes();
+			Key route = routes.get(routes.size()-1);
+			
+				auxRoute = pm.getObjectById(PCRoute.class, route);
+				
+				JsonArray points = new JsonArray();
+				ArrayList<GeoPt> routePoints = auxRoute.getRoute();
+				for(GeoPt geopt : routePoints){
+					JsonObject locationObject = new JsonObject();
+					locationObject.addProperty("latitude", String.valueOf(geopt.getLatitude()));
+					locationObject.addProperty("longitude", String.valueOf(geopt.getLongitude()));
+					points.add(locationObject);
+				}	
+				JsonObject routeJson = new JsonObject();
+				
+				routeKey = KeyFactory.keyToString(route);
+				routeJson.addProperty("keyId", routeKey);
+				routeJson.add("points", points);
+				routesArray.add(routeJson);
+			//}
+		}
+		detailsJson.add("routes", routesArray);
+
+		return detailsJson;
+	}
+	
 }

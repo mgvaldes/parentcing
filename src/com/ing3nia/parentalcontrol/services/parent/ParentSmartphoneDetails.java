@@ -12,14 +12,20 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 //import com.google.appengine.api.datastore.Query;
 import com.google.gson.JsonObject;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.models.PCSession;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.child.RegisterSmartphoneResource;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.SmartphoneUtils;
@@ -169,29 +175,46 @@ public class ParentSmartphoneDetails {
 		
 		// get smartphone from provided key
 		logger.info("[Parent Smartphone Details] Obtaining smartphone from provided key "+smid);
-		PCSmartphone smartphone;
-		try{
-			 smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smid));
-			 
-		} catch(IllegalArgumentException e){
-			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
-			return rbuilder.build();
-		}
+		PCSmartphone smartphone = null;
+		SmartphoneCacheModel smphCacheModel = null;
 		
-		if(smartphone == null){
+		logger.info("[Parent Smartphone Details - Cache] Trying to get smartphone from cache first");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+	    
+		IdentifiableValue ident = syncCache.getIdentifiable(SmartphoneCacheParams.SMARTPHONE+smid);
+	    if(ident==null){
+	    	logger.info("Smartphone: "+smid+" not in cache. Getting from datastore");
+	    	
+			try{
+				 smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smid));
+				 
+			} catch(IllegalArgumentException e){
+				rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+				WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+				return rbuilder.build();
+			}
+			
+	    	logger.info("Setting smartphone to cache and continuing");
+	    	WriteToCache.writeSmartphoneToCache(smartphone);
+	    }else{
+	    	smphCacheModel = (SmartphoneCacheModel) ident.getValue();
+	    	logger.info("Smartphone: "+smid+" found in cache");
+	    }
+		
+		logger.info("[Parent Smartphone Details] Obtaining smarpthone details");
+		JsonObject smartphoneInfo = null;
+	    
+	    if(smphCacheModel == null && smartphone == null){
 			logger.severe("[Parent Smartphone Details] No smartphone found from the given key "+smid);
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
-		}
-		pm.close();
-	
-		logger.info("SMARTPHONE RULES: "+smartphone.getRules());
-		logger.info("SMARTPHONE PROPS: "+smartphone.getProperties());
+	    }
 		
-		logger.info("[Parent Smartphone Details] Obtaining smarpthone details");
-		JsonObject smartphoneInfo = SmartphoneUtils.getSmartphoneDetails(smartphone);
+	    smartphoneInfo = SmartphoneUtils.getSmartphoneDetailsCache(smid, smartphone);
+
+		pm.close();
+
 		
 		JsonObject responseMsg = WSStatus.OK.getStatusAsJson();
 		responseMsg.add("smartphone", smartphoneInfo);
