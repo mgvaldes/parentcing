@@ -36,6 +36,10 @@ import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
  */
 @Path("smartphone-grl")
 public class ParentSmartphoneGeneral {
+	public String NEW_WS = "new";
+    public String OLD_WS = "old";
+    public String ACTUAL = NEW_WS;
+	
 	
 	private static final Logger logger = Logger
 	.getLogger(ParentSmartphoneGeneral.class.getName());
@@ -50,6 +54,14 @@ public class ParentSmartphoneGeneral {
 	 * Returns general information of the children smartphones associated to a given user
 	 */
 	public Response get(@QueryParam(value = "cid") final String cookie) {
+        
+//		if (ACTUAL.equals(NEW_WS)) {
+//	            return newWS(cookie);
+//	    }
+	    return oldWS(cookie);
+	}	
+	
+	public Response oldWS(String cookie){
 		
 		logger.info("[Parent Smartphone General] Obtaining session from request");
 		

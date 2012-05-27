@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.client.models.AddressModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.OrganizationModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
+import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.models.PCAddress;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCOrganization;
@@ -143,5 +145,27 @@ public class ContactModelUtils {
 		contact.setOrganizations(organizations);
 		
 		return contact;
+	}
+	
+	public static SimpleContactModel contactModelToSimpleContact(ContactModel contact, String contactKey){
+		SimpleContactModel simpleContact = new SimpleContactModel();
+		simpleContact.setFirstName(contact.getFirstName());
+		simpleContact.setLastName(contact.getLastName());
+		ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
+		
+		PhoneModel phoneModel = new PhoneModel();
+		phoneModel.setPhoneNumber("000");
+		phoneModel.setType(1);
+		
+		if(contact.getPhones().size() >=1){
+			phoneModel.setPhoneNumber(contact.getPhones().get(0).getPhoneNumber());
+			phoneModel.setType(1);
+		}
+		
+		phones.add(phoneModel);
+		simpleContact.setPhones(phones);
+		
+		return simpleContact;
+		
 	}
 }

@@ -19,7 +19,6 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
-import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.models.PCSession;
@@ -29,7 +28,6 @@ import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.ModificationParsingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
-import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
 import com.ing3nia.parentalcontrol.services.utils.ModificationUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
@@ -49,7 +47,7 @@ import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 @Path("parent-mod")
 public class ParentSmartphoneModifications {
 	
-	private static final Logger logger = Logger.getLogger(ParentSmartphoneGeneral.class.getName());
+	private static final Logger logger = Logger.getLogger(ParentSmartphoneModifications.class.getName());
 	public String NEW_WS = "new";
 	public String OLD_WS = "old";
 	public String ACTUAL = "new";
@@ -151,15 +149,6 @@ public class ParentSmartphoneModifications {
 		
 		if (cacheIdentSmartphone == null) {
 			//Smartphone is not saved in cache. Save it!
-//			try {
-//				cacheSmartphone = SmartphoneModelUtils.convertToSmartphoneModel(smartphone, pmMod);
-//			}
-//			catch (SessionQueryException e) {
-//				logger.warning("[Parent Modifications - Cache Version] No session exists for the given cookie. " + e.getMessage());
-//				rbuilder = Response.ok(WSStatus.UNEXPECTED_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-//				WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
-//				return rbuilder.build();
-//			}
 		}
 		else {
 			cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();

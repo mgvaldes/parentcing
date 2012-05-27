@@ -7,6 +7,7 @@ public class SmartphoneCacheParams {
 	public static String ALERTS = "-alerts";
 	public static String ACTIVE_CONTACTS = "-active";
 	public static String INACTIVE_CONTACTS = "-inactive";
+	public static String ORIGINAL_CONTACTS = "-original";
 	public static String ADD_EMERGENCY_NUMBERS = "-add-emernum";
 	public static String DELETE_EMERGENCY_NUMBERS = "-del-emernum";
 	public static String ROUTES = "-routes";

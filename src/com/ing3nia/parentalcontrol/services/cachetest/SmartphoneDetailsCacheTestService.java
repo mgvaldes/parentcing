@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.services.cachetest;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,13 +19,19 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModelCache;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
+import com.ing3nia.parentalcontrol.models.PCAddress;
+import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -50,7 +57,48 @@ public class SmartphoneDetailsCacheTestService {
 	public Response doGet(@QueryParam(value = "smid") final String smid) {
 
 		ResponseBuilder rbuilder;
-				
+			
+		/*
+		// testing abstract objects in cache
+		PCContact pcContact = new PCContact();
+		pcContact.setLastName("JULIAN");
+		pcContact.setKey(KeyFactory.stringToKey("ahBwYXJlbnRhbC1jb250cm9schMLEgxQQ1NtYXJ0cGhvbmUYxgEM"));
+		
+		PCAddress pcaddress = new PCAddress();
+		pcaddress.setCity("Barquisimeto");
+		ArrayList<PCAddress> adlist =new ArrayList<PCAddress>();
+		adlist.add(pcaddress);
+		
+		pcContact.setAddresses(adlist);
+		*/
+	    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+	    System.out.println("Looking in cache "+SmartphoneCacheParams.SMARTPHONE+smid);
+	    IdentifiableValue ident = syncCache.getIdentifiable(SmartphoneCacheParams.SMARTPHONE+smid);
+	    
+	    if(ident==null){
+	    	logger.info("Not in cache");
+	    }else{
+	    	SmartphoneCacheModel smphCacheModel = (SmartphoneCacheModel) ident.getValue();
+	    	logger.info(smphCacheModel.getName());
+	    }
+	    
+	    System.out.println("Looking in cache "+smid+SmartphoneCacheParams.ACTIVE_CONTACTS);
+	    ident = syncCache.getIdentifiable(smid+SmartphoneCacheParams.ACTIVE_CONTACTS);
+	    if(ident==null){
+	    	logger.info("Active Contacts not in cache");
+	    }else{
+	    	ArrayList<SimpleContactModel> activeSimple = (ArrayList<SimpleContactModel>) ident.getValue();
+	    	logger.info(activeSimple.size()+"");
+	    	for(SimpleContactModel contact: activeSimple){
+	    		logger.info(contact.getPhones().get(0).getPhoneNumber());
+	    	}
+	    }
+	    
+	    
+		rbuilder = Response.ok("{}", MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+		return rbuilder.build();
+		
 		/*
 		try {
 			addAdminUserModel = jsonParser.fromJson(body, bodyType);
@@ -66,13 +114,18 @@ public class SmartphoneDetailsCacheTestService {
 		
 		//String smid = "ahBwYXJlbnRhbC1jb250cm9schMLEgxQQ1NtYXJ0cGhvbmUYxgEM";
 		
+		/*
 	    String key = smid;
 	    byte[] value;
 
 	    // Using the synchronous cache
 	    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 	    //value = (byte[]) syncCache.get(key); // read from cache
-	    SmartphoneModelCache smodel = (SmartphoneModelCache) syncCache.get(key); // read from cache as model
+	    IdentifiableValue smphIdent = (IdentifiableValue)syncCache.getIdentifiable(key); // read from cache as model
+	    SmartphoneModelCache smodel = null;
+	    if(smphIdent != null){
+	    	smodel = (SmartphoneModelCache) smphIdent.getValue();
+	    }
 	    if (smodel != null) {
 	    	logger.info("Value in cache!!!");
 
@@ -130,12 +183,17 @@ public class SmartphoneDetailsCacheTestService {
 		Type bodyType = new TypeToken<SmartphoneModelCache>(){}.getType();
 		SmartphoneModelCache smodelCacheJson = jsonParser.fromJson(smartphoneInfo, bodyType);
 		
-		syncCache.put(key, smodelCacheJson); // populate cache
+		if(smphIdent == null){
+			syncCache.put(key, smodelCacheJson, null);
+		}else{
+			syncCache.putIfUntouched(key, smphIdent, smodelCacheJson, null); // populate cache
+		}
 	    logger.info("Smartphone successfully set: "+smodelCacheJson.getActiveContacts().size());
 	    
 		rbuilder = Response.ok(responseMsg.toString(), MediaType.APPLICATION_JSON);
 		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();
+		*/
 		
 	}
 	
