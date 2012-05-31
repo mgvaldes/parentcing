@@ -15,8 +15,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
-import org.eclipse.jdt.internal.core.util.KeyToSignature;
-
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -45,6 +43,7 @@ import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.InternalModificationsModel;
 import com.ing3nia.parentalcontrol.services.models.utils.LocationModelUtils;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
@@ -168,7 +167,10 @@ public class InternalModificationsResource {
 			SmartphoneCacheModel cacheSmartphone = null;
 			
 			if (cacheIdentSmartphone == null) {
-				//Smartphone is not saved in cache. Save it!
+				WriteToCache.writeSmartphoneToCache(savedSmartphone);
+				
+				cacheIdentSmartphone = (IdentifiableValue) syncCache.getIdentifiable(smartphoneCacheKey);
+				cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
 			}
 			else {
 				cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
@@ -184,18 +186,30 @@ public class InternalModificationsResource {
 				
 				logger.info("[Internal Modifications Service - Cache Version] Adding location to route list");				
 				
+				String smartphoneRouteCacheKey = internalModsModel.getId() + SmartphoneCacheParams.ROUTES;
+				IdentifiableValue cacheIdentSmartphoneRoute = (IdentifiableValue) syncCache.getIdentifiable(smartphoneRouteCacheKey);
+				ArrayList<RouteModel> cacheSmartphoneRoutes = null;
+				
+				if (cacheIdentSmartphoneRoute == null) {
+					ArrayList<PCRoute> routeList = new ArrayList<PCRoute>();
+					PCRoute auxRoute;
+					ArrayList<Key> routeKeys = savedSmartphone.getRoutes();
+					
+					for (Key key : routeKeys) {
+						auxRoute = pm.getObjectById(PCRoute.class, key);
+						routeList.add(auxRoute);
+					}
+					
+					WriteToCache.writeSmartphoneRoutesToCache(internalModsModel.getId(), routeList);
+					
+					cacheIdentSmartphoneRoute = syncCache.getIdentifiable(smartphoneRouteCacheKey);
+					cacheSmartphoneRoutes = (ArrayList<RouteModel>) cacheIdentSmartphoneRoute.getValue();
+				}
+				else {
+					cacheSmartphoneRoutes = (ArrayList<RouteModel>) cacheIdentSmartphoneRoute.getValue();
+				}
+				
 				if (savedSmartphone.getRoutes() !=null) {
-					String smartphoneRouteCacheKey = internalModsModel.getId() + SmartphoneCacheParams.ROUTES;
-					IdentifiableValue cacheIdentSmartphoneRoute = (IdentifiableValue) syncCache.getIdentifiable(smartphoneRouteCacheKey);
-					ArrayList<RouteModel> cacheSmartphoneRoutes = null;
-					
-					if (cacheIdentSmartphoneRoute == null) {
-						//Smartphone Routes are not saved in cache. Save it!
-					}
-					else {
-						cacheSmartphoneRoutes = (ArrayList<RouteModel>) cacheIdentSmartphoneRoute.getValue();
-					}
-					
 					int savedSize = savedSmartphone.getRoutes().size();
 					int cacheSize = cacheSmartphoneRoutes.size();
 					
@@ -265,12 +279,17 @@ public class InternalModificationsResource {
 						cacheNewRoute.setDate(dateFormatter.format(new Date()));
 						cacheNewRoute.setPoints(new ArrayList<LocationModel>());
 						cacheNewRoute.getPoints().add(internalModsModel.getLocation());
+						cacheSmartphoneRoutes.add(cacheNewRoute);
 					}
 				}
 				else{
 					logger.warning("[Internal Modifications Service - Cache Version] Smartphone routes is null");
 				}
+				
+				WriteToCache.writeSmartphoneRoutesToCache(cacheSmartphoneRoutes, internalModsModel.getId());
 			}
+			
+			WriteToCache.writeSmartphoneToCache(cacheSmartphone);
 			
 			logger.info("[Internal Modifications Service - Cache Version] Getting modification from saved smartphone");
 			Key modificationKey = savedSmartphone.getModification();
@@ -281,7 +300,10 @@ public class InternalModificationsResource {
 			ModificationModel cacheModification = null;
 			
 			if (cacheIdentSmartphoneModification == null) {
-				//Smartphone Modification is not saved in cache. Save it!
+				WriteToCache.writeSmartphoneModificationToCache(internalModsModel.getId(), savedModification);
+				
+				cacheIdentSmartphoneModification = syncCache.getIdentifiable(smartphoneModificationCacheKey);
+				cacheModification = (ModificationModel) cacheIdentSmartphoneModification.getValue();
 			}
 			else {
 				cacheModification = (ModificationModel) cacheIdentSmartphoneModification.getValue();
@@ -332,24 +354,9 @@ public class InternalModificationsResource {
 				IdentifiableValue cacheIdentSmartphoneActive = (IdentifiableValue) syncCache.getIdentifiable(smartphoneActiveCacheKey);
 				ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList = null;
 				
-				if (cacheIdentSmartphoneActive == null) {
-					//Smartphone Modification is not saved in cache. Save it!
-				}
-				else {
-					cacheSimpleActiveContactsObjectList = (ArrayList<SimpleContactModel>) cacheIdentSmartphoneActive.getValue();
-				}
-				
 				String smartphoneInactiveCacheKey = internalModsModel.getId() + SmartphoneCacheParams.INACTIVE_CONTACTS;
 				IdentifiableValue cacheIdentSmartphoneInactive = (IdentifiableValue) syncCache.getIdentifiable(smartphoneInactiveCacheKey);
-				ArrayList<SimpleContactModel> cacheSimpleInactiveContactsObjectList = null;				                              
-				
-				if (cacheIdentSmartphoneInactive == null) {
-					//Smartphone Modification is not saved in cache. Save it!
-				}
-				else {
-					ArrayList<SimpleContactModel> value = (ArrayList<SimpleContactModel>) cacheIdentSmartphoneInactive.getValue();
-					cacheSimpleInactiveContactsObjectList = value;
-				}
+				ArrayList<SimpleContactModel> cacheSimpleInactiveContactsObjectList = null;
 				
 				if (internalModsModel.getModification().getActiveContacts().size() > 0 || internalModsModel.getModification().getInactiveContacts().size() > 0) {
 					logger.info("OPTMIZATION: Extracting contact from Database");
@@ -360,10 +367,16 @@ public class InternalModificationsResource {
 						
 						savedSimpleActiveContactsObjectList.add(auxSimpleContact);
 						savedActiveContactsObjectList.add(auxPhone);	
-					}
+					}					
 					
-					for (SimpleContactModel scm : cacheSimpleActiveContactsObjectList) {
-						cacheActiveContactsObjectList.addAll(scm.getPhones());
+					if (cacheIdentSmartphoneActive == null) {
+						WriteToCache.writeSmartphoneActiveContactsToCache(internalModsModel.getId(), savedSimpleActiveContactsObjectList, savedActiveContactsObjectList);
+						
+						cacheIdentSmartphoneActive = (IdentifiableValue) syncCache.getIdentifiable(smartphoneActiveCacheKey);
+						cacheSimpleActiveContactsObjectList = (ArrayList<SimpleContactModel>) cacheIdentSmartphoneActive.getValue();
+					}
+					else {
+						cacheSimpleActiveContactsObjectList = (ArrayList<SimpleContactModel>) cacheIdentSmartphoneActive.getValue();
 					}
 					
 					for (Key c : savedSmartphone.getInactiveContacts()) {
@@ -372,6 +385,21 @@ public class InternalModificationsResource {
 						
 						savedSimpleInactiveContacsObjectList.add(auxSimpleContact);
 						savedInactiveContactsObjectList.add(auxPhone);	
+					}				                              
+					
+					if (cacheIdentSmartphoneInactive == null) {
+						WriteToCache.writeSmartphoneInactiveContactsToCache(internalModsModel.getId(), savedSimpleInactiveContacsObjectList, savedInactiveContactsObjectList);
+						
+						cacheIdentSmartphoneInactive = (IdentifiableValue) syncCache.getIdentifiable(smartphoneInactiveCacheKey);
+						cacheSimpleInactiveContactsObjectList = (ArrayList<SimpleContactModel>) cacheIdentSmartphoneInactive.getValue();
+					}
+					else {
+						ArrayList<SimpleContactModel> value = (ArrayList<SimpleContactModel>) cacheIdentSmartphoneInactive.getValue();
+						cacheSimpleInactiveContactsObjectList = value;
+					}
+					
+					for (SimpleContactModel scm : cacheSimpleActiveContactsObjectList) {
+						cacheActiveContactsObjectList.addAll(scm.getPhones());
 					}
 					
 					for (SimpleContactModel scm : cacheSimpleInactiveContactsObjectList) {
@@ -388,6 +416,9 @@ public class InternalModificationsResource {
 					logger.info("Checking deleted contacts");
 					checkDeletedContactsNEW(internalModsModel.getModification().getInactiveContacts(), savedSimpleActiveContactsObjectList, savedActiveContactsObjectList, savedSimpleInactiveContacsObjectList, savedInactiveContactsObjectList, cacheSimpleActiveContactsObjectList, cacheActiveContactsObjectList, cacheSimpleInactiveContactsObjectList, cacheInactiveContactsObjectList, savedModification, cacheModification);
 				}
+				
+				WriteToCache.writeSmartphoneActiveContactsToCache(internalModsModel.getId(), cacheSimpleActiveContactsObjectList);
+				WriteToCache.writeSmartphoneInactiveContactsToCache(internalModsModel.getId(), cacheSimpleInactiveContactsObjectList);
 			}
 			else {
 				logger.info("[Internal Modifications Service - Cache Version] No contact present");
@@ -397,19 +428,34 @@ public class InternalModificationsResource {
 			
 			if (internalModsModel.getModification().getAddedEmergencyNumbers() != null && internalModsModel.getModification().getDeletedEmergencyNumbers()!= null) {
 				if (internalModsModel.getModification().getDeletedEmergencyNumbers().size() > 0) {
+
+					PCEmergencyNumber auxAddedEmergencyNumber;
+					ArrayList<PCEmergencyNumber> addedEmergencyNumbers = new ArrayList<PCEmergencyNumber>();
+					ArrayList<Key> savedAddedEmergencyNumbers = savedSmartphone.getAddedEmergencyNumbers();
+					
+					for (Key key : savedAddedEmergencyNumbers) {
+						auxAddedEmergencyNumber = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, key);		
+						addedEmergencyNumbers.add(auxAddedEmergencyNumber);
+					}
+					
 					String smartphoneAddedEmergencyCacheKey = internalModsModel.getId() + SmartphoneCacheParams.ADD_EMERGENCY_NUMBERS;
 					IdentifiableValue cacheIdentSmartphoneAddedEmergency = (IdentifiableValue) syncCache.getIdentifiable(smartphoneAddedEmergencyCacheKey);
 					ArrayList<EmergencyNumberModel> cacheAddedEmergencyNumberObjectList = null;
 					
 					if (cacheIdentSmartphoneAddedEmergency == null) {
-						//Smartphone Modification is not saved in cache. Save it!
+						WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(internalModsModel.getId(), addedEmergencyNumbers);
+						
+						cacheIdentSmartphoneAddedEmergency = (IdentifiableValue) syncCache.getIdentifiable(smartphoneAddedEmergencyCacheKey);
+						cacheAddedEmergencyNumberObjectList = (ArrayList<EmergencyNumberModel>) cacheIdentSmartphoneAddedEmergency.getValue();
 					}
 					else {
 						cacheAddedEmergencyNumberObjectList = (ArrayList<EmergencyNumberModel>) cacheIdentSmartphoneAddedEmergency.getValue();
 					}
 					
 					logger.info("Checking deleted emergency Contacts");
-					checkDeletedEmergencyNumbersNEW(internalModsModel.getModification().getDeletedEmergencyNumbers(), savedSmartphone.getAddedEmergencyNumbers(), cacheAddedEmergencyNumberObjectList, savedModification, cacheModification);
+					checkDeletedEmergencyNumbersNEW(internalModsModel.getModification().getDeletedEmergencyNumbers(), addedEmergencyNumbers, cacheAddedEmergencyNumberObjectList, savedModification, cacheModification);
+					
+					WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(cacheAddedEmergencyNumberObjectList, internalModsModel.getId());
 				}
 				
 			}
@@ -418,6 +464,8 @@ public class InternalModificationsResource {
 			}
 			
 			pm.close();
+			
+			WriteToCache.writeSmartphoneModificationToCache(internalModsModel.getId(), cacheModification);
 		}
 		catch (IllegalArgumentException ex) {
 	    	logger.severe("[Internal Modifications Service - Cache Version] An error ocurred while finding the PCSmartphone by key " + ex.getMessage());
@@ -433,17 +481,7 @@ public class InternalModificationsResource {
 	    }		
 	}
 	
-	public void checkDeletedEmergencyNumbersNEW(ArrayList<EmergencyNumberModel> internalModDeletedEmergencyNumbers, ArrayList<Key> savedAddedEmergencyNumbers, ArrayList<EmergencyNumberModel> cacheAddedEmergencyNumberObjectList, PCModification savedModification, ModificationModel cacheModification) {
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-
-		PCEmergencyNumber auxAddedEmergencyNumber;
-		ArrayList<PCEmergencyNumber> addedEmergencyNumbers = new ArrayList<PCEmergencyNumber>();
-		
-		for (Key key : savedAddedEmergencyNumbers) {
-			auxAddedEmergencyNumber = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, key);		
-			addedEmergencyNumbers.add(auxAddedEmergencyNumber);
-		}
-		
+	public void checkDeletedEmergencyNumbersNEW(ArrayList<EmergencyNumberModel> internalModDeletedEmergencyNumbers, ArrayList<PCEmergencyNumber> addedEmergencyNumbers, ArrayList<EmergencyNumberModel> cacheAddedEmergencyNumberObjectList, PCModification savedModification, ModificationModel cacheModification) {
 		for (EmergencyNumberModel em : internalModDeletedEmergencyNumbers) {
 			checkInAddedEmergencyNumberNEW(em, addedEmergencyNumbers, cacheAddedEmergencyNumberObjectList, savedModification, cacheModification);
 		}

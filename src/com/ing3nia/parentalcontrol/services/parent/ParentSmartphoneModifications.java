@@ -28,6 +28,7 @@ import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.ModificationParsingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.ParentModificationsModel;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ModificationUtils;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
@@ -147,18 +148,18 @@ public class ParentSmartphoneModifications {
 		IdentifiableValue cacheIdentSmartphone = (IdentifiableValue) syncCache.getIdentifiable(smartphoneCacheKey);
 		SmartphoneCacheModel cacheSmartphone = null;
 		
-		if (cacheIdentSmartphone == null) {
-			//Smartphone is not saved in cache. Save it!
-		}
-		else {
-			cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
-		}
-		
 		if (smartphone == null) {
 			logger.severe("[Parent Modifications - Cache Version] No smartphone found from the given key "+smartphoneId);
 			rbuilder = Response.ok(WSStatus.INVALID_SMARTPHONE.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
+		}
+		
+		if (cacheIdentSmartphone == null) {
+			WriteToCache.writeSmartphoneToCache(smartphone);
+		}
+		else {
+			cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
 		}
 		
 		logger.info("[Parent Modifications - Cache Version] Getting Modifications");
@@ -181,9 +182,24 @@ public class ParentSmartphoneModifications {
 			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 			return rbuilder.build();
+		} 
+		catch (IllegalArgumentException e) {
+			logger.severe("[Parent Modifications - Cache Version] An error occurred when processing modifications "+e.getMessage());
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+			return rbuilder.build();
+		} 
+		catch (SessionQueryException e) {
+			logger.severe("[Parent Modifications - Cache Version] An error occurred when processing modifications "+e.getMessage());
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+			return rbuilder.build();
 		}
 		
 		pmMod.close();
+		
+		WriteToCache.writeSmartphoneToCache(cacheSmartphone);
+		
 		rbuilder = Response.ok(WSStatus.OK.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 		return rbuilder.build();

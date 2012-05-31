@@ -44,6 +44,34 @@ public class RuleModelUtils {
 		return ruleModel;
 	}
 	
+	public static RuleModel convertToRuleModel(PCRule rule) {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		RuleModel ruleModel = new RuleModel();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		ruleModel.setKeyId(KeyFactory.keyToString(rule.getKey()));
+		
+		ruleModel.setStartDate(formatter.format(rule.getStartDate()));
+		ruleModel.setEndDate(formatter.format(rule.getEndDate()));
+		ruleModel.setCreationDate(formatter.format(rule.getCreationDate()));		
+		
+		ArrayList<Integer> disabledFunctionalityModels = new ArrayList<Integer>();
+		
+		ArrayList<Key> funcKeys = rule.getDisabledFunctionalities();
+		PCFunctionality disabledFuncionality; 
+		
+		for (Key functionality : funcKeys) {
+			disabledFuncionality = (PCFunctionality)pm.getObjectById(PCFunctionality.class, functionality);
+			disabledFunctionalityModels.add(disabledFuncionality.getId());
+		}
+		
+		ruleModel.setDisabledFunctionalities(disabledFunctionalityModels);
+		
+		pm.close();
+		
+		return ruleModel;
+	}
+	
 	public static void removeRule(ArrayList<RuleModel> rules, String keyId) {
 		int position = 0;
 		boolean found = false;

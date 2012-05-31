@@ -18,6 +18,7 @@ import com.ing3nia.parentalcontrol.client.models.AlertModel;
 import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.DeviceModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
+import com.ing3nia.parentalcontrol.client.models.LocationModel;
 import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.client.models.PCNotificationTypeId;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
@@ -170,14 +171,22 @@ public class SmartphoneModelUtils {
 		smartphone.setApplication(ApplicationModel.findPCApplicationByAppVersion(smartphoneModel.getAppVersion(), pm));
 		smartphone.setOriginalContacts(pcOriginalContacts);
 
+		LocationModel location = new LocationModel();
+		if(smartphoneModel.getLocation() == null){
+			location.setLatitude("0.0");
+			location.setLongitude("0.0");
+		}else{
+			location = smartphoneModel.getLocation();
+		}
+		
 		// setting cache info
-		setCacheSmartphoneInfo(smartphoneCacheModel, smartphone, smartphoneKey, cacheActiveContacts, cacheOriginalContacts, cacheProperties, null, smartphoneModel.getDevice() );
+		setCacheSmartphoneInfo(smartphoneCacheModel, smartphone, smartphoneKey, cacheActiveContacts, cacheOriginalContacts, cacheProperties, null, smartphoneModel.getDevice(), location );
 		
 		pm.close();
 
 	}
 
-	public static void setCacheSmartphoneInfo(SmartphoneCacheModel smartphoneCacheModel, PCSmartphone pcSmartphone, String smartphoneKey, ArrayList<SimpleContactModel> activeContacts, ArrayList<SimpleContactModel> originalContacts, ArrayList<PropertyModel> properties, ApplicationModel application, DeviceModel device){
+	public static void setCacheSmartphoneInfo(SmartphoneCacheModel smartphoneCacheModel, PCSmartphone pcSmartphone, String smartphoneKey, ArrayList<SimpleContactModel> activeContacts, ArrayList<SimpleContactModel> originalContacts, ArrayList<PropertyModel> properties, ApplicationModel application, DeviceModel device, LocationModel location){
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.ACTIVE_CONTACTS, activeContacts, null);
@@ -196,6 +205,7 @@ public class SmartphoneModelUtils {
 		smartphoneCacheModel.setSerialNumber(pcSmartphone.getSerialNumber());
 		//smartphoneCacheModel.setApplication(application); Not for the moment
 		smartphoneCacheModel.setDevice(device);
+		smartphoneCacheModel.setLocation(location);
 		
 		System.out.println("SETTING IN CACHE "+SmartphoneCacheParams.SMARTPHONE+smartphoneKey);
 		System.out.println("SETTING IN CACHE "+smartphoneKey+SmartphoneCacheParams.ACTIVE_CONTACTS);

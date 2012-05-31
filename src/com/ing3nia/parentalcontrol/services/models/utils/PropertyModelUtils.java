@@ -24,6 +24,14 @@ public class PropertyModelUtils {
 		return p;
 	}
 	
+	public static PropertyModel convertToPropertyModel(PCProperty property) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		PropertyModel p = new PropertyModel(property.getDescription(), property.getValue(), property.getId(), formatter.format(property.getCreationDate())); 
+		
+		return p;
+	}
+	
 	public static void removeProperty(ArrayList<PropertyModel> properties, String keyId) {
 		int position = 0;
 		boolean found = false;
