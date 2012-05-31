@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import javax.jdo.PersistenceManager;
 
+import org.apache.xpath.functions.FuncId;
+
 import com.google.appengine.api.datastore.GeoPt;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
@@ -16,7 +18,9 @@ import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.LocationModel;
 import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
+import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RouteModel;
+import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
@@ -24,7 +28,9 @@ import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
+import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRoute;
+import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
@@ -209,34 +215,80 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.ROUTES,cacheContactList, null);
 	}
 	
-	/*
-	public static void writeSmartphonePropertiesToCache(String smartphoneKey, ArrayList<PCRoute> routeList){
-		ArrayList<RouteModel> cacheContactList = new ArrayList<RouteModel>();
+	
+	public static void writeSmartphonePropertiesToCache(String smartphoneKey, ArrayList<PCProperty> propertyList){
+		ArrayList<PropertyModel> cachePropertyList = new ArrayList<PropertyModel>();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
-		for(PCRoute route : routeList){
-			RouteModel routeModel = new RouteModel();
+		for(PCProperty property : propertyList){
+			PropertyModel propModel = new PropertyModel();
+
 			try{
-				routeModel.setDate(formatter.format(route.getDate()));
+				propModel.setCreationDate(formatter.format(property.getCreationDate()));
 			} catch (Exception e){
-				logger.warning("Could not parse Date correctly: "+route.getDate());
-				routeModel.setDate("00/00/0000 00:00:00 AM");
-			}
-			routeModel.setKeyId(KeyFactory.keyToString(route.getKey()));
-			
-			ArrayList<LocationModel> locations = new ArrayList<LocationModel>();
-			for(GeoPt point: route.getRoute()){
-				LocationModel locationModel = new LocationModel();
-				locationModel.setLatitude(String.valueOf(point.getLatitude()));
-				locationModel.setLongitude(String.valueOf(point.getLongitude()));
-				locations.add(locationModel);
-			}
-			routeModel.setPoints(locations);
-			cacheContactList.add(routeModel);
+				logger.warning("Could not parse Date correctly: "+property.getCreationDate());
+				propModel.setCreationDate("00/00/0000 00:00:00 AM");
+			}	
+		
+			propModel.setDescription(property.getDescription());
+			propModel.setId(property.getId());
+			propModel.setKeyId(KeyFactory.keyToString(property.getKey()));
+			propModel.setValue(property.getValue());
+			cachePropertyList.add(propModel);
 		}
 		
-		logger.info("Setting Route List: "+smartphoneKey+SmartphoneCacheParams.ROUTES+" to cache");
+		logger.info("Setting Property List: "+smartphoneKey+SmartphoneCacheParams.PROPERTIES+" to cache");
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
-		syncCache.put(smartphoneKey+SmartphoneCacheParams.ROUTES,cacheContactList, null);
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.PROPERTIES,cachePropertyList, null);
 	}
-	*/
+
+	public static void writeSmartphoneRulesToCache(String smartphoneKey, ArrayList<PCRule> ruleList, ArrayList<ArrayList<Integer>> disabledFuncionalities){
+		ArrayList<RuleModel> cacheRuleList = new ArrayList<RuleModel>();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		int count=0;
+		
+		for(PCRule rule : ruleList){
+			RuleModel ruleModel = new RuleModel();
+
+			try{
+				ruleModel.setCreationDate(formatter.format(rule.getCreationDate()));
+			} catch (Exception e){
+				logger.severe("Could not parse Date correctly: "+rule.getCreationDate()+" Not adding rule to list");
+				count+=1;
+				continue;
+			}	
+			
+			try{
+				ruleModel.setEndDate(formatter.format(rule.getEndDate()));
+			} catch (Exception e){
+				logger.severe("Could not parse Date correctly: "+rule.getEndDate()+" Not adding rule to list");
+				count+=1;
+				continue;
+			}	
+			
+			try{
+				ruleModel.setStartDate(formatter.format(rule.getStartDate()));
+			} catch (Exception e){
+				logger.severe("Could not parse Date correctly: "+rule.getStartDate()+" Not adding rule to list");
+				count+=1;
+				continue;
+			}			
+
+			ruleModel.setDisabledFunctionalities(disabledFuncionalities.get(count));
+
+			ruleModel.setKeyId(KeyFactory.keyToString(rule.getKey()));
+			ruleModel.setName(rule.getName());
+			ruleModel.setType(rule.getType());
+			
+			cacheRuleList.add(ruleModel);
+			count+=1;
+		}
+		
+		logger.info("Setting Rules List: "+smartphoneKey+SmartphoneCacheParams.RULES+" to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.RULES,cacheRuleList, null);
+	}	
+	
+	
 }
+
+

@@ -53,7 +53,7 @@ public class LoginAsyncCallbackHandler implements AsyncCallback<ClientUserModel>
 			this.serviceOk = true;
 		} else {
 			LoadingView.clearLoadingView(pclogin);
-			pclogin.getNotice().setText("OK BUT smartphones NULL");
+			pclogin.getNotice().setText("An unexpected error ocurred. Try again later");
 			this.serviceOk = false;
 		}
 	}
