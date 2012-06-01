@@ -16,6 +16,7 @@ import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.ing3nia.parentalcontrol.client.models.DeviceModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.LocationModel;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.NotificationModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
@@ -26,6 +27,7 @@ import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
+import com.ing3nia.parentalcontrol.models.PCModification;
 import com.ing3nia.parentalcontrol.models.PCNotification;
 import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
@@ -33,14 +35,19 @@ import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCRule;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
-import com.ing3nia.parentalcontrol.models.PCUser;
-import com.ing3nia.parentalcontrol.services.parent.ParentSmartphoneDetails;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class WriteToCache {
 
-	private static final Logger logger = Logger
-	.getLogger(WriteToCache.class.getName());
+	private static final Logger logger = Logger.getLogger(WriteToCache.class.getName());
+	
+	public static void writeSmartphoneToCache(SmartphoneCacheModel cacheSmartphone) {
+		logger.info("Setting Smartphone: " + cacheSmartphone.getKeyId() + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(SmartphoneCacheParams.SMARTPHONE + cacheSmartphone.getKeyId(), cacheSmartphone);
+	}
 	
 	public static void writeSmartphoneToCache(PCSmartphone pcSmartphone){
 		SmartphoneCacheModel smartphoneCacheModel = new SmartphoneCacheModel();
@@ -98,6 +105,42 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.ALERTS,cacheAlertList, null);
 	}
 	
+	public static void writeSmartphoneModificationToCache(String smartphoneKey, PCModification pcModification) throws IllegalArgumentException, SessionQueryException {
+		ModificationModel cacheModificationModel = ModificationModelUtils.convertToModificationModel(pcModification);
+		
+		logger.info("Setting Modification: " + smartphoneKey + SmartphoneCacheParams.MODIFICATION + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.MODIFICATION, cacheModificationModel, null);
+	}
+	
+	public static void writeSmartphoneModificationToCache(String smartphoneKey, ModificationModel cacheModification) {
+		logger.info("Setting Smartphone Modification: " + smartphoneKey + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.MODIFICATION, cacheModification);
+	}
+	
+	public static void writeSmartphoneRulesToCache(String smartphoneKey, ArrayList<PCRule> pcRules) throws IllegalArgumentException, SessionQueryException {
+		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+		RuleModel ruleModel;
+
+		for (PCRule pcRule : pcRules) {
+			ruleModel = RuleModelUtils.convertToRuleModel(pcRule);
+			rules.add(ruleModel);
+		}
+		
+		logger.info("Setting Rules List: " + smartphoneKey + SmartphoneCacheParams.RULES + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.RULES, rules, null);
+	}
+	
+	public static void writeSmartphoneRulesToCache(ArrayList<RuleModel> cacheRules, String smartphoneKey) {
+		logger.info("Setting Smartphone Rules: " + smartphoneKey + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.RULES, cacheRules);
+	}
+	
 	public static void writeSmartphoneActiveContactsToCache(String smartphoneKey, ArrayList<PCSimpleContact> pcActiveContactsList, ArrayList<PCPhone> pcActiveContactsPhoneList){
 		int count = 0;
 		ArrayList<SimpleContactModel> cacheContactList = new ArrayList<SimpleContactModel>();
@@ -127,6 +170,13 @@ public class WriteToCache {
 	
 	}
 	
+	public static void writeSmartphoneActiveContactsToCache(String smartphoneKey, ArrayList<SimpleContactModel> cacheActiveContacts) {
+		logger.info("Setting Smartphone Active Contacts: " + smartphoneKey + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.ACTIVE_CONTACTS, cacheActiveContacts);
+	}
+	
 	public static void writeSmartphoneInactiveContactsToCache(String smartphoneKey, ArrayList<PCSimpleContact> pcInactiveContactsList,  ArrayList<PCPhone> pcInactiveContactsPhoneList){
 		int count = 0;
 		ArrayList<SimpleContactModel> cacheContactList = new ArrayList<SimpleContactModel>();
@@ -152,8 +202,13 @@ public class WriteToCache {
 		logger.info("Setting Inactive List: "+smartphoneKey+SmartphoneCacheParams.INACTIVE_CONTACTS+" to cache");
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.INACTIVE_CONTACTS,cacheContactList, null);
-		
+	}
 	
+	public static void writeSmartphoneInactiveContactsToCache(String smartphoneKey, ArrayList<SimpleContactModel> cacheInactiveContacts) {
+		logger.info("Setting Smartphone Inactive Contacts: " + smartphoneKey + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.INACTIVE_CONTACTS, cacheInactiveContacts);
 	}
 	
 	public static void writeSmartphoneAddedEmergencyNumbersToCache(String smartphoneKey, ArrayList<PCEmergencyNumber> pcAddedEmergencyList){
@@ -171,6 +226,13 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.ADD_EMERGENCY_NUMBERS,cacheContactList, null);
 	}
 	
+	public static void writeSmartphoneAddedEmergencyNumbersToCache(ArrayList<EmergencyNumberModel> cacheAddedEmergencyNumbers, String smartphoneKey) {
+		logger.info("Setting Smartphone Added EN: " + smartphoneKey + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.ADD_EMERGENCY_NUMBERS, cacheAddedEmergencyNumbers);
+	}
+	
 	public static void writeSmartphoneDeletedEmergencyNumbersToCache(String smartphoneKey, ArrayList<PCEmergencyNumber> pcDeletedEmergencyList){
 		ArrayList<SimpleContactModel> cacheContactList = new ArrayList<SimpleContactModel>();
 		for(PCEmergencyNumber simpleContact : pcDeletedEmergencyList){
@@ -184,6 +246,13 @@ public class WriteToCache {
 		logger.info("Setting Deleted Emergency Numbers List: "+smartphoneKey+SmartphoneCacheParams.DELETE_EMERGENCY_NUMBERS+" to cache");
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.DELETE_EMERGENCY_NUMBERS,cacheContactList, null);
+	}
+	
+	public static void writeSmartphoneDeletedEmergencyNumbersToCache(ArrayList<EmergencyNumberModel> cacheDeletedEmergencyNumbers, String smartphoneKey) {
+		logger.info("Setting Smartphone Deleted EN: " + smartphoneKey + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.DELETE_EMERGENCY_NUMBERS, cacheDeletedEmergencyNumbers);
 	}
 	
 	public static void writeSmartphoneRoutesToCache(String smartphoneKey, ArrayList<PCRoute> routeList){
@@ -215,30 +284,40 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.ROUTES,cacheContactList, null);
 	}
 	
-	
-	public static void writeSmartphonePropertiesToCache(String smartphoneKey, ArrayList<PCProperty> propertyList){
+	public static void writeSmartphoneRoutesToCache(ArrayList<RouteModel> cacheRoutes, String smartphoneKey) {
+		logger.info("Setting Smartphone Routes: " + smartphoneKey + " to cache");
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.ROUTES, cacheRoutes);
+	}
+
+	public static void writeSmartphonePropertiesToCache(String smartphoneKey,
+			ArrayList<PCProperty> propertyList) {
 		ArrayList<PropertyModel> cachePropertyList = new ArrayList<PropertyModel>();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
-		for(PCProperty property : propertyList){
+		for (PCProperty property : propertyList) {
 			PropertyModel propModel = new PropertyModel();
 
-			try{
-				propModel.setCreationDate(formatter.format(property.getCreationDate()));
-			} catch (Exception e){
-				logger.warning("Could not parse Date correctly: "+property.getCreationDate());
+			try {
+				propModel.setCreationDate(formatter.format(property
+						.getCreationDate()));
+			} catch (Exception e) {
+				logger.warning("Could not parse Date correctly: "+ property.getCreationDate());
 				propModel.setCreationDate("00/00/0000 00:00:00 AM");
-			}	
-		
+			}
+
 			propModel.setDescription(property.getDescription());
 			propModel.setId(property.getId());
 			propModel.setKeyId(KeyFactory.keyToString(property.getKey()));
 			propModel.setValue(property.getValue());
 			cachePropertyList.add(propModel);
 		}
-		
-		logger.info("Setting Property List: "+smartphoneKey+SmartphoneCacheParams.PROPERTIES+" to cache");
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
-		syncCache.put(smartphoneKey+SmartphoneCacheParams.PROPERTIES,cachePropertyList, null);
+
+		logger.info("Setting Property List: " + smartphoneKey
+				+ SmartphoneCacheParams.PROPERTIES + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.PROPERTIES,
+				cachePropertyList, null);
 	}
 
 	public static void writeSmartphoneRulesToCache(String smartphoneKey, ArrayList<PCRule> ruleList, ArrayList<ArrayList<Integer>> disabledFuncionalities){
@@ -287,8 +366,7 @@ public class WriteToCache {
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.RULES,cacheRuleList, null);
 	}	
-	
-	
+
 }
 
 

@@ -317,6 +317,25 @@ public class SmartphoneModelUtils {
 			smartphoneModel.setAddedEmergencyNumbers(addedEmergencyNumbers);
 			
 			//------------------------------------------------------------
+			// Loading deleted emergency numbers
+			//------------------------------------------------------------
+			auxKeyList = savedSmartphone.getDeletedEmergencyNumbers();
+			pcEmergencyNumbers = new ArrayList<PCEmergencyNumber>();
+			
+			for (Key key : auxKeyList) {
+				auxEmergencyNumber = (PCEmergencyNumber)pm.getObjectById(PCEmergencyNumber.class, key);
+				pcEmergencyNumbers.add(auxEmergencyNumber);
+			}
+			
+			ArrayList<EmergencyNumberModel> deletedEmergencyNumbers = new ArrayList<EmergencyNumberModel>();
+			
+			for (PCEmergencyNumber emergencyNumber : pcEmergencyNumbers) {
+				deletedEmergencyNumbers.add(EmergencyNumberModelUtils.convertToEmergencyNumberModel(emergencyNumber));
+			}
+			
+			smartphoneModel.setDeletedEmergencyNumbers(deletedEmergencyNumbers);
+			
+			//------------------------------------------------------------
 			// Loading properties 
 			//------------------------------------------------------------
 			ArrayList<PropertyModel> properties = new ArrayList<PropertyModel>();
@@ -333,13 +352,14 @@ public class SmartphoneModelUtils {
 			//------------------------------------------------------------
 			ArrayList<NotificationModel> alerts = new ArrayList<NotificationModel>();
 			PCNotification alert;
-			NotificationModel alertModel;
-			for(Key alertKey: savedSmartphone.getNotifications()){
+			ArrayList<Key> pcAlerts = savedSmartphone.getNotifications();
+			
+			for (Key alertKey : pcAlerts){
 				alert = (PCNotification)pm.getObjectById(PCNotification.class, alertKey);
-				alertModel = new NotificationModel();
-
-				alerts.add(alertModel);
+				alerts.add(NotificationModelUtils.convertToNotificationModel(alert));
 			}
+			
+			smartphoneModel.setAlerts(alerts);
 			
 			//------------------------------------------------------------
 			// Loading rules
@@ -349,6 +369,7 @@ public class SmartphoneModelUtils {
 			for (Key rule : savedSmartphone.getRules()) {
 				rules.add(RuleModelUtils.convertToRuleModel(rule));
 			}
+			
 			smartphoneModel.setRules(rules);
 			
 			//------------------------------------------------------------

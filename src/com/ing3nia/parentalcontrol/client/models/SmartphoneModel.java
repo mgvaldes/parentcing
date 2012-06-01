@@ -17,31 +17,31 @@ public class SmartphoneModel implements Serializable {
 	
 	private LocationModel location;
 	
-	private ArrayList<ContactModel> activeContacts;
+	private ArrayList<ContactModel> activeContacts; //
 	
-	private String name;
+	private String name; //
 	
-	private DeviceModel device;
+	private DeviceModel device; //
 	
-	private String serialNumber;
+	private String serialNumber; //
 	
-	private String appVersion;
+	private String appVersion; //
 	
-	private ArrayList<ContactModel> inactiveContacts;
+	private ArrayList<ContactModel> inactiveContacts; //
 	
-	private ArrayList<EmergencyNumberModel> addedEmergencyNumbers;
+	private ArrayList<EmergencyNumberModel> addedEmergencyNumbers; //
 	
-	private ArrayList<EmergencyNumberModel> deletedEmergencyNumbers;
+	private ArrayList<EmergencyNumberModel> deletedEmergencyNumbers; //
 	
 	private ArrayList<RouteModel> routes;
 	
-	private ArrayList<PropertyModel> properties;
+	private ArrayList<PropertyModel> properties; //
 	
 	private ModificationModel modification;
 	
-	private ArrayList<RuleModel> rules;
+	private ArrayList<RuleModel> rules; //
 	
-	private ArrayList<NotificationModel> alerts;
+	private ArrayList<NotificationModel> alerts; //
 	
 	public SmartphoneModel() {
 	}

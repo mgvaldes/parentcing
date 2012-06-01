@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import javax.jdo.PersistenceManager;
 
+import com.google.appengine.api.datastore.Key;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.models.PCPhone;
@@ -26,5 +27,29 @@ public class SimpleContactModelUtils {
 		contact.setPhones(phones);
 		
 		return contact;
+	}
+	
+	public static void removeSimpleContact(ArrayList<SimpleContactModel> contacts, String keyId) {
+		int position = 0;
+		boolean found = false;
+		int size = contacts.size();
+		
+		for (int i = 0; i < size; i++) {
+			if (contacts.get(i).getKeyId().equals(keyId)) {
+				position = i;
+				found = true;
+				break;
+			}
+		}
+		
+		if (found) {
+			contacts.remove(position);
+		}
+	}
+	
+	public static void addSimpleContact(PersistenceManager pm, ArrayList<SimpleContactModel> contacts, Key keyId) {
+		PCSimpleContact pcContact = pm.getObjectById(PCSimpleContact.class, keyId);
+		
+		contacts.add(convertToSimpleContactModel(pcContact));
 	}
 }

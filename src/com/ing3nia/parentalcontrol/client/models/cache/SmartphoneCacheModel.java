@@ -1,13 +1,13 @@
 package com.ing3nia.parentalcontrol.client.models.cache;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import com.ing3nia.parentalcontrol.client.models.DeviceModel;
 import com.ing3nia.parentalcontrol.client.models.LocationModel;
 import com.ing3nia.parentalcontrol.services.models.ApplicationModel;
 
 public class SmartphoneCacheModel implements Serializable{
+	private static final long serialVersionUID = 1L;
 	public String keyId;
 	public String name;
 	public String serialNumber;
@@ -66,5 +66,4 @@ public class SmartphoneCacheModel implements Serializable{
 	public void setApplication(ApplicationModel application) {
 		this.application = application;
 	}
-	
 }

@@ -12,19 +12,33 @@ import javax.jdo.Query;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
+import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
+import com.ing3nia.parentalcontrol.client.models.RouteModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCFunctionality;
 import com.ing3nia.parentalcontrol.models.PCModification;
+import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRule;
+import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.services.exceptions.ModificationParsingException;
+import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.utils.EmergencyNumberModelUtils;
+import com.ing3nia.parentalcontrol.services.models.utils.PropertyModelUtils;
+import com.ing3nia.parentalcontrol.services.models.utils.RuleModelUtils;
+import com.ing3nia.parentalcontrol.services.models.utils.SimpleContactModelUtils;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 
 /**
  * Contain a series of utils methods to manipulate and query smarpthone modifications
@@ -41,7 +55,7 @@ public class ModificationUtils {
 	 * Processes the modifications made by the parent user on a child smartphone
 	 * @throws ModificationParsingException 
 	 */
-	public static void ProcessParentModifications(PersistenceManager pm, PCSmartphone pcsmartphone, ModificationModel modifications) throws ModificationParsingException{		
+	public static void ProcessParentModificationsOLD(PersistenceManager pm, PCSmartphone pcsmartphone, ModificationModel modifications) throws ModificationParsingException{		
 		PCModification pcmodification = pm.getObjectById(PCModification.class, pcsmartphone.getModification());
 		Logger logger = ModelLogger.logger;
 
@@ -49,7 +63,7 @@ public class ModificationUtils {
 		if (pcmodification == null) {
 			try {
 				logger.info("[ParentModifications] Create new parent modification");
-				createNewParentModification(pm, pcsmartphone, modifications);
+				createNewParentModificationOLD(pm, pcsmartphone, modifications);
 			} catch (ModificationParsingException e) {
 				logger.severe("[ParentModifications] New modification could not be created ");
 				throw e;
@@ -57,7 +71,7 @@ public class ModificationUtils {
 		} else {
 			try {
 				logger.info("[ParentModifications] Updating parent modification");
-				updateParentModification(pm, pcsmartphone, pcmodification, modifications);
+				updateParentModificationOLD(pm, pcsmartphone, pcmodification, modifications);
 			} catch (ModificationParsingException e) {
 				logger.severe("[ParentModifications] Modification could not be updated ");
 				throw e;
@@ -65,16 +79,764 @@ public class ModificationUtils {
 		}
 	}
 	
-	private static void createNewParentModification(PersistenceManager pm, PCSmartphone pcSmartphone, ModificationModel modifications) throws ModificationParsingException{
+	/**
+	 * Processes the modifications made by the parent user on a child smartphone
+	 * @throws ModificationParsingException 
+	 * @throws SessionQueryException 
+	 * @throws IllegalArgumentException 
+	 */
+	public static void ProcessParentModificationsNEW(PersistenceManager pm, MemcacheService syncCache, PCSmartphone pcsmartphone, ModificationModel modifications, SmartphoneCacheModel cacheSmartphone) throws ModificationParsingException, IllegalArgumentException, SessionQueryException{		
+		PCModification pcmodification = pm.getObjectById(PCModification.class, pcsmartphone.getModification());
+		Logger logger = ModelLogger.logger;
+
+		logger.info("[ParentModifications - Cache Version] Applying parent modifications");
+		
+		if (pcmodification == null) {
+			try {
+				logger.info("[ParentModifications - Cache Version] Create new parent modification");
+				createNewParentModificationNEW(pm, syncCache, pcsmartphone, modifications, cacheSmartphone);
+			} 
+			catch (ModificationParsingException e) {
+				logger.severe("[ParentModifications - Cache Version] New modification could not be created ");
+				throw e;
+			}
+		} 
+		else {
+			try {
+				logger.info("[ParentModifications - Cache Version] Updating parent modification");
+				
+				String modificationCacheKey = cacheSmartphone.getKeyId() + SmartphoneCacheParams.MODIFICATION;
+				IdentifiableValue cacheIdentModification = (IdentifiableValue) syncCache.getIdentifiable(modificationCacheKey);
+				ModificationModel cacheModification = null;
+				
+				if (cacheIdentModification == null) {
+					WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), pcmodification);
+					
+					cacheIdentModification = syncCache.getIdentifiable(modificationCacheKey);
+					cacheModification = (ModificationModel) cacheIdentModification.getValue();
+				}
+				else {
+					cacheModification = (ModificationModel) cacheIdentModification.getValue();
+				}
+				
+				updateParentModificationNEW(pm, syncCache, pcsmartphone, pcmodification, modifications, cacheSmartphone, cacheModification);
+				
+				WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), cacheModification);
+			} 
+			catch (ModificationParsingException e) {
+				logger.severe("[ParentModifications - Cache Version] Modification could not be updated ");
+				throw e;
+			}
+		}
+	}
+	
+	private static void createNewParentModificationOLD(PersistenceManager pm, PCSmartphone pcSmartphone, ModificationModel modifications) throws ModificationParsingException{
 		PCModification pcmodification = new PCModification();
-		updateParentModification(pm, pcSmartphone, pcmodification, modifications);
+		updateParentModificationOLD(pm, pcSmartphone, pcmodification, modifications);
 		
 		pm.makePersistent(pcmodification);
 		
 		pcSmartphone.setModification(pcmodification.getKey());
 	}
 	
-	private static void updateParentModification(PersistenceManager pm, PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications) throws ModificationParsingException{
+	private static void createNewParentModificationNEW(PersistenceManager pm, MemcacheService syncCache, PCSmartphone pcSmartphone, ModificationModel modifications, SmartphoneCacheModel cacheSmartphone) throws ModificationParsingException, IllegalArgumentException, SessionQueryException{
+		PCModification pcmodification = new PCModification();
+		
+		String modificationCacheKey = cacheSmartphone.getKeyId() + SmartphoneCacheParams.MODIFICATION;
+		IdentifiableValue cacheIdentModification = (IdentifiableValue) syncCache.getIdentifiable(modificationCacheKey);
+		ModificationModel cacheModification = null;
+		
+		if (cacheIdentModification == null) {
+			WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), pcmodification);
+		}
+		else {
+			cacheModification = (ModificationModel) cacheIdentModification.getValue();
+		}
+		
+		updateParentModificationNEW(pm, syncCache, pcSmartphone, pcmodification, modifications, cacheSmartphone, cacheModification);
+		
+		pm.makePersistent(pcmodification);
+		
+		pcSmartphone.setModification(pcmodification.getKey());
+		
+		WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), cacheModification);
+	}
+	
+	private static void updateParentModificationNEW(PersistenceManager pm, MemcacheService syncCache, PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications, SmartphoneCacheModel cacheSmartphone, ModificationModel cacheModification) throws ModificationParsingException, IllegalArgumentException, SessionQueryException {
+		
+		Logger logger = ModelLogger.logger;
+		
+		String smartphoneKey = cacheSmartphone.getKeyId();
+		String smartphoneName = modifications.getSmartphoneName();
+		ArrayList<SimpleContactModel> activeContacts = modifications.getActiveContacts();
+		ArrayList<SimpleContactModel> inactiveContacts = modifications.getInactiveContacts();
+		ArrayList<EmergencyNumberModel> addedEmergencyNumbers = modifications.getAddedEmergencyNumbers();
+		ArrayList<EmergencyNumberModel> deletedEmergencyNumbers = modifications.getDeletedEmergencyNumbers();
+		ArrayList<PropertyModel> properties = modifications.getProperties();
+		ArrayList<RuleModel> rules = modifications.getRules();
+		ArrayList<String> deletedRules = modifications.getDeletedRules();
+		
+		ArrayList<Key> pcModActiveContacts = pcmodification.getActiveContacts();
+		ArrayList<Key> pcModInactiveContacts = pcmodification.getInactiveContacts();
+		ArrayList<Key> pcModAddedEmergencyNumbers = pcmodification.getAddedEmergencyNumbers();
+		ArrayList<Key> pcModDeletedEmergencyNumbers = pcmodification.getDeletedEmergencyNumbers();
+		ArrayList<Key> pcModProperties = pcmodification.getProperties();
+		ArrayList<Key> pcModRules = pcmodification.getRules();
+		ArrayList<String> pcModDeletedRules = pcmodification.getDeletedRules();
+		
+		ArrayList<SimpleContactModel> cacheModActiveContacts = cacheModification.getActiveContacts();
+		ArrayList<SimpleContactModel> cacheModInactiveContacts = cacheModification.getInactiveContacts();
+		ArrayList<EmergencyNumberModel> cacheModAddedEmergencyNumbers = cacheModification.getAddedEmergencyNumbers();
+		ArrayList<EmergencyNumberModel> cacheModDeletedEmergencyNumbers = cacheModification.getDeletedEmergencyNumbers();
+		ArrayList<PropertyModel> cacheModProperties = cacheModification.getProperties();
+		ArrayList<RuleModel> cacheModRules = cacheModification.getRules();
+		ArrayList<String> cacheModDeletedRules = cacheModification.getDeletedRules();
+		
+		if (smartphoneName != null) {
+			pcsmartphone.setName(smartphoneName);
+			cacheSmartphone.setName(smartphoneName);
+		}
+		
+		// setting to empty lists null modification attributes
+		if (activeContacts == null) {
+			modifications.setActiveContacts(new ArrayList<SimpleContactModel>());
+			activeContacts = modifications.getActiveContacts();
+		}
+		
+		if (inactiveContacts == null) {
+			modifications.setInactiveContacts(new ArrayList<SimpleContactModel>());
+			inactiveContacts = modifications.getInactiveContacts();
+		}
+		
+		if (addedEmergencyNumbers == null) {
+			modifications.setAddedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			addedEmergencyNumbers = modifications.getAddedEmergencyNumbers();
+		}
+		
+		if (deletedEmergencyNumbers == null) {
+			modifications.setDeletedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			deletedEmergencyNumbers = modifications.getDeletedEmergencyNumbers();
+		}
+		
+		if (properties == null) {
+			modifications.setProperties(new ArrayList<PropertyModel>());
+			properties = modifications.getProperties();
+		}
+		
+		if (rules == null) {
+			modifications.setRules(new ArrayList<RuleModel>());
+			rules = modifications.getRules();
+		}
+		
+		if (deletedRules == null) {
+			modifications.setDeletedRules(new ArrayList<String>());
+			deletedRules = modifications.getDeletedRules();
+		}
+		
+		// setting to empty lists null PCModification attributes
+		if (pcModActiveContacts == null) {
+			pcmodification.setActiveContacts(new ArrayList<Key>());
+			pcModActiveContacts = pcmodification.getActiveContacts();
+		}
+		
+		if (cacheModActiveContacts == null) {
+			cacheModification.setActiveContacts(new ArrayList<SimpleContactModel>());
+			cacheModActiveContacts = cacheModification.getActiveContacts();
+		}
+		
+		if (pcModInactiveContacts == null){
+			pcmodification.setInactiveContacts(new ArrayList<Key>());
+			pcModInactiveContacts = pcmodification.getInactiveContacts();
+		}
+		
+		if (cacheModInactiveContacts == null) {
+			cacheModification.setInactiveContacts(new ArrayList<SimpleContactModel>());
+			cacheModInactiveContacts = cacheModification.getInactiveContacts();
+		}
+		
+		if (pcModAddedEmergencyNumbers == null) {
+			pcmodification.setAddedEmergencyNumbers(new ArrayList<Key>());
+			pcModAddedEmergencyNumbers = pcmodification.getAddedEmergencyNumbers();
+		}
+		
+		if (cacheModAddedEmergencyNumbers == null) {
+			cacheModification.setAddedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			cacheModAddedEmergencyNumbers = cacheModification.getAddedEmergencyNumbers();
+		}
+		
+		if (pcModDeletedEmergencyNumbers == null) {
+			pcmodification.setDeletedEmergencyNumbers(new ArrayList<Key>());
+			pcModDeletedEmergencyNumbers = pcmodification.getDeletedEmergencyNumbers();
+		}
+		
+		if (cacheModDeletedEmergencyNumbers == null) {
+			cacheModification.setDeletedEmergencyNumbers(new ArrayList<EmergencyNumberModel>());
+			cacheModDeletedEmergencyNumbers = cacheModification.getDeletedEmergencyNumbers();
+		}
+		
+		if (pcModProperties == null) {
+			pcmodification.setProperties(new ArrayList<Key>());
+			pcModProperties = pcmodification.getProperties();
+		}
+		
+		if (cacheModProperties == null) {
+			cacheModification.setProperties(new ArrayList<PropertyModel>());
+			cacheModProperties = cacheModification.getProperties();
+		}
+		
+		if (pcModRules == null) {
+			pcmodification.setRules(new ArrayList<Key>());
+			pcModRules = pcmodification.getRules();
+		}
+		
+		if (cacheModRules == null) {
+			cacheModification.setRules(new ArrayList<RuleModel>());
+			cacheModRules = cacheModification.getRules();
+		}
+		
+		if (pcModDeletedRules == null) {
+			pcmodification.setDeletedRules(new ArrayList<String>());
+			pcModDeletedRules = pcmodification.getDeletedRules();
+		}
+		
+		if (cacheModDeletedRules == null) {
+			cacheModification.setDeletedRules(new ArrayList<String>());
+			cacheModDeletedRules = cacheModification.getDeletedRules();
+		}
+
+		logger.info("[ParentModifications - Cache Version] Adding active contacts modifications");
+		
+		// if the parent enabled any contact, add it to smartphone and modifications
+//		ArrayList<Key> modActiveList = pcmodification.getActiveContacts();
+//		ArrayList<Key> modInactiveList = pcmodification.getInactiveContacts();
+		
+		String cacheSmartphoneActiveContactsKey = cacheSmartphone.getKeyId() + SmartphoneCacheParams.ACTIVE_CONTACTS;
+		IdentifiableValue cacheIdentActiveContacts = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
+		ArrayList<SimpleContactModel> cacheActiveContacts;
+		
+		String cacheSmartphoneInactiveContactsKey = cacheSmartphone.getKeyId() + SmartphoneCacheParams.INACTIVE_CONTACTS;
+		IdentifiableValue cacheIdentInactiveContacts = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
+		ArrayList<SimpleContactModel> cacheInactiveContacts;
+		
+		//Loading from DB PCSimpleContacts from smartphone.
+		ArrayList<PCSimpleContact> pcActiveSimpleContacts = new ArrayList<PCSimpleContact>();
+		ArrayList<PCPhone> pcActivePhones = new ArrayList<PCPhone>();
+		ArrayList<PCSimpleContact> pcInactiveSimpleContacts = new ArrayList<PCSimpleContact>();
+		ArrayList<PCPhone> pcInactivePhones = new ArrayList<PCPhone>();
+		
+		PCSimpleContact auxSC;
+		SimpleContactModel auxSCModel;
+		PCPhone auxPhone;
+		
+		ArrayList<Key> pcSCKeys = pcsmartphone.getActiveContacts();
+		
+		for (Key key : pcSCKeys) {
+			auxSC = pm.getObjectById(PCSimpleContact.class, key);
+			pcActiveSimpleContacts.add(auxSC);
+			
+			auxPhone = pm.getObjectById(PCPhone.class, auxSC.getPhone());
+			pcActivePhones.add(auxPhone);
+		}
+		
+		pcSCKeys = pcsmartphone.getInactiveContacts();
+		
+		for (Key key : pcSCKeys) {
+			auxSC = pm.getObjectById(PCSimpleContact.class, key);
+			pcInactiveSimpleContacts.add(auxSC);
+			
+			auxPhone = pm.getObjectById(PCPhone.class, auxSC.getPhone());
+			pcInactivePhones.add(auxPhone);
+		}
+		
+		if (cacheIdentActiveContacts == null) {
+			WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
+			
+			cacheIdentActiveContacts = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
+			cacheActiveContacts = (ArrayList<SimpleContactModel>) cacheIdentActiveContacts.getValue();			
+		}
+		else {
+			cacheActiveContacts = (ArrayList<SimpleContactModel>) cacheIdentActiveContacts.getValue();
+		}
+		
+		if (cacheIdentInactiveContacts == null) {
+			WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
+
+			cacheIdentInactiveContacts = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
+			cacheInactiveContacts = (ArrayList<SimpleContactModel>) cacheIdentInactiveContacts.getValue();			
+		}
+		else {
+			cacheInactiveContacts = (ArrayList<SimpleContactModel>) cacheIdentInactiveContacts.getValue();
+		}
+		
+		int pos; 
+		
+		for (SimpleContactModel contact : activeContacts) {
+			// remove contact from inactive and add to active in smartphone
+			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
+			pos = pcsmartphone.getInactiveContacts().indexOf(contactKey);
+			pcsmartphone.getInactiveContacts().remove(contactKey);
+			cacheInactiveContacts.remove(pos);
+			
+			auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
+			auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+//			SimpleContactModelUtils.removeSimpleContact(cacheInactiveContacts, contact.getKeyId());
+			
+			if (!pcsmartphone.getActiveContacts().contains(contactKey)){
+				pcsmartphone.getActiveContacts().add(contactKey);
+				cacheActiveContacts.add(auxSCModel);
+				
+//				pos = pcsmartphone.getActiveContacts().indexOf(contactKey);
+//				
+//				auxSC = pcActiveSimpleContacts.get(pos);
+//				auxPhone = pcActivePhones.get(pos);
+//				
+//				auxSCModel = new SimpleContactModel();
+//				auxSCModel.setFirstName(auxSC.getFirstName());
+//				auxSCModel.setLastName(auxSC.getLastName());
+//				auxSCModel.setKeyId(KeyFactory.keyToString(auxSC.getKey()));
+//				auxSCModel.setPhones(new ArrayList<PhoneModel>());
+//				
+//				auxPhoneModel = new PhoneModel();
+//				auxPhoneModel.setPhoneNumber(auxPhone.getPhoneNumber());
+//				auxPhoneModel.setType(auxPhone.getType());
+//				
+//				auxSCModel.getPhones().add(auxPhoneModel);
+//				
+//				cacheActiveContacts.add(auxSCModel);
+
+//				SimpleContactModelUtils.addSimpleContact(pm, cacheActiveContacts, contactKey);
+			}
+
+			// check if active contact existed in modification, if inactive
+			// then remove
+			// it and add it to active, otherwise add it to active list
+			if (pcModActiveContacts.contains(contactKey)) {
+				// skip
+			} 
+			else if (pcModInactiveContacts.contains(contactKey)) {
+				pcModInactiveContacts.remove(contactKey);
+				SimpleContactModelUtils.removeSimpleContact(cacheModInactiveContacts, contact.getKeyId());
+				
+				pcModActiveContacts.add(contactKey);
+				cacheModActiveContacts.add(auxSCModel);
+//				SimpleContactModelUtils.addSimpleContact(pm, cacheModActiveContacts, contactKey);
+			} 
+			else {
+				pcModActiveContacts.add(contactKey);
+				cacheModActiveContacts.add(auxSCModel);
+//				SimpleContactModelUtils.addSimpleContact(pm, cacheModActiveContacts, contactKey);
+			}
+		}
+		
+		logger.info("[ParentModifications - Cache Version] Adding inactive contacts modifications");
+		// if the parent disabled any contact, add it to smartphone and
+		// modifications
+//		modActiveList = pcmodification.getActiveContacts();
+//		modInactiveList = pcmodification.getInactiveContacts();
+		
+		for (SimpleContactModel contact : inactiveContacts) {
+			// remove contact from active and add to inactive in smartphone
+			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
+			pos = pcsmartphone.getActiveContacts().indexOf(contactKey);
+			pcsmartphone.getActiveContacts().remove(contactKey);
+			cacheActiveContacts.remove(pos);
+			
+			auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
+			auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+//			SimpleContactModelUtils.removeSimpleContact(cacheActiveContacts, contact.getKeyId());
+			
+			if(!pcsmartphone.getInactiveContacts().contains(contactKey)){
+				pcsmartphone.getInactiveContacts().add(contactKey);
+				cacheInactiveContacts.add(auxSCModel);
+				
+//				pos = pcsmartphone.getInactiveContacts().indexOf(contactKey);				
+//				
+//				auxSC = pcInactiveSimpleContacts.get(pos);
+//				auxPhone = pcInactivePhones.get(pos);
+//				
+//				auxSCModel = new SimpleContactModel();
+//				auxSCModel.setFirstName(auxSC.getFirstName());
+//				auxSCModel.setLastName(auxSC.getLastName());
+//				auxSCModel.setKeyId(KeyFactory.keyToString(auxSC.getKey()));
+//				auxSCModel.setPhones(new ArrayList<PhoneModel>());
+//				
+//				auxPhoneModel = new PhoneModel();
+//				auxPhoneModel.setPhoneNumber(auxPhone.getPhoneNumber());
+//				auxPhoneModel.setType(auxPhone.getType());
+//				
+//				auxSCModel.getPhones().add(auxPhoneModel);
+//				
+//				cacheInactiveContacts.add(auxSCModel);
+				
+//				SimpleContactModelUtils.addSimpleContact(pm, cacheInactiveContacts, contactKey);
+			}
+
+			// check if inactive contact existed in modification, if active
+			// then remove it and add it to inactive, otherwise add it to
+			// inactive list
+			if (pcModInactiveContacts.contains(contactKey)) {
+				// skip
+			} 
+			else if (pcModActiveContacts.contains(contactKey)) {
+				pcModActiveContacts.remove(contactKey);
+				SimpleContactModelUtils.removeSimpleContact(cacheModActiveContacts, contact.getKeyId());
+				
+				pcModInactiveContacts.add(contactKey);
+				cacheModInactiveContacts.add(auxSCModel);
+//				SimpleContactModelUtils.addSimpleContact(pm, cacheModInactiveContacts, contactKey);
+			} 
+			else {
+				pcModInactiveContacts.add(contactKey);
+				cacheModInactiveContacts.add(auxSCModel);
+//				SimpleContactModelUtils.addSimpleContact(pm, cacheModInactiveContacts, contactKey);
+			}
+		}
+		
+		logger.info("[ParentModifications - Cache Version] Adding emergency contacts modifications");
+		// if the parent enabled any emergency number, add it to smartphone and
+		// modifications
+
+//		ArrayList<Key> modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
+//		ArrayList<Key> modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
+		
+		String cacheSmartphoneAddedEmergencyNumsKey = cacheSmartphone.getKeyId() + SmartphoneCacheParams.ADD_EMERGENCY_NUMBERS;
+		IdentifiableValue cacheIdentAddedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneAddedEmergencyNumsKey);
+		ArrayList<EmergencyNumberModel> cacheAddedEmergencyNums;
+		
+		String cacheSmartphoneDeletedEmergencyNumsKey = cacheSmartphone.getKeyId() + SmartphoneCacheParams.DELETE_EMERGENCY_NUMBERS;
+		IdentifiableValue cacheIdentDeletedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneDeletedEmergencyNumsKey);
+		ArrayList<EmergencyNumberModel> cacheDeletedEmergencyNums;
+		
+		ArrayList<PCEmergencyNumber> pcAddedEmergencyNums = new ArrayList<PCEmergencyNumber>();
+		ArrayList<PCEmergencyNumber> pcDeletedEmergencyNums = new ArrayList<PCEmergencyNumber>();
+		
+		PCEmergencyNumber auxEM;
+		EmergencyNumberModel auxENModel;
+		
+		ArrayList<Key> pcENKeys = pcsmartphone.getAddedEmergencyNumbers();
+		
+		for (Key key : pcENKeys) {
+			auxEM = pm.getObjectById(PCEmergencyNumber.class, key);
+			pcAddedEmergencyNums.add(auxEM);
+		}
+		
+		pcENKeys = pcsmartphone.getDeletedEmergencyNumbers();
+		
+		for (Key key : pcENKeys) {
+			auxEM = pm.getObjectById(PCEmergencyNumber.class, key);
+			pcDeletedEmergencyNums.add(auxEM);
+		}
+		
+		if (cacheIdentAddedEmergencyNums == null) {
+			WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
+			
+			cacheIdentAddedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
+			cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();			
+		}
+		else {
+			cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();
+		}
+		
+		if (cacheIdentDeletedEmergencyNums == null) {
+			WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
+
+			cacheIdentDeletedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
+			cacheDeletedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentDeletedEmergencyNums.getValue();			
+		}
+		else {
+			cacheDeletedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentDeletedEmergencyNums.getValue();
+		}
+		
+		for (EmergencyNumberModel emergencyContact : addedEmergencyNumbers) {
+			if (emergencyContact.getKeyId() == null) {
+				//New emergency contact. First save. Then process.
+				PCEmergencyNumber newEmergencyNumber = new PCEmergencyNumber();
+				newEmergencyNumber.setCountry(emergencyContact.getCountry());
+				newEmergencyNumber.setNumber(emergencyContact.getNumber());
+				newEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
+				pm.makePersistent(newEmergencyNumber);
+				
+				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(newEmergencyNumber);
+				
+				pcsmartphone.getAddedEmergencyNumbers().add(newEmergencyNumber.getKey());
+				cacheAddedEmergencyNums.add(auxENModel);
+//				EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheAddedEmergencyNums, newEmergencyNumber.getKey());
+				
+				pcModAddedEmergencyNumbers.add(newEmergencyNumber.getKey());
+				cacheModAddedEmergencyNumbers.add(auxENModel);
+//				EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModAddedEmergencyNumbers, newEmergencyNumber.getKey());
+			}
+			else {
+//				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
+//				savedEmergencyNumber.setCountry(emergencyContact.getCountry());
+//				savedEmergencyNumber.setNumber(emergencyContact.getNumber());
+//				savedEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
+				// remove contact from deleted emergency number and add to added
+				// emergency in smartphone
+				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
+				pos = pcsmartphone.getDeletedEmergencyNumbers().indexOf(emergencyKey);
+				pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
+				
+				
+				if(pos>=0 && cacheDeletedEmergencyNums.size()>pos){
+					cacheDeletedEmergencyNums.remove(pos);
+				}
+				
+				auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
+				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
+//				EmergencyNumberModelUtils.removeEmergencyNumber(cacheDeletedEmergencyNums, emergencyContact.getKeyId());
+				
+				if (!pcsmartphone.getAddedEmergencyNumbers().contains(emergencyKey)) {
+					pcsmartphone.getAddedEmergencyNumbers().add(emergencyKey);
+					cacheAddedEmergencyNums.add(auxENModel);
+//					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheAddedEmergencyNums, emergencyKey);
+				}
+
+				// check if added emergency contact existed in modification, if
+				// deleted
+				// then remove it and add it to added, otherwise add it to added
+				// emergency list
+				if (pcModAddedEmergencyNumbers.contains(emergencyKey)) {
+					// skip
+				} 
+				else if (pcModDeletedEmergencyNumbers.contains(emergencyKey)) {
+					pcModDeletedEmergencyNumbers.remove(emergencyKey);
+					EmergencyNumberModelUtils.removeEmergencyNumber(cacheModDeletedEmergencyNumbers, emergencyContact.getKeyId());
+					
+					pcModAddedEmergencyNumbers.add(emergencyKey);
+					cacheModAddedEmergencyNumbers.add(auxENModel);
+//					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModAddedEmergencyNumbers, emergencyKey);
+				} 
+				else {
+					pcModAddedEmergencyNumbers.add(emergencyKey);
+					cacheModAddedEmergencyNumbers.add(auxENModel);
+//					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModAddedEmergencyNumbers, emergencyKey);
+				}
+			}
+		}
+		
+		logger.info("[ParentModifications - Cache Version] Adding deleted emergency contacts modifications");
+		// if the parent disabled any emergency number, add it to smartphone and
+		// modifications
+//		modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
+//		modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
+		
+		logger.info("[ModificationUtils] Iterating deleted emergency numbers");
+		for (EmergencyNumberModel emergencyContact : deletedEmergencyNumbers) {
+			if (emergencyContact.getKeyId() == null) {
+				//New emergency contact. First save. Then process.
+				PCEmergencyNumber newEmergencyNumber = new PCEmergencyNumber();
+				newEmergencyNumber.setCountry(emergencyContact.getCountry());
+				newEmergencyNumber.setNumber(emergencyContact.getNumber());
+				newEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
+				pm.makePersistent(newEmergencyNumber);
+				
+				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(newEmergencyNumber);
+				
+				pcsmartphone.getDeletedEmergencyNumbers().add(newEmergencyNumber.getKey());
+				cacheDeletedEmergencyNums.add(auxENModel);
+//				EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheDeletedEmergencyNums, newEmergencyNumber.getKey());
+				
+				pcModDeletedEmergencyNumbers.add(newEmergencyNumber.getKey());
+				cacheModDeletedEmergencyNumbers.add(auxENModel);
+//				EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModDeletedEmergencyNumbers, newEmergencyNumber.getKey());
+			}
+			else {
+				logger.info("[ModificationUtils] KeyId is not null, changing from added to deleted");
+//				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
+//				savedEmergencyNumber.setCountry(emergencyContact.getCountry());
+//				savedEmergencyNumber.setNumber(emergencyContact.getNumber());
+//				savedEmergencyNumber.setDescription(emergencyContact.getDescription());
+				
+				// remove contact from added emergency number and add to deleted
+				// emergency in smartphone
+				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
+				pos = pcsmartphone.getAddedEmergencyNumbers().indexOf(emergencyKey);
+				boolean removed = pcsmartphone.getAddedEmergencyNumbers().remove(emergencyKey);
+				
+				logger.info("[ModificationUtils] POS: "+pos+" Cache Added Size: "+cacheAddedEmergencyNums.size()+", removed from smartphone added: "+removed);
+				if(pos>=0 && cacheAddedEmergencyNums.size()>pos){
+					cacheAddedEmergencyNums.remove(pos);
+				}
+				
+				auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
+				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
+				
+				if (!pcsmartphone.getDeletedEmergencyNumbers().contains(emergencyKey)) {
+					pcsmartphone.getDeletedEmergencyNumbers().add(emergencyKey);
+					cacheDeletedEmergencyNums.add(auxENModel);
+//					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheDeletedEmergencyNums, emergencyKey);
+				}
+	
+				// check if emergency contact existed in modification, if added
+				// then remove it and add it to deleted, otherwise add it to deleted
+				// emergency list
+	
+				if (pcModDeletedEmergencyNumbers.contains(emergencyKey)) {
+					// skip
+				} 
+				else if (pcModAddedEmergencyNumbers.contains(emergencyKey)) {
+					pcModAddedEmergencyNumbers.remove(emergencyKey);
+					EmergencyNumberModelUtils.removeEmergencyNumber(cacheModAddedEmergencyNumbers, emergencyContact.getKeyId());
+					
+					pcModDeletedEmergencyNumbers.add(emergencyKey);
+					cacheModDeletedEmergencyNumbers.add(auxENModel);
+//					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModDeletedEmergencyNumbers, emergencyKey);
+				} 
+				else {
+					pcModDeletedEmergencyNumbers.add(emergencyKey);
+					cacheModDeletedEmergencyNumbers.add(auxENModel);
+//					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModDeletedEmergencyNumbers, emergencyKey);
+				}
+			}
+		}
+			
+		// parsing property modifications
+		logger.info("[ParentModifications - Cache Version] Adding properties modifications");
+		PropertyModel auxProperty;
+		
+		for (PropertyModel propmodel : modifications.getProperties()) {
+			PCProperty property;
+			
+			try {
+				property = pm.getObjectById(PCProperty.class,KeyFactory.stringToKey(propmodel.getKeyId()));
+				auxProperty = PropertyModelUtils.convertToPropertyModel(property);
+			} 
+			catch(Exception e) {
+				logger.severe("[ParentModifications] Error while obtaining property from key: "+propmodel.getKeyId());
+				throw new ModificationParsingException(e.getMessage());
+			}
+			
+			property.setValue(propmodel.getValue());
+			
+			pcModProperties.add(property.getKey());
+			cacheModProperties.add(auxProperty);
+//			PropertyModelUtils.addProperty(pm, cacheModProperties, property.getKey());
+		}
+		
+		// parsing rule modifications
+		logger.info("[ParentModifications - Cache Version] Adding rules modifications");
+		RuleModel auxRule;
+		
+		String cacheSmartphoneRulesKey = cacheSmartphone.getKeyId() + SmartphoneCacheParams.RULES;
+		IdentifiableValue cacheIdentRules = syncCache.getIdentifiable(cacheSmartphoneRulesKey);
+		ArrayList<RuleModel> cacheRules;
+		
+		ArrayList<PCRule> pcRules = new ArrayList<PCRule>();
+		ArrayList<Key> pcRuleKeys = pcsmartphone.getRules();
+		PCRule auxPCRule;
+		
+		for (Key key : pcRuleKeys) {
+			auxPCRule = pm.getObjectById(PCRule.class, key);
+			pcRules.add(auxPCRule);
+		}
+		
+		if (cacheIdentRules == null) {
+			WriteToCache.writeSmartphoneRulesToCache(cacheSmartphone.getKeyId(), pcRules);
+			
+			cacheIdentRules = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
+			cacheRules = (ArrayList<RuleModel>) cacheIdentRules.getValue();			
+		}
+		else {
+			cacheRules = (ArrayList<RuleModel>) cacheIdentRules.getValue();
+		}
+		
+		for (RuleModel ruleModel : rules) {
+			PCRule rule;
+			
+			if (ruleModel.getKeyId() == null) {
+				rule = new PCRule();
+			}
+			else {
+				try {
+					rule = pm.getObjectById(PCRule.class, KeyFactory.stringToKey(ruleModel.getKeyId()));	
+				} 
+				catch (Exception e) {
+					throw new ModificationParsingException("Could not get rule from key: " + ruleModel.getKeyId() + " " + e.getMessage());
+				}
+			}
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+			Date date;
+			
+			try {
+				date = sdf.parse(ruleModel.getCreationDate());
+			} 
+			catch (ParseException e) {
+				logger.severe("[ParentModifications - Cache Version] Error while parsing rule creating date: " + ruleModel.getCreationDate());
+				throw new ModificationParsingException("Date parsing error: " + ruleModel.getCreationDate() + " " + e.getMessage());
+			}
+			
+			rule.setCreationDate(date);
+			
+			try {
+				date = sdf.parse(ruleModel.getStartDate());
+			} 
+			catch (ParseException e) {
+				logger.severe("[ParentModifications - Cache Version] Error while parsing rule start date: " + ruleModel.getStartDate());
+				throw new ModificationParsingException("Date parsing error: " + ruleModel.getStartDate() + " " + e.getMessage()); 
+			}
+			
+			rule.setStartDate(date);
+			
+			try {
+				date = sdf.parse(ruleModel.getEndDate());
+			} 
+			catch (ParseException e) {
+				logger.severe("[ParentModifications - Cache Version] Error while parsing rule end date: " + ruleModel.getEndDate());
+				throw new ModificationParsingException("Date parsing error: " + ruleModel.getEndDate() + " " + e.getMessage());
+			}
+			
+			rule.setEndDate(date);
+			rule.setName(ruleModel.getName());
+			
+			logger.info("[ParentModifications - Cache Version] Setting new funcionalities to rules");
+			
+			ArrayList<Key> newDisabledFuncionalities = getNewFuncionalitiesAsKeys(pm, ruleModel);
+			rule.setDisabledFunctionalities(newDisabledFuncionalities);		
+			
+			auxRule = RuleModelUtils.convertToRuleModel(rule);
+			
+			if (ruleModel.getKeyId() == null) {
+				pm.makePersistent(rule);
+				pcsmartphone.getRules().add(rule.getKey());
+				
+				auxRule = RuleModelUtils.convertToRuleModel(rule);
+				cacheRules.add(auxRule);
+			}
+			
+			pcModRules.add(rule.getKey());
+			cacheModRules.add(auxRule);
+//			RuleModelUtils.addRule(pm, cacheModRules, rule.getKey());
+		}
+		
+		// adding deleted rules
+		logger.info("[ParentModifications - Cache Version] Setting deleted rules");
+		
+		for (String deletedRuleId : modifications.getDeletedRules()) {
+			if (!pcModDeletedRules.contains(deletedRuleId)) {
+				pcModDeletedRules.add(deletedRuleId);
+				cacheModDeletedRules.add(deletedRuleId);
+			}
+		}
+
+		
+		//Saving all the the things used in this method.
+		WriteToCache.writeSmartphoneActiveContactsToCache(smartphoneKey, cacheActiveContacts);
+		WriteToCache.writeSmartphoneInactiveContactsToCache(smartphoneKey, cacheInactiveContacts);
+		WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(cacheAddedEmergencyNums, smartphoneKey);
+		WriteToCache.writeSmartphoneDeletedEmergencyNumbersToCache(cacheDeletedEmergencyNums, smartphoneKey);
+		WriteToCache.writeSmartphoneRulesToCache(cacheRules, smartphoneKey);
+		
+//		pcsmartphone.setModification(pcmodification);
+		//pm.makePersistent(pcsmartphone);
+		//pm.makePersistent(pcmodification);
+	}
+	
+	private static void updateParentModificationOLD(PersistenceManager pm, PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications) throws ModificationParsingException {
 		
 		Logger logger = ModelLogger.logger;
 		
