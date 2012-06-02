@@ -576,7 +576,11 @@ public class ModificationUtils {
 				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
 				pos = pcsmartphone.getDeletedEmergencyNumbers().indexOf(emergencyKey);
 				pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
-				cacheDeletedEmergencyNums.remove(pos);
+				
+				
+				if(pos>=0 && cacheDeletedEmergencyNums.size()>pos){
+					cacheDeletedEmergencyNums.remove(pos);
+				}
 				
 				auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
 				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
@@ -617,6 +621,7 @@ public class ModificationUtils {
 //		modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
 //		modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
 		
+		logger.info("[ModificationUtils] Iterating deleted emergency numbers");
 		for (EmergencyNumberModel emergencyContact : deletedEmergencyNumbers) {
 			if (emergencyContact.getKeyId() == null) {
 				//New emergency contact. First save. Then process.
@@ -638,6 +643,7 @@ public class ModificationUtils {
 //				EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModDeletedEmergencyNumbers, newEmergencyNumber.getKey());
 			}
 			else {
+				logger.info("[ModificationUtils] KeyId is not null, changing from added to deleted");
 //				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
 //				savedEmergencyNumber.setCountry(emergencyContact.getCountry());
 //				savedEmergencyNumber.setNumber(emergencyContact.getNumber());
@@ -647,8 +653,12 @@ public class ModificationUtils {
 				// emergency in smartphone
 				Key emergencyKey = KeyFactory.stringToKey(emergencyContact.getKeyId());
 				pos = pcsmartphone.getAddedEmergencyNumbers().indexOf(emergencyKey);
-				pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
-				cacheAddedEmergencyNums.remove(pos);
+				boolean removed = pcsmartphone.getAddedEmergencyNumbers().remove(emergencyKey);
+				
+				logger.info("[ModificationUtils] POS: "+pos+" Cache Added Size: "+cacheAddedEmergencyNums.size()+", removed from smartphone added: "+removed);
+				if(pos>=0 && cacheAddedEmergencyNums.size()>pos){
+					cacheAddedEmergencyNums.remove(pos);
+				}
 				
 				auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
 				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
@@ -702,7 +712,6 @@ public class ModificationUtils {
 			
 			pcModProperties.add(property.getKey());
 			cacheModProperties.add(auxProperty);
-			
 //			PropertyModelUtils.addProperty(pm, cacheModProperties, property.getKey());
 		}
 		
@@ -811,9 +820,7 @@ public class ModificationUtils {
 				cacheModDeletedRules.add(deletedRuleId);
 			}
 		}
-		
-		logger.severe("RULES ADDED: " + pcModRules.size() + " " + pcModRules);
-		logger.severe("RULES ADDED CACHE: " + cacheModRules.size() + " " + cacheModRules);
+
 		
 		//Saving all the the things used in this method.
 		WriteToCache.writeSmartphoneActiveContactsToCache(smartphoneKey, cacheActiveContacts);

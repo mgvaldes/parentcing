@@ -65,6 +65,12 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			if (smartphones != null) {
 				for (SmartphoneModel sph : smartphones) {
 					auxObject = callParentSmartphoneDetails(cid, sph.getKeyId());
+					if(auxObject == null){
+						logger.severe("An error ocurred while trying to get smartphone details for smartphone: "+sph.getKeyId());
+						logger.warning("Smartphone: "+sph.getKeyId()+" details failed. Setting details to empty json");
+						auxObject = new JsonObject();
+					}
+					
 					auxSmartphone = gson.fromJson(auxObject, sphType); 
 					
 					SmartphoneModelUtils.updateSmartphone(auxSmartphone, sph);
@@ -80,6 +86,8 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 				}
 				
 				user.setSmartphones(smartphones);
+			}else{
+				return null;
 			}
 		}
 		
@@ -191,9 +199,15 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		} 
 		catch (MalformedURLException e) {
 			logger.info("[LoginService] An error occured creating resource's url. " + e); 
+			return null;
 		}	
 		catch (IOException e) {
 			logger.info("[LoginService] An error occured writing to InputStreamReader reading from BufferedReader. " + e);
+			return null;
+		}
+		catch (Exception e){
+			logger.info("[LoginService] An unexpected error ocurred. " + e);
+			return null;
 		}
 		
 		return smartphone;
@@ -244,10 +258,16 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		} 
 		catch (MalformedURLException e) {
 			logger.info("[LoginService] An error occured creating resource's url. " + e); 
+			return null;
 		}	
 		catch (IOException e) {
 			logger.info("[LoginService] An error occured writing to OutputotStreamWriteror reading from BufferedReader. " + e);
+			return null;
+		} catch(Exception e){
+			logger.info("[LoginService] An unexpected exception ocurred. " + e);
+			return null;
 		}
+		
 		
 		return smartphones;
 	}
