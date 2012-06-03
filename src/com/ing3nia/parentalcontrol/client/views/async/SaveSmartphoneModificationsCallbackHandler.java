@@ -116,6 +116,18 @@ public class SaveSmartphoneModificationsCallbackHandler implements AsyncCallback
 				DeviceEmergencyNumberListView deviceListView = new DeviceEmergencyNumberListView(baseView, baseView.getUser().getCid(), smartphone);
 				deviceListView.initDeviceEmergencyNumberListView();			
 			}
+			else if (this.option == 5) { //SaveMod Delete Rule
+				ArrayList<RuleModel> rules = smartphone.getRules();
+				rules.remove(this.newRule);
+				baseView.getBaseBinder().getCenterContent().clear();
+				
+				Button ruleList = baseView.getMenuSetter().getAlertRules();
+				ruleList.setStyleName("selectedShinnyButton");
+				BaseViewHandler.clearOthersStyle(CenterMenuOptionsClassNames.AlertRules, baseView.getMenuSetter().getCenterMenuOptions());
+
+				RuleListView ruleListView = new RuleListView(baseView, rules);
+				ruleListView.initRuleListView();
+			}
 		}
 		else {
 			if (this.option == 0) {

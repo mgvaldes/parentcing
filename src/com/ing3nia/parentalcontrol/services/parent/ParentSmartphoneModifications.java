@@ -156,9 +156,14 @@ public class ParentSmartphoneModifications {
 		}
 		
 		if (cacheIdentSmartphone == null) {
+			logger.info("[Parent Modifications - Cache Version] SmartphoneCacheModel not in cache. Saving it!");
 			WriteToCache.writeSmartphoneToCache(smartphone);
+			
+			cacheIdentSmartphone = (IdentifiableValue) syncCache.getIdentifiable(smartphoneCacheKey);
+			cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
 		}
 		else {
+			logger.info("[Parent Modifications - Cache Version] Obtaining SmartphoneCacheModel from cache.");
 			cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
 		}
 		
