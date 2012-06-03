@@ -1,9 +1,8 @@
 package com.ing3nia.parentalcontrol.client.models;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
-
-public class OrganizationModel implements IsSerializable {
+public class OrganizationModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private String name;

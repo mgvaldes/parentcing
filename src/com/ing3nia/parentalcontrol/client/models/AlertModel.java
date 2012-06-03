@@ -3,8 +3,6 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 /**
  * Class that represents a single input in the alert list view.
  * 
@@ -13,7 +11,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Ing3nia.
  *
  */
-public class AlertModel implements Serializable, IsSerializable {
+public class AlertModel implements Serializable {
 	/**
 	 * 
 	 */

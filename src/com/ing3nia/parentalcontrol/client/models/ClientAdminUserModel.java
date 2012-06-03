@@ -1,10 +1,9 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class ClientAdminUserModel implements IsSerializable {
+public class ClientAdminUserModel implements Serializable {
 	/**
 	 * 
 	 */

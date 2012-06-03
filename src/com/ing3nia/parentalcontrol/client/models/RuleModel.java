@@ -3,9 +3,7 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class RuleModel implements IsSerializable, Serializable {
+public class RuleModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String keyId;

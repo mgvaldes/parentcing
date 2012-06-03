@@ -1,9 +1,8 @@
 package com.ing3nia.parentalcontrol.client.models;
+
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-public class DeviceModel implements IsSerializable, Serializable {
+public class DeviceModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String model;
@@ -13,6 +12,7 @@ public class DeviceModel implements IsSerializable, Serializable {
 	private int type;
 
 	public DeviceModel() {
+		super();
 	}
 
 	public DeviceModel(String model, String version, int type) {

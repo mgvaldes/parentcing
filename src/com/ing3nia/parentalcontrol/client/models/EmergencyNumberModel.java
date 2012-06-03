@@ -2,10 +2,7 @@ package com.ing3nia.parentalcontrol.client.models;
 
 import java.io.Serializable;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-
-public class EmergencyNumberModel implements IsSerializable, Serializable {
+public class EmergencyNumberModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String keyId;

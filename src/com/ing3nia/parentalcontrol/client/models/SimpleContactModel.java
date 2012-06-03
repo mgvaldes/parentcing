@@ -3,10 +3,8 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
-
-public class SimpleContactModel implements IsSerializable, Serializable {
+public class SimpleContactModel implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/**

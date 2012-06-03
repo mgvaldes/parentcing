@@ -1,9 +1,8 @@
 package com.ing3nia.parentalcontrol.client.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Class that represents a single ticket in the ticket list view.
@@ -13,7 +12,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Ing3nia.
  *
  */
-public class TicketModel implements IsSerializable {
+public class TicketModel implements Serializable {
 	/**
 	 * Represents the next id correspondeing to the next
 	 * ticket created.

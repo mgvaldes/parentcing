@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class SmartphoneModel implements Serializable {
 	/**
@@ -15,6 +14,8 @@ public class SmartphoneModel implements Serializable {
 	private String keyId;
 	
 	private String id;
+	
+	//private int detailsSynced;
 	
 	private LocationModel location;
 	
@@ -44,6 +45,9 @@ public class SmartphoneModel implements Serializable {
 	
 	private ArrayList<NotificationModel> alerts; //
 	
+	private boolean detailsSynced;
+	
+	
 	public SmartphoneModel() {
 	}
 
@@ -71,6 +75,7 @@ public class SmartphoneModel implements Serializable {
 		this.modification = modification;
 		this.rules = rules;
 		this.alerts = alerts;
+		this.detailsSynced = false;
 	}
 
 	public String getId() {
@@ -200,7 +205,26 @@ public class SmartphoneModel implements Serializable {
 	public void setAlerts(ArrayList<NotificationModel> alerts) {
 		this.alerts = alerts;
 	}
+
+/*
+	public int getDetailsSynced() {
+		return detailsSynced;
+	}
+
+	public void setDetailsSynced(int detailsSynced) {
+		this.detailsSynced = detailsSynced;
+	}
+	*/
+
 	
+	
+	public boolean isDetailsSynced() {
+		return detailsSynced;
+	}
+
+	public void setDetailsSynced(boolean detailsSynced) {
+		this.detailsSynced = detailsSynced;
+	}
 	
 	public static ArrayList<AlertModel> getUserAlertList(SmartphoneModel smart) {
 		ArrayList<AlertModel> alerts = new ArrayList<AlertModel>();
