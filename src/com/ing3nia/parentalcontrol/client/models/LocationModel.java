@@ -2,7 +2,10 @@ package com.ing3nia.parentalcontrol.client.models;
 
 import java.io.Serializable;
 
-public class LocationModel implements Serializable{
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+
+public class LocationModel implements IsSerializable, Serializable{
 	/**
 	 * 
 	 */

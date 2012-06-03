@@ -2,7 +2,10 @@ package com.ing3nia.parentalcontrol.client.models;
 
 import java.io.Serializable;
 
-public class PropertyModel implements Serializable {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+
+public class PropertyModel implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String keyId;

@@ -38,7 +38,7 @@ import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 public class ParentSmartphoneGeneral {
 	public String NEW_WS = "new";
 	public String OLD_WS = "old";
-	public String ACTUAL = NEW_WS;
+	public String ACTUAL = OLD_WS;
 
 	private static final Logger logger = Logger
 			.getLogger(ParentSmartphoneGeneral.class.getName());

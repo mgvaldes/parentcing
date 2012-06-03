@@ -3,7 +3,9 @@ package com.ing3nia.parentalcontrol.client.models;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class RouteModel implements Serializable {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public class RouteModel implements IsSerializable, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private String keyId;
