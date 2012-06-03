@@ -41,6 +41,7 @@ public class ClientUserModel implements Serializable {
 	
 	ArrayList<TicketModel> closedTickets;
 	
+
 	String cid;
 
 	public ClientUserModel(String key, String username, String password,
@@ -138,6 +139,8 @@ public class ClientUserModel implements Serializable {
 		return alerts;
 	}
 	
+
+
 	public ArrayList<GeoPtModel> getDeviceLocations(){
 		ArrayList<GeoPtModel> deviceLocations = new ArrayList<GeoPtModel>();
 		for(SmartphoneModel sph: this.getSmartphones()){

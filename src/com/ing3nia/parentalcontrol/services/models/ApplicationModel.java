@@ -1,5 +1,6 @@
 package com.ing3nia.parentalcontrol.services.models;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -10,7 +11,7 @@ import com.google.appengine.api.datastore.Key;
 import com.ing3nia.parentalcontrol.models.PCApplication;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 
-public class ApplicationModel {
+public class ApplicationModel implements Serializable{
 	
 	private static Logger logger = Logger.getLogger(ApplicationModel.class.getName());
 	
