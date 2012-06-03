@@ -45,6 +45,9 @@ public class SmartphoneModel implements Serializable {
 	
 	private ArrayList<NotificationModel> alerts; //
 	
+	private boolean detailsSynced;
+	
+	
 	public SmartphoneModel() {
 	}
 
@@ -72,7 +75,7 @@ public class SmartphoneModel implements Serializable {
 		this.modification = modification;
 		this.rules = rules;
 		this.alerts = alerts;
-		//this.detailsSynced = 0;
+		this.detailsSynced = false;
 	}
 
 	public String getId() {
@@ -213,6 +216,16 @@ public class SmartphoneModel implements Serializable {
 	}
 	*/
 
+	
+	
+	public boolean isDetailsSynced() {
+		return detailsSynced;
+	}
+
+	public void setDetailsSynced(boolean detailsSynced) {
+		this.detailsSynced = detailsSynced;
+	}
+	
 	public static ArrayList<AlertModel> getUserAlertList(SmartphoneModel smart) {
 		ArrayList<AlertModel> alerts = new ArrayList<AlertModel>();
 		AlertModel auxAlert;

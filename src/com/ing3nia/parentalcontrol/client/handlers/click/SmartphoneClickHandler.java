@@ -57,18 +57,18 @@ public class SmartphoneClickHandler implements ClickHandler{
 		
 		// Get smartphone details if not got first
 		SmartphoneModel smartphone = baseView.getUser().getSmartphones().get(this.smartphoneIndex);
-		//if(smartphoneModel.getDetailsSynced() != 1){
-		//	Image loadingImage = new Image("/media/images/loading.gif");
-		//	LoadingView.setLoadingView(this.baseView.getBaseBinder(), "Loading Smartphone Details", loadingImage);
+		if(!smartphoneModel.isDetailsSynced()){
+			Image loadingImage = new Image("/media/images/loading.gif");
+			LoadingView.setLoadingView(this.baseView.getBaseBinder(), "Loading Smartphone Details", loadingImage);
 			
 			GetSmartphoneDetailsCallbackHandler getDetailsCallback = new GetSmartphoneDetailsCallbackHandler(baseView, menuSetter, button, deviceChoiceList, smartphoneIndex, this);
 			GetSmartphoneDetailsServiceAsync getSmartphoneDetails = GWT.create(GetSmartphoneDetailsService.class);
 			getSmartphoneDetails.getDetails(this.baseView.getUser().getCid(), smartphone, getDetailsCallback);
 			
 			//smartphone = baseView.getUser().getSmartphones().get(this.smartphoneIndex);
-		//}else{
-		//	setUISmartphoneClickHandler(baseView, menuSetter, button, deviceChoiceList, smartphoneIndex, this);	
-		//}
+		}else{
+			setUISmartphoneClickHandler(baseView, menuSetter, button, deviceChoiceList, smartphoneIndex, this);	
+		}
 
 	}
 	

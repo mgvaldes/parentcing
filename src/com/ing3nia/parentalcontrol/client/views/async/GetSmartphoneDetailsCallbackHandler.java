@@ -45,7 +45,7 @@ public class GetSmartphoneDetailsCallbackHandler implements AsyncCallback<Smartp
 	public void onSuccess(SmartphoneModel resultSmartphoneModel) {	
 		System.out.println("Smartphone details succesfully synced");
 		SmartphoneModel smartphone = baseView.getUser().getSmartphones().get(this.smartphoneIndex);
-		//smartphone.setDetailsSynced(1);		
+		smartphone.setDetailsSynced(true);		
 
 		smartphone.setActiveContacts(resultSmartphoneModel.getActiveContacts());
 		smartphone.setInactiveContacts(resultSmartphoneModel.getInactiveContacts());

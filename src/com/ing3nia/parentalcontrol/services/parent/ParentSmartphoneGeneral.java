@@ -53,9 +53,9 @@ public class ParentSmartphoneGeneral {
 	 * Returns general information of the children smartphones associated to a given user
 	 */
 	public Response get(@QueryParam(value = "cid") final String cookie) {
-//		if (ACTUAL.equals(NEW_WS)) {
-//	            return newWS(cookie);
-//	    }
+		if (ACTUAL.equals(NEW_WS)) {
+	            return newWS(cookie);
+	    }
 	    return oldWS(cookie);
 	}	
 	
