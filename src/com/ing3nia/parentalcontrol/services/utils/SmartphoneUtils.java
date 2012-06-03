@@ -101,10 +101,11 @@ public class SmartphoneUtils {
 	/**
 	 * Returns smartphone general information as a json object
 	 */
-	public static JsonObject getSmartphoneGeneralInfoCache(Key pcSmartKey){
+	public static JsonObject getSmartphoneGeneralInfoCache(String smid){
 		
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		String smid = KeyFactory.keyToString(pcSmartKey);
+		//String smid = KeyFactory.keyToString(pcSmartKey);
+		Key pcSmartKey = KeyFactory.stringToKey(smid);
 		
 	    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 	    //System.out.println("Looking in cache "+SmartphoneCacheParams.SMARTPHONE+smid);
@@ -245,10 +246,10 @@ public class SmartphoneUtils {
 	 * Returns a json array containing the general information of the children smartphones 
 	 * corresponding to the given user, getting info from cache
 	 */
-	public static JsonArray getChildrenSmartphonesInfoCache(PCUser user){
+	public static JsonArray getChildrenSmartphonesInfoCache(ArrayList<String> smartphoneKeyList){
 		JsonArray smpList = new JsonArray();
 		
-		for(Key smartphoneKey : user.getSmartphones()){
+		for(String smartphoneKey : smartphoneKeyList){
 			JsonObject smpGrlInfo = getSmartphoneGeneralInfoCache(smartphoneKey);
 			smpList.add(smpGrlInfo);
 		}

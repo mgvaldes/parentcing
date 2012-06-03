@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.client.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Represents parent user in central system.
@@ -45,7 +46,13 @@ public class UserModel implements Serializable {
 	 */
 	
 	private String name;
+	
+	private ArrayList<String> smartphoneKeys;
 
+	public UserModel(){
+		smartphoneKeys = new ArrayList<String>();
+	}
+	
 	public String getKey() {
 		return key;
 	}
@@ -88,6 +95,14 @@ public class UserModel implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public ArrayList<String> getSmartphoneKeys() {
+		return smartphoneKeys;
+	}
+
+	public void setSmartphoneKeys(ArrayList<String> smartphoneKeys) {
+		this.smartphoneKeys = smartphoneKeys;
 	}
 	
 }

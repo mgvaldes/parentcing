@@ -23,8 +23,11 @@ import com.ing3nia.parentalcontrol.client.models.PropertyModel;
 import com.ing3nia.parentalcontrol.client.models.RouteModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SessionCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
+import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.models.PCDevice;
 import com.ing3nia.parentalcontrol.models.PCEmergencyNumber;
 import com.ing3nia.parentalcontrol.models.PCModification;
@@ -33,8 +36,10 @@ import com.ing3nia.parentalcontrol.models.PCPhone;
 import com.ing3nia.parentalcontrol.models.PCProperty;
 import com.ing3nia.parentalcontrol.models.PCRoute;
 import com.ing3nia.parentalcontrol.models.PCRule;
+import com.ing3nia.parentalcontrol.models.PCSession;
 import com.ing3nia.parentalcontrol.models.PCSimpleContact;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
+import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
@@ -366,7 +371,57 @@ public class WriteToCache {
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.RULES,cacheRuleList, null);
 	}	
+	
+	public static void writeSessionToCache(PCSession session, PCUser user){
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		SessionCacheModel sessionCache = new SessionCacheModel();
+		sessionCache.setCookieId(session.getCookieId());
+		sessionCache.setKey(KeyFactory.keyToString(session.getKey()));
+		sessionCache.setLastUpdate(formatter.format(session.getLastUpdate()));
+		
+		UserModel userModel = new UserModel();
+		userModel.setEmail(user.getEmail());
+		userModel.setKey(KeyFactory.keyToString(user.getKey()));
+		userModel.setName(user.getName());
+		userModel.setPass(user.getPassword());
+		userModel.setUsr(user.getUsername());
+		
+		ArrayList<String> smartphoneKeys = new ArrayList<String>();
+		for(Key key : user.getSmartphones()){
+			String keyString = KeyFactory.keyToString(key);
+			smartphoneKeys.add(keyString);
+		}
+		userModel.setSmartphoneKeys(smartphoneKeys);
+		
+		
+		sessionCache.setUserModel(userModel);
+		
+		logger.info("Setting Session in cache: "+UserCacheParams.SESSION+session.getCookieId());
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(UserCacheParams.SESSION+session.getCookieId(), sessionCache, null);
+	}
 
+	
+	public static void writeUserToCache(PCUser user){
+		UserModel userModel = new UserModel();
+		userModel.setEmail(user.getEmail());
+		userModel.setKey(KeyFactory.keyToString(user.getKey()));
+		userModel.setName(user.getName());
+		userModel.setPass(user.getPassword());
+		userModel.setUsr(user.getUsername());
+		
+		ArrayList<String> smartphoneKeys = new ArrayList<String>();
+		for(Key key : user.getSmartphones()){
+			String keyString = KeyFactory.keyToString(key);
+			smartphoneKeys.add(keyString);
+		}
+		userModel.setSmartphoneKeys(smartphoneKeys);
+		
+		logger.info("Setting User in cache: "+UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass()+" number of smartphone: "+userModel.getSmartphoneKeys().size());
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass(), userModel, null);
+	}
 }
 
 
