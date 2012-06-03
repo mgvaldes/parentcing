@@ -56,6 +56,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		
 		String cid = callParentLoginResource(username, password);
 		
+		
 		if (cid != null) {
 			user = new ClientUserModel();
 			user.setCid(cid);
@@ -63,6 +64,9 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 			smartphones = callParentSmartphoneGeneral(cid);			
 			
 			if (smartphones != null) {
+				
+				// COMMENTING FOR ON-DEMAND CALL
+				/*
 				for (SmartphoneModel sph : smartphones) {
 					auxObject = callParentSmartphoneDetails(cid, sph.getKeyId());
 					if(auxObject == null){
@@ -84,7 +88,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 					auxContacts = parseContacts(auxArray);
 					sph.setActiveContacts(auxContacts);
 				}
-				
+				*/
 				user.setSmartphones(smartphones);
 			}else{
 				return null;
@@ -94,7 +98,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		return user;
 	}
 	
-	public ArrayList<ContactModel> parseContacts(JsonArray simpleContactsArray) {
+	public static ArrayList<ContactModel> parseContacts(JsonArray simpleContactsArray) {
 		ArrayList<ContactModel> contactsList = new ArrayList<ContactModel>();
 		HashMap<String, ContactInfo> auxContactsHashMap = new HashMap<String, ContactInfo>();
 		String contactName;
@@ -151,13 +155,13 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 		return contactsList;
 	}
 	
-	public ArrayList<EmergencyNumberModel> parseEmergencyNumbers(JsonArray simpleContactsArray) {
+	public static ArrayList<EmergencyNumberModel> parseEmergencyNumbers(JsonArray simpleContactsArray) {
 		ArrayList<EmergencyNumberModel> emergencyNumbers = new ArrayList<EmergencyNumberModel>();
 		
 		return emergencyNumbers;
 	}
 	
-	public JsonObject callParentSmartphoneDetails(String cid, String smid) {
+	public static JsonObject callParentSmartphoneDetails(String cid, String smid) {
 		JsonObject smartphone = null;
 		
 		URL url;

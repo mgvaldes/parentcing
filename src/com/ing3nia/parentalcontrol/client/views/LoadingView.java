@@ -62,6 +62,7 @@ public class LoadingView{
 		Label loadingLabel = new Label(text);
 		loadingLabel.setStyleName("loadingLabel");
 		loadingView.add(loadingLabel);
+		pcbase.getCenterContent().add(loadingView);
 	}
 	
 	

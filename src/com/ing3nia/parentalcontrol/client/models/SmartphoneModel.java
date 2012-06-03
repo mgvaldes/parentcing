@@ -15,6 +15,8 @@ public class SmartphoneModel implements Serializable {
 	
 	private String id;
 	
+	//private int detailsSynced;
+	
 	private LocationModel location;
 	
 	private ArrayList<ContactModel> activeContacts; //
@@ -70,6 +72,7 @@ public class SmartphoneModel implements Serializable {
 		this.modification = modification;
 		this.rules = rules;
 		this.alerts = alerts;
+		//this.detailsSynced = 0;
 	}
 
 	public String getId() {
@@ -199,8 +202,17 @@ public class SmartphoneModel implements Serializable {
 	public void setAlerts(ArrayList<NotificationModel> alerts) {
 		this.alerts = alerts;
 	}
-	
-	
+
+/*
+	public int getDetailsSynced() {
+		return detailsSynced;
+	}
+
+	public void setDetailsSynced(int detailsSynced) {
+		this.detailsSynced = detailsSynced;
+	}
+	*/
+
 	public static ArrayList<AlertModel> getUserAlertList(SmartphoneModel smart) {
 		ArrayList<AlertModel> alerts = new ArrayList<AlertModel>();
 		AlertModel auxAlert;
