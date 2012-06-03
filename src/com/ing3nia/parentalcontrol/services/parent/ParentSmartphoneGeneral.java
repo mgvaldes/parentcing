@@ -38,7 +38,7 @@ import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 public class ParentSmartphoneGeneral {
 	public String NEW_WS = "new";
 	public String OLD_WS = "old";
-	public String ACTUAL = OLD_WS;
+	public String ACTUAL = NEW_WS;
 
 	private static final Logger logger = Logger
 			.getLogger(ParentSmartphoneGeneral.class.getName());
@@ -53,9 +53,9 @@ public class ParentSmartphoneGeneral {
 	 * Returns general information of the children smartphones associated to a given user
 	 */
 	public Response get(@QueryParam(value = "cid") final String cookie) {
-//		if (ACTUAL.equals(NEW_WS)) {
-//	            return newWS(cookie);
-//	    }
+		if (ACTUAL.equals(NEW_WS)) {
+	            return newWS(cookie);
+		}
 	    return oldWS(cookie);
 	}	
 	
@@ -93,8 +93,7 @@ public class ParentSmartphoneGeneral {
 			return rbuilder.build();
 		}
 
-		JsonArray smpGeneralInfoArray = SmartphoneUtils
-				.getChildrenSmartphonesInfo(user);
+		JsonArray smpGeneralInfoArray = SmartphoneUtils.getChildrenSmartphonesInfo(user);
 
 		JsonObject responseMsg = WSStatus.OK.getStatusAsJson();
 		responseMsg.add("smartphones", smpGeneralInfoArray);
@@ -105,4 +104,52 @@ public class ParentSmartphoneGeneral {
 				rbuilder);
 		return rbuilder.build();
 	}
+	
+
+	public Response newWS(String cookie){
+		logger.info("[Parent Smartphone General Cache] Obtaining session from request");
+
+		// creating global variables
+		ResponseBuilder rbuilder;
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PCSession session = null;
+
+		try {
+			session = SessionUtils.getPCSessionFromCookie(pm, cookie);
+		} catch (SessionQueryException e) {
+			logger.warning("[Parent Smartphone General Cache] No session exists for the given cookie. "
+					+ e.getMessage());
+			rbuilder = Response.ok(WSStatus.NONEXISTING_SESSION
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
+			return rbuilder.build();
+		}
+
+		// TODO verify if session is active
+
+		logger.info("[Parent Smartphone General Cache] Session found. Getting User from session");
+		PCUser user = pm.getObjectById(PCUser.class, session.getUser());
+
+		if (user == null) {
+			logger.severe("[Parent Smartphone General Cache] No user associated with a valid session");
+			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson()
+					.toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
+			return rbuilder.build();
+		}
+
+		JsonArray smpGeneralInfoArray = SmartphoneUtils.getChildrenSmartphonesInfoCache(user);
+
+		JsonObject responseMsg = WSStatus.OK.getStatusAsJson();
+		responseMsg.add("smartphones", smpGeneralInfoArray);
+
+		rbuilder = Response.ok(responseMsg.toString(),
+				MediaType.APPLICATION_JSON);
+		WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+				rbuilder);
+		return rbuilder.build();
+	}
+	
 }
