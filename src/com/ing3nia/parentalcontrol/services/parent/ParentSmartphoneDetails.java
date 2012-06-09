@@ -11,14 +11,18 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 //import com.google.appengine.api.datastore.Query;
 import com.google.gson.JsonObject;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SessionCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
+import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.models.PCSession;
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
@@ -148,21 +152,37 @@ public class ParentSmartphoneDetails {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		PCSession session = null;
 		
-		try {
-			 session = SessionUtils.getPCSessionFromCookie(pm, cookie);
-		} catch (SessionQueryException e) {
-			logger.warning("[Parent Smartphone Details] No session exists for the given cookie. "+e.getMessage());
-			rbuilder = Response.ok(WSStatus.NONEXISTING_SESSION.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
-			return rbuilder.build();
+	    MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		SessionCacheModel sessionCacheModel = null;
+	    IdentifiableValue ident = syncCache.getIdentifiable(UserCacheParams.SESSION+cookie);
+	    
+		if (ident == null) {
+
+			try {
+				session = SessionUtils.getPCSessionFromCookie(pm, cookie);
+			} catch (SessionQueryException e) {
+				logger.warning("[Parent Smartphone Details] No session exists for the given cookie. "
+						+ e.getMessage());
+				rbuilder = Response.ok(WSStatus.NONEXISTING_SESSION.getStatusAsJson().toString(),MediaType.APPLICATION_JSON);
+				WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+				return rbuilder.build();
+			}
+		} else {
+			sessionCacheModel = (SessionCacheModel) ident.getValue();
+			logger.info("Session: " + cookie + " found in cache");
 		}
+		
 		
 		//TODO verify if session is active
 		
-		logger.info("[Parent Smartphone Details] Session found. Getting User from session");
-		PCUser user = pm.getObjectById(PCUser.class, session.getUser());
+		PCUser user = null;
+
+		if(sessionCacheModel == null){
+			logger.info("[Parent Smartphone Details] Session found. Getting User from session");
+			user = pm.getObjectById(PCUser.class, session.getUser());
+		}
 		
-		if(user==null){
+		if(user==null && sessionCacheModel.getUserModel() == null){
 			logger.severe("[Parent Smartphone Details] No user associated with a valid session");
 			rbuilder = Response.ok(WSStatus.NONEXISTING_USER.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
 			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
@@ -179,9 +199,7 @@ public class ParentSmartphoneDetails {
 		SmartphoneCacheModel smphCacheModel = null;
 		
 		logger.info("[Parent Smartphone Details - Cache] Trying to get smartphone from cache first");
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-	    
-		IdentifiableValue ident = syncCache.getIdentifiable(SmartphoneCacheParams.SMARTPHONE+smid);
+		ident = syncCache.getIdentifiable(SmartphoneCacheParams.SMARTPHONE+smid);
 	    if(ident==null){
 	    	logger.info("Smartphone: "+smid+" not in cache. Getting from datastore");
 	    	

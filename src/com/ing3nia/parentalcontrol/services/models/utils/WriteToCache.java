@@ -394,6 +394,20 @@ public class WriteToCache {
 		}
 		userModel.setSmartphoneKeys(smartphoneKeys);
 		
+		sessionCache.setUserModel(userModel);
+		
+		logger.info("Setting Session in cache: "+UserCacheParams.SESSION+session.getCookieId());
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(UserCacheParams.SESSION+session.getCookieId(), sessionCache, null);
+	}
+	
+	public static void writeSessionToCache(PCSession session, UserModel userModel){
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		SessionCacheModel sessionCache = new SessionCacheModel();
+		sessionCache.setCookieId(session.getCookieId());
+		sessionCache.setKey(KeyFactory.keyToString(session.getKey()));
+		sessionCache.setLastUpdate(formatter.format(session.getLastUpdate()));
 		
 		sessionCache.setUserModel(userModel);
 		
