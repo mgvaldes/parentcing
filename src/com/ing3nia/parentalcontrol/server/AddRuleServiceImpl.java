@@ -20,6 +20,7 @@ import com.ing3nia.parentalcontrol.models.PCRule;
 
 import com.ing3nia.parentalcontrol.models.PCSmartphone;
 
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 
 public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleService {
@@ -27,16 +28,31 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger(AddRuleServiceImpl.class.getName());
 	
+	public String NEW_WS = "new";
+	public String OLD_WS = "old";
+	public String ACTUAL = NEW_WS;
+	
 	public AddRuleServiceImpl() {
 		//logger.addHandler(new ConsoleHandler());
 	}
 
 	@Override
 	public String addRule(String cid, String smartphoneKey, RuleModel newRule) {
+		
+		if (ACTUAL.equals(NEW_WS)) {
+            return addRuleNEW(cid, smartphoneKey, newRule);
+	}
+
+		return addRuleOLD(cid, smartphoneKey, newRule);
+	}
+	
+	public String addRuleNEW(String cid, String smartphoneKey, RuleModel newRule){
+		
 		String newRuleKey = null;
 //		PCSession session = null;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		PCRule rule = new PCRule();
+		PCSmartphone smartphone = null;
 		try {
 			//TODO revisar sesion
 //			logger.info("[Add Rule Service] Finding user session from cookie");
@@ -46,7 +62,72 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 //			PCUser user = pm.getObjectById(PCUser.class, session.getUser());
 			
 //			logger.info("[Add Rule Service] Obtaining smartphone from provided key " + smartphoneKey);
-			PCSmartphone smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneKey));
+			smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneKey));
+									
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+			Date date;
+			
+			//PCRule rule = new PCRule();
+			
+			date = sdf.parse(newRule.getCreationDate());
+			rule.setCreationDate(date);
+			date = sdf.parse(newRule.getStartDate());
+			rule.setStartDate(date);
+			date = sdf.parse(newRule.getEndDate());
+			rule.setEndDate(date);
+			rule.setName(newRule.getName());
+			rule.setType(newRule.getType());
+			
+			logger.info("[Add Rule Service] Setting new funcionalities to rules");
+			PersistenceManager pm2 = ServiceUtils.PMF.getPersistenceManager();
+			rule.setDisabledFunctionalities(getNewFuncionalitiesAsKeys(pm2, newRule));
+
+			pm.makePersistent(rule);
+			
+			smartphone.getRules().add(rule.getKey());
+			
+			//logger.severe("[Add Rule Service] Rule saved! "+rule.getName()+" "+rule.getCreationDate()+" "+rule.getStartDate()+" "+rule.getEndDate()+" "+rule.getDisabledFunctionalities().size()+" "+rule.getKey());
+			
+			
+			logger.severe("[Add Rule Service] New rule's key: " + rule.getKey());
+
+		}
+		catch (Exception e) {
+			logger.severe("[Add Rule Service] Error while saving new rule " + e);
+			newRuleKey = null;
+		}
+		finally {
+			
+			pm.close();
+		}
+		
+		// NOT ADDING TO CACHE CAUSE MODIFICATIONS WILL BE CALLED
+		
+		//logger.severe("[Add Rule Service Cache] Adding new rule to smartphone rules in cache");
+		//WriteToCache.addSmartphoneRuleToCache(smartphoneKey, rule);
+		
+		newRuleKey = KeyFactory.keyToString(rule.getKey());
+		logger.severe("RULE DATE AND KEY: "+rule.getCreationDate()+" "+newRuleKey);
+		return newRuleKey;
+	}
+
+	public String addRuleOLD(String cid, String smartphoneKey, RuleModel newRule){
+		
+		String newRuleKey = null;
+//		PCSession session = null;
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		PCRule rule = new PCRule();
+		PCSmartphone smartphone = null;
+		try {
+			//TODO revisar sesion
+//			logger.info("[Add Rule Service] Finding user session from cookie");
+//			session = SessionUtils.getPCSessionFromCookie(pm, cid);
+//			
+//			logger.info("[Add Rule Service] Session found. Getting User from session");
+//			PCUser user = pm.getObjectById(PCUser.class, session.getUser());
+			
+//			logger.info("[Add Rule Service] Obtaining smartphone from provided key " + smartphoneKey);
+			smartphone = (PCSmartphone)pm.getObjectById(PCSmartphone.class, KeyFactory.stringToKey(smartphoneKey));
 									
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			Date date;
@@ -89,7 +170,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 		logger.severe("RULE DATE AND KEY: "+rule.getCreationDate()+" "+newRuleKey);
 		return newRuleKey;
 	}
-
+	
 //		logger.info("[Add Rule Service] Finding user session from cookie");
 //		
 //		try {

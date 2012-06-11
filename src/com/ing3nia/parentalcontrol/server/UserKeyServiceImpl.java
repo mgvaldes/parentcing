@@ -21,6 +21,7 @@ import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 
@@ -69,7 +70,7 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 		IdentifiableValue ident = syncCache.getIdentifiable(UserCacheParams.USER + username + "-"+ encryptedPass);
 
 		if (ident == null) {
-			logger.info("User Key] User: " + username+ " not in cache. Getting from datastore");
+			logger.info("User Key] User: " + username+ " "+encryptedPass+" not in cache. Getting from datastore");
 
 			try {
 				pcuser = SessionUtils.getPCUser(pm, username,
@@ -78,7 +79,10 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 				if (pcuser != null) {
 					userKey = KeyFactory.keyToString(pcuser.getKey());
 					logger.info("Got Key from DS: " + userKey);
+					logger.info("[User Key] Writing user: " + username+ " to cache");
+					WriteToCache.writeUserToCache(pcuser);
 				}
+				
 			} catch (SessionQueryException ex) {
 				logger.severe("[User Key] An error occurred while searching for user.");
 				return null;
@@ -91,7 +95,7 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 		} else {
 			userCacheModel = (UserModel)ident.getValue();
 			userKey = userCacheModel.getKey();
-			logger.severe("[User Key] User found in cache");
+			logger.info("[User Key] User found in cache");
 		}
 		
 		return userKey;

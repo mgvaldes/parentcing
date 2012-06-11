@@ -176,6 +176,27 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey + SmartphoneCacheParams.RULES, rules, null);
 	}
 	
+	public static void addSmartphoneRuleToCache(String smartphoneKey, PCRule pcRule) {
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+				
+		RuleModel ruleModel;
+		ruleModel = RuleModelUtils.convertToRuleModel(pcRule);
+		
+		logger.info("Getting Smartphone rules from Cache");
+		IdentifiableValue ident = syncCache.getIdentifiable(smartphoneKey+SmartphoneCacheParams.RULES);
+		
+		if(ident == null){
+			logger.warning("Smartphone Rules not found in cache. Not adding rule to cache");
+			return;
+		}
+		
+		ArrayList<RuleModel> rules = (ArrayList<RuleModel>)ident.getValue();
+		rules.add(ruleModel);
+		
+		logger.info("Setting Rules List to cache: " + smartphoneKey + SmartphoneCacheParams.RULES + " to cache");
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.RULES, rules, null);
+	}
+	
 	public static void writeSmartphoneRulesToCache(ArrayList<RuleModel> cacheRules, String smartphoneKey) {
 		logger.info("Setting Smartphone Rules: " + smartphoneKey + " to cache");
 		
