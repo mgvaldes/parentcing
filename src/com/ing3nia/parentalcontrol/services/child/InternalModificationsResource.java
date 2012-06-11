@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.services.child;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,7 +25,6 @@ import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.ibm.icu.text.SimpleDateFormat;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.LocationModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
@@ -260,6 +260,7 @@ public class InternalModificationsResource {
 							cacheNewRoute.setDate(dateFormatter.format(new Date()));
 							cacheNewRoute.setPoints(new ArrayList<LocationModel>());
 							cacheNewRoute.getPoints().add(internalModsModel.getLocation());
+							cacheSmartphoneRoutes.add(cacheNewRoute);
 						}
 					}
 					else {

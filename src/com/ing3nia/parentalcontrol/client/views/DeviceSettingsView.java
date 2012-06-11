@@ -261,7 +261,7 @@ public class DeviceSettingsView {
 		SmartphoneModel smart = this.baseView.getUser().getSmartphones().get(this.baseView.getClickedSmartphoneIndex());
 		RuleModel rule = searchBlockPhoneRule(smart.getRules());		
 		
-		DeleteRuleCallbackHandler deleteRuleCallback = new DeleteRuleCallbackHandler(this.baseView, rule);
+		DeleteRuleCallbackHandler deleteRuleCallback = new DeleteRuleCallbackHandler(this.baseView, rule, this.cookieId, smart.getKeyId());
 		DeleteRuleServiceAsync deleteRuleService = GWT.create(DeleteRuleService.class);
 		deleteRuleService.deleteRule(rule.getKeyId(), smart.getKeyId(), deleteRuleCallback);
 	}

@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
 import com.google.gson.Gson;
@@ -51,6 +50,8 @@ public class SaveSmartphoneModificationsServiceImpl extends RemoteServiceServlet
 			Gson jsonBuilder = new Gson();
 			Type modificationType = new TypeToken<ParentModificationsModel>(){}.getType();
 			String postParams = jsonBuilder.toJson(parentMod, modificationType);
+			
+			logger.info("------------------------Mod: " + postParams);
 			
 			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 			wr.write(postParams);

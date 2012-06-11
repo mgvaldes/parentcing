@@ -2,25 +2,26 @@ package com.ing3nia.parentalcontrol.client.views.async;
 
 import java.util.ArrayList;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Button;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
-import com.ing3nia.parentalcontrol.client.models.ClientUserModel;
+import com.ing3nia.parentalcontrol.client.models.ModificationModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
-import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.models.TicketModel;
-import com.ing3nia.parentalcontrol.client.views.RuleListView;
-import com.ing3nia.parentalcontrol.client.views.TicketListView;
-import com.ing3nia.parentalcontrol.client.views.classnames.CenterMenuOptionsClassNames;
+import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
+import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 
 public class DeleteRuleCallbackHandler implements AsyncCallback<Boolean> {
 	
 	private BaseViewHandler baseView;
 	private RuleModel rule;
+	private String cid;
+	private String smartKey;
 	
-	public DeleteRuleCallbackHandler(BaseViewHandler baseView, RuleModel rule) {
+	public DeleteRuleCallbackHandler(BaseViewHandler baseView, RuleModel rule, String cid, String smartKey) {
 		this.baseView = baseView;
 		this.rule = rule;
+		this.cid = cid;
+		this.smartKey = smartKey;
 	}
 	
 	@Override
@@ -32,18 +33,15 @@ public class DeleteRuleCallbackHandler implements AsyncCallback<Boolean> {
 	@Override
 	public void onSuccess(Boolean result) {
 		if (result) {
-			SmartphoneModel smartphone = baseView.getUser().getSmartphones().get(this.baseView.getClickedSmartphoneIndex());
-			ArrayList<RuleModel> rules = smartphone.getRules();
-			rules.remove(this.rule);
+			ModificationModel auxMod = new ModificationModel();
+			ArrayList<String> modRules = new ArrayList<String>();
+			modRules.add(this.rule.getKeyId());
 			
-			baseView.getBaseBinder().getCenterContent().clear();
+			auxMod.setDeletedRules(modRules);
 			
-			Button ruleList = baseView.getMenuSetter().getAlertRules();
-			ruleList.setStyleName("selectedShinnyButton");
-			BaseViewHandler.clearOthersStyle(CenterMenuOptionsClassNames.AlertRules, baseView.getMenuSetter().getCenterMenuOptions());
-
-			RuleListView ruleListView = new RuleListView(baseView, rules);
-			ruleListView.initRuleListView();
+			SaveSmartphoneModificationsCallbackHandler saveModCallback = new SaveSmartphoneModificationsCallbackHandler(baseView, this.rule, 5);
+			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
+			saveModService.saveSmartphoneModifications(this.cid, this.smartKey, auxMod, saveModCallback);
 		} 
 		else {
 			baseView.getBaseBinder().getNotice().setText("An error occured. The rule couldn't be deleted.");

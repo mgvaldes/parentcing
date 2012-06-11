@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.models.PCPhone;
@@ -17,6 +18,7 @@ public class SimpleContactModelUtils {
 		
 		SimpleContactModel contact = new SimpleContactModel();
 		
+		contact.setKeyId(KeyFactory.keyToString(savedContact.getKey()));
 		contact.setFirstName(savedContact.getFirstName());
 		contact.setLastName(savedContact.getLastName());
 		

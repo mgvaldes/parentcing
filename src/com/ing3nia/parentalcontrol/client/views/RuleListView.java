@@ -195,7 +195,7 @@ public class RuleListView {
 	public void deleteRule(RuleModel rule) {
 		SmartphoneModel smart = this.baseViewHandler.getUser().getSmartphones().get(this.baseViewHandler.getClickedSmartphoneIndex());
 		
-		DeleteRuleCallbackHandler deleteRuleCallback = new DeleteRuleCallbackHandler(this.baseViewHandler, rule);
+		DeleteRuleCallbackHandler deleteRuleCallback = new DeleteRuleCallbackHandler(this.baseViewHandler, rule, this.baseViewHandler.getUser().getCid(), smart.getKeyId());
 		DeleteRuleServiceAsync deleteRuleService = GWT.create(DeleteRuleService.class);
 		deleteRuleService.deleteRule(rule.getKeyId(), smart.getKeyId(), deleteRuleCallback);
 	}

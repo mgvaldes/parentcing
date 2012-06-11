@@ -2,7 +2,6 @@ package com.ing3nia.parentalcontrol.client.views.subviews;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;

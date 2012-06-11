@@ -14,11 +14,10 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
+import com.google.gson.Gson;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
-import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.PropertyModel;
-import com.ing3nia.parentalcontrol.client.models.RouteModel;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
 import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
@@ -110,18 +109,23 @@ public class ModificationUtils {
 				ModificationModel cacheModification = null;
 				
 				if (cacheIdentModification == null) {
+					logger.info("[ParentModifications - Cache Version] ModificationModel not in cache. Saving it!");
 					WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), pcmodification);
 					
 					cacheIdentModification = syncCache.getIdentifiable(modificationCacheKey);
 					cacheModification = (ModificationModel) cacheIdentModification.getValue();
 				}
 				else {
+					logger.info("[ParentModifications - Cache Version] Obtaining ModificationModel from cache.");
 					cacheModification = (ModificationModel) cacheIdentModification.getValue();
 				}
 				
 				updateParentModificationNEW(pm, syncCache, pcsmartphone, pcmodification, modifications, cacheSmartphone, cacheModification);
 				
 				WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), cacheModification);
+				
+				Gson gson = new Gson();
+				System.out.println(gson.toJson(cacheModification, ModificationModel.class));
 			} 
 			catch (ModificationParsingException e) {
 				logger.severe("[ParentModifications - Cache Version] Modification could not be updated ");
@@ -160,6 +164,9 @@ public class ModificationUtils {
 		pcSmartphone.setModification(pcmodification.getKey());
 		
 		WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), cacheModification);
+		
+		Gson gson = new Gson();
+		System.out.println(gson.toJson(cacheModification, ModificationModel.class));
 	}
 	
 	private static void updateParentModificationNEW(PersistenceManager pm, MemcacheService syncCache, PCSmartphone pcsmartphone, PCModification pcmodification, ModificationModel modifications, SmartphoneCacheModel cacheSmartphone, ModificationModel cacheModification) throws ModificationParsingException, IllegalArgumentException, SessionQueryException {
@@ -375,7 +382,10 @@ public class ModificationUtils {
 			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
 			pos = pcsmartphone.getInactiveContacts().indexOf(contactKey);
 			pcsmartphone.getInactiveContacts().remove(contactKey);
-			cacheInactiveContacts.remove(pos);
+			
+			if (pos != -1) {
+				cacheInactiveContacts.remove(pos);
+			}
 			
 			auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
 			auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
@@ -439,7 +449,10 @@ public class ModificationUtils {
 			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
 			pos = pcsmartphone.getActiveContacts().indexOf(contactKey);
 			pcsmartphone.getActiveContacts().remove(contactKey);
-			cacheActiveContacts.remove(pos);
+			
+			if (pos != -1) {
+				cacheActiveContacts.remove(pos);
+			}			
 			
 			auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
 			auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
@@ -579,10 +592,13 @@ public class ModificationUtils {
 				pos = pcsmartphone.getDeletedEmergencyNumbers().indexOf(emergencyKey);
 				pcsmartphone.getDeletedEmergencyNumbers().remove(emergencyKey);
 				
-				
-				if(pos>=0 && cacheDeletedEmergencyNums.size()>pos){
+				if (pos != -1) {
 					cacheDeletedEmergencyNums.remove(pos);
 				}
+				
+//				if(pos>=0 && cacheDeletedEmergencyNums.size()>pos){
+//					cacheDeletedEmergencyNums.remove(pos);
+//				}
 				
 				auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
 				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
@@ -658,9 +674,13 @@ public class ModificationUtils {
 				boolean removed = pcsmartphone.getAddedEmergencyNumbers().remove(emergencyKey);
 				
 				logger.info("[ModificationUtils] POS: "+pos+" Cache Added Size: "+cacheAddedEmergencyNums.size()+", removed from smartphone added: "+removed);
-				if(pos>=0 && cacheAddedEmergencyNums.size()>pos){
+				if (pos != -1) {
 					cacheAddedEmergencyNums.remove(pos);
 				}
+				
+//				if(pos>=0 && cacheAddedEmergencyNums.size()>pos){
+//					cacheAddedEmergencyNums.remove(pos);
+//				}
 				
 				auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
 				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
@@ -695,10 +715,10 @@ public class ModificationUtils {
 		}
 			
 		// parsing property modifications
-		logger.info("[ParentModifications - Cache Version] Adding properties modifications");
+		logger.info("[ParentModifications - Cache Version] Adding properties modifications size: " + properties.size());
 		PropertyModel auxProperty;
 		
-		for (PropertyModel propmodel : modifications.getProperties()) {
+		for (PropertyModel propmodel : properties) {
 			PCProperty property;
 			
 			try {
@@ -711,6 +731,7 @@ public class ModificationUtils {
 			}
 			
 			property.setValue(propmodel.getValue());
+			auxProperty.setValue(propmodel.getValue());
 			
 			pcModProperties.add(property.getKey());
 			cacheModProperties.add(auxProperty);
@@ -822,7 +843,6 @@ public class ModificationUtils {
 				cacheModDeletedRules.add(deletedRuleId);
 			}
 		}
-
 		
 		//Saving all the the things used in this method.
 		WriteToCache.writeSmartphoneActiveContactsToCache(smartphoneKey, cacheActiveContacts);
@@ -926,10 +946,12 @@ public class ModificationUtils {
 		// if the parent enabled any contact, add it to smartphone and modifications
 		ArrayList<Key> modActiveList = pcmodification.getActiveContacts();
 		ArrayList<Key> modInactiveList = pcmodification.getInactiveContacts();
+		
 		for (SimpleContactModel contact : activeContacts) {
 			// remove contact from inactive and add to active in smartphone
 			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
 			pcsmartphone.getInactiveContacts().remove(contactKey);
+			
 			if(!pcsmartphone.getActiveContacts().contains(contactKey)){
 				pcsmartphone.getActiveContacts().add(contactKey);
 			}
@@ -952,6 +974,7 @@ public class ModificationUtils {
 		// modifications
 		modActiveList = pcmodification.getActiveContacts();
 		modInactiveList = pcmodification.getInactiveContacts();
+		
 		for (SimpleContactModel contact : inactiveContacts) {
 			// remove contact from active and add to inactive in smartphone
 			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
@@ -979,6 +1002,7 @@ public class ModificationUtils {
 
 		ArrayList<Key> modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
 		ArrayList<Key> modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
+		
 		for (EmergencyNumberModel emergencyContact : addedEmergencyNumbers) {
 
 			if (emergencyContact.getKeyId() == null) {
@@ -992,7 +1016,6 @@ public class ModificationUtils {
 				
 				pcsmartphone.getAddedEmergencyNumbers().add(newEmergencyNumber.getKey());
 				modAddedEmergency.add(newEmergencyNumber.getKey());
-
 			}
 			else {
 				PCEmergencyNumber savedEmergencyNumber = pm.getObjectById(PCEmergencyNumber.class,KeyFactory.stringToKey(emergencyContact.getKeyId()));
@@ -1031,6 +1054,7 @@ public class ModificationUtils {
 		// modifications
 		modAddedEmergency = pcmodification.getAddedEmergencyNumbers();
 		modDeletedEmergency = pcmodification.getDeletedEmergencyNumbers();
+		
 		for (EmergencyNumberModel emergencyContact : deletedEmergencyNumbers) {
 			if (emergencyContact.getKeyId() == null) {
 				//New emergency contact. First save. Then process.
@@ -1075,24 +1099,27 @@ public class ModificationUtils {
 			}
 		}
 		
-		
-			
 		// parsing property modifications
 		logger.info("[ParentModifications] Adding properties modifications");
+		
 		for (PropertyModel propmodel : modifications.getProperties()) {
 			PCProperty property;
+			
 			try{
 				property= pm.getObjectById(PCProperty.class,KeyFactory.stringToKey(propmodel.getKeyId()));
-			} catch(Exception e){
+			} 
+			catch (Exception e) {
 				logger.severe("[ParentModifications] Error while obtaining property from key: "+propmodel.getKeyId());
 				throw new ModificationParsingException(e.getMessage());
 			}
+			
 			property.setValue(propmodel.getValue());
 			pcModProperties.add(property.getKey());
 		}
 		
 		// parsing rule modifications
 		logger.info("[ParentModifications] Adding rules modifications");
+		
 		for (RuleModel ruleModel : rules) {
 			PCRule rule;
 			
