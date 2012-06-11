@@ -23,6 +23,7 @@ import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
@@ -150,6 +151,9 @@ public class ParentRegisterResource {
 		finally {
 			pm.close();
 		}
+		
+		logger.info("[Parent Register Cache] Writing User to cache");
+		WriteToCache.writeUserToCache(pcuser);
 		
 		// ok response. user succesfully registered
 		logger.info("[Parent Register] Ok Response. User succesfully registered");

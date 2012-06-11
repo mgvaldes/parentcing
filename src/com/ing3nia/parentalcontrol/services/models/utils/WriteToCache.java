@@ -13,6 +13,7 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.ing3nia.parentalcontrol.client.models.DeviceModel;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.LocationModel;
@@ -110,6 +111,35 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.ALERTS,cacheAlertList, null);
 	}
 	
+	public static void addSmartphoneAlertsToCache(Key pcSmartphoneKey, ArrayList<PCNotification> pcAlertList){
+		
+		String smartphoneKey = KeyFactory.keyToString(pcSmartphoneKey);
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+	    
+		logger.info("Finding alert list in cache");
+		IdentifiableValue ident = syncCache.getIdentifiable(smartphoneKey+SmartphoneCacheParams.ALERTS);
+		ArrayList<NotificationModel> cacheAlertList = null;
+		if(ident==null){
+			logger.info("Alerts not found in cache, creating empty list");
+			cacheAlertList = new ArrayList<NotificationModel>();
+		}else{
+			logger.info("Alerts found in cache");
+			cacheAlertList = (ArrayList<NotificationModel>)ident.getValue();
+		}
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		
+		for(PCNotification notification : pcAlertList){
+			NotificationModel alertModel = new NotificationModel();
+			alertModel.setDate(formatter.format(notification.getDate()));
+			alertModel.setType(notification.getType());
+			cacheAlertList.add(alertModel);
+		}
+		
+		logger.info("Setting Alert List: "+smartphoneKey+SmartphoneCacheParams.ALERTS+" to cache");
+		syncCache.put(smartphoneKey+SmartphoneCacheParams.ALERTS,cacheAlertList, null);
+	}
+	
 	public static void writeSmartphoneModificationToCache(String smartphoneKey, PCModification pcModification) throws IllegalArgumentException, SessionQueryException {
 		ModificationModel cacheModificationModel = ModificationModelUtils.convertToModificationModel(pcModification);
 		
@@ -123,6 +153,13 @@ public class WriteToCache {
 		
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(smartphoneKey + SmartphoneCacheParams.MODIFICATION, cacheModification);
+	}
+	
+	public static void deleteModificationFromCache(String smartphoneKey) {
+		logger.info("Deleting modification from cache: " + smartphoneKey);
+		
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.delete(smartphoneKey + SmartphoneCacheParams.MODIFICATION);
 	}
 	
 	public static void writeSmartphoneRulesToCache(String smartphoneKey, ArrayList<PCRule> pcRules) throws IllegalArgumentException, SessionQueryException {
@@ -417,7 +454,7 @@ public class WriteToCache {
 	}
 
 	
-	public static void writeUserToCache(PCUser user){
+	public static UserModel writeUserToCache(PCUser user){
 		UserModel userModel = new UserModel();
 		userModel.setEmail(user.getEmail());
 		userModel.setKey(KeyFactory.keyToString(user.getKey()));
@@ -435,6 +472,39 @@ public class WriteToCache {
 		logger.info("Setting User in cache: "+UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass()+" number of smartphone: "+userModel.getSmartphoneKeys().size());
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass(), userModel, null);
+		
+		return userModel;
+	}
+	
+	public static void addUserAdminToCache(String userKey, String username, String userPassword, PCUser user, UserModel adminUserModel){
+		logger.info("Finding PCUser in cache by userKey: "+userKey);
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		IdentifiableValue ident = syncCache.getIdentifiable(UserCacheParams.USER+username+"-"+userPassword);
+		
+		if(ident==null){
+			logger.info("User not present in cache, writing user to cache first: "+username);
+			WriteToCache.writeUserToCache(user);
+		}
+		
+		logger.info("Finding user Admin List by userKey: "+userKey);
+		ident = syncCache.getIdentifiable(UserCacheParams.USER+username+"-"+userPassword);
+		syncCache.getIdentifiable(UserCacheParams.USER+KeyFactory.keyToString(user.getKey())+UserCacheParams.ADMIN_LIST);
+		
+		ArrayList<UserModel> adminList;
+		if(ident ==null){
+			logger.info("Admin list not found for user, creating new admin list" +userKey);
+			adminList = new ArrayList<UserModel>();
+		}else{
+			adminList = (ArrayList<UserModel>)ident.getValue();
+		}	
+		
+		adminList.add(adminUserModel);
+
+		logger.info("Writing admin list to cache: "+UserCacheParams.USER+userKey+UserCacheParams.ADMIN_LIST);
+		syncCache.put(UserCacheParams.USER+userKey+UserCacheParams.ADMIN_LIST, adminList, null);
+		
+		
+		
 	}
 }
 
