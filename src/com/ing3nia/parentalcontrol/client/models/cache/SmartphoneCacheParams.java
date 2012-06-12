@@ -14,5 +14,4 @@ public class SmartphoneCacheParams {
 	public static String PROPERTIES = "-props";
 	public static String MODIFICATION ="-mod";
 	public static String RULES = "-rules";
-
 }

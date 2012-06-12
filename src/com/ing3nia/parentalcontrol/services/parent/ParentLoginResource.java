@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
 import com.google.appengine.api.memcache.MemcacheServiceFactory;
@@ -258,30 +259,42 @@ public class ParentLoginResource {
 		}
 		
 		PCUser user = null;
-		
-		/*
-	    if(ident==null){
-	    	logger.info("User: "+username_param+" not in cache. Getting from datastore");
-	    	*/
-		try {
-			user = SessionUtils.getPCUser(pm, username_param, pass_param);
-			// userKey = SessionUtils.getPCUserKey(pm,
-			// username_param,pass_param);
-		} catch (SessionQueryException e2) {
-			logger.warning("[Parent Login] An error ocurred while searching for username and email. "+ e2.getMessage());
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,rbuilder);
-			return rbuilder.build();
+		UserModel userModelCache = null;
+
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		IdentifiableValue ident = syncCache
+				.getIdentifiable(UserCacheParams.USER + username_param + "-"
+						+ pass_param);
+
+		if (ident == null) {
+			logger.info("[Parent Login] User: " + username_param
+					+ " not in cache. Getting from datastore");
+
+			try {
+				user = SessionUtils.getPCUser(pm, username_param, pass_param);
+				logger.info("[Parent Login] Writing User to Cache");
+				WriteToCache.writeUserToCache(user);
+				// userKey = SessionUtils.getPCUserKey(pm,
+				// username_param,pass_param);
+			} catch (SessionQueryException e2) {
+				logger.warning("[Parent Login] An error ocurred while searching for username and email. "
+						+ e2.getMessage());
+				rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+						.getStatusAsJson().toString(),
+						MediaType.APPLICATION_JSON);
+				WebServiceUtils.setUTF8Encoding(
+						WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+				return rbuilder.build();
+			}
+
+		} else {
+			userModelCache = (UserModel) ident.getValue();
+			logger.info("User: " + username_param + " found in cache");
 		}
-			/*
-	    }else{
-	    	userModelCache = (UserModel) ident.getValue();
-	    	logger.info("User: "+username_param+" found in cache");
-	    }*/
 		
 		
-		if(user==null){
-			logger.info("[Parent Login] No user exists for the provided credentials");
+		if(user==null && userModelCache==null){
+			logger.info("[Parent Login Cache/DS] No user exists for the provided credentials");
 			rbuilder = Response.ok(WSStatus.NONEXISTING_USER
 					.getStatusAsJson().toString(),
 					MediaType.APPLICATION_JSON);
@@ -289,23 +302,18 @@ public class ParentLoginResource {
 			return rbuilder.build();
 		}
 
-		logger.info("[Parent Login Cache] Looking for preexisting session");
+		logger.info("[Parent Login ] Looking for preexisting session");
 
-		try {
-			user = SessionUtils.getPCUser(pm, username_param, pass_param);
-			// userKey = SessionUtils.getPCUserKey(pm,
-			// username_param,pass_param);
-		} catch (SessionQueryException e2) {
-			logger.warning("[Parent Login] An error ocurred while searching for username and email. "+ e2.getMessage());
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,rbuilder);
-			return rbuilder.build();
+		PCSession session = null;
+		Key userKey = null;
+		if(userModelCache!=null){
+			userKey = KeyFactory.stringToKey(userModelCache.getKey());
+		}else{
+			userKey = user.getKey();
 		}
 		
-		PCSession session = null;
-
 		try {
-			session = SessionUtils.getPCSessionFromUser(pm, user.getKey());
+			session = SessionUtils.getPCSessionFromUser(pm, userKey);
 			//userRealKey = KeyFactory.stringToKey(userKey);
 			//session = SessionUtils.getPCSessionFromUser(pm, userRealKey);
 		} catch (SessionQueryException e2) {
@@ -345,7 +353,7 @@ public class ParentLoginResource {
 		logger.info("[Parent Login] Creating session object");
 		// register model in datastore
 		session = new PCSession();
-		session.setUser(user.getKey());
+		session.setUser(userKey);
 		//session.setUser(userRealKey);
 		session.setLastUpdate(new Date());
 		try {
@@ -370,12 +378,13 @@ public class ParentLoginResource {
 			pm.close();
 		}
 
-		logger.info("Writing User to Cache");
-		WriteToCache.writeUserToCache(user);
 		
 		logger.info("Writing Session to Cache");
-		WriteToCache.writeSessionToCache(session, user);
-		
+		if (user != null) {
+			WriteToCache.writeSessionToCache(session, user);
+		} else if (user == null && userModelCache != null) {
+			WriteToCache.writeSessionToCache(session, userModelCache);
+		}
 		
 		// ok response. user succesfully logged in
 		logger.info("[Parent Login] Ok Response. User succesfully logged in");

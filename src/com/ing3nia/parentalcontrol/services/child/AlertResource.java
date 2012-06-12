@@ -27,120 +27,279 @@ import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.AlertModel;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
 @Path("alert")
 public class AlertResource {
 
-	private static Logger logger = Logger.getLogger(AlertResource.class.getName());
-	
+	private static Logger logger = Logger.getLogger(AlertResource.class
+			.getName());
+
+	public String NEW_WS = "new";
+	public String OLD_WS = "old";
+	public String ACTUAL = NEW_WS;
+
 	public AlertResource() {
-		//logger.addHandler(new ConsoleHandler());
+		// logger.addHandler(new ConsoleHandler());
 	}
-	
+
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response doPost(String body) {
+		if (ACTUAL.equals(NEW_WS)) {
+			return newWS(body);
+		}
+		return oldWS(body);
+	}
+
+	public Response oldWS(String body) {
+
 		Gson jsonParser = new Gson();
-		Type bodyType = new TypeToken<AlertModel>(){}.getType();
-		
+		Type bodyType = new TypeToken<AlertModel>() {
+		}.getType();
+
 		AlertModel alertModel;
 		ResponseBuilder rbuilder;
-		
+
 		logger.info("[Alert Service] Parsing input parameters.");
-		
+
 		try {
 			alertModel = jsonParser.fromJson(body, bodyType);
-		}
-		catch (Exception e) {
-			logger.warning("[Alert Service] AlertModel couldn't be created from post input " + WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
-			
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+		} catch (Exception e) {
+			logger.warning("[Alert Service] AlertModel couldn't be created from post input "
+					+ WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
 			return rbuilder.build();
 		}
-		
+
 		try {
 			saveNotifications(alertModel);
-			
+
 			logger.info("[Alert Service] Ok Response. Notifications saved succesfully.");
-			
+
 			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
-			
-			rbuilder = Response.ok(okResponse.toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+
+			rbuilder = Response.ok(okResponse.toString(),
+					MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
 			return rbuilder.build();
-		}
-		catch (ParseException ex) {
+		} catch (ParseException ex) {
 			logger.warning("[Alert Service] An error occured while parsing notification date String to Date");
-			
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
 			return rbuilder.build();
-		}
-		catch (IllegalArgumentException ex) {
-			logger.warning("[Alert Service] An error ocurred while converting a Key to String. " + ex.getMessage());
-			
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+		} catch (IllegalArgumentException ex) {
+			logger.warning("[Alert Service] An error ocurred while converting a Key to String. "
+					+ ex.getMessage());
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
 			return rbuilder.build();
-		}
-		catch (Exception ex) {
-			logger.warning("[Alert Service] An error ocurred while finding the PCSmartphone by key or adding PCNotification. " + ex.getMessage());
-			
-			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
-			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
+		} catch (Exception ex) {
+			logger.warning("[Alert Service] An error ocurred while finding the PCSmartphone by key or adding PCNotification. "
+					+ ex.getMessage());
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
 			return rbuilder.build();
 		}
 	}
-	
-	public void saveNotifications(AlertModel alertModel) throws ParseException, SessionQueryException, IllegalArgumentException {
-		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
-		
+
+	public Response newWS(String body) {
+
+		Gson jsonParser = new Gson();
+		Type bodyType = new TypeToken<AlertModel>() {
+		}.getType();
+
+		AlertModel alertModel;
+		ResponseBuilder rbuilder;
+
+		logger.info("[Alert Service] Parsing input parameters.");
+
 		try {
-			logger.info("[Alert Service] Convirtiendo id : " + alertModel.getId() + " de smartphone a Key.");
+			alertModel = jsonParser.fromJson(body, bodyType);
+		} catch (Exception e) {
+			logger.warning("[Alert Service] AlertModel couldn't be created from post input "
+					+ WSStatus.INTERNAL_SERVICE_ERROR.getMsg());
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
+			return rbuilder.build();
+		}
+
+		try {
+			saveNotificationsCache(alertModel);
+
+			logger.info("[Alert Service] Ok Response. Notifications saved succesfully.");
+
+			JsonObject okResponse = WSStatus.OK.getStatusAsJson();
+			rbuilder = Response.ok(okResponse.toString(),
+					MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
+			return rbuilder.build();
+		} catch (ParseException ex) {
+			logger.warning("[Alert Service] An error occured while parsing notification date String to Date");
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
+			return rbuilder.build();
+		} catch (IllegalArgumentException ex) {
+			logger.warning("[Alert Service] An error ocurred while converting a Key to String. "
+					+ ex.getMessage());
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
+			return rbuilder.build();
+		} catch (Exception ex) {
+			logger.warning("[Alert Service] An error ocurred while finding the PCSmartphone by key or adding PCNotification. "
+					+ ex.getMessage());
+
+			rbuilder = Response.ok(WSStatus.INTERNAL_SERVICE_ERROR
+					.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);
+			WebServiceUtils.setUTF8Encoding(WebServiceUtils.JSON_CONTENT_TYPE,
+					rbuilder);
+			return rbuilder.build();
+		}
+
+	}
+
+	public void saveNotifications(AlertModel alertModel) throws ParseException,
+			SessionQueryException, IllegalArgumentException {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+
+		try {
+			logger.info("[Alert Service] Convirtiendo id : "
+					+ alertModel.getId() + " de smartphone a Key.");
 			Key smartphoneKey = KeyFactory.stringToKey(alertModel.getId());
-			
+
 			logger.info("[Alert Service] Buscando smartphone en base de datos.");
-			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class, smartphoneKey);
-			
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class,
+					smartphoneKey);
+
 			PCNotification pcNotification;
-			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+			SimpleDateFormat formatter = new SimpleDateFormat(
+					"dd/MM/yyyy hh:mm:ss a");
 			ArrayList<PCNotification> notifications = new ArrayList<PCNotification>();
-			
+
 			for (NotificationModel notification : alertModel.getAlerts()) {
 				pcNotification = new PCNotification();
 				pcNotification.setType(notification.getType());
-				pcNotification.setMessage(PCNotificationTypeId.getNotificationMessageFromType(notification.getType()));
-				logger.info("FORMATTING DATE: "+notification.getDate());
+				pcNotification
+						.setMessage(PCNotificationTypeId
+								.getNotificationMessageFromType(notification
+										.getType()));
+				logger.info("FORMATTING DATE: " + notification.getDate());
 				pcNotification.setDate(formatter.parse(notification.getDate()));
-				logger.info("CREATED DATE: "+pcNotification.getDate().toString());
+				logger.info("CREATED DATE: "
+						+ pcNotification.getDate().toString());
 				notifications.add(pcNotification);
 			}
-			
+
 			pm.makePersistentAll(notifications);
-			
-			ArrayList<Key> notificationKeys = savedSmartphone.getNotifications();
-			
+
+			ArrayList<Key> notificationKeys = savedSmartphone
+					.getNotifications();
+
 			for (PCNotification not : notifications) {
 				notificationKeys.add(not.getKey());
 			}
-			
+
 			savedSmartphone.setNotifications(notificationKeys);
-			
+
 			pm.close();
 		}
-//		catch (ParseException ex) {
-//			throw ex;
-//		}
+		// catch (ParseException ex) {
+		// throw ex;
+		// }
 		catch (IllegalArgumentException ex) {
 			throw ex;
+		} catch (Exception ex) {
+			logger.info("[Alert Service] An error ocurred while finding the PCSmartphone by key or saving PCNotification"
+					+ ex.getMessage());
+
+			throw new SessionQueryException();
 		}
-		catch (Exception ex) {
-	    	logger.info("[Alert Service] An error ocurred while finding the PCSmartphone by key or saving PCNotification" + ex.getMessage());
-	    	
+	}
+	
+
+	public void saveNotificationsCache(AlertModel alertModel) throws ParseException,
+			SessionQueryException, IllegalArgumentException {
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+
+		try {
+			logger.info("[Alert Service] Convirtiendo id : "
+					+ alertModel.getId() + " de smartphone a Key.");
+			Key smartphoneKey = KeyFactory.stringToKey(alertModel.getId());
+
+			logger.info("[Alert Service] Buscando smartphone en base de datos.");
+			PCSmartphone savedSmartphone = pm.getObjectById(PCSmartphone.class,
+					smartphoneKey);
+
+			PCNotification pcNotification;
+			SimpleDateFormat formatter = new SimpleDateFormat(
+					"dd/MM/yyyy hh:mm:ss a");
+			ArrayList<PCNotification> notifications = new ArrayList<PCNotification>();
+
+			for (NotificationModel notification : alertModel.getAlerts()) {
+				pcNotification = new PCNotification();
+				pcNotification.setType(notification.getType());
+				pcNotification
+						.setMessage(PCNotificationTypeId
+								.getNotificationMessageFromType(notification
+										.getType()));
+				logger.info("FORMATTING DATE: " + notification.getDate());
+				pcNotification.setDate(formatter.parse(notification.getDate()));
+				logger.info("CREATED DATE: "
+						+ pcNotification.getDate().toString());
+				notifications.add(pcNotification);
+			}
+
+			pm.makePersistentAll(notifications);
+
+			ArrayList<Key> notificationKeys = savedSmartphone
+					.getNotifications();
+
+			for (PCNotification not : notifications) {
+				notificationKeys.add(not.getKey());
+			}
+
+			savedSmartphone.setNotifications(notificationKeys);
+			
+			WriteToCache.addSmartphoneAlertsToCache(savedSmartphone.getKey(), notifications);
+
+			pm.close();
+		}
+		// catch (ParseException ex) {
+		// throw ex;
+		// }
+		catch (IllegalArgumentException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			logger.info("[Alert Service] An error ocurred while finding the PCSmartphone by key or saving PCNotification"
+					+ ex.getMessage());
+
 			throw new SessionQueryException();
 		}
 	}
