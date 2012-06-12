@@ -523,9 +523,7 @@ public class WriteToCache {
 
 		logger.info("Writing admin list to cache: "+UserCacheParams.USER+userKey+UserCacheParams.ADMIN_LIST);
 		syncCache.put(UserCacheParams.USER+userKey+UserCacheParams.ADMIN_LIST, adminList, null);
-		
-		
-		
+				
 	}
 }
 
