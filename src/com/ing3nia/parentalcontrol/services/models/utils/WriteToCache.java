@@ -110,6 +110,12 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey+SmartphoneCacheParams.ALERTS,cacheAlertList, null);
 	}
 	
+	public static void writeSmartphoneAlertsToCache(String smartphoneKey, ArrayList<NotificationModel> alerts) throws IllegalArgumentException, SessionQueryException {
+		logger.info("Setting Alerts: " + smartphoneKey + SmartphoneCacheParams.ALERTS + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.ALERTS, alerts, null);
+	}
+	
 	public static void writeSmartphoneModificationToCache(String smartphoneKey, PCModification pcModification) throws IllegalArgumentException, SessionQueryException {
 		ModificationModel cacheModificationModel = ModificationModelUtils.convertToModificationModel(pcModification);
 		

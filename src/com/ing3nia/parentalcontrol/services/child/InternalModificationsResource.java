@@ -53,7 +53,7 @@ public class InternalModificationsResource {
 	private static Logger logger = Logger.getLogger(InternalModificationsResource.class.getName());
 	public String NEW_WS = "new";
 	public String OLD_WS = "old";
-	public String ACTUAL = "new";
+	public String ACTUAL = NEW_WS;
 	
 	public InternalModificationsResource() {
 		//logger.addHandler(new ConsoleHandler());
