@@ -53,7 +53,7 @@ public class ParentSmartphoneDetails {
 
 	public String NEW_WS = "new";
     public String OLD_WS = "old";
-    public String ACTUAL = OLD_WS;
+    public String ACTUAL = NEW_WS;
 	
 	
 	public ParentSmartphoneDetails(){

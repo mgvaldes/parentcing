@@ -37,10 +37,10 @@ public class AdminUserListServiceImpl extends RemoteServiceServlet implements
 	public ArrayList<ClientAdminUserModel> getAdminUserList(String userKey) {
 
 		if (ACTUAL.equals(NEW_WS)) {
-			return getAdminUserList(userKey);
+			return getAdminUserListNEW(userKey);
 		}
 
-		return getAdminUserList(userKey);
+		return getAdminUserListOLD(userKey);
 	}
 
 	public ArrayList<ClientAdminUserModel> getAdminUserListOLD(String userKey) {

@@ -110,10 +110,10 @@ public class ModificationUtils {
 				
 				if (cacheIdentModification == null) {
 					logger.info("[ParentModifications - Cache Version] ModificationModel not in cache. Saving it!");
-					WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), pcmodification);
+					cacheModification = WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), pcmodification);
 					
-					cacheIdentModification = syncCache.getIdentifiable(modificationCacheKey);
-					cacheModification = (ModificationModel) cacheIdentModification.getValue();
+					//cacheIdentModification = syncCache.getIdentifiable(modificationCacheKey);
+					//cacheModification = (ModificationModel) cacheIdentModification.getValue();
 				}
 				else {
 					logger.info("[ParentModifications - Cache Version] Obtaining ModificationModel from cache.");
@@ -151,7 +151,7 @@ public class ModificationUtils {
 		ModificationModel cacheModification = null;
 		
 		if (cacheIdentModification == null) {
-			WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), pcmodification);
+			cacheModification = WriteToCache.writeSmartphoneModificationToCache(cacheSmartphone.getKeyId(), pcmodification);
 		}
 		else {
 			cacheModification = (ModificationModel) cacheIdentModification.getValue();
@@ -356,20 +356,20 @@ public class ModificationUtils {
 		}
 		
 		if (cacheIdentActiveContacts == null) {
-			WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
+			cacheActiveContacts = WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
 			
-			cacheIdentActiveContacts = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
-			cacheActiveContacts = (ArrayList<SimpleContactModel>) cacheIdentActiveContacts.getValue();			
+			//cacheIdentActiveContacts = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
+			//cacheActiveContacts = (ArrayList<SimpleContactModel>) cacheIdentActiveContacts.getValue();			
 		}
 		else {
 			cacheActiveContacts = (ArrayList<SimpleContactModel>) cacheIdentActiveContacts.getValue();
 		}
 		
 		if (cacheIdentInactiveContacts == null) {
-			WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
+			cacheInactiveContacts = WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
 
-			cacheIdentInactiveContacts = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
-			cacheInactiveContacts = (ArrayList<SimpleContactModel>) cacheIdentInactiveContacts.getValue();			
+			//cacheIdentInactiveContacts = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
+			//cacheInactiveContacts = (ArrayList<SimpleContactModel>) cacheIdentInactiveContacts.getValue();			
 		}
 		else {
 			cacheInactiveContacts = (ArrayList<SimpleContactModel>) cacheIdentInactiveContacts.getValue();
@@ -541,20 +541,22 @@ public class ModificationUtils {
 		}
 		
 		if (cacheIdentAddedEmergencyNums == null) {
-			WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
+			//cacheAddedEmergencyNums = WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
+			cacheAddedEmergencyNums = WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(cacheSmartphone.getKeyId(), pcAddedEmergencyNums);
 			
-			cacheIdentAddedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
-			cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();			
+			//cacheIdentAddedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
+			//cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();			
 		}
 		else {
 			cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();
 		}
 		
 		if (cacheIdentDeletedEmergencyNums == null) {
-			WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
+			//cacheDeletedEmergencyNums = WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
+			cacheDeletedEmergencyNums = WriteToCache.writeSmartphoneDeletedEmergencyNumbersToCache(cacheSmartphone.getKeyId(), pcDeletedEmergencyNums);
 
-			cacheIdentDeletedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
-			cacheDeletedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentDeletedEmergencyNums.getValue();			
+			//cacheIdentDeletedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
+			//cacheDeletedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentDeletedEmergencyNums.getValue();			
 		}
 		else {
 			cacheDeletedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentDeletedEmergencyNums.getValue();
@@ -756,10 +758,10 @@ public class ModificationUtils {
 		}
 		
 		if (cacheIdentRules == null) {
-			WriteToCache.writeSmartphoneRulesToCache(cacheSmartphone.getKeyId(), pcRules);
+			cacheRules = WriteToCache.writeSmartphoneRulesToCache(cacheSmartphone.getKeyId(), pcRules);
 			
-			cacheIdentRules = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
-			cacheRules = (ArrayList<RuleModel>) cacheIdentRules.getValue();			
+			//cacheIdentRules = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
+			//cacheRules = (ArrayList<RuleModel>) cacheIdentRules.getValue();			
 		}
 		else {
 			cacheRules = (ArrayList<RuleModel>) cacheIdentRules.getValue();

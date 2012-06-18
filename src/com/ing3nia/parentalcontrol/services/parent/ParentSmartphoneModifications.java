@@ -51,7 +51,7 @@ public class ParentSmartphoneModifications {
 	private static final Logger logger = Logger.getLogger(ParentSmartphoneModifications.class.getName());
 	public String NEW_WS = "new";
 	public String OLD_WS = "old";
-	public String ACTUAL = "new";
+	public String ACTUAL = NEW_WS;
 
 	public ParentSmartphoneModifications(){
 		//logger.addHandler(new ConsoleHandler());
@@ -157,10 +157,10 @@ public class ParentSmartphoneModifications {
 		
 		if (cacheIdentSmartphone == null) {
 			logger.info("[Parent Modifications - Cache Version] SmartphoneCacheModel not in cache. Saving it!");
-			WriteToCache.writeSmartphoneToCache(smartphone);
+			cacheSmartphone = WriteToCache.writeSmartphoneToCache(smartphone);
 			
-			cacheIdentSmartphone = (IdentifiableValue) syncCache.getIdentifiable(smartphoneCacheKey);
-			cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
+			//cacheIdentSmartphone = (IdentifiableValue) syncCache.getIdentifiable(smartphoneCacheKey);
+			//cacheSmartphone = (SmartphoneCacheModel) cacheIdentSmartphone.getValue();
 		}
 		else {
 			logger.info("[Parent Modifications - Cache Version] Obtaining SmartphoneCacheModel from cache.");
