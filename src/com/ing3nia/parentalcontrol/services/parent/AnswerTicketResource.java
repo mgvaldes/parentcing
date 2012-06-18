@@ -158,7 +158,7 @@ public class AnswerTicketResource {
 			
 			cacheOpenTicket.getAnswers().add(ticketAnswer);
 			
-			WriteToCache.writeOpenTicketToCache(cacheOpenTicket);
+			WriteToCache.writeTicketToCache(cacheOpenTicket);
 			
 			ticket.getAnswers().add(helpdeskAnswer.getKey());
 			logger.info("[Answer Ticket Service] Asociating answer to ticket.");

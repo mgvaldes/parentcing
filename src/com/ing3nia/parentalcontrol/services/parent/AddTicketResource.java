@@ -166,7 +166,7 @@ public class AddTicketResource {
 			
 			WriteToCache.writeOpenTicketsToCache(cacheOpenTickets, addTicketModel.getKey());
 			
-			WriteToCache.writeOpenTicketToCache(newTicketModel);
+			WriteToCache.writeTicketToCache(newTicketModel);
 			
 			ticketKey = KeyFactory.keyToString(newTicket.getKey());
 		}

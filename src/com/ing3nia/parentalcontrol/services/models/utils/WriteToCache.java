@@ -141,6 +141,77 @@ public class WriteToCache {
 		syncCache.put(UserCacheParams.USER + pcSmartphoneKey + UserCacheParams.ADMIN_LIST, adminUsers, null);
 	}
 	
+	public static ArrayList<TicketModel> writeOpenTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> openTickets, String dummy){
+		ArrayList<String> cacheOpenTicketList = new ArrayList<String>();
+		TicketModel auxOpenTicket;
+		ArrayList<TicketModel> openT = new ArrayList<TicketModel>();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		Query query = pm.newQuery(PCCategory.class);
+	    query.setFilter("description == descriptionParam");
+	    query.declareParameters("String descriptionParam");
+	    query.setRange(0, 1);
+	    
+	    List<PCCategory> results;
+	    ArrayList<TicketAnswerModel> answers = new ArrayList<TicketAnswerModel>();
+	    PCHelpdeskTicketAnswer auxTicketAnswer;
+	    TicketAnswerModel auxAnswer;
+	    ArrayList<Key> ticketAnswerKeys;
+	    String username;
+	    PCUser user;
+    	PCAdmin admin;
+    	String userAdminKey;
+	    
+		for (PCHelpdeskTicket openTicket : openTickets) {
+			auxOpenTicket = new TicketModel();
+			
+			results = (List<PCCategory>)query.execute(openTicket.getCategory());
+			
+			if (!results.isEmpty()) {
+				auxOpenTicket.setCategory(results.get(0).getDescription());
+			}
+			
+			auxOpenTicket.setDate(openTicket.getDate());
+			auxOpenTicket.setComment(openTicket.getQuestion());
+			auxOpenTicket.setSubject(openTicket.getSubject());
+			auxOpenTicket.setKey(KeyFactory.keyToString(openTicket.getKey()));
+			
+			ticketAnswerKeys = openTicket.getAnswers();
+			
+			for (Key ansKey : ticketAnswerKeys) {
+				auxTicketAnswer = pm.getObjectById(PCHelpdeskTicketAnswer.class, ansKey);
+    			
+    			if (auxTicketAnswer.getAdmin() == null) {
+    				user = pm.getObjectById(PCUser.class, auxTicketAnswer.getUser());
+    				username = user.getUsername();
+    				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getUser());
+    			}
+    			else {
+    				admin = pm.getObjectById(PCAdmin.class, auxTicketAnswer.getAdmin());
+    				username = admin.getUsername();
+    				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getAdmin());
+    			}
+    			
+    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer), userAdminKey, auxTicketAnswer.getAnswer(), username);
+    			answers.add(auxAnswer);
+    		}
+			
+			user = pm.getObjectById(PCUser.class, openTicket.getUser());
+			auxOpenTicket.setName(user.getUsername());
+			auxOpenTicket.setAnswers(answers);
+			
+			openT.add(auxOpenTicket);
+			writeTicketToCache(auxOpenTicket);
+			
+			cacheOpenTicketList.add(auxOpenTicket.getKey());
+		}
+		
+		logger.info("Setting Open Ticket List: " + userKey + UserCacheParams.OPEN_TICKETS_LIST + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(userKey + UserCacheParams.OPEN_TICKETS_LIST, cacheOpenTicketList, null);
+		
+		return openT;
+	}
+	
 	public static void writeOpenTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> openTickets){
 		ArrayList<String> cacheOpenTicketList = new ArrayList<String>();
 		TicketModel auxOpenTicket;
@@ -196,8 +267,9 @@ public class WriteToCache {
 			
 			user = pm.getObjectById(PCUser.class, openTicket.getUser());
 			auxOpenTicket.setName(user.getUsername());
+			auxOpenTicket.setAnswers(answers);
 			
-			writeOpenTicketToCache(auxOpenTicket);
+			writeTicketToCache(auxOpenTicket);
 			
 			cacheOpenTicketList.add(auxOpenTicket.getKey());
 		}
@@ -267,18 +339,90 @@ public class WriteToCache {
 		
 		user = pm.getObjectById(PCUser.class, openTicket.getUser());
 		auxOpenTicket.setName(user.getUsername());
+		auxOpenTicket.setAnswers(answers);
 		
-		writeOpenTicketToCache(auxOpenTicket);
+		writeTicketToCache(auxOpenTicket);
 	}
 	
-	public static void writeOpenTicketToCache(TicketModel openTicket) {
+	public static void writeTicketToCache(TicketModel openTicket) {
 		logger.info("Setting Open Ticket: " + TicketCacheParams.TICKET + openTicket.getKey() + " to cache");
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(TicketCacheParams.TICKET + openTicket.getKey(), openTicket, null);
 	}
 	
+	public static ArrayList<TicketModel> writeClosedTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> closedTickets, String dummy){
+		ArrayList<String> cacheClosedTicketList = new ArrayList<String>();
+		TicketModel auxClosedTicket;
+		ArrayList<TicketModel> closedT = new ArrayList<TicketModel>();
+		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+		Query query = pm.newQuery(PCCategory.class);
+	    query.setFilter("description == descriptionParam");
+	    query.declareParameters("String descriptionParam");
+	    query.setRange(0, 1);
+	    
+	    List<PCCategory> results;
+	    ArrayList<TicketAnswerModel> answers = new ArrayList<TicketAnswerModel>();
+	    PCHelpdeskTicketAnswer auxTicketAnswer;
+	    TicketAnswerModel auxAnswer;
+	    ArrayList<Key> ticketAnswerKeys;
+	    String username;
+	    PCUser user;
+    	PCAdmin admin;
+    	String userAdminKey;
+	    
+		for (PCHelpdeskTicket closedTicket : closedTickets) {
+			auxClosedTicket = new TicketModel();
+			
+			results = (List<PCCategory>)query.execute(closedTicket.getCategory());
+			
+			if (!results.isEmpty()) {
+				auxClosedTicket.setCategory(results.get(0).getDescription());
+			}
+			
+			auxClosedTicket.setDate(closedTicket.getDate());
+			auxClosedTicket.setComment(closedTicket.getQuestion());
+			auxClosedTicket.setSubject(closedTicket.getSubject());
+			auxClosedTicket.setKey(KeyFactory.keyToString(closedTicket.getKey()));
+			
+			ticketAnswerKeys = closedTicket.getAnswers();
+			
+			for (Key ansKey : ticketAnswerKeys) {
+				auxTicketAnswer = pm.getObjectById(PCHelpdeskTicketAnswer.class, ansKey);
+    			
+    			if (auxTicketAnswer.getAdmin() == null) {
+    				user = pm.getObjectById(PCUser.class, auxTicketAnswer.getUser());
+    				username = user.getUsername();
+    				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getUser());
+    			}
+    			else {
+    				admin = pm.getObjectById(PCAdmin.class, auxTicketAnswer.getAdmin());
+    				username = admin.getUsername();
+    				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getAdmin());
+    			}
+    			
+    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer), userAdminKey, auxTicketAnswer.getAnswer(), username);
+    			answers.add(auxAnswer);
+    		}
+			
+			user = pm.getObjectById(PCUser.class, closedTicket.getUser());
+			auxClosedTicket.setName(user.getUsername());
+			auxClosedTicket.setAnswers(answers);
+			
+			closedT.add(auxClosedTicket);
+			writeTicketToCache(auxClosedTicket);
+			
+			cacheClosedTicketList.add(auxClosedTicket.getKey());
+		}
+		
+		logger.info("Setting Closed Ticket List: " + userKey + UserCacheParams.CLOSED_TICKETS_LIST + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(userKey + UserCacheParams.CLOSED_TICKETS_LIST, closedTickets, null);
+		
+		return closedT;
+	}
+	
 	public static void writeClosedTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> closedTickets){
-		ArrayList<TicketModel> cacheClosedTicketList = new ArrayList<TicketModel>();
+		ArrayList<String> cacheClosedTicketList = new ArrayList<String>();
 		TicketModel auxClosedTicket;
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		Query query = pm.newQuery(PCCategory.class);
@@ -332,8 +476,11 @@ public class WriteToCache {
 			
 			user = pm.getObjectById(PCUser.class, closedTicket.getUser());
 			auxClosedTicket.setName(user.getUsername());
+			auxClosedTicket.setAnswers(answers);
 			
-			cacheClosedTicketList.add(auxClosedTicket);
+			writeTicketToCache(auxClosedTicket);
+			
+			cacheClosedTicketList.add(auxClosedTicket.getKey());
 		}
 		
 		logger.info("Setting Closed Ticket List: " + userKey + UserCacheParams.CLOSED_TICKETS_LIST + " to cache");
