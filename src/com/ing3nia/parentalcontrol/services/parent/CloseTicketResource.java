@@ -14,10 +14,15 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.JsonObject;
+import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
@@ -53,6 +58,57 @@ public class CloseTicketResource {
 				}
 				
 				user.getClosedTickets().add(closingTicketKey);
+				
+				MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+				String openTicketsCacheKey = loggedUserKey + UserCacheParams.OPEN_TICKETS_LIST;
+				IdentifiableValue cacheIdentOpenTickets = (IdentifiableValue) syncCache.getIdentifiable(openTicketsCacheKey);
+				ArrayList<String> cacheOpenTickets = null;
+				ArrayList<Key> openTicketsKeys = user.getOpenTickets();
+				
+				if (cacheIdentOpenTickets == null) {
+					ArrayList<PCHelpdeskTicket> openTickets = new ArrayList<PCHelpdeskTicket>();
+					PCHelpdeskTicket auxOpenTicket;
+					
+					for (Key key : openTicketsKeys) {
+						auxOpenTicket = pm.getObjectById(PCHelpdeskTicket.class, key);
+						openTickets.add(auxOpenTicket);
+					}
+					
+					WriteToCache.writeOpenTicketsToCache(pm, loggedUserKey, openTickets);
+					
+					cacheIdentOpenTickets = syncCache.getIdentifiable(openTicketsCacheKey);
+					cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
+				}
+				else {
+					cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
+				}
+				
+				cacheOpenTickets.remove(ticketKey);
+				
+				String closedTicketsCacheKey = loggedUserKey + UserCacheParams.CLOSED_TICKETS_LIST;
+				IdentifiableValue cacheIdentClosedTickets = (IdentifiableValue) syncCache.getIdentifiable(closedTicketsCacheKey);
+				ArrayList<String> cacheClosedTickets = null;
+				ArrayList<Key> closedTicketsKeys = user.getClosedTickets();
+				
+				if (cacheIdentClosedTickets == null) {
+					ArrayList<PCHelpdeskTicket> closedTickets = new ArrayList<PCHelpdeskTicket>();
+					PCHelpdeskTicket auxClosedTicket;
+					
+					for (Key key : closedTicketsKeys) {
+						auxClosedTicket = pm.getObjectById(PCHelpdeskTicket.class, key);
+						closedTickets.add(auxClosedTicket);
+					}
+					
+					WriteToCache.writeClosedTicketsToCache(pm, loggedUserKey, closedTickets);
+					
+					cacheIdentClosedTickets = syncCache.getIdentifiable(closedTicketsCacheKey);
+					cacheClosedTickets = (ArrayList<String>) cacheIdentClosedTickets.getValue();
+				}
+				else {
+					cacheClosedTickets = (ArrayList<String>) cacheIdentClosedTickets.getValue();
+				}
+				
+				cacheClosedTickets.add(ticketKey);
 			}
 		}
 		catch (Exception ex) {
@@ -76,6 +132,57 @@ public class CloseTicketResource {
 				}
 				
 				auxUser.getClosedTickets().add(closingTicketKey);
+				
+				MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+				String openTicketsCacheKey = KeyFactory.keyToString(ticket.getUser()) + UserCacheParams.OPEN_TICKETS_LIST;
+				IdentifiableValue cacheIdentOpenTickets = (IdentifiableValue) syncCache.getIdentifiable(openTicketsCacheKey);
+				ArrayList<String> cacheOpenTickets = null;
+				ArrayList<Key> openTicketsKeys = auxUser.getOpenTickets();
+				
+				if (cacheIdentOpenTickets == null) {
+					ArrayList<PCHelpdeskTicket> openTickets = new ArrayList<PCHelpdeskTicket>();
+					PCHelpdeskTicket auxOpenTicket;
+					
+					for (Key key : openTicketsKeys) {
+						auxOpenTicket = pm.getObjectById(PCHelpdeskTicket.class, key);
+						openTickets.add(auxOpenTicket);
+					}
+					
+					WriteToCache.writeOpenTicketsToCache(pm, loggedUserKey, openTickets);
+					
+					cacheIdentOpenTickets = syncCache.getIdentifiable(openTicketsCacheKey);
+					cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
+				}
+				else {
+					cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
+				}
+				
+				cacheOpenTickets.remove(ticketKey);
+				
+				String closedTicketsCacheKey = KeyFactory.keyToString(ticket.getUser()) + UserCacheParams.CLOSED_TICKETS_LIST;
+				IdentifiableValue cacheIdentClosedTickets = (IdentifiableValue) syncCache.getIdentifiable(closedTicketsCacheKey);
+				ArrayList<String> cacheClosedTickets = null;
+				ArrayList<Key> closedTicketsKeys = auxUser.getClosedTickets();
+				
+				if (cacheIdentClosedTickets == null) {
+					ArrayList<PCHelpdeskTicket> closedTickets = new ArrayList<PCHelpdeskTicket>();
+					PCHelpdeskTicket auxClosedTicket;
+					
+					for (Key key : closedTicketsKeys) {
+						auxClosedTicket = pm.getObjectById(PCHelpdeskTicket.class, key);
+						closedTickets.add(auxClosedTicket);
+					}
+					
+					WriteToCache.writeClosedTicketsToCache(pm, loggedUserKey, closedTickets);
+					
+					cacheIdentClosedTickets = syncCache.getIdentifiable(closedTicketsCacheKey);
+					cacheClosedTickets = (ArrayList<String>) cacheIdentClosedTickets.getValue();
+				}
+				else {
+					cacheClosedTickets = (ArrayList<String>) cacheIdentClosedTickets.getValue();
+				}
+				
+				cacheClosedTickets.add(ticketKey);
 			}
 			
 			logger.info("[Close Ticket Service] Ok Response. Ticket succesfully closed.");

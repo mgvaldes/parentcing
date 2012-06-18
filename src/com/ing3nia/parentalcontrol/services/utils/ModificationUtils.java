@@ -541,22 +541,26 @@ public class ModificationUtils {
 		}
 		
 		if (cacheIdentAddedEmergencyNums == null) {
+
 			//cacheAddedEmergencyNums = WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
 			cacheAddedEmergencyNums = WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(cacheSmartphone.getKeyId(), pcAddedEmergencyNums);
 			
 			//cacheIdentAddedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
 			//cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();			
+
 		}
 		else {
 			cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();
 		}
 		
 		if (cacheIdentDeletedEmergencyNums == null) {
+
 			//cacheDeletedEmergencyNums = WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
 			cacheDeletedEmergencyNums = WriteToCache.writeSmartphoneDeletedEmergencyNumbersToCache(cacheSmartphone.getKeyId(), pcDeletedEmergencyNums);
 
 			//cacheIdentDeletedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
 			//cacheDeletedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentDeletedEmergencyNums.getValue();			
+
 		}
 		else {
 			cacheDeletedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentDeletedEmergencyNums.getValue();

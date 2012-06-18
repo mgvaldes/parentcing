@@ -1,6 +1,8 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
@@ -15,14 +17,22 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
+import com.ing3nia.parentalcontrol.client.models.TicketModel;
+import com.ing3nia.parentalcontrol.client.models.cache.TicketCacheParams;
+import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicketAnswer;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.AnswerTicketModel;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
@@ -105,6 +115,21 @@ public class AnswerTicketResource {
 			Key tickKey = KeyFactory.stringToKey(answerTicketModel.getTicket());			
 			PCHelpdeskTicket ticket = (PCHelpdeskTicket)pm.getObjectById(PCHelpdeskTicket.class, tickKey);
 			
+			MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+			String openTicketCacheKey = TicketCacheParams.TICKET + answerTicketModel.getTicket();
+			IdentifiableValue cacheIdentOpenTicket = (IdentifiableValue) syncCache.getIdentifiable(openTicketCacheKey);
+			TicketModel cacheOpenTicket = null;
+			
+			if (cacheIdentOpenTicket == null) {
+				WriteToCache.writeOpenTicketToCache(pm, KeyFactory.keyToString(ticket.getUser()), ticket);
+				
+				cacheIdentOpenTicket = syncCache.getIdentifiable(openTicketCacheKey);
+				cacheOpenTicket = (TicketModel) cacheIdentOpenTicket.getValue();
+			}
+			else {
+				cacheOpenTicket = (TicketModel) cacheIdentOpenTicket.getValue();
+			}
+			
 			logger.info("[Answer Ticket Service] Creating new ticket answer.");
 			PCHelpdeskTicketAnswer helpdeskAnswer = new PCHelpdeskTicketAnswer();
 			Key userOrAdminKey = KeyFactory.stringToKey(answerTicketModel.getAnswer().getUserKey());
@@ -113,7 +138,7 @@ public class AnswerTicketResource {
 			helpdeskAnswer.setUser(userOrAdminKey);
 			helpdeskAnswer.setAdmin(null);
 			
-//			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 			
 //			helpdeskAnswer.setDate(formatter.parse(answerTicketModel.getAnswer().getDate()));
 			helpdeskAnswer.setDate(Calendar.getInstance().getTime());
@@ -124,6 +149,16 @@ public class AnswerTicketResource {
 			
 			answerKey = KeyFactory.keyToString(helpdeskAnswer.getKey());
 			logger.info("[Answer Ticket Service] Answer key: " + answerKey);
+			
+			TicketAnswerModel ticketAnswer = new TicketAnswerModel();
+			ticketAnswer.setAnswer(helpdeskAnswer.getAnswer());
+			ticketAnswer.setDate(formatter.format(helpdeskAnswer.getDate()));
+			ticketAnswer.setKey(answerKey);
+			ticketAnswer.setUserKey(answerTicketModel.getAnswer().getUserKey());
+			
+			cacheOpenTicket.getAnswers().add(ticketAnswer);
+			
+			WriteToCache.writeTicketToCache(cacheOpenTicket);
 			
 			ticket.getAnswers().add(helpdeskAnswer.getKey());
 			logger.info("[Answer Ticket Service] Asociating answer to ticket.");

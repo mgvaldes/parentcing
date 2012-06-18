@@ -1,8 +1,10 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -18,15 +20,23 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
+import com.ing3nia.parentalcontrol.client.models.TicketModel;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
+import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.models.PCCategory;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.AddTicketModel;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
@@ -98,6 +108,30 @@ public class AddTicketResource {
 			Key userKey = KeyFactory.stringToKey(addTicketModel.getKey());
 			PCUser user = (PCUser)pm.getObjectById(PCUser.class, userKey);
 			
+			MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+			String openTicketsCacheKey = addTicketModel.getKey() + UserCacheParams.OPEN_TICKETS_LIST;
+			IdentifiableValue cacheIdentOpenTickets = (IdentifiableValue) syncCache.getIdentifiable(openTicketsCacheKey);
+			ArrayList<String> cacheOpenTickets = null;
+			ArrayList<Key> openTicketsKeys = user.getOpenTickets();
+			
+			if (cacheIdentOpenTickets == null) {
+				ArrayList<PCHelpdeskTicket> openTickets = new ArrayList<PCHelpdeskTicket>();
+				PCHelpdeskTicket auxOpenTicket;
+				
+				for (Key key : openTicketsKeys) {
+					auxOpenTicket = pm.getObjectById(PCHelpdeskTicket.class, key);
+					openTickets.add(auxOpenTicket);
+				}
+				
+				WriteToCache.writeOpenTicketsToCache(pm, addTicketModel.getKey(), openTickets);
+				
+				cacheIdentOpenTickets = syncCache.getIdentifiable(openTicketsCacheKey);
+				cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
+			}
+			else {
+				cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
+			}
+			
 			PCHelpdeskTicket newTicket = new PCHelpdeskTicket();
 			newTicket.setAnswers(new ArrayList<Key>());
 			
@@ -126,6 +160,13 @@ public class AddTicketResource {
 			}
 			
 			user.getOpenTickets().add(newTicket.getKey());
+			
+			TicketModel newTicketModel = new TicketModel(KeyFactory.keyToString(newTicket.getKey()), addTicketModel.getTicket().getCategory(), addTicketModel.getTicket().getSubject(), newTicket.getDate(), addTicketModel.getTicket().getComment(), new ArrayList<TicketAnswerModel>());
+			cacheOpenTickets.add(newTicketModel.getKey());
+			
+			WriteToCache.writeOpenTicketsToCache(cacheOpenTickets, addTicketModel.getKey());
+			
+			WriteToCache.writeTicketToCache(newTicketModel);
 			
 			ticketKey = KeyFactory.keyToString(newTicket.getKey());
 		}

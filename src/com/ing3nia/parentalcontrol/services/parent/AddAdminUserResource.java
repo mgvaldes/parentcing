@@ -1,6 +1,7 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,15 +15,23 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
+import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.ing3nia.parentalcontrol.client.models.UserModel;
+import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
+import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.AddAdminUserModel;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
 
@@ -116,15 +125,62 @@ public class AddAdminUserResource {
 		try {
 			PCUser loggedUser = (PCUser)pm.getObjectById(PCUser.class, KeyFactory.stringToKey(addAdminUserModel.getKey()));
 			
+			MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+			String adminUsersCacheKey = UserCacheParams.USER + addAdminUserModel.getKey() + UserCacheParams.ADMIN_LIST;
+			IdentifiableValue cacheIdentAdminUsers = (IdentifiableValue) syncCache.getIdentifiable(adminUsersCacheKey);
+			ArrayList<UserModel> cacheAdminUsers = null;
+			ArrayList<Key> adminUserKeys = loggedUser.getAdmins();
+			
+			if (cacheIdentAdminUsers == null) {
+				ArrayList<PCUser> adminUsers = new ArrayList<PCUser>();
+				PCUser auxAdminUser;
+				
+				for (Key key : adminUserKeys) {
+					auxAdminUser = pm.getObjectById(PCUser.class, key);
+					adminUsers.add(auxAdminUser);
+				}
+				
+				WriteToCache.writeAdminUsersToCache(addAdminUserModel.getKey(), adminUsers);
+				
+				cacheIdentAdminUsers = syncCache.getIdentifiable(adminUsersCacheKey);
+				cacheAdminUsers = (ArrayList<UserModel>) cacheIdentAdminUsers.getValue();
+			}
+			else {
+				cacheAdminUsers = (ArrayList<UserModel>) cacheIdentAdminUsers.getValue();
+			}
+			
 			PCUser admin = new PCUser();
 			admin.setUsername(addAdminUserModel.getUser().getUsername());	    
 			admin.setPassword(EncryptionUtils.toMD5(addAdminUserModel.getUser().getPass()));
 			admin.setSmartphones(loggedUser.getSmartphones());
 			admin.setEmail(addAdminUserModel.getUser().getUsername());
+			admin.setName(addAdminUserModel.getUser().getName());
 
 			pm.makePersistent(admin);
 			adminKey = KeyFactory.keyToString(admin.getKey());	
 			loggedUser.getAdmins().add(admin.getKey());
+			
+			WriteToCache.writeUserToCache(admin);
+			
+			UserModel newAdmin = new UserModel();
+			newAdmin.setEmail(admin.getEmail());
+			newAdmin.setKey(adminKey);
+			newAdmin.setName(admin.getName());
+			newAdmin.setPass(admin.getPassword());
+			newAdmin.setUsr(admin.getUsername());
+			
+			ArrayList<Key> keys = admin.getSmartphones();
+			ArrayList<String> smartphoneKeys = new ArrayList<String>();
+			
+			for (Key sphKey : keys) {
+				smartphoneKeys.add(KeyFactory.keyToString(sphKey));
+			}
+			
+			newAdmin.setSmartphoneKeys(smartphoneKeys);
+			
+			cacheAdminUsers.add(newAdmin);
+			
+			WriteToCache.writeAdminUsersToCache(cacheAdminUsers, addAdminUserModel.getKey());
 		}
 		catch (IllegalArgumentException ex) {
 			logger.severe("[Add Admin User Service] An error ocurred while creating the new admin user "+ex);
