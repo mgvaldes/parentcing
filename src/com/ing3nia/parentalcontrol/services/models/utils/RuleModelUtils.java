@@ -67,6 +67,8 @@ public class RuleModelUtils {
 		
 		ruleModel.setDisabledFunctionalities(disabledFunctionalityModels);
 		
+		ruleModel.setName(rule.getName());
+		
 		pm.close();
 		
 		return ruleModel;

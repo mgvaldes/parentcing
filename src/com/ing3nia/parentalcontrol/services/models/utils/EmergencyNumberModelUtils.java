@@ -15,22 +15,27 @@ public class EmergencyNumberModelUtils {
 		return new EmergencyNumberModel(KeyFactory.keyToString(emergencyNumber.getKey()), emergencyNumber.getCountry(), emergencyNumber.getNumber(), emergencyNumber.getDescription());
 	}
 	
-	public static void removeEmergencyNumber(ArrayList<EmergencyNumberModel> emergencyNums, String keyId) {
+	public static EmergencyNumberModel removeEmergencyNumber(ArrayList<EmergencyNumberModel> emergencyNums, String keyId) {
 		int position = 0;
 		boolean found = false;
 		int size = emergencyNums.size();
+		EmergencyNumberModel foundEmergency = null;
 		
 		for (int i = 0; i < size; i++) {
-			if (emergencyNums.get(i).getKeyId().equals(keyId)) {
+			EmergencyNumberModel emergencyNumber = emergencyNums.get(i);
+			if (emergencyNumber.getKeyId().equals(keyId)) {
 				position = i;
 				found = true;
+				foundEmergency = emergencyNumber;
 				break;
 			}
 		}
 		
 		if (found) {
 			emergencyNums.remove(position);
+			return foundEmergency;
 		}
+		return null;
 	}
 	
 	public static void addEmergencyNumber(PersistenceManager pm, ArrayList<EmergencyNumberModel> emergencyNums, Key keyId) {

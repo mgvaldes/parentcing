@@ -47,7 +47,11 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 	}
 	
 	public String addRuleNEW(String cid, String smartphoneKey, RuleModel newRule){
+		//Does not return a thing because the rule will be created on the service, otherwise
+		// the service may fail and the rule keeps going.
 		
+		return null;
+		/*
 		String newRuleKey = null;
 //		PCSession session = null;
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
@@ -108,7 +112,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 		
 		newRuleKey = KeyFactory.keyToString(rule.getKey());
 		logger.severe("RULE DATE AND KEY: "+rule.getCreationDate()+" "+newRuleKey);
-		return newRuleKey;
+		return newRuleKey;*/
 	}
 
 	public String addRuleOLD(String cid, String smartphoneKey, RuleModel newRule){

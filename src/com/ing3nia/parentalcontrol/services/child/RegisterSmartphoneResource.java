@@ -28,6 +28,7 @@ import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
 import com.ing3nia.parentalcontrol.services.exceptions.SessionQueryException;
 import com.ing3nia.parentalcontrol.services.models.RegisterSmartphoneModel;
 import com.ing3nia.parentalcontrol.services.models.utils.SmartphoneModelUtils;
+import com.ing3nia.parentalcontrol.services.models.utils.WriteToCache;
 import com.ing3nia.parentalcontrol.services.utils.ServiceUtils;
 import com.ing3nia.parentalcontrol.services.utils.SessionUtils;
 import com.ing3nia.parentalcontrol.services.utils.WebServiceUtils;
@@ -161,6 +162,9 @@ public class RegisterSmartphoneResource {
     		user.setSmartphones(userSmartphones);
     		
     		registeredSmartphoneKey = KeyFactory.keyToString(newSmartphone.getKey());
+    		
+    		logger.info("[Register Smartphone Service] Writing user to Cache.");
+    		WriteToCache.writeUserToCache(user);
     	}
 	    	
     	pm.close();
