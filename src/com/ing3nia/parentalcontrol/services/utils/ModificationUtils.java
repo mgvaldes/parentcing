@@ -13,6 +13,7 @@ import javax.jdo.Query;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
+import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.Gson;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
@@ -331,31 +332,22 @@ public class ModificationUtils {
 		ArrayList<PCSimpleContact> pcInactiveSimpleContacts = new ArrayList<PCSimpleContact>();
 		ArrayList<PCPhone> pcInactivePhones = new ArrayList<PCPhone>();
 		
-		PCSimpleContact auxSC;
-		SimpleContactModel auxSCModel;
+		PCSimpleContact auxSC = null;
+		SimpleContactModel auxSCModel = null;
 		PCPhone auxPhone;
 		
-		ArrayList<Key> pcSCKeys = pcsmartphone.getActiveContacts();
-		
-		for (Key key : pcSCKeys) {
-			auxSC = pm.getObjectById(PCSimpleContact.class, key);
-			pcActiveSimpleContacts.add(auxSC);
-			
-			auxPhone = pm.getObjectById(PCPhone.class, auxSC.getPhone());
-			pcActivePhones.add(auxPhone);
-		}
-		
-		pcSCKeys = pcsmartphone.getInactiveContacts();
-		
-		for (Key key : pcSCKeys) {
-			auxSC = pm.getObjectById(PCSimpleContact.class, key);
-			pcInactiveSimpleContacts.add(auxSC);
-			
-			auxPhone = pm.getObjectById(PCPhone.class, auxSC.getPhone());
-			pcInactivePhones.add(auxPhone);
-		}
-		
+
 		if (cacheIdentActiveContacts == null) {
+			ArrayList<Key> pcSCKeys = pcsmartphone.getActiveContacts();
+			
+			for (Key key : pcSCKeys) {
+				auxSC = pm.getObjectById(PCSimpleContact.class, key);
+				pcActiveSimpleContacts.add(auxSC);
+				
+				auxPhone = pm.getObjectById(PCPhone.class, auxSC.getPhone());
+				pcActivePhones.add(auxPhone);
+			}
+			
 			cacheActiveContacts = WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
 			
 			//cacheIdentActiveContacts = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
@@ -366,6 +358,15 @@ public class ModificationUtils {
 		}
 		
 		if (cacheIdentInactiveContacts == null) {
+			ArrayList<Key> pcSCKeys = pcsmartphone.getInactiveContacts();
+			
+			for (Key key : pcSCKeys) {
+				auxSC = pm.getObjectById(PCSimpleContact.class, key);
+				pcInactiveSimpleContacts.add(auxSC);
+				
+				auxPhone = pm.getObjectById(PCPhone.class, auxSC.getPhone());
+				pcInactivePhones.add(auxPhone);
+			}
 			cacheInactiveContacts = WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
 
 			//cacheIdentInactiveContacts = syncCache.getIdentifiable(cacheSmartphoneInactiveContactsKey);
@@ -377,6 +378,7 @@ public class ModificationUtils {
 		
 		int pos; 
 		
+		
 		for (SimpleContactModel contact : activeContacts) {
 			// remove contact from inactive and add to active in smartphone
 			Key contactKey = KeyFactory.stringToKey(contact.getKeyId());
@@ -387,13 +389,19 @@ public class ModificationUtils {
 				cacheInactiveContacts.remove(pos);
 			}
 			
-			auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
-			auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+
 //			SimpleContactModelUtils.removeSimpleContact(cacheInactiveContacts, contact.getKeyId());
 			
 			if (!pcsmartphone.getActiveContacts().contains(contactKey)){
+				
+				auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
+				auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+				
 				pcsmartphone.getActiveContacts().add(contactKey);
 				cacheActiveContacts.add(auxSCModel);
+				
+				auxSC = null;
+				auxSCModel = null;
 				
 //				pos = pcsmartphone.getActiveContacts().indexOf(contactKey);
 //				
@@ -425,13 +433,26 @@ public class ModificationUtils {
 			} 
 			else if (pcModInactiveContacts.contains(contactKey)) {
 				pcModInactiveContacts.remove(contactKey);
-				SimpleContactModelUtils.removeSimpleContact(cacheModInactiveContacts, contact.getKeyId());
+				SimpleContactModel foundContact = SimpleContactModelUtils.removeSimpleContact(cacheModInactiveContacts, contact.getKeyId());
 				
-				pcModActiveContacts.add(contactKey);
-				cacheModActiveContacts.add(auxSCModel);
+				if(foundContact == null){
+					auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
+					auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+					
+					pcModActiveContacts.add(contactKey);
+					cacheModActiveContacts.add(auxSCModel);
+				}else{
+					cacheModActiveContacts.add(foundContact);
+				}
 //				SimpleContactModelUtils.addSimpleContact(pm, cacheModActiveContacts, contactKey);
 			} 
 			else {
+				
+				if(auxSCModel == null){
+					auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
+					auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+				}
+				
 				pcModActiveContacts.add(contactKey);
 				cacheModActiveContacts.add(auxSCModel);
 //				SimpleContactModelUtils.addSimpleContact(pm, cacheModActiveContacts, contactKey);
@@ -454,13 +475,18 @@ public class ModificationUtils {
 				cacheActiveContacts.remove(pos);
 			}			
 			
-			auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
-			auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
 //			SimpleContactModelUtils.removeSimpleContact(cacheActiveContacts, contact.getKeyId());
 			
 			if(!pcsmartphone.getInactiveContacts().contains(contactKey)){
+				
+				auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
+				auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+				
 				pcsmartphone.getInactiveContacts().add(contactKey);
 				cacheInactiveContacts.add(auxSCModel);
+				
+				auxSC = null;
+				auxSCModel = null;
 				
 //				pos = pcsmartphone.getInactiveContacts().indexOf(contactKey);				
 //				
@@ -492,13 +518,23 @@ public class ModificationUtils {
 			} 
 			else if (pcModActiveContacts.contains(contactKey)) {
 				pcModActiveContacts.remove(contactKey);
-				SimpleContactModelUtils.removeSimpleContact(cacheModActiveContacts, contact.getKeyId());
+				SimpleContactModel foundContact = SimpleContactModelUtils.removeSimpleContact(cacheModActiveContacts, contact.getKeyId());
 				
-				pcModInactiveContacts.add(contactKey);
-				cacheModInactiveContacts.add(auxSCModel);
+				if(foundContact == null){
+					pcModInactiveContacts.add(contactKey);
+					cacheModInactiveContacts.add(auxSCModel);
+				}else{
+					cacheModInactiveContacts.add(foundContact);
+				}	
+				
 //				SimpleContactModelUtils.addSimpleContact(pm, cacheModInactiveContacts, contactKey);
 			} 
 			else {
+				if(auxSCModel == null){
+					auxSC = pm.getObjectById(PCSimpleContact.class, contactKey);
+					auxSCModel = SimpleContactModelUtils.convertToSimpleContactModel(auxSC);
+				}
+								
 				pcModInactiveContacts.add(contactKey);
 				cacheModInactiveContacts.add(auxSCModel);
 //				SimpleContactModelUtils.addSimpleContact(pm, cacheModInactiveContacts, contactKey);
@@ -523,37 +559,35 @@ public class ModificationUtils {
 		ArrayList<PCEmergencyNumber> pcAddedEmergencyNums = new ArrayList<PCEmergencyNumber>();
 		ArrayList<PCEmergencyNumber> pcDeletedEmergencyNums = new ArrayList<PCEmergencyNumber>();
 		
-		PCEmergencyNumber auxEM;
-		EmergencyNumberModel auxENModel;
+		PCEmergencyNumber auxEM = null;
+		EmergencyNumberModel auxENModel = null;
 		
-		ArrayList<Key> pcENKeys = pcsmartphone.getAddedEmergencyNumbers();
-		
-		for (Key key : pcENKeys) {
-			auxEM = pm.getObjectById(PCEmergencyNumber.class, key);
-			pcAddedEmergencyNums.add(auxEM);
-		}
-		
-		pcENKeys = pcsmartphone.getDeletedEmergencyNumbers();
-		
-		for (Key key : pcENKeys) {
-			auxEM = pm.getObjectById(PCEmergencyNumber.class, key);
-			pcDeletedEmergencyNums.add(auxEM);
-		}
 		
 		if (cacheIdentAddedEmergencyNums == null) {
+			ArrayList<Key> pcENKeys = pcsmartphone.getAddedEmergencyNumbers();
+			
+			for (Key key : pcENKeys) {
+				auxEM = pm.getObjectById(PCEmergencyNumber.class, key);
+				pcAddedEmergencyNums.add(auxEM);
+			}
 
 			//cacheAddedEmergencyNums = WriteToCache.writeSmartphoneActiveContactsToCache(cacheSmartphone.getKeyId(), pcActiveSimpleContacts, pcActivePhones);
 			cacheAddedEmergencyNums = WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(cacheSmartphone.getKeyId(), pcAddedEmergencyNums);
 			
 			//cacheIdentAddedEmergencyNums = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
 			//cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();			
-
 		}
 		else {
 			cacheAddedEmergencyNums = (ArrayList<EmergencyNumberModel>) cacheIdentAddedEmergencyNums.getValue();
 		}
 		
 		if (cacheIdentDeletedEmergencyNums == null) {
+			ArrayList<Key> pcENKeys = pcsmartphone.getDeletedEmergencyNumbers();
+			
+			for (Key key : pcENKeys) {
+				auxEM = pm.getObjectById(PCEmergencyNumber.class, key);
+				pcDeletedEmergencyNums.add(auxEM);
+			}
 
 			//cacheDeletedEmergencyNums = WriteToCache.writeSmartphoneInactiveContactsToCache(cacheSmartphone.getKeyId(), pcInactiveSimpleContacts, pcInactivePhones);
 			cacheDeletedEmergencyNums = WriteToCache.writeSmartphoneDeletedEmergencyNumbersToCache(cacheSmartphone.getKeyId(), pcDeletedEmergencyNums);
@@ -606,13 +640,20 @@ public class ModificationUtils {
 //					cacheDeletedEmergencyNums.remove(pos);
 //				}
 				
-				auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
-				auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
+
 //				EmergencyNumberModelUtils.removeEmergencyNumber(cacheDeletedEmergencyNums, emergencyContact.getKeyId());
 				
 				if (!pcsmartphone.getAddedEmergencyNumbers().contains(emergencyKey)) {
+					
+					auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
+					auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
+										
 					pcsmartphone.getAddedEmergencyNumbers().add(emergencyKey);
 					cacheAddedEmergencyNums.add(auxENModel);
+					
+					auxEM = null;
+					auxENModel = null;
+					
 //					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheAddedEmergencyNums, emergencyKey);
 				}
 
@@ -625,15 +666,24 @@ public class ModificationUtils {
 				} 
 				else if (pcModDeletedEmergencyNumbers.contains(emergencyKey)) {
 					pcModDeletedEmergencyNumbers.remove(emergencyKey);
-					EmergencyNumberModelUtils.removeEmergencyNumber(cacheModDeletedEmergencyNumbers, emergencyContact.getKeyId());
+					EmergencyNumberModel emergencyNumber = EmergencyNumberModelUtils.removeEmergencyNumber(cacheModDeletedEmergencyNumbers, emergencyContact.getKeyId());
 					
-					pcModAddedEmergencyNumbers.add(emergencyKey);
-					cacheModAddedEmergencyNumbers.add(auxENModel);
+					if(emergencyNumber == null){
+						pcModAddedEmergencyNumbers.add(emergencyKey);
+						cacheModAddedEmergencyNumbers.add(auxENModel);
+					} else{
+						cacheModAddedEmergencyNumbers.add(emergencyNumber);
+					}
 //					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModAddedEmergencyNumbers, emergencyKey);
 				} 
 				else {
-					pcModAddedEmergencyNumbers.add(emergencyKey);
-					cacheModAddedEmergencyNumbers.add(auxENModel);
+					if(auxENModel==null){
+						auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
+						auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
+					} else{
+						pcModAddedEmergencyNumbers.add(emergencyKey);
+						cacheModAddedEmergencyNumbers.add(auxENModel);
+					}
 //					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModAddedEmergencyNumbers, emergencyKey);
 				}
 			}
@@ -696,6 +746,9 @@ public class ModificationUtils {
 					cacheDeletedEmergencyNums.add(auxENModel);
 //					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheDeletedEmergencyNums, emergencyKey);
 				}
+				
+				auxEM = null;
+				auxENModel = null;
 	
 				// check if emergency contact existed in modification, if added
 				// then remove it and add it to deleted, otherwise add it to deleted
@@ -706,13 +759,25 @@ public class ModificationUtils {
 				} 
 				else if (pcModAddedEmergencyNumbers.contains(emergencyKey)) {
 					pcModAddedEmergencyNumbers.remove(emergencyKey);
-					EmergencyNumberModelUtils.removeEmergencyNumber(cacheModAddedEmergencyNumbers, emergencyContact.getKeyId());
+					EmergencyNumberModel foundEmergency = EmergencyNumberModelUtils.removeEmergencyNumber(cacheModAddedEmergencyNumbers, emergencyContact.getKeyId());
 					
-					pcModDeletedEmergencyNumbers.add(emergencyKey);
-					cacheModDeletedEmergencyNumbers.add(auxENModel);
+					if(foundEmergency == null){
+						auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
+						auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
+						
+						pcModDeletedEmergencyNumbers.add(emergencyKey);
+						cacheModDeletedEmergencyNumbers.add(auxENModel);
+					}else{
+						cacheModDeletedEmergencyNumbers.add(foundEmergency);
+					}
 //					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModDeletedEmergencyNumbers, emergencyKey);
 				} 
 				else {
+					
+					if(auxENModel == null){
+						auxEM = pm.getObjectById(PCEmergencyNumber.class, emergencyKey);
+						auxENModel = EmergencyNumberModelUtils.convertToEmergencyNumberModel(auxEM);
+					}
 					pcModDeletedEmergencyNumbers.add(emergencyKey);
 					cacheModDeletedEmergencyNumbers.add(auxENModel);
 //					EmergencyNumberModelUtils.addEmergencyNumber(pm, cacheModDeletedEmergencyNumbers, emergencyKey);
@@ -913,7 +978,7 @@ public class ModificationUtils {
 		WriteToCache.writeSmartphoneInactiveContactsToCache(smartphoneKey, cacheInactiveContacts);
 		WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(cacheAddedEmergencyNums, smartphoneKey);
 		WriteToCache.writeSmartphoneDeletedEmergencyNumbersToCache(cacheDeletedEmergencyNums, smartphoneKey);
-		WriteToCache.writeSmartphoneRulesToCache(cacheRules, smartphoneKey);
+		WriteToCache.writeSmartphoneRulesToCache(cacheRules, smartphoneKey);	
 		
 //		pcsmartphone.setModification(pcmodification);
 		//pm.makePersistent(pcsmartphone);
@@ -1258,6 +1323,19 @@ public class ModificationUtils {
 //		pcsmartphone.setModification(pcmodification);
 		//pm.makePersistent(pcsmartphone);
 		//pm.makePersistent(pcmodification);	
+	}
+	
+	private static ArrayList<RuleModel> convertRulesToCacheModel(ArrayList<PCRule> pcRules){
+		ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
+		RuleModel ruleModel;
+
+		for (PCRule pcRule : pcRules) {
+			ruleModel = RuleModelUtils.convertToRuleModel(pcRule);
+			rules.add(ruleModel);
+		}
+		
+		return rules;
+		
 	}
 	
 	private static ArrayList<Key> getNewFuncionalitiesAsKeys(PersistenceManager pm,

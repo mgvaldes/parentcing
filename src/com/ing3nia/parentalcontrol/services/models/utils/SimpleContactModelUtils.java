@@ -31,22 +31,27 @@ public class SimpleContactModelUtils {
 		return contact;
 	}
 	
-	public static void removeSimpleContact(ArrayList<SimpleContactModel> contacts, String keyId) {
+	public static SimpleContactModel removeSimpleContact(ArrayList<SimpleContactModel> contacts, String keyId) {
 		int position = 0;
 		boolean found = false;
 		int size = contacts.size();
+		SimpleContactModel foundContact = null;
 		
 		for (int i = 0; i < size; i++) {
-			if (contacts.get(i).getKeyId().equals(keyId)) {
+			SimpleContactModel contact = contacts.get(i);
+			if (contact.getKeyId().equals(keyId)) {
 				position = i;
 				found = true;
+				foundContact = contact;
 				break;
 			}
 		}
 		
 		if (found) {
 			contacts.remove(position);
+			return foundContact;
 		}
+		return null;
 	}
 	
 	public static void addSimpleContact(PersistenceManager pm, ArrayList<SimpleContactModel> contacts, Key keyId) {
