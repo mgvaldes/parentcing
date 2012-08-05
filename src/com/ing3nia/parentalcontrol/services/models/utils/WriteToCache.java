@@ -142,7 +142,7 @@ public class WriteToCache {
 		syncCache.put(UserCacheParams.USER + pcSmartphoneKey + UserCacheParams.ADMIN_LIST, adminUsers, null);
 	}
 	
-	public static ArrayList<TicketModel> writeOpenTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> openTickets, String dummy){
+	public static ArrayList<TicketModel> writeOpenTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> openTickets, String dummy) {
 		ArrayList<String> cacheOpenTicketList = new ArrayList<String>();
 		TicketModel auxOpenTicket;
 		ArrayList<TicketModel> openT = new ArrayList<TicketModel>();
@@ -181,19 +181,25 @@ public class WriteToCache {
 			for (Key ansKey : ticketAnswerKeys) {
 				auxTicketAnswer = pm.getObjectById(PCHelpdeskTicketAnswer.class, ansKey);
     			
-    			if (auxTicketAnswer.getAdmin() == null) {
+    			if (auxTicketAnswer.getAdmin() == null) {    				
     				user = pm.getObjectById(PCUser.class, auxTicketAnswer.getUser());
     				username = user.getUsername();
     				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getUser());
+    				
+    				logger.info("Answer by USER: " + username + " with key: " + userAdminKey);
     			}
     			else {
     				admin = pm.getObjectById(PCAdmin.class, auxTicketAnswer.getAdmin());
     				username = admin.getUsername();
     				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getAdmin());
+    				
+    				logger.info("Answer by ADMIN: " + username + " with key: " + userAdminKey);
     			}
     			
-    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer), userAdminKey, auxTicketAnswer.getAnswer(), username);
+    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer.getDate()), userAdminKey, auxTicketAnswer.getAnswer(), username);
     			answers.add(auxAnswer);
+    			
+    			logger.info("Adding answer to answers list");
     		}
 			
 			user = pm.getObjectById(PCUser.class, openTicket.getUser());
@@ -213,7 +219,7 @@ public class WriteToCache {
 		return openT;
 	}
 	
-	public static void writeOpenTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> openTickets){
+	public static ArrayList<String> writeOpenTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> openTickets){
 		ArrayList<String> cacheOpenTicketList = new ArrayList<String>();
 		TicketModel auxOpenTicket;
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -262,7 +268,7 @@ public class WriteToCache {
     				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getAdmin());
     			}
     			
-    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer), userAdminKey, auxTicketAnswer.getAnswer(), username);
+    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer.getDate()), userAdminKey, auxTicketAnswer.getAnswer(), username);
     			answers.add(auxAnswer);
     		}
 			
@@ -278,6 +284,8 @@ public class WriteToCache {
 		logger.info("Setting Open Ticket List: " + userKey + UserCacheParams.OPEN_TICKETS_LIST + " to cache");
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		syncCache.put(userKey + UserCacheParams.OPEN_TICKETS_LIST, cacheOpenTicketList, null);
+		
+		return cacheOpenTicketList;
 	}
 	
 	public static void writeOpenTicketsToCache(ArrayList<String> openTickets, String userKey){
@@ -286,8 +294,25 @@ public class WriteToCache {
 		syncCache.put(userKey + UserCacheParams.OPEN_TICKETS_LIST, openTickets, null);
 	}
 	
-	public static void writeOpenTicketToCache(PersistenceManager pm, String userKey, PCHelpdeskTicket openTicket){
-		ArrayList<String> cacheOpenTicketList = new ArrayList<String>();
+	public static void writeClosedTicketsToCache(ArrayList<String> closedTickets, String userKey){
+		logger.info("Setting Closed Ticket List: " + userKey + UserCacheParams.CLOSED_TICKETS_LIST + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(userKey + UserCacheParams.CLOSED_TICKETS_LIST, closedTickets, null);
+	}
+	
+	public static void writeAllClosedTicketsToCache(ArrayList<String> allCloseTickets) {
+		logger.info("Setting All Closed Ticket List: " + TicketCacheParams.ALL_CLOSED_TICKETS + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(TicketCacheParams.ALL_CLOSED_TICKETS, allCloseTickets, null);
+	}
+	
+	public static void writeAllOpenTicketsToCache(ArrayList<String> allOpenTickets) {
+		logger.info("Setting All Open Ticket List: " + TicketCacheParams.ALL_OPEN_TICKETS + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(TicketCacheParams.ALL_OPEN_TICKETS, allOpenTickets, null);
+	}
+	
+	public static TicketModel writeTicketToCache(PersistenceManager pm, String userKey, PCHelpdeskTicket openTicket){
 		TicketModel auxOpenTicket;
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		Query query = pm.newQuery(PCCategory.class);
@@ -334,7 +359,7 @@ public class WriteToCache {
 				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getAdmin());
 			}
 			
-			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer), userAdminKey, auxTicketAnswer.getAnswer(), username);
+			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer.getDate()), userAdminKey, auxTicketAnswer.getAnswer(), username);
 			answers.add(auxAnswer);
 		}
 		
@@ -343,6 +368,8 @@ public class WriteToCache {
 		auxOpenTicket.setAnswers(answers);
 		
 		writeTicketToCache(auxOpenTicket);
+		
+		return auxOpenTicket;
 	}
 	
 	public static void writeTicketToCache(TicketModel openTicket) {
@@ -401,7 +428,7 @@ public class WriteToCache {
     				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getAdmin());
     			}
     			
-    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer), userAdminKey, auxTicketAnswer.getAnswer(), username);
+    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer.getDate()), userAdminKey, auxTicketAnswer.getAnswer(), username);
     			answers.add(auxAnswer);
     		}
 			
@@ -422,7 +449,7 @@ public class WriteToCache {
 		return closedT;
 	}
 	
-	public static void writeClosedTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> closedTickets){
+	public static ArrayList<String> writeClosedTicketsToCache(PersistenceManager pm, String userKey, ArrayList<PCHelpdeskTicket> closedTickets){
 		ArrayList<String> cacheClosedTicketList = new ArrayList<String>();
 		TicketModel auxClosedTicket;
 		SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
@@ -471,7 +498,7 @@ public class WriteToCache {
     				userAdminKey = KeyFactory.keyToString(auxTicketAnswer.getAdmin());
     			}
     			
-    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer), userAdminKey, auxTicketAnswer.getAnswer(), username);
+    			auxAnswer = new TicketAnswerModel(dateFormatter.format(auxTicketAnswer.getDate()), userAdminKey, auxTicketAnswer.getAnswer(), username);
     			answers.add(auxAnswer);
     		}
 			
@@ -486,13 +513,9 @@ public class WriteToCache {
 		
 		logger.info("Setting Closed Ticket List: " + userKey + UserCacheParams.CLOSED_TICKETS_LIST + " to cache");
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.put(userKey + UserCacheParams.CLOSED_TICKETS_LIST, closedTickets, null);
-	}
-	
-	public static void writeClosedTicketsToCache(ArrayList<TicketModel> closedTickets, String userKey){
-		logger.info("Setting Closed Ticket List: " + userKey + UserCacheParams.CLOSED_TICKETS_LIST + " to cache");
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.put(userKey + UserCacheParams.CLOSED_TICKETS_LIST, closedTickets, null);
+		syncCache.put(userKey + UserCacheParams.CLOSED_TICKETS_LIST, cacheClosedTicketList, null);
+		
+		return cacheClosedTicketList;
 	}
 	
 	public static void writeSmartphoneAlertsToCache(Key pcSmartphoneKey, ArrayList<PCNotification> pcAlertList){
@@ -908,6 +931,19 @@ public class WriteToCache {
 		logger.info("Setting User in cache: "+UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass()+" number of smartphone: "+userModel.getSmartphoneKeys().size());
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass(), userModel, null);
+		
+		return userModel;
+	}
+	
+	public static UserModel writeAdminUserToCache(PCAdmin user){
+		UserModel userModel = new UserModel();
+		userModel.setKey(KeyFactory.keyToString(user.getKey()));
+		userModel.setPass(user.getPassword());
+		userModel.setUsr(user.getUsername());
+		
+		logger.info("Setting Admin User in cache: "+UserCacheParams.ADMIN+userModel.getUsr()+"-"+userModel.getPass());
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
+		syncCache.put(UserCacheParams.ADMIN+userModel.getUsr()+"-"+userModel.getPass(), userModel, null);
 		
 		return userModel;
 	}

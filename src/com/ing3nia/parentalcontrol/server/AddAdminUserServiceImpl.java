@@ -5,12 +5,8 @@ import java.util.logging.Logger;
 import javax.jdo.PersistenceManager;
 
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
-import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.UserModel;
-import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserService;
 import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCUser;
@@ -35,7 +31,7 @@ public class AddAdminUserServiceImpl extends RemoteServiceServlet implements Add
 	public String addAdminUser(String username, String password, String loggedUserKey) {
 		if (ACTUAL.equals(NEW_WS)) {
             return addAdminUserNEW(username, password, loggedUserKey);
-	}
+		}
 
 		return addAdminUserOLD(username, password, loggedUserKey);
 	}

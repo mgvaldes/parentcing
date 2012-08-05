@@ -84,12 +84,22 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 
 			pm.makePersistent(rule);
 			
-			smartphone.getRules().add(rule.getKey());
+			logger.severe("[Add Rule Service] New rule's key: " + KeyFactory.keyToString(rule.getKey()));
+			
+			ArrayList<Key> smartRules = smartphone.getRules();
+			
+			if (smartRules == null) {
+				smartRules = new ArrayList<Key>();
+			}
+			
+			smartRules.add(rule.getKey());
+			
+			smartphone.setRules(smartRules);
 			
 			//logger.severe("[Add Rule Service] Rule saved! "+rule.getName()+" "+rule.getCreationDate()+" "+rule.getStartDate()+" "+rule.getEndDate()+" "+rule.getDisabledFunctionalities().size()+" "+rule.getKey());
 			
 			
-			logger.severe("[Add Rule Service] New rule's key: " + rule.getKey());
+			logger.severe("[Add Rule Service] New rule's key: " + KeyFactory.keyToString(rule.getKey()));
 
 		}
 		catch (Exception e) {
@@ -109,6 +119,7 @@ public class AddRuleServiceImpl extends RemoteServiceServlet implements AddRuleS
 		newRuleKey = KeyFactory.keyToString(rule.getKey());
 		logger.severe("RULE DATE AND KEY: "+rule.getCreationDate()+" "+newRuleKey);
 		return newRuleKey;
+//		return "";
 	}
 
 	public String addRuleOLD(String cid, String smartphoneKey, RuleModel newRule){

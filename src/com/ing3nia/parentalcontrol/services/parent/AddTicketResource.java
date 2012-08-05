@@ -1,10 +1,8 @@
 package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -28,7 +26,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
-import com.ing3nia.parentalcontrol.client.models.UserModel;
 import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.models.PCCategory;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;

@@ -86,7 +86,8 @@ public class AdminUserListResource {
 					auxClientUser.setKey(KeyFactory.keyToString(k));
 					admins.add(auxClientUser);
 				}
-			} catch (IllegalArgumentException ex) {
+			} 
+			catch (IllegalArgumentException ex) {
 				logger.warning("[Admin User List Service] An error ocurred while searching for user. "
 						+ ex.getMessage());
 
@@ -96,7 +97,8 @@ public class AdminUserListResource {
 				WebServiceUtils.setUTF8Encoding(
 						WebServiceUtils.JSON_CONTENT_TYPE, rbuilder);
 				return rbuilder.build();
-			} catch (Exception ex) {
+			} 
+			catch (Exception ex) {
 				logger.warning("[Admin User List Service] Unexpected error occurred. "
 						+ ex.getMessage());
 
@@ -109,14 +111,14 @@ public class AdminUserListResource {
 			} finally {
 				pm.close();
 			}
-		} else {
+		} 
+		else {
 			logger.info("[AdminUserListServer] Admin list Found in Cache, iterating list");
-			ArrayList<UserModel> adminList = (ArrayList<UserModel>) ident
-					.getValue();
+			ArrayList<UserModel> adminList = (ArrayList<UserModel>) ident.getValue();
+			
 			for (UserModel adminUser : adminList) {
 				ClientAdminUserModel auxClientUser;
-				auxClientUser = new ClientAdminUserModel(
-						adminUser.getUsername(), adminUser.getPass());
+				auxClientUser = new ClientAdminUserModel(adminUser.getUsername(), adminUser.getPass());
 				auxClientUser.setKey(adminUser.getKey());
 				admins.add(auxClientUser);
 			}

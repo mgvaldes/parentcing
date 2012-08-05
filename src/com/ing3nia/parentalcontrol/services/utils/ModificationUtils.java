@@ -752,16 +752,16 @@ public class ModificationUtils {
 		IdentifiableValue cacheIdentRules = syncCache.getIdentifiable(cacheSmartphoneRulesKey);
 		ArrayList<RuleModel> cacheRules;
 		
-		ArrayList<PCRule> pcRules = new ArrayList<PCRule>();
-		ArrayList<Key> pcRuleKeys = pcsmartphone.getRules();
-		PCRule auxPCRule;
-		
-		for (Key key : pcRuleKeys) {
-			auxPCRule = pm.getObjectById(PCRule.class, key);
-			pcRules.add(auxPCRule);
-		}
-		
 		if (cacheIdentRules == null) {
+			ArrayList<PCRule> pcRules = new ArrayList<PCRule>();
+			ArrayList<Key> pcRuleKeys = pcsmartphone.getRules();
+			PCRule auxPCRule;
+			
+			for (Key key : pcRuleKeys) {
+				auxPCRule = pm.getObjectById(PCRule.class, key);
+				pcRules.add(auxPCRule);
+			}
+			
 			cacheRules = WriteToCache.writeSmartphoneRulesToCache(cacheSmartphone.getKeyId(), pcRules);
 			
 			//cacheIdentRules = syncCache.getIdentifiable(cacheSmartphoneActiveContactsKey);
@@ -818,6 +818,7 @@ public class ModificationUtils {
 			}
 			
 			rule.setEndDate(date);
+			
 			rule.setName(ruleModel.getName());
 			
 			logger.info("[ParentModifications - Cache Version] Setting new funcionalities to rules");
@@ -831,22 +832,79 @@ public class ModificationUtils {
 				pm.makePersistent(rule);
 				pcsmartphone.getRules().add(rule.getKey());
 				
-				auxRule = RuleModelUtils.convertToRuleModel(rule);
+				auxRule.setKeyId(KeyFactory.keyToString(rule.getKey()));
+				//auxRule = RuleModelUtils.convertToRuleModel(rule);				
+			}
+			
+			int cacheRulesSize = pcModRules.size();
+			boolean found = false;
+			
+			for (int i = 0; i < cacheRulesSize; i++) {
+				if (pcModRules.get(i).equals(rule.getKey())) {
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found) {
+				pcModRules.add(rule.getKey());
+			}
+			
+			cacheRulesSize = cacheRules.size();
+			found = false;
+			
+			for (int i = 0; i < cacheRulesSize; i++) {
+				if (cacheRules.get(i).getKeyId().equals(auxRule.getKeyId())) {
+					cacheRules.set(i, auxRule);
+					found = true;
+				}
+			}
+			
+			if (!found) {
 				cacheRules.add(auxRule);
 			}
 			
-			pcModRules.add(rule.getKey());
-			cacheModRules.add(auxRule);
 //			RuleModelUtils.addRule(pm, cacheModRules, rule.getKey());
 		}
 		
 		// adding deleted rules
 		logger.info("[ParentModifications - Cache Version] Setting deleted rules");
 		
-		for (String deletedRuleId : modifications.getDeletedRules()) {
-			if (!pcModDeletedRules.contains(deletedRuleId)) {
+		boolean found = false;
+		int rulePos = 0;
+		
+		for (String deletedRuleId : deletedRules) {
+			for (String drid : pcModDeletedRules) {
+				if (deletedRuleId.equals(drid)) {
+					found = true;
+					break;
+				}
+			}
+			
+			if (!found) {
 				pcModDeletedRules.add(deletedRuleId);
 				cacheModDeletedRules.add(deletedRuleId);
+			}
+			
+			found = false;
+			
+//			if (!pcModDeletedRules.contains(deletedRuleId)) {
+//				pcModDeletedRules.add(deletedRuleId);
+//				cacheModDeletedRules.add(deletedRuleId);
+//			}
+			
+			for (RuleModel cacheR : cacheRules) {
+				if (cacheR.getKeyId().equals(deletedRuleId)) {
+					found = true;
+					break;
+				}
+				else {
+					rulePos += 1;
+				}								
+			}
+			
+			if (found) {
+				cacheRules.remove(rulePos);
 			}
 		}
 		

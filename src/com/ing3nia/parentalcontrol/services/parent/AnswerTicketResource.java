@@ -2,7 +2,6 @@ package com.ing3nia.parentalcontrol.services.parent;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.logging.Logger;
 
@@ -26,7 +25,6 @@ import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.TicketAnswerModel;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
 import com.ing3nia.parentalcontrol.client.models.cache.TicketCacheParams;
-import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicket;
 import com.ing3nia.parentalcontrol.models.PCHelpdeskTicketAnswer;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
@@ -121,7 +119,7 @@ public class AnswerTicketResource {
 			TicketModel cacheOpenTicket = null;
 			
 			if (cacheIdentOpenTicket == null) {
-				WriteToCache.writeOpenTicketToCache(pm, KeyFactory.keyToString(ticket.getUser()), ticket);
+				WriteToCache.writeTicketToCache(pm, KeyFactory.keyToString(ticket.getUser()), ticket);
 				
 				cacheIdentOpenTicket = syncCache.getIdentifiable(openTicketCacheKey);
 				cacheOpenTicket = (TicketModel) cacheIdentOpenTicket.getValue();

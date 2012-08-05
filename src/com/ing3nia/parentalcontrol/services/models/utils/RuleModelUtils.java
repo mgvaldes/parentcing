@@ -49,11 +49,14 @@ public class RuleModelUtils {
 		RuleModel ruleModel = new RuleModel();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
 		
-		ruleModel.setKeyId(KeyFactory.keyToString(rule.getKey()));
+		if (rule.getKey() != null) {
+			ruleModel.setKeyId(KeyFactory.keyToString(rule.getKey()));
+		}
 		
 		ruleModel.setStartDate(formatter.format(rule.getStartDate()));
 		ruleModel.setEndDate(formatter.format(rule.getEndDate()));
-		ruleModel.setCreationDate(formatter.format(rule.getCreationDate()));		
+		ruleModel.setCreationDate(formatter.format(rule.getCreationDate()));
+		ruleModel.setName(rule.getName());
 		
 		ArrayList<Integer> disabledFunctionalityModels = new ArrayList<Integer>();
 		
