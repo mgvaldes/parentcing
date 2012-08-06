@@ -102,6 +102,7 @@ public class DeviceMapView {
 	    	icon.setIconSize(Size.newInstance(20, 34));
 	    	MarkerOptions options = MarkerOptions.newInstance();
 	    	options.setIcon(icon);
+	    
 	    	  	
 	    	this.map.addOverlay(new Marker(deviceLoc,options));
 	    	deviceCount++;

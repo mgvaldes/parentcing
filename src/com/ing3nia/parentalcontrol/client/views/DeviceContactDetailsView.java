@@ -13,6 +13,9 @@ import com.google.gwt.user.client.ui.Label;
 import com.ing3nia.parentalcontrol.client.models.FullContactModel;
 
 public class DeviceContactDetailsView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "deviceContactDetailsContent";
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * device contact details view.
@@ -214,6 +217,7 @@ public class DeviceContactDetailsView {
 		this.centerContent = centerPanel;
 		this.centerContent.setStyleName("centerContent");
 		viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		contactDetailsLabel = new Label("Contact Details:");
 		contactTable = new FlexTable();
 		disallowButton = new Button("Disallow");

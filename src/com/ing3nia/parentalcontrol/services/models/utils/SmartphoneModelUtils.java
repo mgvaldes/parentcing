@@ -155,6 +155,7 @@ public class SmartphoneModelUtils {
 		cacheProperty.setId(speedLimitProperty.getId());
 		cacheProperty.setKeyId(KeyFactory.keyToString(speedLimitProperty.getKey()));
 		cacheProperty.setValue(speedLimitProperty.getValue());
+		cacheProperties.add(cacheProperty);
 	
 		PCModification mod = new PCModification();
 		pm.makePersistent(mod);		
@@ -177,8 +178,7 @@ public class SmartphoneModelUtils {
 		}
 		
 		// setting cache info
-		setCacheSmartphoneInfo(smartphoneCacheModel, smartphone, smartphoneKey, cacheActiveContacts, cacheOriginalContacts, cacheProperties, null, smartphoneModel.getDevice(), location );
-		
+		setCacheSmartphoneInfo(smartphoneCacheModel, smartphone, smartphoneKey, cacheActiveContacts, cacheOriginalContacts, cacheProperties, null, smartphoneModel.getDevice(), location);
 		pm.close();
 
 	}

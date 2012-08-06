@@ -29,6 +29,8 @@ import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
 public class RuleListView {
+	
+
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * alert list view.
@@ -56,14 +58,15 @@ public class RuleListView {
 	private Button addRuleButton;
 	
 	private BaseViewHandler baseViewHandler;
+	public static String VIEW_CONTENT_CLASSNAME = "ruleListContent";
 	
 	public RuleListView(BaseViewHandler baseViewHandler, ArrayList<RuleModel> ruleList) {
 		this.baseViewHandler = baseViewHandler;
 		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.ruleTable = new CellTable<RuleModel>(10);
-		this.viewContent = new HTMLPanel("");
 		this.rules = ruleList;
 		this.centerContent.clear();
 		this.rules = ruleList;
@@ -169,7 +172,6 @@ public class RuleListView {
 		viewContent.add(pager);
 		viewContent.add(ruleTable);
 		viewContent.add(pager);	
-		
 		centerContent.add(viewContent);
 	}
 	

@@ -16,6 +16,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -28,9 +29,13 @@ import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
+import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.async.AddRuleCallbackHandler;
 
 public class NewRuleView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "addRuleContent";
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * new ticket details view.
@@ -237,6 +242,7 @@ public class NewRuleView {
 		this.smartphone = smartphone;
 		
 		this.newRuleContent = new HTMLPanel("");
+		this.newRuleContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 				
 		this.newRuleLabel = new Label("New Rule:");
 		
@@ -442,6 +448,10 @@ public class NewRuleView {
 			newRule.setEndDate(auxDate);
 			
 			newRule.setType(ruleTypeListBox.getSelectedIndex());
+			
+			Image loadingImage = new Image("/media/images/loading.gif");
+			LoadingView.setLoadingView(baseViewHandler.getBaseBinder(), "Saving Rule", loadingImage);
+			
 			
 			AddRuleCallbackHandler addRuleCallback = new AddRuleCallbackHandler(baseViewHandler, newRule, this.cookieId, this.smartphone.getKeyId());
 			AddRuleServiceAsync addRuleService = GWT.create(AddRuleService.class);

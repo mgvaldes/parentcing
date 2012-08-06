@@ -40,6 +40,8 @@ import com.ing3nia.parentalcontrol.client.views.subviews.EditRuleView;
 public class DeviceEmergencyNumberListView {
 	
 	
+	public static String VIEW_CONTENT_CLASSNAME = "deviceEmergencyNumberListContent";
+	
 	private BaseViewHandler baseViewHandler;
 	
 	private HTMLPanel centerContent;
@@ -105,6 +107,7 @@ public class DeviceEmergencyNumberListView {
 		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.emergencyNumbersLabel = new Label("Emergency Numbers:");
 		this.contactButtonsPanel = new HTMLPanel("");
 		this.contactsButton = new Button("Contacts");

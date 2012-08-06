@@ -272,8 +272,17 @@ public class ParentLoginResource {
 
 			try {
 				user = SessionUtils.getPCUser(pm, username_param, pass_param);
-				logger.info("[Parent Login] Writing User to Cache");
-				WriteToCache.writeUserToCache(user);
+				
+				logger.info("[Parent Login] Checking if user existed by userKey before writing to cache");
+				IdentifiableValue ident2 = syncCache
+				.getIdentifiable(UserCacheParams.USERKEY + KeyFactory.keyToString(user.getKey()));
+				
+				if(ident2==null){
+					logger.info("[Parent Login] Writing User to Cache");
+					WriteToCache.writeUserToCache(user);
+				}else{
+					userModelCache = (UserModel)ident2.getValue();
+				}
 				// userKey = SessionUtils.getPCUserKey(pm,
 				// username_param,pass_param);
 			} catch (SessionQueryException e2) {
@@ -328,6 +337,13 @@ public class ParentLoginResource {
 			//updating last activity
 			session.setLastUpdate(new Date());
 			
+			logger.info("Writing Found Session to Cache");
+			if (userModelCache == null) {
+				WriteToCache.writeSessionToCache(session, user);
+			} else {
+				WriteToCache.writeSessionToCache(session, userModelCache);
+			}
+			
 			// Not creating new session cookie
 			/*
 			try {
@@ -380,9 +396,9 @@ public class ParentLoginResource {
 
 		
 		logger.info("Writing Session to Cache");
-		if (user != null) {
+		if (userModelCache == null) {
 			WriteToCache.writeSessionToCache(session, user);
-		} else if (user == null && userModelCache != null) {
+		} else {
 			WriteToCache.writeSessionToCache(session, userModelCache);
 		}
 		

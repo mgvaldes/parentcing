@@ -26,6 +26,9 @@ import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames
 public class AdminUserListView {
 	
 	
+	public static String VIEW_CONTENT_CLASSNAME = "adminUserListContent";
+	
+	
 	private BaseViewHandler baseViewHandler;
 	
 	/**
@@ -76,6 +79,7 @@ public class AdminUserListView {
 		this.adminUserTable.setStylePrimaryName(AdminUserListViewClassName.AdminUserTable.getClassname());
 		
 		this.viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.adminUsers = adminUsers;
 	}
 	

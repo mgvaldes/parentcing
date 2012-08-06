@@ -138,7 +138,7 @@ public class ParentRegisterResource {
 		pcuser.setPassword(encrypted_pass);
 		pcuser.setSmartphones(new ArrayList<Key>()); //must be added from child app
 		pcuser.setUsername(ut.getUsername());
-
+		
 		logger.info("[Parent Register] Persisting new user in datastore");
 		try {
 			pm.makePersistent(pcuser);

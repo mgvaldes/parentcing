@@ -29,6 +29,10 @@ import com.ing3nia.parentalcontrol.client.views.async.AddTicketCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.async.UserTicketListCallbackHandler;
 
 public class NewTicketView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "newTicketContent";
+	
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * new admin user view.
@@ -111,7 +115,7 @@ public class NewTicketView {
 		viewContent.add(subjectTextBox);
 		viewContent.add(commentLabel);
 		viewContent.add(commentTextArea);
-		
+		viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		
 		DOM.setElementProperty(saveButton.getElement(), "id", "saveNewTicketView");
 		saveButton.addClickHandler(new ClickHandler() {

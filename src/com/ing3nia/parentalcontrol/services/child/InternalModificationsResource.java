@@ -347,6 +347,76 @@ public class InternalModificationsResource {
 				internalModsModel.setModification(new ModificationModel());
 			}
 
+			//AGREGANDO CONTACTOS NUEVOS A LA LISTA DE CONTACTOS
+
+			if (internalModsModel.getModification().getActiveContacts() == null) {
+				internalModsModel.getModification().setActiveContacts(
+						new ArrayList<SimpleContactModel>());
+			}
+			
+			logger.info("[Internal Modifications Service - Cache Version] Adding active contacts");
+			
+			
+			// ------------------------------------------------------------
+			// Contact is not active and neither inactive. Adding
+			// new
+			// contact to smartphone's active contact list.
+			// ------------------------------------------------------------
+			
+			PCPhone phone;
+			ArrayList<PhoneModel> phones;
+			ArrayList<Key> savedActiveContacts = savedSmartphone.getActiveContacts();
+			ArrayList<SimpleContactModel> newSimpleActiveContacts = new ArrayList<SimpleContactModel>();
+			
+			for (SimpleContactModel mc : internalModsModel.getModification()
+					.getActiveContacts()) {
+				phones = mc.getPhones();
+
+				for (PhoneModel p : phones) {
+					phone = new PCPhone();
+					phone.setType(p.getType());
+					phone.setPhoneNumber(p.getPhoneNumber());
+					pm.makePersistent(phone);
+
+					PCSimpleContact newContact = new PCSimpleContact(
+							mc.getFirstName(), mc.getLastName(), phone.getKey());
+
+					pm.makePersistent(newContact);
+
+					savedActiveContacts.add(newContact.getKey());
+
+					SimpleContactModel newCacheContact = new SimpleContactModel();
+					newCacheContact.setFirstName(mc.getFirstName());
+					newCacheContact.setLastName(mc.getLastName());
+					newCacheContact.setKeyId(KeyFactory.keyToString(newContact.getKey()));					
+
+					logger.info("Creating new contact with attributes: "+newCacheContact.getKeyId()+" "+newCacheContact.getFirstName());
+					
+					PhoneModel newPhone = new PhoneModel(p.getType(),
+							p.getPhoneNumber());
+
+					newCacheContact.setPhones(new ArrayList<PhoneModel>());
+					newCacheContact.getPhones().add(newPhone);
+
+					logger.info("Adding contact with id: "+ newContact.getKey()+" "+newCacheContact.getKeyId()+" "+KeyFactory.keyToString(newContact.getKey())+" "+newContact.getFirstName());
+					newSimpleActiveContacts.add(newCacheContact);
+				}
+			}
+	
+			
+			logger.info("Getting contacts from cache: "+KeyFactory.keyToString(smartphoneKey)+SmartphoneCacheParams.ACTIVE_CONTACTS);
+			IdentifiableValue cacheIdentActiveContacts = (IdentifiableValue) syncCache.getIdentifiable(KeyFactory.keyToString(smartphoneKey)+SmartphoneCacheParams.ACTIVE_CONTACTS);
+			if(cacheIdentActiveContacts !=null){
+				logger.info("Adding new Active Contacts to Cache");
+				ArrayList<SimpleContactModel> simpleActiveContacts = (ArrayList<SimpleContactModel>)cacheIdentActiveContacts.getValue();
+				simpleActiveContacts.addAll(newSimpleActiveContacts);
+				WriteToCache.writeSmartphoneActiveContactsToCache(KeyFactory.keyToString(smartphoneKey), simpleActiveContacts);				
+				//THis is NOT done because all the contacts are active
+				//cacheModification.getActiveContacts().addAll(newSimpleActiveContacts);
+			}
+			
+			//COMENTANDO TODO ESTE CODIGO PARA EVITAR EL CHEQUEO DE ADICION Y REMOCION DE CONTACTOS POR PARTE DEL HIJO
+			/*
 			logger.info("[Internal Modifications Service - Cache Version] Checking Added and Deleted contacts ");
 
 			if (internalModsModel.getModification().getActiveContacts() == null) {
@@ -563,7 +633,8 @@ public class InternalModificationsResource {
 			} else {
 				logger.info("[Internal Modifications Service - Cache Version] No emergency contact present");
 			}
-
+			*/
+			
 			pm.close();
 
 			WriteToCache.writeSmartphoneModificationToCache(
@@ -1005,8 +1076,7 @@ public class InternalModificationsResource {
 
 			logger.info("[Internal Modifications Service] Getting modification from from saved smartphone");
 			Key modificationKey = savedSmartphone.getModification();
-			PCModification modification = pm.getObjectById(
-					PCModification.class, modificationKey);
+			PCModification modification = pm.getObjectById(PCModification.class, modificationKey);
 
 			if (modification == null) {
 				logger.info("[Internal Modifications Service] Smartphone modification is null. Initializing smartphone modification.");

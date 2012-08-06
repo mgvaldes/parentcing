@@ -19,7 +19,11 @@ import com.google.gwt.maps.client.geocode.LocationCallback;
 import com.google.gwt.maps.client.geocode.Placemark;
 import com.google.gwt.maps.client.geocode.Waypoint;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.geom.Size;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.Polyline;
 import com.google.gwt.user.client.Window;
@@ -33,9 +37,13 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
 import com.ing3nia.parentalcontrol.client.views.async.DeviceRouteLocationCallbackHandler;
 
 public class DeviceDailyRouteView {
+	
+	
+	public static String VIEW_CONTENT_CLASSNAME = "deviceDailyRouteContent";
 	
 	PCBaseUIBinder baseBinder;
 	
@@ -74,6 +82,7 @@ public class DeviceDailyRouteView {
 		this.centerContent.setStyleName("mapCenterContent");
 		this.baseViewHandler = baseViewHandler;
 		viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		deviceRoute = new ArrayList<GeoPtModel>();
 		deviceRouteNames = new ArrayList<String>();
 		this.routePanelBody = routePanelBody;
@@ -104,6 +113,21 @@ public class DeviceDailyRouteView {
 		    
 		    Directions.loadFromWaypoints(waypoints, opts);
 		    
+		    /*
+		    for (GeoPtModel devLoc : deviceLocations) {
+		    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
+		    	
+		    	//TODO Test setting device image
+		    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerImageURL(deviceCount));
+		    	icon.setIconSize(Size.newInstance(20, 34));
+		    	MarkerOptions options = MarkerOptions.newInstance();
+		    	options.setIcon(icon);
+		    
+		    	  	
+		    	this.map.addOverlay(new Marker(deviceLoc,options));
+		    	deviceCount++;
+		    }
+		    */
 		    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PCT);
 		    dock.setStyleName("mapPanel");
 		    dock.addNorth(this.map, 100);
@@ -133,8 +157,15 @@ public class DeviceDailyRouteView {
 
 	    LatLng[] locationArray = new LatLng[deviceRoute.size()];
 	    int locCounter = 0;
-	    
 
+	    //filling route panel with default label
+		for (GeoPtModel devLoc : deviceRoute) {
+			Label pointLabel = new Label("loading address");
+			pointLabel.setStyleName("routeAddressLabel");
+			this.routePanelBody.add(pointLabel);
+		}
+	    
+	    int pointWidgetIndex = 0;
 		for (GeoPtModel devLoc : deviceRoute) {
 
 			locationArray[locCounter] = LatLng.newInstance(
@@ -148,21 +179,47 @@ public class DeviceDailyRouteView {
 
 			DeviceRouteLocationCallbackHandler locationCallback = new DeviceRouteLocationCallbackHandler(
 					baseViewHandler.getMenuSetter().getParentSmartphoneButton(),
-					this.routePanelBody);
+					this.routePanelBody, pointWidgetIndex);
+			
 			geocoder.getLocations(deviceLoc, locationCallback);
+			pointWidgetIndex++;
 		}
 
+		int deviceCount = 0;
+		for(GeoPtModel devLoc : deviceRoute){
+			deviceLoc = LatLng.newInstance(devLoc.getLatitude(),
+					devLoc.getLongitude());
+	    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerImageURL(deviceCount));
+	    	icon.setIconSize(Size.newInstance(20, 34));
+	    	MarkerOptions options = MarkerOptions.newInstance();
+	    	options.setIcon(icon);
+	    	this.map.addOverlay(new Marker(deviceLoc,options));	
+	    	
+	    	deviceCount++;    	
+	    	
+		}
+		
 	    
 	    //Polyline polyline = new Polyline(locationArray);
 	    //map.addOverlay(polyline);
 
+		/*
 	    Waypoint[] waypoints = new Waypoint[locationArray.length];
 	    int i=0;
 	    for(LatLng latlng: locationArray){
 	    	waypoints[i] = new Waypoint(latlng);
 	    	i++;
 	    }
-	    loadDirectionsRoute(waypoints);
+	    loadDirectionsRoute(waypoints);*/
+		
+		
+		// NEW for no Directions Route
+	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PCT);
+	    dock.setStyleName("mapPanel");
+	    dock.addNorth(this.map, 100);
+	    
+	    this.viewContent.add(dock);
+		this.centerContent.add(this.viewContent);
 	}
 	
 

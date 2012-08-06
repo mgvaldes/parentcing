@@ -16,6 +16,10 @@ public class CheckAdminUserServiceImpl extends RemoteServiceServlet implements C
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger(CheckAdminUserServiceImpl.class.getName());
 	
+	public String NEW_WS = "new";
+	public String OLD_WS = "old";
+	public String ACTUAL = NEW_WS;
+	
 	public CheckAdminUserServiceImpl() {
 		//logger.addHandler(new ConsoleHandler());
 	}

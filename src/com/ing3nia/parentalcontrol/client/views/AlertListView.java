@@ -30,6 +30,9 @@ import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
 
 public class AlertListView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "alertListContent";	
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * alert list view.
@@ -61,6 +64,7 @@ public class AlertListView {
 		viewContent = new HTMLPanel("");
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.alerts = alertList;
 		this.centerContent.clear();
 		

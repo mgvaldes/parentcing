@@ -161,7 +161,9 @@ public class ParentSmartphoneGeneral {
 	    	userKey = KeyFactory.stringToKey(sessionCacheModel.getUserModel().getKey());
 	    }
 	    
-	    
+	   
+	    logger.info("[Parent Smartphone General] Trying to get usermodel from cache");
+	   
 	    ArrayList<String> userSmartphonesKeyList = new ArrayList<String>();
 	    
 	    if (userCacheModel == null) {

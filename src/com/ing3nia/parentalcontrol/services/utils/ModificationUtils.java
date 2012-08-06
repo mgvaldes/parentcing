@@ -789,6 +789,10 @@ public class ModificationUtils {
 		logger.info("[ParentModifications - Cache Version] Adding properties modifications size: " + properties.size());
 		PropertyModel auxProperty;
 		
+		ArrayList<PropertyModel> propertyCacheList = null;
+		IdentifiableValue ident = syncCache.getIdentifiable(smartphoneKey+ SmartphoneCacheParams.PROPERTIES);
+		ArrayList<PropertyModel> cachePropertyList = (ArrayList<PropertyModel>)ident.getValue();
+		
 		for (PropertyModel propmodel : properties) {
 			PCProperty property;
 			
@@ -806,8 +810,19 @@ public class ModificationUtils {
 			
 			pcModProperties.add(property.getKey());
 			cacheModProperties.add(auxProperty);
+			
+			if (cachePropertyList != null) {
+				for (PropertyModel cacheProp : cachePropertyList) {
+					if (cacheProp.getKeyId().equals(propmodel.getKeyId())) {
+						cacheProp.setValue(propmodel.getValue());
+					}
+				}
+			}
+			
 //			PropertyModelUtils.addProperty(pm, cacheModProperties, property.getKey());
 		}
+		
+		
 		
 		// parsing rule modifications
 		logger.info("[ParentModifications - Cache Version] Adding rules modifications");
@@ -898,8 +913,7 @@ public class ModificationUtils {
 			if (ruleModel.getKeyId() == null) {
 				logger.info("[ParentModifications - Cache Version] Creating Rule in Datastore and adding to cache");
 				pm.makePersistent(rule);
-				pcsmartphone.getRules().add(rule.getKey());
-				
+				pcsmartphone.getRules().add(rule.getKey());	
 				
 				auxRule = RuleModelUtils.convertToRuleModel(rule);
 				cacheRules.add(auxRule);
@@ -949,6 +963,10 @@ public class ModificationUtils {
 		WriteToCache.writeSmartphoneAddedEmergencyNumbersToCache(cacheAddedEmergencyNums, smartphoneKey);
 		WriteToCache.writeSmartphoneDeletedEmergencyNumbersToCache(cacheDeletedEmergencyNums, smartphoneKey);
 		WriteToCache.writeSmartphoneRulesToCache(cacheRules, smartphoneKey);	
+		
+		if(cachePropertyList!=null){
+			WriteToCache.writeSmartphonePropertiesModelToCache(smartphoneKey, cachePropertyList);
+		}
 		
 //		pcsmartphone.setModification(pcmodification);
 		//pm.makePersistent(pcsmartphone);

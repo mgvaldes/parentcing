@@ -36,6 +36,9 @@ import com.ing3nia.parentalcontrol.client.views.async.SaveSmartphoneModification
 
 
 public class DeviceSettingsView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "deviceSettingsContent";
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * device settings view.
@@ -150,6 +153,7 @@ public class DeviceSettingsView {
 		this.cookieId = cookieId;
 		
 		deviceSettingsContent = new HTMLPanel("");
+		this.deviceSettingsContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		deviceSettingsLabel = new Label("Device Settings:");
 		deviceNameLabel = new Label("Device Name:");
 		deviceNameTextBox = new TextBox();

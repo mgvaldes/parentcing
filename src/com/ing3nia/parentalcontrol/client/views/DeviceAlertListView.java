@@ -28,6 +28,10 @@ import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 
 
 public class DeviceAlertListView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "deviceAlertListContent";
+	
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * alert list view.
@@ -59,6 +63,7 @@ public class DeviceAlertListView {
 		this.centerContent = this.baseView.getBaseBinder().getCenterContent();
 		this.centerContent.setStyleName("centerContent");
 		viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.alertTable = new CellTable<AlertModel>(10);
 		this.viewContent = new HTMLPanel("");
 		this.alerts = alertList;

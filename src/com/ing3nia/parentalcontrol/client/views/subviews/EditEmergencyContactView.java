@@ -20,6 +20,10 @@ import com.ing3nia.parentalcontrol.client.views.async.EditEmergencyContactCallBa
 
 public class EditEmergencyContactView {
 
+
+	public static String VIEW_CONTENT_CLASSNAME = "editEmergencyContactContent";
+	
+	
 	/**
 	 * Center Panel containing all the widgets of the new ticket details view.
 	 */
@@ -80,6 +84,7 @@ public class EditEmergencyContactView {
 		this.saveEmergencyContact.addClickHandler(emergencyClickHandler);
 		
 		this.addEmergencyContactPanel = new HTMLPanel("");
+		this.addEmergencyContactPanel.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.addEmergencyContactPanel.add(this.countryLabel);
 		this.addEmergencyContactPanel.add(this.countryListBox);
 		this.addEmergencyContactPanel.add(this.phoneNumLabel);

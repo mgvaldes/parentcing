@@ -24,6 +24,8 @@ import com.ing3nia.parentalcontrol.client.rpc.EditAdminUserServiceAsync;
 
 public class EditAdminUserView {
 
+	public static String VIEW_CONTENT_CLASSNAME = "editAdminUserContent";
+	
 	BaseViewHandler baseView;
 	
 	/**
@@ -100,7 +102,8 @@ public class EditAdminUserView {
 		
 		//initializing content
 		this.centerContent.clear();
-		this.viewContent.setStylePrimaryName(NewAdminUserViewClassName.NewAdminUserBlock.getClassname());
+		//this.viewContent.setStylePrimaryName(NewAdminUserViewClassName.NewAdminUserBlock.getClassname());
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		centerContent.add(viewContent);
 	}
 	
