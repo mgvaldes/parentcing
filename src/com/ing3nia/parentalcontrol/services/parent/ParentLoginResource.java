@@ -22,13 +22,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ing3nia.parentalcontrol.client.models.UserModel;
-import com.ing3nia.parentalcontrol.client.models.cache.SessionCacheModel;
-import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheModel;
-import com.ing3nia.parentalcontrol.client.models.cache.SmartphoneCacheParams;
 import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.client.utils.EncryptionUtils;
 import com.ing3nia.parentalcontrol.models.PCSession;
-import com.ing3nia.parentalcontrol.models.PCSmartphone;
 import com.ing3nia.parentalcontrol.models.PCUser;
 import com.ing3nia.parentalcontrol.models.utils.WSStatus;
 import com.ing3nia.parentalcontrol.services.exceptions.EncodingException;
@@ -250,7 +246,13 @@ public class ParentLoginResource {
 		String pass_param = null;
 		try {
 			logger.info("[Parent Login] Encrypting password in MD5");
-			pass_param = EncryptionUtils.toMD5(ut.getPass());
+			
+			if ((ut.getMd5() != null) && (ut.getMd5().equals("true"))) {
+				pass_param = ut.getPass();
+			}
+			else {
+				pass_param = EncryptionUtils.toMD5(ut.getPass());
+			}
 		} catch (EncodingException e1) {
 			logger.severe("[Parent Login] An error occurred when encrypting the supplied password");
 			rbuilder = Response.ok(WSStatus.INVALID_PASSWORD_DATA.getStatusAsJson().toString(), MediaType.APPLICATION_JSON);

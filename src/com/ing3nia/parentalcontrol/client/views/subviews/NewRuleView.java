@@ -13,6 +13,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -102,6 +103,11 @@ public class NewRuleView {
 	 * Disabled functionalities list.
 	 */
 	private ArrayList<String> disabledFunctionalities;
+	
+	/**
+	 * Checkbox para especificar regla indefinida
+	 */
+	private CheckBox indefiniteRule;
 	
 	/**
 	 * Panel to group date widgets
@@ -258,6 +264,8 @@ public class NewRuleView {
 		this.disabledFunctionalitiesTable = new FlexTable();
 		this.disabledFunctionalities = new ArrayList<String>();
 		
+		this.indefiniteRule = new CheckBox("Indefinite rule");
+		
 		this.datePanel = new HTMLPanel("");
 		this.fromDateLabel = new Label("Date:");
 		//this.fromDateTextBox = new TextBox();
@@ -329,6 +337,8 @@ public class NewRuleView {
 		
 		this.newRuleContent.add(this.disabledFunctionalitiesTable);
 		
+		this.newRuleContent.add(this.indefiniteRule);
+		
 		this.datePanel.add(this.fromDateLabel);
 		
 		this.fromDatePicker.setFormat(new DateBox.DefaultFormat(formatter));
@@ -344,8 +354,8 @@ public class NewRuleView {
 		this.fromTimePanel.add(this.hourTextBoxF);
 		this.minuteTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxF, true, true));
 		this.fromTimePanel.add(this.minuteTextBoxF);
-		this.secondsTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxF, true, false));
-		this.fromTimePanel.add(this.secondsTextBoxF);		
+//		this.secondsTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxF, true, false));
+//		this.fromTimePanel.add(this.secondsTextBoxF);		
 		this.fromTimePanel.add(this.ampmListBoxF);
 		this.newRuleContent.add(this.fromTimePanel);
 		
@@ -354,8 +364,8 @@ public class NewRuleView {
 		this.tillTimePanel.add(this.hourTextBoxT);
 		this.minuteTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxT, false, true));
 		this.tillTimePanel.add(this.minuteTextBoxT);
-		this.secondsTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxT, false, false));
-		this.tillTimePanel.add(this.secondsTextBoxT);
+//		this.secondsTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.secondsTextBoxT, false, false));
+//		this.tillTimePanel.add(this.secondsTextBoxT);
 		this.tillTimePanel.add(this.ampmListBoxT);
 		this.newRuleContent.add(this.tillTimePanel);
 		
@@ -434,12 +444,27 @@ public class NewRuleView {
 			
 			DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");			
 			newRule.setCreationDate(formatter.format(new Date()));
-						
-			String auxDate = fromDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxF.getText()) + ":" + addDigit(minuteTextBoxF.getText()) + ":" + addDigit(secondsTextBoxF.getText()) + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
-			newRule.setStartDate(auxDate);
 			
-			auxDate = toDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxT.getText()) + ":" + addDigit(minuteTextBoxT.getText()) + ":" + addDigit(secondsTextBoxT.getText()) + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
-			newRule.setEndDate(auxDate);
+			String auxDate = "";
+			
+			if (this.indefiniteRule.getValue()) {
+				formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
+				String now = formatter.format(new Date());
+				
+				auxDate = now + " 01:01:01 AM";
+				
+				newRule.setStartDate(auxDate);
+				newRule.setEndDate(auxDate);
+			}
+			else {
+//				String auxDate = fromDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxF.getText()) + ":" + addDigit(minuteTextBoxF.getText()) + ":" + addDigit(secondsTextBoxF.getText()) + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
+				auxDate = fromDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxF.getText()) + ":" + addDigit(minuteTextBoxF.getText()) + ":" + "00" + " " + ampmListBoxF.getItemText(ampmListBoxF.getSelectedIndex());
+				newRule.setStartDate(auxDate);
+				
+//				auxDate = toDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxT.getText()) + ":" + addDigit(minuteTextBoxT.getText()) + ":" + addDigit(secondsTextBoxT.getText()) + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());
+				auxDate = toDatePicker.getTextBox().getText() + " " + addDigit(hourTextBoxT.getText()) + ":" + addDigit(minuteTextBoxT.getText()) + ":" + "00" + " " + ampmListBoxT.getItemText(ampmListBoxT.getSelectedIndex());			
+				newRule.setEndDate(auxDate);
+			}
 			
 			newRule.setType(ruleTypeListBox.getSelectedIndex());
 			
