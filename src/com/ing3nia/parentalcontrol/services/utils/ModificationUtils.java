@@ -13,7 +13,6 @@ import javax.jdo.Query;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.memcache.MemcacheService;
-import com.google.appengine.api.memcache.MemcacheServiceFactory;
 import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gson.Gson;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
@@ -913,6 +912,7 @@ public class ModificationUtils {
 			
 			if (!found) {
 				pcModRules.add(rule.getKey());
+				cacheModRules.add(auxRule);
 			}
 			
 			cacheRulesSize = cacheRules.size();
