@@ -30,8 +30,8 @@ public class AddRuleCallbackHandler implements AsyncCallback<String> {
 	}
 
 	public void onSuccess(String result) {
-		//if (result != null) {
-			//newRule.setKeyId(result); //NOT ANYMORE
+		if (result != null) {
+			newRule.setKeyId(result); //NOT ANYMORE
 			
 			ModificationModel auxMod = new ModificationModel();
 			ArrayList<RuleModel> rules = new ArrayList<RuleModel>();
@@ -42,10 +42,10 @@ public class AddRuleCallbackHandler implements AsyncCallback<String> {
 			SaveSmartphoneModificationsCallbackHandler saveModCallback = new SaveSmartphoneModificationsCallbackHandler(baseView, newRule, 0);
 			SaveSmartphoneModificationsServiceAsync saveModService = GWT.create(SaveSmartphoneModificationsService.class);
 			saveModService.saveSmartphoneModifications(this.cid, this.smartKey, auxMod, saveModCallback);
-		//} 
-		/*else {
+		} 
+		else {
 			baseView.getBaseBinder().getNotice().setText("An error occured. The new rule couldn't be created.");
 			baseView.getBaseBinder().getCenterContent().add(baseView.getBaseBinder().getNotice());
-		}*/
+		}
 	}
 }

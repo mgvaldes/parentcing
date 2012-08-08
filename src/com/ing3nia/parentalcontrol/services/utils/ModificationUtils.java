@@ -907,36 +907,36 @@ public class ModificationUtils {
 			
 			auxRule = RuleModelUtils.convertToRuleModel(rule);
 			
-			if (ruleModel.getKeyId() == null) {
-				pm.makePersistent(rule);
-
-/* MERGE COMMENT
-				pcsmartphone.getRules().add(rule.getKey());	
-				
-				auxRule = RuleModelUtils.convertToRuleModel(rule);
-				cacheRules.add(auxRule);
-			}else{
-				logger.info("[ParentModifications - Cache Version] Rule was not new. Adding Rule EDITION: "+ruleModel.getKeyId());
-				boolean foundRule = false;
-				for(RuleModel cacheRuleModel : cacheRules){
-					if(cacheRuleModel.getKeyId().equals(ruleModel.getKeyId())){
-						logger.info("[ParentModifications - Cache Version] Rule found in cache, editing");
-						
-						cacheRuleModel.setCreationDate(ruleModel.getCreationDate());
-						cacheRuleModel.setDisabledFunctionalities(ruleModel.getDisabledFunctionalities());
-						cacheRuleModel.setEndDate(ruleModel.getEndDate());
-						cacheRuleModel.setKeyId(ruleModel.getKeyId());
-						cacheRuleModel.setName(ruleModel.getName());
-						cacheRuleModel.setStartDate(ruleModel.getStartDate());
-						cacheRuleModel.setType(ruleModel.getType());
-						foundRule = true;
-					}
-					*/
-				pcsmartphone.getRules().add(rule.getKey());
-				
-				auxRule.setKeyId(KeyFactory.keyToString(rule.getKey()));
-				//auxRule = RuleModelUtils.convertToRuleModel(rule);				
-			}
+//			if (ruleModel.getKeyId() == null) {
+//				pm.makePersistent(rule);
+//
+///* MERGE COMMENT
+//				pcsmartphone.getRules().add(rule.getKey());	
+//				
+//				auxRule = RuleModelUtils.convertToRuleModel(rule);
+//				cacheRules.add(auxRule);
+//			}else{
+//				logger.info("[ParentModifications - Cache Version] Rule was not new. Adding Rule EDITION: "+ruleModel.getKeyId());
+//				boolean foundRule = false;
+//				for(RuleModel cacheRuleModel : cacheRules){
+//					if(cacheRuleModel.getKeyId().equals(ruleModel.getKeyId())){
+//						logger.info("[ParentModifications - Cache Version] Rule found in cache, editing");
+//						
+//						cacheRuleModel.setCreationDate(ruleModel.getCreationDate());
+//						cacheRuleModel.setDisabledFunctionalities(ruleModel.getDisabledFunctionalities());
+//						cacheRuleModel.setEndDate(ruleModel.getEndDate());
+//						cacheRuleModel.setKeyId(ruleModel.getKeyId());
+//						cacheRuleModel.setName(ruleModel.getName());
+//						cacheRuleModel.setStartDate(ruleModel.getStartDate());
+//						cacheRuleModel.setType(ruleModel.getType());
+//						foundRule = true;
+//					}
+//					*/
+//				pcsmartphone.getRules().add(rule.getKey());
+//				
+//				auxRule.setKeyId(KeyFactory.keyToString(rule.getKey()));
+//				//auxRule = RuleModelUtils.convertToRuleModel(rule);				
+//			}
 			
 			int cacheRulesSize = pcModRules.size();
 			boolean found = false;
