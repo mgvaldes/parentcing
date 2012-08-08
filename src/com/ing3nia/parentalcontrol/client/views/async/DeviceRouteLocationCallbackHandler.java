@@ -1,6 +1,9 @@
 package com.ing3nia.parentalcontrol.client.views.async;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LocationCallback;
 import com.google.gwt.maps.client.geocode.Placemark;
 import com.google.gwt.user.client.Window;
@@ -13,18 +16,18 @@ public class DeviceRouteLocationCallbackHandler implements LocationCallback{
 
 	Button smpButton;
 	HTMLPanel scrollPanelBody;
+	int pointIndex;
 	
-	public DeviceRouteLocationCallbackHandler(Button smpButton, HTMLPanel scrollPanelBody){
+	public DeviceRouteLocationCallbackHandler(Button smpButton, HTMLPanel scrollPanelBody, int pointIndex){
 		this.smpButton = smpButton;
 		this.scrollPanelBody = scrollPanelBody;
-		
+		this.pointIndex = pointIndex;
 	}
 	
 	@Override
 	public void onFailure(int statusCode) {
-		Label l = new Label("address could not be loaded");
-		l.setStyleName("routeAddressLabel");
-		scrollPanelBody.add(l);	
+		 Label l = (Label)scrollPanelBody.getWidget(pointIndex);
+		 l.setText("address could not be loaded"); 
 	}
 
 	@Override
@@ -70,8 +73,13 @@ public class DeviceRouteLocationCallbackHandler implements LocationCallback{
 				}
 			}
 		}
-		Label l = new Label(routeName);
-		l.setStyleName("routeAddressLabel");
-		scrollPanelBody.add(l);	
+		//Label l = new Label(routeName);
+		//l.setStyleName("routeAddressLabel");
+		
+		//.setTitle(routeName);
+
+		 Label l = (Label)scrollPanelBody.getWidget(pointIndex);
+		 l.setText(routeName);
+		//scrollPanelBody.addAndReplaceElement(l, scrollPanelBody.getWidget(pointIndex).getElement());
 	}
 }

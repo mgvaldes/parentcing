@@ -151,6 +151,7 @@ public class ContactModelUtils {
 		SimpleContactModel simpleContact = new SimpleContactModel();
 		simpleContact.setFirstName(contact.getFirstName());
 		simpleContact.setLastName(contact.getLastName());
+		simpleContact.setKeyId(contactKey);
 		ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
 		
 		PhoneModel phoneModel = new PhoneModel();

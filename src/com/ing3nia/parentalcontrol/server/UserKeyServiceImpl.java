@@ -65,6 +65,7 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 		IdentifiableValue ident = syncCache.getIdentifiable(UserCacheParams.USER + username + "-"+ encryptedPass);
 
+		
 		if (ident == null) {
 			logger.info("User Key] User: " + username+ " "+encryptedPass+" not in cache. Getting from datastore");
 
@@ -72,11 +73,20 @@ public class UserKeyServiceImpl extends RemoteServiceServlet implements UserKeyS
 				pcuser = SessionUtils.getPCUser(pm, username,
 						encryptedPass);
 
-				if (pcuser != null) {
+				
+				IdentifiableValue ident2 = syncCache.getIdentifiable(UserCacheParams.USERKEY + KeyFactory.keyToString(pcuser.getKey()));
+				if(ident2==null & pcuser!=null){
+					logger.info("User not in cache, neither by Usr/pass nor Key");
 					userKey = KeyFactory.keyToString(pcuser.getKey());
 					logger.info("Got Key from DS: " + userKey);
 					logger.info("[User Key] Writing user: " + username+ " to cache");
 					WriteToCache.writeUserToCache(pcuser);
+				}
+				
+				if(ident2!=null && pcuser!=null){
+					UserModel userModelCache = (UserModel)ident2.getValue();
+					userKey = userModelCache.getKey();
+					logger.info("Got Updated User by USERKEY: " + userKey);
 				}
 				
 			} catch (SessionQueryException ex) {

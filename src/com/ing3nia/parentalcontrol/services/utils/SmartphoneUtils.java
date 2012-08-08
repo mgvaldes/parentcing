@@ -557,9 +557,11 @@ public class SmartphoneUtils {
 		}
 		
 		if (activeContacts != null) {
-			logger.info("[Smartphone Details - Cache] Iterating cache active contacts");
+			logger.info("[Smartphone Details - Cache] Iterating cache active contacts, size: "+activeContacts.size());
 			for(SimpleContactModel simpleContact : activeContacts){
+				//logger.info("Iterating Contact");
 				JsonObject contactJson = new JsonObject();
+				//logger.info("Getting contact with id: "+simpleContact.getKeyId());
 				contactJson.addProperty("id", simpleContact.getKeyId());
 				contactJson.addProperty("fname", simpleContact.getFirstName());
 				contactJson.addProperty("lname", simpleContact.getLastName());
@@ -623,6 +625,7 @@ public class SmartphoneUtils {
 				logger.info("[Smartphone Details - Cache] Writing to cache active contact list");
 				WriteToCache.writeSmartphoneActiveContactsToCache(smid, activeContactsDSList, activeContactsPhoneList);
 		}
+		
 		detailsJson.add("active_cts", activeArray);
 		
 		//Obtaining and parsing added emergency numbers

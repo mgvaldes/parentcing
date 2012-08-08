@@ -17,21 +17,30 @@ import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.datepicker.client.DateBox;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.EnableFunctionalityClickHandler;
+import com.ing3nia.parentalcontrol.client.handlers.click.OnIndefiniteRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.SaveRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
 import com.ing3nia.parentalcontrol.client.rpc.AddRuleServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
+import com.ing3nia.parentalcontrol.client.views.LoadingView;
 import com.ing3nia.parentalcontrol.client.views.async.AddRuleCallbackHandler;
 
 public class NewRuleView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "addRuleContent";
+	public static String DATE_RULE = "dateRuleContent";
+	public static String FROM_TIME_RULE = "fromTimeRuleContent";
+	public static String TILL_TIME_RULE ="tillTimeRuleContent";
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * new ticket details view.
@@ -243,8 +252,10 @@ public class NewRuleView {
 		this.smartphone = smartphone;
 		
 		this.newRuleContent = new HTMLPanel("");
+		this.newRuleContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 				
 		this.newRuleLabel = new Label("New Rule:");
+		this.newRuleLabel.setStyleName("sec-title", true);
 		
 		this.ruleTypePanel = new HTMLPanel("");
 		this.ruleTypeLabel = new Label("Rule Type:");		
@@ -263,8 +274,6 @@ public class NewRuleView {
 		this.disabledFunctionalityAddButton.setStyleName("disableButton");
 		this.disabledFunctionalitiesTable = new FlexTable();
 		this.disabledFunctionalities = new ArrayList<String>();
-		
-		this.indefiniteRule = new CheckBox("Indefinite rule");
 		
 		this.datePanel = new HTMLPanel("");
 		this.fromDateLabel = new Label("Date:");
@@ -299,6 +308,9 @@ public class NewRuleView {
 		this.saveButton.setStyleName("saveButton");
 		this.clearButton = new Button("Clear");
 		this.clearButton.setStyleName("clearButton");
+		
+		this.indefiniteRule = new CheckBox("Indefinite rule");
+		this.indefiniteRule.addClickHandler(new OnIndefiniteRuleClickHandler(this.fromDatePicker, this.toDatePicker, this.hourTextBoxF, this.minuteTextBoxF, this.secondsTextBoxF, this.hourTextBoxT, this.minuteTextBoxT, this.secondsTextBoxT));	
 		
 		this.centerContent.clear();
 		//initNewRuleView();
@@ -347,9 +359,11 @@ public class NewRuleView {
 		
 		this.toDatePicker.setFormat(new DateBox.DefaultFormat(formatter));
 		this.datePanel.add(this.toDatePicker);
+		this.datePanel.setStyleName(DATE_RULE);
 		this.newRuleContent.add(this.datePanel);
 		
 		this.fromTimePanel.add(this.fromTimeLabel);
+		this.fromTimePanel.setStyleName(FROM_TIME_RULE);
 		this.hourTextBoxF.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxF, true));
 		this.fromTimePanel.add(this.hourTextBoxF);
 		this.minuteTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxF, true, true));
@@ -360,6 +374,7 @@ public class NewRuleView {
 		this.newRuleContent.add(this.fromTimePanel);
 		
 		this.tillTimePanel.add(this.tillTimeLabel);
+		this.tillTimePanel.setStyleName(TILL_TIME_RULE);
 		this.hourTextBoxT.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxT, false));
 		this.tillTimePanel.add(this.hourTextBoxT);
 		this.minuteTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxT, false, true));
@@ -467,6 +482,10 @@ public class NewRuleView {
 			}
 			
 			newRule.setType(ruleTypeListBox.getSelectedIndex());
+			
+			Image loadingImage = new Image("/media/images/loading.gif");
+			LoadingView.setLoadingView(baseViewHandler.getBaseBinder(), "Saving Rule", loadingImage);
+			
 			
 			AddRuleCallbackHandler addRuleCallback = new AddRuleCallbackHandler(baseViewHandler, newRule, this.cookieId, this.smartphone.getKeyId());
 			AddRuleServiceAsync addRuleService = GWT.create(AddRuleService.class);

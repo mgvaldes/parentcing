@@ -51,6 +51,10 @@ import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService
 
 public class DeviceContactListView {
 	
+	
+	public static String VIEW_CONTENT_CLASSNAME = "deviceContactListContent";
+	
+	
 	/**
 	 * Handler to control the entire base view interface
 	 */
@@ -124,8 +128,11 @@ public class DeviceContactListView {
 		this.centerContent = baseViewHandler.getBaseBinder().getCenterContent();	
 		this.centerContent.setStyleName("centerContent");
 		this.viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.contactsLabel = new Label("Contacts:");
+		this.contactsLabel.setStyleName("sec-title");
 		this.contactButtonsPanel = new HTMLPanel("");
+		this.contactButtonsPanel.setStyleName("contactButtonsPanel");
 		this.contactsButton = new Button("Contacts");
 		DOM.setElementProperty(contactsButton.getElement(), "id", "contactsButton");
 		this.contactsButton.setStyleName("selectedContactButton");

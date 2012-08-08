@@ -34,6 +34,10 @@ public class LoginView {
 	private static final Logger logger = Logger
 	.getLogger(SignInUserCallbackHandler.class.getName());
 	
+	
+	public static String VIEW_CONTENT_CLASSNAME = "loginContent";
+	
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * login view.
@@ -106,6 +110,7 @@ public class LoginView {
 		viewContent.add(rememberMeCheckBox);
 	
 		viewContent.add(signInButton);
+		viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		centerContent.add(viewContent);
 	}
 /*

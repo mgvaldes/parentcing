@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -17,6 +18,9 @@ import com.ing3nia.parentalcontrol.client.views.async.AddEmergencyContactCallBac
 
 public class AddEmergencyContactView {
 
+	public static String VIEW_CONTENT_CLASSNAME = "addEmergencyContactContent";
+	
+	
 	/**
 	 * Center Panel containing all the widgets of the new ticket details view.
 	 */
@@ -28,6 +32,8 @@ public class AddEmergencyContactView {
 	private HTMLPanel newEmergencyContactPanel;
 	private BaseViewHandler baseViewHandler;
 	
+	private Label addEmergencyLabel;
+	
 	private Label countryLabel;
 	private ListBox countryListBox;
 	
@@ -36,6 +42,10 @@ public class AddEmergencyContactView {
 	
 	private Label descriptionLabel;
 	private TextBox descriptionText;
+	
+	private FlowPanel countryFlowPanel;
+	private FlowPanel phoneFlowPanel;
+	private FlowPanel descriptionFlowPanel;
 	
 	private Button saveEmergencyContact;
 
@@ -54,12 +64,17 @@ public class AddEmergencyContactView {
 		
 		this.centerContent.clear();
 		
+		this.addEmergencyLabel = new Label("Add Emergency Contact");
+		
+		this.phoneFlowPanel = new FlowPanel();
 		this.phoneNumLabel = new Label("Phone Number");
 		this.phoneNum = new TextBox();
 		
+		this.descriptionFlowPanel = new FlowPanel();
 		this.descriptionLabel = new Label("Description");
 		this.descriptionText = new TextBox();
 		
+		this.countryFlowPanel = new FlowPanel();
 		this.countryLabel = new Label("Country");
 		this.countryListBox = new ListBox();
 		fillWithCountries(this.countryListBox);
@@ -70,12 +85,22 @@ public class AddEmergencyContactView {
 		this.saveEmergencyContact.addClickHandler(emergencyClickHandler);
 		
 		this.addEmergencyContactPanel = new HTMLPanel("");
-		this.addEmergencyContactPanel.add(this.countryLabel);
-		this.addEmergencyContactPanel.add(this.countryListBox);
-		this.addEmergencyContactPanel.add(this.phoneNumLabel);
-		this.addEmergencyContactPanel.add(this.phoneNum);
-		this.addEmergencyContactPanel.add(this.descriptionLabel);
-		this.addEmergencyContactPanel.add(this.descriptionText);
+		this.addEmergencyContactPanel.add(addEmergencyLabel);
+		this.addEmergencyContactPanel.setStyleName(VIEW_CONTENT_CLASSNAME);
+		this.countryFlowPanel.add(this.countryLabel);
+		this.countryFlowPanel.add(this.countryListBox);
+		this.addEmergencyContactPanel.add(countryFlowPanel);
+		this.countryFlowPanel.setStyleName("countryFlowPanel");
+		
+		this.phoneFlowPanel.add(this.phoneNumLabel);
+		this.phoneFlowPanel.add(this.phoneNum);
+		this.addEmergencyContactPanel.add(phoneFlowPanel);
+		this.phoneFlowPanel.setStyleName("phoneFlowPanel");
+		
+		this.descriptionFlowPanel.add(this.descriptionLabel);
+		this.descriptionFlowPanel.add(this.descriptionText);
+		this.addEmergencyContactPanel.add(this.descriptionFlowPanel);
+		this.descriptionFlowPanel.setStyleName("descriptionFlowPanel");
 		
 		this.addEmergencyContactPanel.add(this.saveEmergencyContact);
 		

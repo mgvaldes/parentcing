@@ -41,43 +41,30 @@ public class CheckAdminUserServiceImpl extends RemoteServiceServlet implements C
 	
 	public Boolean newCheckAdminUser(String username, String password) {
 		Boolean isAdmin = false;
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
 		
-		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		IdentifiableValue ident = syncCache.getIdentifiable(UserCacheParams.ADMIN + username + "-" + password);
-		
-		if (ident == null) {
-			logger.info("[Admin Login] Admin: " + username + " not in cache. Getting from datastore");
+		Query query = pm.newQuery(PCAdmin.class);
+	    query.setFilter("username == username_param && password == pass_param");
+	    query.declareParameters("String username_param, String pass_param");
+	    query.setRange(0, 1);
 
-			PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+	    logger.info("[CheckAdminUserService] Finding admin user by username and password");
+	    
+		try {
+			List<PCAdmin> results = (List<PCAdmin>)query.execute(username, password);
 			
-			Query query = pm.newQuery(PCAdmin.class);
-		    query.setFilter("username == username_param && password == pass_param");
-		    query.declareParameters("String username_param, String pass_param");
-		    query.setRange(0, 1);
-
-		    logger.info("[AdminLoginService] Finding admin user by username and password");
-			try {
-				List<PCAdmin> results = (List<PCAdmin>) query.execute(username, password);
-				
-				if (!results.isEmpty()) {
-					logger.info("[AdminLoginService] Returning found PCAdmin key");
-					
-					WriteToCache.writeAdminUserToCache(results.get(0));					
-				}
-				else{
-					logger.info("[AdminLoginService] No admin user with the username " + username + ", and password " + password + " was found.");
-					isAdmin = false;
-				}
-			} 
-			catch (Exception e) {
-				logger.info("[AdminLoginService] An error ocurred while finding the PCAdmin by username and password "+ e.getMessage());
-				isAdmin = null;
+			if (!results.isEmpty()) {
+				logger.info("[CheckAdminUserService] Found PCAdmin");
+				isAdmin = true;
+			}
+			else{
+				logger.info("[CheckAdminUserService] No admin user with the username " + username + ", and password " + password + " was found.");
+				isAdmin = false;
 			}
 		} 
-		else {
-			logger.info("Admin: " + username + " found in cache.");
-			
-			isAdmin = true;
+		catch (Exception e) {
+			logger.info("[CheckAdminUserService] An error ocurred while finding the PCAdmin by username and password "+ e.getMessage());
+			isAdmin = null;
 		}
 		
 		return isAdmin;

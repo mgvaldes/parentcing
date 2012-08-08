@@ -609,6 +609,7 @@ public class WriteToCache {
 		return rules;
 	}
 	
+
 	public static void addSmartphoneRuleToCache(String smartphoneKey, PCRule pcRule) {
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
 				
@@ -649,8 +650,7 @@ public class WriteToCache {
 			PCPhone phone = pcActiveContactsPhoneList.get(count);
 			PhoneModel phoneModel = new PhoneModel();
 			phoneModel.setPhoneNumber(phone.getPhoneNumber());
-			phoneModel.setType(phone.getType());
-			
+			phoneModel.setType(phone.getType());		
 			
 			ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
 			phones.add(phoneModel);
@@ -792,6 +792,18 @@ public class WriteToCache {
 		syncCache.put(smartphoneKey + SmartphoneCacheParams.ROUTES, cacheRoutes);
 	}
 
+	public static void writeSmartphonePropertiesModelToCache(String smartphoneKey, ArrayList<PropertyModel> cachePropertyList) {
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss a");
+
+
+		logger.info("Setting Property List: " + smartphoneKey
+				+ SmartphoneCacheParams.PROPERTIES + " to cache");
+		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
+		syncCache.put(smartphoneKey + SmartphoneCacheParams.PROPERTIES,
+				cachePropertyList, null);
+	}
+
+	
 	public static void writeSmartphonePropertiesToCache(String smartphoneKey,
 			ArrayList<PCProperty> propertyList) {
 		ArrayList<PropertyModel> cachePropertyList = new ArrayList<PropertyModel>();
@@ -892,9 +904,10 @@ public class WriteToCache {
 		
 		sessionCache.setUserModel(userModel);
 		
-		logger.info("Setting Session in cache: "+UserCacheParams.SESSION+session.getCookieId());
+		logger.info("Setting Session in cache: "+UserCacheParams.SESSION+session.getCookieId()+". User smartphone count: "+sessionCache.getUserModel().getSmartphoneKeys().size());
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(UserCacheParams.SESSION+session.getCookieId(), sessionCache, null);
+		syncCache.put(UserCacheParams.USERKEY+KeyFactory.keyToString(user.getKey()), userModel, null);
 	}
 	
 	public static void writeSessionToCache(PCSession session, UserModel userModel){
@@ -907,9 +920,10 @@ public class WriteToCache {
 		
 		sessionCache.setUserModel(userModel);
 		
-		logger.info("Setting Session in cache: "+UserCacheParams.SESSION+session.getCookieId());
+		logger.info("Setting Session in cache: "+UserCacheParams.SESSION+session.getCookieId()+". User smartphone count: "+sessionCache.getUserModel().getSmartphoneKeys().size());
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(UserCacheParams.SESSION+session.getCookieId(), sessionCache, null);
+		syncCache.put(UserCacheParams.USERKEY+userModel.getKey(), userModel, null);
 	}
 
 	
@@ -931,6 +945,7 @@ public class WriteToCache {
 		logger.info("Setting User in cache: "+UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass()+" number of smartphone: "+userModel.getSmartphoneKeys().size());
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();		
 		syncCache.put(UserCacheParams.USER+userModel.getUsr()+"-"+userModel.getPass(), userModel, null);
+		syncCache.put(UserCacheParams.USERKEY+KeyFactory.keyToString(user.getKey()), userModel, null);
 		
 		return userModel;
 	}

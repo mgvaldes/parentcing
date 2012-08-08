@@ -19,9 +19,14 @@ import com.google.gwt.maps.client.geocode.LocationCallback;
 import com.google.gwt.maps.client.geocode.Placemark;
 import com.google.gwt.maps.client.geocode.Waypoint;
 import com.google.gwt.maps.client.geom.LatLng;
+import com.google.gwt.maps.client.geom.LatLngBounds;
+import com.google.gwt.maps.client.geom.Size;
+import com.google.gwt.maps.client.overlay.Icon;
 import com.google.gwt.maps.client.overlay.Marker;
+import com.google.gwt.maps.client.overlay.MarkerOptions;
 import com.google.gwt.maps.client.overlay.Overlay;
 import com.google.gwt.maps.client.overlay.Polyline;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DockLayoutPanel;
@@ -32,10 +37,16 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.ing3nia.parentalcontrol.client.PCBaseUIBinder;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
+import com.ing3nia.parentalcontrol.client.handlers.utils.ReverseGeocodingTimer;
 import com.ing3nia.parentalcontrol.client.models.GeoPtModel;
+import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
+import com.ing3nia.parentalcontrol.client.utils.PCMapStyle;
 import com.ing3nia.parentalcontrol.client.views.async.DeviceRouteLocationCallbackHandler;
 
 public class DeviceDailyRouteView {
+	
+	
+	public static String VIEW_CONTENT_CLASSNAME = "deviceDailyRouteContent";
 	
 	PCBaseUIBinder baseBinder;
 	
@@ -74,6 +85,7 @@ public class DeviceDailyRouteView {
 		this.centerContent.setStyleName("mapCenterContent");
 		this.baseViewHandler = baseViewHandler;
 		viewContent = new HTMLPanel("");
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		deviceRoute = new ArrayList<GeoPtModel>();
 		deviceRouteNames = new ArrayList<String>();
 		this.routePanelBody = routePanelBody;
@@ -104,6 +116,21 @@ public class DeviceDailyRouteView {
 		    
 		    Directions.loadFromWaypoints(waypoints, opts);
 		    
+		    /*
+		    for (GeoPtModel devLoc : deviceLocations) {
+		    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
+		    	
+		    	//TODO Test setting device image
+		    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerImageURL(deviceCount));
+		    	icon.setIconSize(Size.newInstance(20, 34));
+		    	MarkerOptions options = MarkerOptions.newInstance();
+		    	options.setIcon(icon);
+		    
+		    	  	
+		    	this.map.addOverlay(new Marker(deviceLoc,options));
+		    	deviceCount++;
+		    }
+		    */
 		    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PCT);
 		    dock.setStyleName("mapPanel");
 		    dock.addNorth(this.map, 100);
@@ -133,36 +160,82 @@ public class DeviceDailyRouteView {
 
 	    LatLng[] locationArray = new LatLng[deviceRoute.size()];
 	    int locCounter = 0;
+	    int startIndex = 0;
+	    boolean gotStartIndex = false;
+	    int indexCount = 0;
 	    
-
+		// filling route panel with default label
 		for (GeoPtModel devLoc : deviceRoute) {
-
-			locationArray[locCounter] = LatLng.newInstance(
-					deviceRoute.get(locCounter).getLatitude(),
-					deviceRoute.get(locCounter).getLongitude());
-			locCounter++;
-
-			deviceLoc = LatLng.newInstance(devLoc.getLatitude(),
-					devLoc.getLongitude());
-			// map.addOverlay(new Marker(deviceLoc));
-
-			DeviceRouteLocationCallbackHandler locationCallback = new DeviceRouteLocationCallbackHandler(
-					baseViewHandler.getMenuSetter().getParentSmartphoneButton(),
-					this.routePanelBody);
-			geocoder.getLocations(deviceLoc, locationCallback);
+			Label pointLabel = new Label("loading address");
+			pointLabel.setStyleName("routeAddressLabel");
+			this.routePanelBody.add(pointLabel);
 		}
 
+			int pointWidgetIndex = startIndex;
+			int incrementalGeoTime = 100;
+			
+			//ArrayList<GeoPtModel> deviceSubRoute = (ArrayList<GeoPtModel>) deviceRoute.subList(startIndex, deviceRoute.size());
+			
+			for (GeoPtModel devLoc : deviceRoute) {
+				locationArray[locCounter] = LatLng.newInstance(
+						deviceRoute.get(locCounter).getLatitude(), deviceRoute
+								.get(locCounter).getLongitude());
+				locCounter++;
+
+				deviceLoc = LatLng.newInstance(devLoc.getLatitude(),
+						devLoc.getLongitude());
+				// map.addOverlay(new Marker(deviceLoc));
+
+				DeviceRouteLocationCallbackHandler locationCallback = new DeviceRouteLocationCallbackHandler(
+						baseViewHandler.getMenuSetter()
+								.getParentSmartphoneButton(),
+						this.routePanelBody, pointWidgetIndex);
+
+				ReverseGeocodingTimer geoTimer = new ReverseGeocodingTimer(
+						geocoder, deviceLoc, locationCallback);
+				geoTimer.schedule(incrementalGeoTime);
+
+				// geocoder.getLocations(deviceLoc, locationCallback);
+				pointWidgetIndex++;
+				incrementalGeoTime += 1000;
+			
+		}
+
+		int deviceCount = 0;
+		for(GeoPtModel devLoc : deviceRoute){
+			deviceLoc = LatLng.newInstance(devLoc.getLatitude(),
+					devLoc.getLongitude());
+	    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerImageURL(deviceCount));
+	    	icon.setIconSize(Size.newInstance(20, 34));
+	    	MarkerOptions options = MarkerOptions.newInstance();
+	    	options.setIcon(icon);
+	    	this.map.addOverlay(new Marker(deviceLoc,options));	
+	    	
+	    	deviceCount++;    	
+	    	
+		}
+		
 	    
 	    //Polyline polyline = new Polyline(locationArray);
 	    //map.addOverlay(polyline);
 
+		/*
 	    Waypoint[] waypoints = new Waypoint[locationArray.length];
 	    int i=0;
 	    for(LatLng latlng: locationArray){
 	    	waypoints[i] = new Waypoint(latlng);
 	    	i++;
 	    }
-	    loadDirectionsRoute(waypoints);
+	    loadDirectionsRoute(waypoints);*/
+		
+		
+		// NEW for no Directions Route
+	    final DockLayoutPanel dock = new DockLayoutPanel(Unit.PCT);
+	    dock.setStyleName("mapPanel");
+	    dock.addNorth(this.map, 100);
+	    
+	    this.viewContent.add(dock);
+		this.centerContent.add(this.viewContent);
 	}
 	
 

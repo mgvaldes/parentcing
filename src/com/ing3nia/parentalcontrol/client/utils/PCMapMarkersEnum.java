@@ -26,6 +26,7 @@ public enum PCMapMarkersEnum {
 	V(21,"markerV.png"),
 	W(22,"markerW.png"),
 	X(23,"markerX.png"),
+	Y(24,"markerY.png"),
 	Z(24,"markerZ.png");
 
 	Integer id;

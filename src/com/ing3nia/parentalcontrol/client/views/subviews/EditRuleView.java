@@ -38,6 +38,10 @@ import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView.HourChangeH
 import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView.MinuteSecondsChangeHandler;
 
 public class EditRuleView {
+	
+	public static String VIEW_CONTENT_CLASSNAME = "editRuleContent";
+	
+	
 	/**
 	 * Center Panel containing all the widgets of the 
 	 * new ticket details view.
@@ -246,7 +250,8 @@ public class EditRuleView {
 		this.rule = rule;
 		
 		this.newRuleContent = new HTMLPanel("");
-				
+		this.newRuleContent.setStyleName(VIEW_CONTENT_CLASSNAME);		
+		
 		this.newRuleLabel = new Label("New Rule:");
 		
 		this.ruleTypePanel = new HTMLPanel("");

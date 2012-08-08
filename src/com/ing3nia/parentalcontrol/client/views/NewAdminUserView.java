@@ -9,6 +9,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.TextBox;
@@ -23,6 +24,9 @@ import com.ing3nia.parentalcontrol.client.rpc.AddAdminUserServiceAsync;
 public class NewAdminUserView {
 
 	BaseViewHandler baseView;
+	
+	public static String VIEW_CONTENT_CLASSNAME = "newAdminUserContent";
+	
 	
 	/**
 	 * Center Panel containing all the widgets of the 
@@ -98,7 +102,8 @@ public class NewAdminUserView {
 		//initializing content
 		this.centerContent.clear();
 		this.centerContent.setStyleName("centerContent");
-		this.viewContent.setStylePrimaryName(NewAdminUserViewClassName.NewAdminUserBlock.getClassname());
+		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
+		//this.viewContent.setStylePrimaryName(NewAdminUserViewClassName.NewAdminUserBlock.getClassname());
 		centerContent.add(viewContent);
 	}
 	
@@ -152,6 +157,9 @@ public class NewAdminUserView {
 			centerContent.add(baseView.getBaseBinder().getNotice());
 			return;
 		}
+		
+		Image loadingImage = new Image("/media/images/loading.gif");
+		LoadingView.setLoadingView(baseView.getBaseBinder(), "Creating Admin User", loadingImage);
 		
 		AddAdminUserCallbackHandler addAdminCallback = new AddAdminUserCallbackHandler(baseView, loggedUser, centerContent, username, password);
 		AddAdminUserServiceAsync addAdminUserService = GWT.create(AddAdminUserService.class);
