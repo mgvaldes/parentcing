@@ -26,7 +26,7 @@ public class SmartphoneListAapter extends ArrayAdapter<SmartphoneModel> {
 	}
 	
 	public int setDeviceLetters(int position) {
-		if (position == 0) {
+		if (position == 0) {	
 			return R.drawable.ic_devicelist_a;
 		}
 		else if (position == 1) {

@@ -24,10 +24,15 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class Login extends Activity {
 	/**
@@ -69,6 +74,7 @@ public class Login extends Activity {
 	
 	private String errorMessage = "";
 	private static final int ERROR_ALERT_DIALOG = 2;
+	private static final int REGISTER_REMINDER_ALERT_DIALOG = 3;
 	
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -77,6 +83,15 @@ public class Login extends Activity {
 		configurarHttpClientHandler();
 		obtenerObjetosUI();
 		restoreOngoingConnections();
+		checkRegisterReminder();
+	}
+	
+	public void checkRegisterReminder() {
+		SharedPreferences sharedPreferences = getSharedPreferences("PRC_PREF", MODE_PRIVATE);
+	    
+	    if (!sharedPreferences.contains("reminder")) {
+	    	showDialog(REGISTER_REMINDER_ALERT_DIALOG);
+	    }
 	}
 	
 	private void configurarHttpClientHandler() {
@@ -190,6 +205,46 @@ public class Login extends Activity {
             alert.setPositiveButton(R.string.ok_button_label, new DialogInterface.OnClickListener() {
             	public void onClick(DialogInterface dialog, int whichButton) {
             		dialog.dismiss();
+                 }
+             });
+             
+             return alert.create();
+		}
+		else if (id == REGISTER_REMINDER_ALERT_DIALOG) {
+			AlertDialog.Builder alert = new AlertDialog.Builder(Login.this);
+	    	alert.setIcon(R.drawable.alert_icon);
+            alert.setTitle("Alert");
+            alert.setMessage("If you are no yet registered go to www.parental-control.appspot.com and register as a new user!");
+            
+            final CheckBox checkBox = new CheckBox(this);
+            checkBox.setText("Don't show this alert again");
+            
+            LinearLayout linearLayout = new LinearLayout(this);
+            linearLayout.setLayoutParams(new  LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.FILL_PARENT));
+            linearLayout.setOrientation(1);     
+            linearLayout.addView(checkBox);
+            linearLayout.setPadding(20, 0, 0, 0);
+            
+            alert.setView(linearLayout);
+            
+            alert.setPositiveButton(R.string.ok_button_label, new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int whichButton) {
+            		if (checkBox.isChecked()) {
+            			SharedPreferences sharedPreferences = getSharedPreferences("PRC_PREF", MODE_PRIVATE);
+            		    SharedPreferences.Editor editor = sharedPreferences.edit();
+            		    editor.putBoolean("reminder", true);
+            		    editor.commit();
+            		}
+            		
+            		dialog.dismiss();
+                 }
+            });
+            alert.setNegativeButton("Got to link", new DialogInterface.OnClickListener() {
+            	public void onClick(DialogInterface dialog, int whichButton) {
+            		String url = "http://www.parental-control.appspot.com";
+            		Intent i = new Intent(Intent.ACTION_VIEW);
+            		i.setData(Uri.parse(url));
+            		startActivity(i);
                  }
              });
              

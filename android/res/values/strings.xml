@@ -163,7 +163,7 @@
     <string name="save_changes_alert_dialog_message">You have pending changes. Would you like to send them before living?</string>
     <string name="alert_dialog_delete_button_label">Delete</string>
     <string name="warning_label">Warning</string>
-    <string name="ok_button_label">Ok</string>
+    <string name="ok_button_label">OK</string>
     <string name="cancel_button_label">Cancel</string>
     <string name="dialog_intent_si">com.ing3nia.parentalcontrol.ui.components.dialog.si</string>
     <string name="dialog_intent_no">com.ing3nia.parentalcontrol.ui.components.dialog.no</string>
@@ -172,4 +172,36 @@
     <string name="alert_dialog_yes_button_label">Yes</string>
     <string name="alert_dialog_no_button_label">No</string>
 
+    <string name="timer">Main Service Timer</string>
+    <string name="serviceUptime">Service UpTime</string>
+    <string name="lastActiveTask">Last Active Task</string>
+    <string name="lastTask">Last Task</string>
+    <string name="currentLocation">Current Location</string>
+    <string name="gps">Geolocation</string>
+    <string name="currentSpeed">Current Speed</string>
+    <string name="speed">Speed</string>
+    <string name="activatedListener">Activated Listener</string>
+    <string name="serviceStatus">Service Status</string>
+    <string name="notStarted">Not Started</string>
+    <string name="startService">Start Service</string>
+    <string name="stopService">Stop Service</string>
+    <string name="smartphoneRegistered">Smartphone Registered</string>
+    <string name="smartphoneNotRegistered">Smartphone Not Registered</string>
+    <string name="usernameL">Username</string>
+    <string name="passwordL">Password</string>
+    <string name="smartphoneNameL">Smartphone Name</string>
+    <string name="registerChild">Register Child</string>
+    <string name="removeChild">Remove Child From Phone</string>
+    <string name="periodMilis">PERIOD_MILLIS</string>
+    <string name="periodRestartMilis">PERIOD_RESTART_MILLIS</string>
+    <string name="defaultMaxSpeed">DEFAULT_MAX_SPEED</string>
+    <string name="maxTimeDifference">MAX_TIME_DIFFERENCE</string>
+    <string name="geolocationUpdate">GEOLOCATION_UPDATE</string>
+    <string name="geolistenerLifetime">GEO_LISTENER_LIFETIME</string>
+    <string name="geoMinDistance">GEO_MIN_DISTANCE</string>
+    <string name="setConfigVariables">Set Config Variables</string>
+    <string name="toggleAirplaneMode">Toggle Airplane Mode</string>
+    <string name="augmentAirplaneRule">Augment Airplane Rule</string>
+    <string name="decrementAirplaneRule">Decrement Airplane Rule</string>
+    
 </resources>

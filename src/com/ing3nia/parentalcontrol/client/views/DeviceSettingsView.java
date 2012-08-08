@@ -121,6 +121,8 @@ public class DeviceSettingsView {
 	 */
 	private FlowPanel buttonPanel;
 	
+	private FlowPanel deviceNamePanel;
+	
 	/**
 	 * Save button.
 	 */
@@ -155,14 +157,22 @@ public class DeviceSettingsView {
 		deviceSettingsContent = new HTMLPanel("");
 		this.deviceSettingsContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		deviceSettingsLabel = new Label("Device Settings:");
+		deviceSettingsLabel.setStyleName("sec-title");
+		
+		deviceNamePanel = new FlowPanel();
+		deviceNamePanel.setStyleName("deviceNameContent");
 		deviceNameLabel = new Label("Device Name:");
 		deviceNameTextBox = new TextBox();
+		
+		this.deviceNamePanel.add(deviceNameLabel);
+		this.deviceNamePanel.add(deviceNameTextBox);
 		
 		if (smartphone.getName() != null) {
 			deviceNameTextBox.setText(smartphone.getName());
 		}
 		
 		speedLimitPanel = new FlowPanel();
+		speedLimitPanel.setStyleName("speedLimitContent");
 		speedLimitLabel = new Label("Speed Limit:");
 		speedLimitTextBox = new TextBox();
 		loadSpeedLimit();
@@ -171,17 +181,19 @@ public class DeviceSettingsView {
 		blockPhonePanel = new FlowPanel();
 		blockPhoneButton = new Button("Block Phone");
 		blockPhoneButton.setStyleName("blockPhoneButton");
+		this.blockPhonePanel.setStyleName("blockPhoneContent");
 		DOM.setElementProperty(blockPhoneButton.getElement(), "id", "blockPhoneButton");
 		
 		blockPhoneLabel = new Label("(In the case your mobile phone is stolen, you must report the theft inmediately to your operator)");
 		
+		/*
 		restorePhonePanel = new FlowPanel();
 		restorePhoneButton = new Button("Restore Phone");
 		restorePhoneButton.setStyleName("restorePhoneButton");
 		DOM.setElementProperty(restorePhoneButton.getElement(), "id", "restorePhoneButton");
 		
 		restorePhoneLabel = new Label("(Restore phone to default settings before installing PRC)");
-		
+		*/
 		this.buttonPanel = new FlowPanel();
 		this.saveButton = new Button("Save");
 		this.saveButton.setStyleName("saveButton");
@@ -212,13 +224,16 @@ public class DeviceSettingsView {
 	
 	public void initDeviceSettingsView() {
 		deviceSettingsContent.add(deviceSettingsLabel);
+		/*
 		deviceSettingsContent.add(deviceNameLabel);
 		deviceSettingsContent.add(deviceNameTextBox);
 		deviceSettingsContent.add(speedLimitLabel);
 		deviceSettingsContent.add(speedLimitTextBox);
-		
+		*/
+		speedLimitPanel.add(speedLimitLabel);
 		speedLimitPanel.add(speedLimitTextBox);
 		speedLimitPanel.add(mphLabel);		
+		deviceSettingsContent.add(deviceNamePanel);
 		deviceSettingsContent.add(speedLimitPanel);
 		
 		blockPhoneButton.addClickHandler(new ClickHandler() {
@@ -231,16 +246,19 @@ public class DeviceSettingsView {
 		blockPhonePanel.add(blockPhoneLabel);
 		deviceSettingsContent.add(blockPhonePanel);
 		
+		/*
 		restorePhoneButton.addClickHandler(new ClickHandler() {
 	    	public void onClick(ClickEvent event) {
 	    		restorePhone();
 	    	}
 	    });
+		*/
 		
+		/*
 		restorePhonePanel.add(restorePhoneButton);
 		restorePhonePanel.add(restorePhoneLabel);
 		deviceSettingsContent.add(restorePhonePanel);
-		
+		*/
 		saveButton.addClickHandler(new ClickHandler() {
 	    	public void onClick(ClickEvent event) {
 	    		saveDeviceSettings();
@@ -261,6 +279,7 @@ public class DeviceSettingsView {
 		this.centerContent.add(this.deviceSettingsContent);
 	}
 	
+	/*
 	public void restorePhone() {
 		SmartphoneModel smart = this.baseView.getUser().getSmartphones().get(this.baseView.getClickedSmartphoneIndex());
 		RuleModel rule = searchBlockPhoneRule(smart.getRules());		
@@ -269,6 +288,7 @@ public class DeviceSettingsView {
 		DeleteRuleServiceAsync deleteRuleService = GWT.create(DeleteRuleService.class);
 		deleteRuleService.deleteRule(rule.getKeyId(), smart.getKeyId(), deleteRuleCallback);
 	}
+	*/
 	
 	public RuleModel searchBlockPhoneRule(ArrayList<RuleModel> rules) {
 		RuleModel blockPhone = null;

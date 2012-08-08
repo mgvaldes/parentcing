@@ -74,10 +74,7 @@ public class CloseTicketResource {
 						openTickets.add(auxOpenTicket);
 					}
 					
-					WriteToCache.writeOpenTicketsToCache(pm, loggedUserKey, openTickets);
-					
-					cacheIdentOpenTickets = syncCache.getIdentifiable(openTicketsCacheKey);
-					cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
+					cacheOpenTickets = WriteToCache.writeOpenTicketsToCache(pm, loggedUserKey, openTickets);
 				}
 				else {
 					cacheOpenTickets = (ArrayList<String>) cacheIdentOpenTickets.getValue();
@@ -99,10 +96,7 @@ public class CloseTicketResource {
 						closedTickets.add(auxClosedTicket);
 					}
 					
-					WriteToCache.writeClosedTicketsToCache(pm, loggedUserKey, closedTickets);
-					
-					cacheIdentClosedTickets = syncCache.getIdentifiable(closedTicketsCacheKey);
-					cacheClosedTickets = (ArrayList<String>) cacheIdentClosedTickets.getValue();
+					cacheClosedTickets = WriteToCache.writeClosedTicketsToCache(pm, loggedUserKey, closedTickets);
 				}
 				else {
 					cacheClosedTickets = (ArrayList<String>) cacheIdentClosedTickets.getValue();

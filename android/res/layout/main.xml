@@ -1,12 +1,315 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/hello" />
-
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	style="@style/vertical_hfill_vfill"
+	android:background="@drawable/bg">
+	
+	<include layout="@layout/top_banner" />
+	
+	<ScrollView 
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		
+	    <LinearLayout 
+	        style="@style/vertical_hfill_vfill"
+	        android:padding="10dp">
+	        		 
+			<TextView
+			    android:id="@+id/serviceUptimeLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/serviceUptime"
+	            android:layout_marginBottom="2dp" />
+			
+	        <TextView
+	            android:id="@+id/serviceTimer"
+	            style="@style/texto_pequeno"
+	            android:text="@string/timer"
+	            android:layout_marginBottom="6dp" />
+		    
+	       	<TextView
+			    android:id="@+id/lastActiveTaskLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/lastActiveTask"
+	            android:layout_marginBottom="2dp" />
+	        
+	        <TextView
+	            android:id="@+id/lastTask"
+	            style="@style/texto_pequeno"
+	            android:text="@string/lastTask"
+	            android:layout_marginBottom="6dp" />
+	
+	         <TextView
+			    android:id="@+id/currentLocationLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/currentLocation"
+	            android:layout_marginBottom="2dp" />
+	         
+			<TextView
+	            android:id="@+id/gps"
+	            style="@style/texto_pequeno"
+	            android:text="@string/gps"
+	            android:layout_marginBottom="6dp" />
+	
+	       	<TextView
+			    android:id="@+id/currentSpeedLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/currentSpeed"
+	            android:layout_marginBottom="2dp" />
+	        
+	        <TextView
+	            android:id="@+id/speed"
+	            style="@style/texto_pequeno"
+	            android:text="@string/speed"
+	            android:layout_marginBottom="6dp" />
+	                 
+	        <TextView
+			    android:id="@+id/activatedListenerLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/activatedListener"
+	            android:layout_marginBottom="2dp" />
+	        
+	        <TextView
+			    android:id="@+id/activatedListener"
+			    style="@style/texto_pequeno"
+	            android:text="@string/activatedListener"
+	            android:layout_marginBottom="6dp" />
+	         
+	        <TextView
+			    android:id="@+id/serviceStatusLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/serviceStatus"
+	            android:layout_marginBottom="2dp" />
+	        
+	        <TextView
+	            android:id="@+id/serviceStatus"
+	            style="@style/texto_pequeno"
+	            android:text="@string/notStarted" 
+	            android:layout_marginBottom="6dp"/>
+	        
+	        <Button 
+	          	android:id="@+id/startButton"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/startService"
+	            android:layout_marginBottom="6dp" />
+	        
+	         <Button 
+	          	android:id="@+id/stopButton"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/stopService"
+	            android:layout_marginBottom="6dp" />
+	         
+	        <TextView
+			    android:id="@+id/smartphoneRegisteredLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/smartphoneRegistered"
+	            android:layout_marginBottom="2dp" />
+	        
+	        <TextView
+	            android:id="@+id/smartphoneRegistered"
+	            style="@style/texto_pequeno"
+	            android:text="@string/smartphoneNotRegistered" 
+	            android:layout_marginBottom="6dp" />
+	        	        
+	        <TextView
+			    android:id="@+id/usernameLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/usernameL"
+	            android:layout_marginBottom="2dp" />
+	         
+	        <EditText 
+			    android:id="@+id/username"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	        
+	        <TextView
+			    android:id="@+id/passwordLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/passwordL"
+	            android:layout_marginBottom="2dp" />
+	         
+	        <EditText 
+			    android:id="@+id/pass"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	        
+	        <TextView
+			    android:id="@+id/smartphoneNameLabel"
+			    style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/smartphoneNameL"
+	            android:layout_marginBottom="2dp" />
+	         
+	        <EditText 
+			    android:id="@+id/name"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	        
+	        <Button 
+	          	android:id="@+id/registerChild"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/registerChild"
+	            android:layout_marginBottom="6dp" />
+	        
+	        <Button 
+	          	android:id="@+id/removeChild"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/removeChild"
+	            android:layout_marginBottom="6dp" />	       
+	        
+			<TextView
+	            android:id="@+id/periodMillisLabel"
+	            style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/periodMilis"
+	            android:layout_marginBottom="2dp"/>
+	        
+			<EditText 
+			    android:id="@+id/periodMillis"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	        
+			<TextView
+	            android:id="@+id/periodRestartMilisLabel"
+	            style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/periodRestartMilis"
+	            android:layout_marginBottom="2dp"/>
+	         
+			<EditText 
+			    android:id="@+id/periodRestartMillis"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	          
+			<TextView
+	            android:id="@+id/maxSpeedText"
+	            style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/defaultMaxSpeed"
+	            android:layout_marginBottom="2dp" />
+	         
+			<EditText 
+			    android:id="@+id/defaultMaxSpeed"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	     
+	        <TextView
+	            android:id="@+id/maxTimeDifferenceLabel"
+	            style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/maxTimeDifference"
+	            android:layout_marginBottom="2dp"/>          
+	          
+	        <EditText 
+			    android:id="@+id/maxTimeDifference"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	        			
+	       <TextView
+	            android:id="@+id/geouptext"
+	            style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/geolocationUpdate"
+	            android:layout_marginBottom="2dp"/>          
+	          
+	       <EditText 
+			    android:id="@+id/geolocationUpdate"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	          
+	        <TextView
+	            android:id="@+id/geolistenerLifetimeLabel"
+	            style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/geolistenerLifetime"
+	            android:layout_marginBottom="2dp"/>         
+	          
+	        <EditText 
+			    android:id="@+id/geolistenerLifetime"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	            
+	        <TextView
+	            android:id="@+id/geoMinDistanceLabel"
+	            style="@style/texto_estandar_bold"
+				android:textColor="@color/blanco"
+	            android:text="@string/geoMinDistance"
+	            android:layout_marginBottom="2dp"/>         
+	          
+	        <EditText 
+			    android:id="@+id/geoMinDistance"
+				android:layout_width="275dp" 
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="text"
+				android:layout_marginBottom="6dp" />
+	                 
+	        <Button 
+	          	android:id="@+id/setConfigVariables"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/setConfigVariables"
+	            android:layout_marginBottom="6dp" />
+	         
+			<Button 
+	          	android:id="@+id/toggleAirplaneMode"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/toggleAirplaneMode"
+	            android:layout_marginBottom="6dp" />
+			
+			<Button 
+	          	android:id="@+id/augmentAirplaneRule"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/augmentAirplaneRule"
+	            android:layout_marginBottom="6dp" />
+			
+			<Button 
+	          	android:id="@+id/decrementAirplaneRule"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/decrementAirplaneRule"
+	            android:layout_marginBottom="6dp" />
+	    </LinearLayout>
+	</ScrollView>				
 </LinearLayout>

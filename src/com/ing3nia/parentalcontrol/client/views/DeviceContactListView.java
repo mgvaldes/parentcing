@@ -130,7 +130,9 @@ public class DeviceContactListView {
 		this.viewContent = new HTMLPanel("");
 		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.contactsLabel = new Label("Contacts:");
+		this.contactsLabel.setStyleName("sec-title");
 		this.contactButtonsPanel = new HTMLPanel("");
+		this.contactButtonsPanel.setStyleName("contactButtonsPanel");
 		this.contactsButton = new Button("Contacts");
 		DOM.setElementProperty(contactsButton.getElement(), "id", "contactsButton");
 		this.contactsButton.setStyleName("selectedContactButton");

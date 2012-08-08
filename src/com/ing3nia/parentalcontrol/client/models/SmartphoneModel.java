@@ -47,8 +47,11 @@ public class SmartphoneModel implements Serializable {
 	
 	private boolean detailsSynced;
 	
+	private ArrayList<String> reverseGeoAddresses;
+	
 	
 	public SmartphoneModel() {
+		this.reverseGeoAddresses = new ArrayList<String>();
 	}
 
 	public SmartphoneModel(String id, LocationModel location,
@@ -76,6 +79,7 @@ public class SmartphoneModel implements Serializable {
 		this.rules = rules;
 		this.alerts = alerts;
 		this.detailsSynced = false;
+		this.reverseGeoAddresses = new ArrayList<String>();
 	}
 
 	public String getId() {
@@ -243,4 +247,13 @@ public class SmartphoneModel implements Serializable {
 		return alerts;
 	}
 
+	public ArrayList<String> getReverseGeoAddresses() {
+		return reverseGeoAddresses;
+	}
+
+	public void setReverseGeoAddresses(ArrayList<String> reverseGeoAddresses) {
+		this.reverseGeoAddresses = reverseGeoAddresses;
+	}
+
+	
 }

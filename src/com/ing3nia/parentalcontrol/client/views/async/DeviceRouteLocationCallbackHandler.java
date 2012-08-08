@@ -1,6 +1,9 @@
 package com.ing3nia.parentalcontrol.client.views.async;
 
+import java.util.ArrayList;
+
 import com.google.gwt.core.client.JsArray;
+import com.google.gwt.maps.client.geocode.Geocoder;
 import com.google.gwt.maps.client.geocode.LocationCallback;
 import com.google.gwt.maps.client.geocode.Placemark;
 import com.google.gwt.user.client.Window;
@@ -24,7 +27,7 @@ public class DeviceRouteLocationCallbackHandler implements LocationCallback{
 	@Override
 	public void onFailure(int statusCode) {
 		 Label l = (Label)scrollPanelBody.getWidget(pointIndex);
-		 l.setText("address could not be loaded");
+		 l.setText("address could not be loaded"); 
 	}
 
 	@Override

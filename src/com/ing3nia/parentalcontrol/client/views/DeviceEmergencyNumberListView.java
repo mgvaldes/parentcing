@@ -109,7 +109,9 @@ public class DeviceEmergencyNumberListView {
 		this.viewContent = new HTMLPanel("");
 		this.viewContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 		this.emergencyNumbersLabel = new Label("Emergency Numbers:");
+		this.emergencyNumbersLabel.setStyleName("sec-title");
 		this.contactButtonsPanel = new HTMLPanel("");
+		this.contactButtonsPanel.setStyleName("contactButtonsPanel");
 		this.contactsButton = new Button("Contacts");
 		DOM.setElementProperty(contactsButton.getElement(), "id", "normalContactButton");
 		this.contactsButton.setStyleName("contactButton");

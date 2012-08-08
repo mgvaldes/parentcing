@@ -450,8 +450,8 @@ public class InternalModificationsResource {
 				ArrayList<PCSimpleContact> savedSimpleActiveContactsObjectList = new ArrayList<PCSimpleContact>();
 				ArrayList<PCSimpleContact> savedSimpleInactiveContacsObjectList = new ArrayList<PCSimpleContact>();
 
-				ArrayList<PhoneModel> cacheActiveContactsObjectList = new ArrayList<PhoneModel>();
-				ArrayList<PhoneModel> cacheInactiveContactsObjectList = new ArrayList<PhoneModel>();
+//				ArrayList<PhoneModel> cacheActiveContactsObjectList = new ArrayList<PhoneModel>();
+//				ArrayList<PhoneModel> cacheInactiveContactsObjectList = new ArrayList<PhoneModel>();
 
 				String smartphoneActiveCacheKey = internalModsModel.getId()
 						+ SmartphoneCacheParams.ACTIVE_CONTACTS;
@@ -471,18 +471,18 @@ public class InternalModificationsResource {
 								.getInactiveContacts().size() > 0) {
 					logger.info("OPTMIZATION: Extracting contact from Database");
 
-					for (Key c : savedSmartphone.getActiveContacts()) {
-						PCSimpleContact auxSimpleContact = (PCSimpleContact) pm
-								.getObjectById(PCSimpleContact.class, c);
-						PCPhone auxPhone = (PCPhone) pm.getObjectById(
-								PCPhone.class, auxSimpleContact.getPhone());
-
-						savedSimpleActiveContactsObjectList
-								.add(auxSimpleContact);
-						savedActiveContactsObjectList.add(auxPhone);
-					}
-
 					if (cacheIdentSmartphoneActive == null) {
+						for (Key c : savedSmartphone.getActiveContacts()) {
+							PCSimpleContact auxSimpleContact = (PCSimpleContact) pm
+									.getObjectById(PCSimpleContact.class, c);
+							PCPhone auxPhone = (PCPhone) pm.getObjectById(
+									PCPhone.class, auxSimpleContact.getPhone());
+
+							savedSimpleActiveContactsObjectList
+									.add(auxSimpleContact);
+							savedActiveContactsObjectList.add(auxPhone);
+						}
+						
 						cacheSimpleActiveContactsObjectList = WriteToCache
 								.writeSmartphoneActiveContactsToCache(
 										internalModsModel.getId(),
@@ -499,18 +499,18 @@ public class InternalModificationsResource {
 								.getValue();
 					}
 
-					for (Key c : savedSmartphone.getInactiveContacts()) {
-						PCSimpleContact auxSimpleContact = (PCSimpleContact) pm
-								.getObjectById(PCSimpleContact.class, c);
-						PCPhone auxPhone = (PCPhone) pm.getObjectById(
-								PCPhone.class, auxSimpleContact.getPhone());
-
-						savedSimpleInactiveContacsObjectList
-								.add(auxSimpleContact);
-						savedInactiveContactsObjectList.add(auxPhone);
-					}
-
 					if (cacheIdentSmartphoneInactive == null) {
+						for (Key c : savedSmartphone.getInactiveContacts()) {
+							PCSimpleContact auxSimpleContact = (PCSimpleContact) pm
+									.getObjectById(PCSimpleContact.class, c);
+							PCPhone auxPhone = (PCPhone) pm.getObjectById(
+									PCPhone.class, auxSimpleContact.getPhone());
+
+							savedSimpleInactiveContacsObjectList
+									.add(auxSimpleContact);
+							savedInactiveContactsObjectList.add(auxPhone);
+						}
+						
 						cacheSimpleInactiveContactsObjectList = WriteToCache
 								.writeSmartphoneInactiveContactsToCache(
 										internalModsModel.getId(),
@@ -528,45 +528,57 @@ public class InternalModificationsResource {
 						cacheSimpleInactiveContactsObjectList = value;
 					}
 
-					for (SimpleContactModel scm : cacheSimpleActiveContactsObjectList) {
-						cacheActiveContactsObjectList.addAll(scm.getPhones());
-					}
-
-					for (SimpleContactModel scm : cacheSimpleInactiveContactsObjectList) {
-						cacheInactiveContactsObjectList.addAll(scm.getPhones());
-					}
+//					for (SimpleContactModel scm : cacheSimpleActiveContactsObjectList) {
+//						cacheActiveContactsObjectList.addAll(scm.getPhones());
+//					}
+//
+//					for (SimpleContactModel scm : cacheSimpleInactiveContactsObjectList) {
+//						cacheInactiveContactsObjectList.addAll(scm.getPhones());
+//					}
 				}
 
 				if (internalModsModel.getModification().getActiveContacts()
 						.size() > 0) {
 					logger.info("Checking added Contacts");
-					checkAddedContactsNEW(internalModsModel.getModification()
-							.getActiveContacts(),
+//					checkAddedContactsNEW(internalModsModel.getModification()
+//							.getActiveContacts(),
+//							savedSmartphone.getActiveContacts(),
+//							savedSimpleActiveContactsObjectList,
+//							savedActiveContactsObjectList,
+//							savedSimpleInactiveContacsObjectList,
+//							savedInactiveContactsObjectList,
+//							cacheSimpleActiveContactsObjectList,
+//							cacheActiveContactsObjectList,
+//							cacheSimpleInactiveContactsObjectList,
+//							cacheInactiveContactsObjectList, 
+//							savedModification,
+//							cacheModification);
+					checkAddedContactsNEW(internalModsModel.getModification().getActiveContacts(),
 							savedSmartphone.getActiveContacts(),
-							savedSimpleActiveContactsObjectList,
-							savedActiveContactsObjectList,
-							savedSimpleInactiveContacsObjectList,
-							savedInactiveContactsObjectList,
 							cacheSimpleActiveContactsObjectList,
-							cacheActiveContactsObjectList,
 							cacheSimpleInactiveContactsObjectList,
-							cacheInactiveContactsObjectList, savedModification,
+							savedModification,
 							cacheModification);
 				}
 
 				if (internalModsModel.getModification().getInactiveContacts()
 						.size() > 0) {
 					logger.info("Checking deleted contacts");
-					checkDeletedContactsNEW(internalModsModel.getModification()
-							.getInactiveContacts(),
-							savedSimpleActiveContactsObjectList,
-							savedActiveContactsObjectList,
-							savedSimpleInactiveContacsObjectList,
-							savedInactiveContactsObjectList,
+//					checkDeletedContactsNEW(internalModsModel.getModification()
+//							.getInactiveContacts(),
+//							savedSimpleActiveContactsObjectList,
+//							savedActiveContactsObjectList,
+//							savedSimpleInactiveContacsObjectList,
+//							savedInactiveContactsObjectList,
+//							cacheSimpleActiveContactsObjectList,
+//							cacheActiveContactsObjectList,
+//							cacheSimpleInactiveContactsObjectList,
+//							cacheInactiveContactsObjectList, 
+//							savedModification,
+//							cacheModification);
+					checkDeletedContactsNEW(internalModsModel.getModification().getInactiveContacts(),
 							cacheSimpleActiveContactsObjectList,
-							cacheActiveContactsObjectList,
-							cacheSimpleInactiveContactsObjectList,
-							cacheInactiveContactsObjectList, savedModification,
+							savedModification,
 							cacheModification);
 				}
 
@@ -701,108 +713,137 @@ public class InternalModificationsResource {
 		}
 	}
 
+//	public boolean isActiveContactNEW(String firstName, String lastName,
+//			String phoneNumber, 
+//			ArrayList<PCSimpleContact> savedSimpleContacts,
+//			ArrayList<PCPhone> savedActiveContacts,
+//			ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList,
+//			ArrayList<PhoneModel> cacheActiveContactsObjectList,
+//			ArrayList<SimpleContactModel> cacheSimpleInactiveContacsObjectList,
+//			ArrayList<PhoneModel> cacheInactiveContactsObjectList,
+//			PCModification savedModification,
+//			ModificationModel cacheModification, boolean specialCase) {
 	public boolean isActiveContactNEW(String firstName, String lastName,
-			String phoneNumber, ArrayList<PCSimpleContact> savedSimpleContacts,
-			ArrayList<PCPhone> savedActiveContacts,
+			String phoneNumber, 
 			ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList,
-			ArrayList<PhoneModel> cacheActiveContactsObjectList,
-			ArrayList<SimpleContactModel> cacheSimpleInactiveContacsObjectList,
-			ArrayList<PhoneModel> cacheInactiveContactsObjectList,
 			PCModification savedModification,
 			ModificationModel cacheModification, boolean specialCase) {
 		boolean isActive = false;
-		PCSimpleContact auxSimpleContact;
-		int counter = 0;
+//		PCSimpleContact auxSimpleContact;
+//		int counter = 0;
 
-		for (PCPhone auxPhone : savedActiveContacts) {
-			auxSimpleContact = savedSimpleContacts.get(counter);
-			counter++;
+//		for (PCPhone auxPhone : savedActiveContacts) {
+//			auxSimpleContact = savedSimpleContacts.get(counter);
+		
+		for (SimpleContactModel simpleContact : cacheSimpleActiveContactsObjectList) {
 
-			if (auxSimpleContact.getFirstName().equals(firstName)
-					&& auxSimpleContact.getLastName().equals(lastName)
-					&& auxPhone.getPhoneNumber().equals(phoneNumber)) {
-				logger.info("[Internal Modifications Service - Cache Version] Contact is active.");
+//			if (auxSimpleContact.getFirstName().equals(firstName)
+//					&& auxSimpleContact.getLastName().equals(lastName)
+//					&& auxPhone.getPhoneNumber().equals(phoneNumber)) {
+			if (simpleContact.getFirstName().equals(firstName) && simpleContact.getLastName().equals(lastName)) {
+				ArrayList<PhoneModel> cacheActiveContactsObjectList = simpleContact.getPhones();
+				
+				for (PhoneModel auxPhone : cacheActiveContactsObjectList) {
+					if (auxPhone.getPhoneNumber().equals(phoneNumber)) {
+						logger.info("[Internal Modifications Service - Cache Version] Contact is active.");
 
-				if (specialCase) {
-					ArrayList<Key> modActiveContacts = savedModification
-							.getActiveContacts();
+						if (specialCase) {
+							ArrayList<Key> modActiveContacts = savedModification
+									.getActiveContacts();
 
-					if (modActiveContacts == null) {
-						modActiveContacts = new ArrayList<Key>();
+							if (modActiveContacts == null) {
+								modActiveContacts = new ArrayList<Key>();
+							}
+
+//							modActiveContacts.add(auxSimpleContact.getKey());
+							modActiveContacts.add(KeyFactory.stringToKey(simpleContact.getKeyId()));
+
+							savedModification.setActiveContacts(modActiveContacts);
+
+//							cacheModification.getActiveContacts().add(cacheSimpleActiveContactsObjectList.get(counter));
+							cacheModification.getActiveContacts().add(simpleContact);
+						} 
+						else {
+							isActive = true;
+						}
+
+						break;
 					}
-
-					modActiveContacts.add(auxSimpleContact.getKey());
-
-					savedModification.setActiveContacts(modActiveContacts);
-
-					cacheModification.getActiveContacts().add(
-							cacheSimpleActiveContactsObjectList.get(counter));
-				} else {
-					isActive = true;
 				}
-
-				break;
 			}
 		}
 
 		return isActive;
 	}
 
+//	public boolean isInactiveContactNEW(String firstName, String lastName,
+//			String phoneNumber, ArrayList<PCSimpleContact> savedSimpleContacts,
+//			ArrayList<PCPhone> savedInactiveContacts,
+//			ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList,
+//			ArrayList<PhoneModel> cacheActiveContactsObjectList,
+//			ArrayList<SimpleContactModel> cacheSimpleInactiveContacsObjectList,
+//			ArrayList<PhoneModel> cacheInactiveContactsObjectList,
+//			PCModification savedModification,
+//			ModificationModel cacheModification) {
 	public boolean isInactiveContactNEW(String firstName, String lastName,
-			String phoneNumber, ArrayList<PCSimpleContact> savedSimpleContacts,
-			ArrayList<PCPhone> savedInactiveContacts,
-			ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList,
-			ArrayList<PhoneModel> cacheActiveContactsObjectList,
+			String phoneNumber, 
 			ArrayList<SimpleContactModel> cacheSimpleInactiveContacsObjectList,
-			ArrayList<PhoneModel> cacheInactiveContactsObjectList,
 			PCModification savedModification,
 			ModificationModel cacheModification) {
 		boolean isInactive = false;
-		PCSimpleContact auxSimpleContact;
-		ArrayList<Key> modInactiveContacts;
-		int counter = 0;
+//		PCSimpleContact auxSimpleContact;		
+//		int counter = 0;
 
-		for (PCPhone auxPhone : savedInactiveContacts) {
-			auxSimpleContact = savedSimpleContacts.get(counter);
-			counter++;
+//		for (PCPhone auxPhone : savedInactiveContacts) {
+//			auxSimpleContact = savedSimpleContacts.get(counter);
+		for (SimpleContactModel simpleContact : cacheSimpleInactiveContacsObjectList) {
+			if (simpleContact.getFirstName().equals(firstName) && simpleContact.getLastName().equals(lastName)) {
+				ArrayList<PhoneModel> cacheInactiveContactsObjectList = simpleContact.getPhones();
+				
+				for (PhoneModel auxPhone : cacheInactiveContactsObjectList) {
+					if (auxPhone.getPhoneNumber().equals(phoneNumber)) {
+						logger.info("[Internal Modifications Service - Cache Version] Contact is inactive.");
+						isInactive = true;
 
-			if (auxSimpleContact.getFirstName().equals(firstName)
-					&& auxSimpleContact.getLastName().equals(lastName)
-					&& auxPhone.getPhoneNumber().equals(phoneNumber)) {
-				logger.info("[Internal Modifications Service - Cache Version] Contact is inactive.");
-				isInactive = true;
+						ArrayList<Key> modInactiveContacts = savedModification.getInactiveContacts();
 
-				modInactiveContacts = savedModification.getInactiveContacts();
+						if (modInactiveContacts == null) {
+							modInactiveContacts = new ArrayList<Key>();
+						}
 
-				if (modInactiveContacts == null) {
-					modInactiveContacts = new ArrayList<Key>();
+						modInactiveContacts.add(KeyFactory.stringToKey(simpleContact.getKeyId()));
+
+						savedModification.setInactiveContacts(modInactiveContacts);
+
+						cacheModification.getInactiveContacts().add(simpleContact);
+
+						break;
+					}
 				}
-
-				modInactiveContacts.add(auxSimpleContact.getKey());
-
-				savedModification.setInactiveContacts(modInactiveContacts);
-
-				cacheModification.getInactiveContacts().add(
-						cacheSimpleInactiveContacsObjectList.get(counter));
-
-				break;
 			}
 		}
 
 		return isInactive;
 	}
 
+//	public void checkAddedContactsNEW(
+//			ArrayList<SimpleContactModel> internalModAddedContacts,
+//			ArrayList<Key> savedActiveContacts,
+//			ArrayList<PCSimpleContact> savedSimpleActiveContactsObjectList,
+//			ArrayList<PCPhone> savedActiveContactsObjectList,
+//			ArrayList<PCSimpleContact> savedSimpleInactiveContacsObjectList,
+//			ArrayList<PCPhone> savedInactiveContactsObjectList,
+//			ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList,
+//			ArrayList<PhoneModel> cacheActiveContactsObjectList,
+//			ArrayList<SimpleContactModel> cacheSimpleInactiveContacsObjectList,
+//			ArrayList<PhoneModel> cacheInactiveContactsObjectList,
+//			PCModification savedModification,
+//			ModificationModel cacheModification) {
 	public void checkAddedContactsNEW(
 			ArrayList<SimpleContactModel> internalModAddedContacts,
 			ArrayList<Key> savedActiveContacts,
-			ArrayList<PCSimpleContact> savedSimpleActiveContactsObjectList,
-			ArrayList<PCPhone> savedActiveContactsObjectList,
-			ArrayList<PCSimpleContact> savedSimpleInactiveContacsObjectList,
-			ArrayList<PCPhone> savedInactiveContactsObjectList,
 			ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList,
-			ArrayList<PhoneModel> cacheActiveContactsObjectList,
 			ArrayList<SimpleContactModel> cacheSimpleInactiveContacsObjectList,
-			ArrayList<PhoneModel> cacheInactiveContactsObjectList,
 			PCModification savedModification,
 			ModificationModel cacheModification) {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
@@ -825,14 +866,19 @@ public class InternalModificationsResource {
 				// isActiveContact beacuse it's only necessary to check if
 				// the contact is active.
 				// ------------------------------------------------------------
+//				isActive = isActiveContactNEW(mc.getFirstName(),
+//						mc.getLastName(), p.getPhoneNumber(),
+//						savedSimpleActiveContactsObjectList,
+//						savedActiveContactsObjectList,
+//						cacheSimpleActiveContactsObjectList,
+//						cacheActiveContactsObjectList,
+//						cacheSimpleInactiveContacsObjectList,
+//						cacheInactiveContactsObjectList, savedModification,
+//						cacheModification, false);
 				isActive = isActiveContactNEW(mc.getFirstName(),
 						mc.getLastName(), p.getPhoneNumber(),
-						savedSimpleActiveContactsObjectList,
-						savedActiveContactsObjectList,
 						cacheSimpleActiveContactsObjectList,
-						cacheActiveContactsObjectList,
-						cacheSimpleInactiveContacsObjectList,
-						cacheInactiveContactsObjectList, savedModification,
+						savedModification,
 						cacheModification, false);
 
 				if (!isActive) {
@@ -845,14 +891,19 @@ public class InternalModificationsResource {
 					// list
 					// of the modifiction passed as parameter.
 					// ------------------------------------------------------------
+//					isInactive = isInactiveContactNEW(mc.getFirstName(),
+//							mc.getLastName(), p.getPhoneNumber(),
+//							savedSimpleInactiveContacsObjectList,
+//							savedInactiveContactsObjectList,
+//							cacheSimpleActiveContactsObjectList,
+//							cacheActiveContactsObjectList,
+//							cacheSimpleInactiveContacsObjectList,
+//							cacheInactiveContactsObjectList, savedModification,
+//							cacheModification);
 					isInactive = isInactiveContactNEW(mc.getFirstName(),
 							mc.getLastName(), p.getPhoneNumber(),
-							savedSimpleInactiveContacsObjectList,
-							savedInactiveContactsObjectList,
-							cacheSimpleActiveContactsObjectList,
-							cacheActiveContactsObjectList,
 							cacheSimpleInactiveContacsObjectList,
-							cacheInactiveContactsObjectList, savedModification,
+							savedModification,
 							cacheModification);
 
 					if (!isInactive) {
@@ -898,14 +949,7 @@ public class InternalModificationsResource {
 
 	public void checkDeletedContactsNEW(
 			ArrayList<SimpleContactModel> internalModDeletedContacts,
-			ArrayList<PCSimpleContact> savedSimpleActiveContactsObjectList,
-			ArrayList<PCPhone> savedActiveContactsObjectList,
-			ArrayList<PCSimpleContact> savedSimpleInactiveContacsObjectList,
-			ArrayList<PCPhone> savedInactiveContactsObjectList,
 			ArrayList<SimpleContactModel> cacheSimpleActiveContactsObjectList,
-			ArrayList<PhoneModel> cacheActiveContactsObjectList,
-			ArrayList<SimpleContactModel> cacheSimpleInactiveContacsObjectList,
-			ArrayList<PhoneModel> cacheInactiveContactsObjectList,
 			PCModification savedModification,
 			ModificationModel cacheModification) {
 		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
@@ -924,14 +968,19 @@ public class InternalModificationsResource {
 				// necessary to add the contact to the modification active
 				// contact list.
 				// ------------------------------------------------------------
+//				isActiveContactNEW(mc.getFirstName(), mc.getLastName(),
+//						p.getPhoneNumber(),
+//						savedSimpleActiveContactsObjectList,
+//						savedActiveContactsObjectList,
+//						cacheSimpleActiveContactsObjectList,
+//						cacheActiveContactsObjectList,
+//						cacheSimpleInactiveContacsObjectList,
+//						cacheInactiveContactsObjectList, savedModification,
+//						cacheModification, true);
 				isActiveContactNEW(mc.getFirstName(), mc.getLastName(),
 						p.getPhoneNumber(),
-						savedSimpleActiveContactsObjectList,
-						savedActiveContactsObjectList,
 						cacheSimpleActiveContactsObjectList,
-						cacheActiveContactsObjectList,
-						cacheSimpleInactiveContacsObjectList,
-						cacheInactiveContactsObjectList, savedModification,
+						savedModification,
 						cacheModification, true);
 			}
 		}

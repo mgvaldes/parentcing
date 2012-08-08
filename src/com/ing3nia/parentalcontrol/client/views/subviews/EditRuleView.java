@@ -608,8 +608,12 @@ public class EditRuleView {
 		//012345678901234567890
 		//dd/MM/yyyy hh:mm:ss a
 		
-		this.fromDatePicker.getTextBox().setText(this.rule.getStartDate().substring(0, 10));
-		this.toDatePicker.getTextBox().setText(this.rule.getEndDate().substring(0, 10));
+		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy");
+		
+		this.fromDatePicker.setValue(formatter.parse(this.rule.getStartDate().substring(0, 10)));
+		this.toDatePicker.setValue(formatter.parse(this.rule.getEndDate().substring(0, 10)));
+		//this.fromDatePicker.getTextBox().setText(nose);
+		//this.toDatePicker.getTextBox().setText(this.rule.getEndDate().substring(0, 10));
 		
 		this.hourTextBoxF.setText(this.rule.getStartDate().substring(11, 13));
 		this.minuteTextBoxF.setText(this.rule.getStartDate().substring(14, 16));

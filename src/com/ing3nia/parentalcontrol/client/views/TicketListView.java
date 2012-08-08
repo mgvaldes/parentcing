@@ -15,14 +15,10 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
 import com.ing3nia.parentalcontrol.client.rpc.CloseTicketServiceAsync;
-import com.ing3nia.parentalcontrol.client.rpc.UserTicketListService;
-import com.ing3nia.parentalcontrol.client.rpc.UserTicketListServiceAsync;
 import com.ing3nia.parentalcontrol.client.views.async.CloseTicketCallbackHandler;
-import com.ing3nia.parentalcontrol.client.views.async.UserTicketListCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
-import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.EditAdminUserHandler;
 import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.TicketDetailsViewHandler;
 import com.ing3nia.parentalcontrol.client.models.TicketModel;
 

@@ -13,7 +13,6 @@ import com.google.appengine.api.memcache.MemcacheService.IdentifiableValue;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.ing3nia.parentalcontrol.client.models.ClientAdminUserModel;
 import com.ing3nia.parentalcontrol.client.models.UserModel;
-import com.ing3nia.parentalcontrol.client.models.cache.SessionCacheModel;
 import com.ing3nia.parentalcontrol.client.models.cache.UserCacheParams;
 import com.ing3nia.parentalcontrol.client.rpc.AdminUserListService;
 import com.ing3nia.parentalcontrol.models.PCUser;

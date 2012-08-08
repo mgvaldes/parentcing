@@ -120,6 +120,7 @@ public class DailyRouteClickHandler implements ClickHandler{
 		
 		logger.info("Getting Device ROUTE");
 		ArrayList<GeoPtModel> deviceLocations = new ArrayList<GeoPtModel>();
+		
 		/*
 		if(true){
 			GeoPtModel geo = new GeoPtModel();
@@ -152,10 +153,179 @@ public class DailyRouteClickHandler implements ClickHandler{
 			geo.setLatitude(25.719033937358773);
 			geo.setLongitude(-80.27860164642334);
 			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.759033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.799033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.89033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.519033937358773);
+			geo.setLongitude(-80.29860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.919033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.759033937358773);
+			geo.setLongitude(-80.29860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.749033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.75166174584524);
+			geo.setLongitude(-80.27297973632812);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.772397395383567);
+			geo.setLongitude(-80.25585651397705);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.721083103539254);
+			geo.setLongitude(-80.2756404876709);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.72013585186239);
+			geo.setLongitude(-80.2772068977356);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.719033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.759033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.799033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.89033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.519033937358773);
+			geo.setLongitude(-80.29860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.919033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.759033937358773);
+			geo.setLongitude(-80.29860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.749033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.75166174584524);
+			geo.setLongitude(-80.27297973632812);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.772397395383567);
+			geo.setLongitude(-80.25585651397705);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.721083103539254);
+			geo.setLongitude(-80.2756404876709);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.72013585186239);
+			geo.setLongitude(-80.2772068977356);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.719033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.759033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.799033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.89033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.519033937358773);
+			geo.setLongitude(-80.29860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.919033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.759033937358773);
+			geo.setLongitude(-80.29860164642334);
+			deviceLocations.add(geo);
+			
+			geo = new GeoPtModel();
+			geo.setLatitude(25.749033937358773);
+			geo.setLongitude(-80.27860164642334);
+			deviceLocations.add(geo);
+			
 			return deviceLocations;
 
-		}*/
+		}
 		
+		*/
 		int smartphoneIndex = this.baseView.getClickedSmartphoneIndex();
 		SmartphoneModel smartphone = this.baseView.getUser().getSmartphones().get(smartphoneIndex);
 		ArrayList<RouteModel> routes = smartphone.getRoutes();

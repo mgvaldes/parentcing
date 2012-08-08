@@ -53,7 +53,7 @@ public class LoginAsyncCallbackHandler implements AsyncCallback<ClientUserModel>
 			this.serviceOk = true;
 		} else {
 			LoadingView.clearLoadingView(pclogin);
-			pclogin.getNotice().setText("An unexpected error ocurred. Try again later");
+			pclogin.getNotice().setText("An unexpected error ocurred. Check your credentials and try again.");
 			this.serviceOk = false;
 		}
 	}
