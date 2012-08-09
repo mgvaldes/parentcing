@@ -58,7 +58,7 @@ public class CheckAdminUserServiceImpl extends RemoteServiceServlet implements C
 				isAdmin = true;
 			}
 			else{
-				logger.info("[CheckAdminUserService] No admin user with the username " + username + ", and password " + password + " was found.");
+				logger.info("[NEW VERSION CheckAdminUserService] No admin user with the username " + username + ", and password " + password + " was found.");
 				isAdmin = false;
 			}
 		} 
