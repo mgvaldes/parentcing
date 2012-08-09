@@ -161,15 +161,22 @@ public class WriteToCache {
 	    PCUser user;
     	PCAdmin admin;
     	String userAdminKey;
+    	PCCategory cat;
 	    
 		for (PCHelpdeskTicket openTicket : openTickets) {
 			auxOpenTicket = new TicketModel();
 			
-			results = (List<PCCategory>)query.execute(openTicket.getCategory());
+			cat = pm.getObjectById(PCCategory.class, openTicket.getCategory());
 			
-			if (!results.isEmpty()) {
-				auxOpenTicket.setCategory(results.get(0).getDescription());
+			if (cat != null) {
+				auxOpenTicket.setCategory(cat.getDescription());
 			}
+			
+//			results = (List<PCCategory>)query.execute(openTicket.getCategory());
+			
+//			if (!results.isEmpty()) {
+//				auxOpenTicket.setCategory(results.get(0).getDescription());
+//			}
 			
 			auxOpenTicket.setDate(openTicket.getDate());
 			auxOpenTicket.setComment(openTicket.getQuestion());
@@ -397,15 +404,22 @@ public class WriteToCache {
 	    PCUser user;
     	PCAdmin admin;
     	String userAdminKey;
+    	PCCategory cat;
 	    
 		for (PCHelpdeskTicket closedTicket : closedTickets) {
 			auxClosedTicket = new TicketModel();
 			
-			results = (List<PCCategory>)query.execute(closedTicket.getCategory());
+			cat = pm.getObjectById(PCCategory.class, closedTicket.getCategory());
 			
-			if (!results.isEmpty()) {
-				auxClosedTicket.setCategory(results.get(0).getDescription());
+			if (cat != null) {
+				auxClosedTicket.setCategory(cat.getDescription());
 			}
+			
+//			results = (List<PCCategory>)query.execute(closedTicket.getCategory());
+//			
+//			if (!results.isEmpty()) {
+//				auxClosedTicket.setCategory(results.get(0).getDescription());
+//			}
 			
 			auxClosedTicket.setDate(closedTicket.getDate());
 			auxClosedTicket.setComment(closedTicket.getQuestion());
@@ -444,7 +458,7 @@ public class WriteToCache {
 		
 		logger.info("Setting Closed Ticket List: " + userKey + UserCacheParams.CLOSED_TICKETS_LIST + " to cache");
 		MemcacheService syncCache = MemcacheServiceFactory.getMemcacheService();
-		syncCache.put(userKey + UserCacheParams.CLOSED_TICKETS_LIST, closedTickets, null);
+		syncCache.put(userKey + UserCacheParams.CLOSED_TICKETS_LIST, cacheClosedTicketList, null);
 		
 		return closedT;
 	}
