@@ -426,6 +426,10 @@ public class NewRuleView {
 		if (this.disabledFunctionalities.contains(selectedDisabledFunc)) {
 			return;
 		}
+		
+		if (this.disabledFunctionalitiesListBox.getSelectedIndex() == 0) {
+			return;
+		}
 
 		// Add the disabled functionality to the table.
 		int row = this.disabledFunctionalitiesTable.getRowCount();

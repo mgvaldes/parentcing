@@ -2,7 +2,6 @@ package com.ing3nia.parentalcontrol.client.views.subviews;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -26,16 +25,10 @@ import com.ing3nia.parentalcontrol.client.handlers.click.EnableFunctionalityClic
 import com.ing3nia.parentalcontrol.client.handlers.click.innerbutton.SaveEditRuleClickHandler;
 import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.rpc.AddRuleService;
-import com.ing3nia.parentalcontrol.client.rpc.AddRuleServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.EditRuleService;
 import com.ing3nia.parentalcontrol.client.rpc.EditRuleServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.FunctionalityTypeId;
-import com.ing3nia.parentalcontrol.client.views.async.AddRuleCallbackHandler;
-import com.ing3nia.parentalcontrol.client.views.async.EditAdminUserCallbackHandler;
 import com.ing3nia.parentalcontrol.client.views.async.EditRuleCallbackHandler;
-import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView.HourChangeHandler;
-import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView.MinuteSecondsChangeHandler;
 
 public class EditRuleView {
 	
@@ -416,6 +409,10 @@ public class EditRuleView {
 		// Don't add the disabled functionality if it's already in the table.
 		final String selectedDisabledFunc = this.disabledFunctionalitiesListBox.getItemText(this.disabledFunctionalitiesListBox.getSelectedIndex());
 		if (this.disabledFunctionalities.contains(selectedDisabledFunc)) {
+			return;
+		}
+		
+		if (this.disabledFunctionalitiesListBox.getSelectedIndex() == 0) {
 			return;
 		}
 

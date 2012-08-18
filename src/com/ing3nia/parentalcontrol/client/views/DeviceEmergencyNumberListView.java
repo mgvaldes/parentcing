@@ -1,16 +1,11 @@
 package com.ing3nia.parentalcontrol.client.views;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import com.google.gwt.cell.client.ButtonCell;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.DOM;
@@ -23,19 +18,13 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.ModificationModel;
-import com.ing3nia.parentalcontrol.client.models.RuleModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.rpc.AddEmergencyContactService;
-import com.ing3nia.parentalcontrol.client.rpc.AddEmergencyContactServiceAsync;
-import com.ing3nia.parentalcontrol.client.rpc.CloseTicketService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsService;
 import com.ing3nia.parentalcontrol.client.rpc.SaveSmartphoneModificationsServiceAsync;
 import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
-import com.ing3nia.parentalcontrol.client.views.async.AddEmergencyContactCallBackHandler;
 import com.ing3nia.parentalcontrol.client.views.classnames.PCTableViewClassNames;
 import com.ing3nia.parentalcontrol.client.views.subviews.AddEmergencyContactView;
 import com.ing3nia.parentalcontrol.client.views.subviews.EditEmergencyContactView;
-import com.ing3nia.parentalcontrol.client.views.subviews.EditRuleView;
 
 public class DeviceEmergencyNumberListView {
 	
@@ -198,23 +187,23 @@ public class DeviceEmergencyNumberListView {
 		emergencyNumberTable.addColumn(descColumn, "Description");		
 
 		// Add an edit column
-		ButtonCell editCell = new ButtonCell();
-		Column<EmergencyNumberModel, String> editColumn = new Column<EmergencyNumberModel, String>(editCell) {
-			@Override
-			public String getValue(EmergencyNumberModel object) {
-				return "Edit";
-			}
-		};
-
-		editColumn.setFieldUpdater(new FieldUpdater<EmergencyNumberModel, String>() {
-			@Override
-			public void update(int index, EmergencyNumberModel object, String value) {
-				editEmergencyContact(object);
-			}
-		});
-		
-
-		emergencyNumberTable.addColumn(editColumn, "");
+//		ButtonCell editCell = new ButtonCell();
+//		Column<EmergencyNumberModel, String> editColumn = new Column<EmergencyNumberModel, String>(editCell) {
+//			@Override
+//			public String getValue(EmergencyNumberModel object) {
+//				return "Edit";
+//			}
+//		};
+//
+//		editColumn.setFieldUpdater(new FieldUpdater<EmergencyNumberModel, String>() {
+//			@Override
+//			public void update(int index, EmergencyNumberModel object, String value) {
+//				editEmergencyContact(object);
+//			}
+//		});
+//		
+//
+//		emergencyNumberTable.addColumn(editColumn, "");
 		
 		// Add an delete column to show the disallow button.
 		/*

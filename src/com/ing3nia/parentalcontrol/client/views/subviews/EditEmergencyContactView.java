@@ -12,11 +12,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.ing3nia.parentalcontrol.client.handlers.BaseViewHandler;
 import com.ing3nia.parentalcontrol.client.models.EmergencyNumberModel;
 import com.ing3nia.parentalcontrol.client.models.SmartphoneModel;
-import com.ing3nia.parentalcontrol.client.rpc.AddEmergencyContactService;
-import com.ing3nia.parentalcontrol.client.rpc.AddEmergencyContactServiceAsync;
 import com.ing3nia.parentalcontrol.client.rpc.EditEmergencyContactService;
 import com.ing3nia.parentalcontrol.client.rpc.EditEmergencyContactServiceAsync;
-import com.ing3nia.parentalcontrol.client.views.async.AddEmergencyContactCallBackHandler;
 import com.ing3nia.parentalcontrol.client.views.async.EditEmergencyContactCallBackHandler;
 
 public class EditEmergencyContactView {
@@ -33,7 +30,6 @@ public class EditEmergencyContactView {
 	/**
 	 * Main panel of new rule view that groups all the widgets together.
 	 */
-	private HTMLPanel newEmergencyContactPanel;
 	private BaseViewHandler baseViewHandler;
 	
 	private FlowPanel countryPanel = new FlowPanel();
@@ -56,8 +52,6 @@ public class EditEmergencyContactView {
 	
 	private HTMLPanel addEmergencyContactPanel;
 	
-
-	
 	public EditEmergencyContactView(BaseViewHandler baseViewHandler, SmartphoneModel smartphone, EmergencyNumberModel emergencyModel){
 		this.baseViewHandler = baseViewHandler;
 		this.smartphone = smartphone;
@@ -66,7 +60,6 @@ public class EditEmergencyContactView {
 	}
 	
 	public void initEditEmergencyContactView(){
-		
 		this.centerContent.clear();
 		
 		this.phoneNumLabel = new Label("Phone Number");
@@ -106,8 +99,6 @@ public class EditEmergencyContactView {
 		this.addEmergencyContactPanel.add(this.descriptionPanel);
 		
 		this.addEmergencyContactPanel.add(this.saveEmergencyContact);
-		
-		this.smartphone = smartphone;
 		
 		this.centerContent.add(this.addEmergencyContactPanel);
 	}
