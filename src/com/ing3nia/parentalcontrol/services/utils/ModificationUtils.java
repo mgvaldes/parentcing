@@ -905,8 +905,11 @@ public class ModificationUtils {
 			ArrayList<Key> newDisabledFuncionalities = getNewFuncionalitiesAsKeys(pm, ruleModel);
 			rule.setDisabledFunctionalities(newDisabledFuncionalities);
 			
-			if (ruleModel.getKeyId() == null) {
+			if (ruleModel.getKeyId() == null) {				
 				pm.makePersistent(rule);
+				
+				logger.info("[ParentModifications - Cache Version] Saving new rule in datastore with key: " + KeyFactory.keyToString(rule.getKey()));
+				
 				pcsmartphone.getRules().add(rule.getKey());				
 			}
 			
