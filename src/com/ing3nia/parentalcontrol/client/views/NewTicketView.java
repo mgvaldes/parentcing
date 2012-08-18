@@ -105,7 +105,8 @@ public class NewTicketView {
 		this.centerContent.setStyleName("centerContent");
 		this.userKey = this.baseView.getUser().getKey();
 		
-		viewContent.add(newTicketLabel);
+		centerContent.add(newTicketLabel);
+		this.newTicketLabel.setStyleName("sec-title");
 		viewContent.add(categoryLabel);
 		
 		loadCategoryListBox();
@@ -133,6 +134,7 @@ public class NewTicketView {
 	    	}
 	    });
 		
+		buttonPanel.setStyleName("newTicketButtonsPanel");
 		buttonPanel.add(clearButton);
 		viewContent.add(buttonPanel);
 		

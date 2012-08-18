@@ -118,13 +118,15 @@ public class SmartphoneModelUtils {
 				continue;
 			}
 			pcOriginalContacts.add(pcContact);
-			pcActiveContacts.addAll(ContactModelUtils.saveAsPCSimpleContact(contact));
+			pcActiveContacts.addAll(ContactModelUtils.saveAsPCSimpleContactAndSetCache(contact,cacheActiveContacts, cacheOriginalContacts));
 			
 			// obtaining contact as simple contact for cache
+			/*
 			String contactKeyString = KeyFactory.keyToString(pcContact);
 			SimpleContactModel simpleContact = ContactModelUtils.contactModelToSimpleContact(contact, contactKeyString);
 			cacheActiveContacts.add(simpleContact);
 			cacheOriginalContacts.add(simpleContact);
+			*/
 		}
 
 		smartphone.setLocation(LocationModelUtils.convertToGeoPt(smartphoneModel.getLocation()));

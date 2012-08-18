@@ -65,6 +65,7 @@ public class AddEmergencyContactView {
 		this.centerContent.clear();
 		
 		this.addEmergencyLabel = new Label("Add Emergency Contact");
+		this.addEmergencyLabel.addStyleName("sec-title");
 		
 		this.phoneFlowPanel = new FlowPanel();
 		this.phoneNumLabel = new Label("Phone Number");

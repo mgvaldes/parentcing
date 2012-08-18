@@ -45,6 +45,8 @@ public class EditAdminUserView {
 	 */
 	private Label editUserLabel = new Label("Edit User:");
 	
+	private FlowPanel usernamePanel = new FlowPanel();
+	
 	/**
 	 * Username label.
 	 */
@@ -55,10 +57,14 @@ public class EditAdminUserView {
 	 */
 	private TextBox usernameTextBox = new TextBox();
 	
+	private FlowPanel passwordPanel = new FlowPanel();
+	
 	/**
 	 * Password label.
 	 */
 	private Label passwordLabel = new Label("Password:");
+	
+	private FlowPanel confirmPasswordPanel = new FlowPanel();
 	
 	/**
 	 * Repeat Password label.
@@ -119,13 +125,23 @@ public class EditAdminUserView {
 		
 		usernameTextBox.setText(adminUserModel.getUsername());
 		
+		editUserLabel.addStyleName("sec-title");
 		viewContent.add(editUserLabel);
-		viewContent.add(usernameLabel);
-		viewContent.add(usernameTextBox);
-		viewContent.add(passwordLabel);
-		viewContent.add(passwordTextBox);
-		viewContent.add(confirmPasswordLabel);
-		viewContent.add(confirmPasswordTextBox);
+		
+		usernamePanel.setStyleName("usernameContent");
+		usernamePanel.add(usernameLabel);
+		usernamePanel.add(usernameTextBox);
+		viewContent.add(usernamePanel);
+		
+		passwordPanel.setStyleName("passwordContent");
+		passwordPanel.add(passwordLabel);
+		passwordPanel.add(passwordTextBox);
+		viewContent.add(passwordPanel);
+		
+		confirmPasswordPanel.setStyleName("confirmPasswordContent");
+		confirmPasswordPanel.add(confirmPasswordLabel);
+		confirmPasswordPanel.add(confirmPasswordTextBox);
+		viewContent.add(confirmPasswordPanel);
 		
 		saveButton.addClickHandler(new ClickHandler() {
 	    	public void onClick(ClickEvent event) {
@@ -133,6 +149,7 @@ public class EditAdminUserView {
 	    	}
 	    });
 		
+		buttonPanel.setStyleName("buttonsContent");
 		buttonPanel.add(saveButton);
 		
 		clearButton.addClickHandler(new ClickHandler() {

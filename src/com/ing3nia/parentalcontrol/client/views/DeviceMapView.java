@@ -98,7 +98,7 @@ public class DeviceMapView {
 	    	deviceLoc = LatLng.newInstance(devLoc.getLatitude(), devLoc.getLongitude());
 	    	
 	    	//TODO Test setting device image
-	    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerImageURL(deviceCount));
+	    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerDeviceMapImageURL(deviceCount));
 	    	icon.setIconSize(Size.newInstance(20, 34));
 	    	MarkerOptions options = MarkerOptions.newInstance();
 	    	options.setIcon(icon);

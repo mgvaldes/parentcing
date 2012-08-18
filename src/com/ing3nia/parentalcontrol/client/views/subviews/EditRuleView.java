@@ -40,6 +40,9 @@ import com.ing3nia.parentalcontrol.client.views.subviews.NewRuleView.MinuteSecon
 public class EditRuleView {
 	
 	public static String VIEW_CONTENT_CLASSNAME = "editRuleContent";
+	public static String DATE_RULE = "dateRuleContent";
+	public static String FROM_TIME_RULE = "fromTimeRuleContent";
+	public static String TILL_TIME_RULE ="tillTimeRuleContent";
 	
 	
 	/**
@@ -348,9 +351,11 @@ public class EditRuleView {
 		
 		this.toDatePicker.setFormat(new DateBox.DefaultFormat(formatter));
 		this.datePanel.add(this.toDatePicker);
+		this.datePanel.setStyleName(DATE_RULE);
 		this.newRuleContent.add(this.datePanel);
 		
 		this.fromTimePanel.add(this.fromTimeLabel);
+		this.fromTimePanel.setStyleName(FROM_TIME_RULE);
 		this.hourTextBoxF.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxF, true));
 		this.fromTimePanel.add(this.hourTextBoxF);
 		this.minuteTextBoxF.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxF, true, true));
@@ -361,6 +366,7 @@ public class EditRuleView {
 		this.newRuleContent.add(this.fromTimePanel);
 		
 		this.tillTimePanel.add(this.tillTimeLabel);
+		this.tillTimePanel.setStyleName(TILL_TIME_RULE);
 		this.hourTextBoxT.addValueChangeHandler(new HourChangeHandler(this.hourTextBoxT, false));
 		this.tillTimePanel.add(this.hourTextBoxT);
 		this.minuteTextBoxT.addValueChangeHandler(new MinuteSecondsChangeHandler(this.minuteTextBoxT, false, true));
@@ -373,6 +379,7 @@ public class EditRuleView {
 		SaveEditRuleClickHandler saveEditRule = new SaveEditRuleClickHandler(this);
 		saveButton.addClickHandler(saveEditRule);
 		
+		buttonPanel.setStyleName("buttonsContent");
 		buttonPanel.add(saveButton);
 		
 		clearButton.addClickHandler(new ClickHandler() {

@@ -4,6 +4,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -35,12 +36,15 @@ public class EditEmergencyContactView {
 	private HTMLPanel newEmergencyContactPanel;
 	private BaseViewHandler baseViewHandler;
 	
+	private FlowPanel countryPanel = new FlowPanel();
 	private Label countryLabel;
 	private ListBox countryListBox;
 	
+	private FlowPanel phoneNumPanel = new FlowPanel();
 	private Label phoneNumLabel;
 	private TextBox phoneNum;
 	
+	private FlowPanel descriptionPanel = new FlowPanel();
 	private Label descriptionLabel;
 	private TextBox descriptionText;
 	
@@ -85,12 +89,21 @@ public class EditEmergencyContactView {
 		
 		this.addEmergencyContactPanel = new HTMLPanel("");
 		this.addEmergencyContactPanel.setStyleName(VIEW_CONTENT_CLASSNAME);
-		this.addEmergencyContactPanel.add(this.countryLabel);
-		this.addEmergencyContactPanel.add(this.countryListBox);
-		this.addEmergencyContactPanel.add(this.phoneNumLabel);
-		this.addEmergencyContactPanel.add(this.phoneNum);
-		this.addEmergencyContactPanel.add(this.descriptionLabel);
-		this.addEmergencyContactPanel.add(this.descriptionText);
+		
+		this.countryPanel.setStyleName("countryFlowPanel");
+		this.countryPanel.add(this.countryLabel);
+		this.countryPanel.add(this.countryListBox);
+		this.addEmergencyContactPanel.add(this.countryPanel);
+		
+		this.phoneNumPanel.setStyleName("phoneFlowPanel");
+		this.phoneNumPanel.add(this.phoneNumLabel);
+		this.phoneNumPanel.add(this.phoneNum);
+		this.addEmergencyContactPanel.add(this.phoneNumPanel);
+		
+		this.descriptionPanel.setStyleName("descriptionFlowPanel");
+		this.descriptionPanel.add(this.descriptionLabel);
+		this.descriptionPanel.add(this.descriptionText);
+		this.addEmergencyContactPanel.add(this.descriptionPanel);
 		
 		this.addEmergencyContactPanel.add(this.saveEmergencyContact);
 		

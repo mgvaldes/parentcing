@@ -79,6 +79,8 @@ public class TicketListView {
 		//Setting alert table style
 		openTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
+		
+		
 		//Setting alert table style
 		closedTicketsTable.setStyleName(PCTableViewClassNames.EXTENDED_TABLE.getClassname());
 		
@@ -170,6 +172,8 @@ public class TicketListView {
 		// Push the data into the widget.
 	    openTicketsTable.setRowData(0, openTickets);
 	    
+	    openTicketsLabel.setStyleName("ticketLabel");
+	    openTicketsViewContent.setStyleName("openTicketsContent");
 	    openTicketsViewContent.add(openTicketsLabel);
 	    
 	    openTicketsViewContent.add(openTicketsTable);
@@ -241,6 +245,8 @@ public class TicketListView {
 		// Push the data into the widget.
 	    closedTicketsTable.setRowData(0, closedTickets);
 	    
+	    closedTicketsLabel.setStyleName("ticketLabel");
+	    closedTicketsViewContent.setStyleName("closedTicketsContent");
 	    closedTicketsViewContent.add(closedTicketsLabel);
 	    
 	    closedTicketsViewContent.add(closedTicketsTable);

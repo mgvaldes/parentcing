@@ -165,6 +165,7 @@ public class TicketDetailsView {
 		
 		this.ticketDetailsContent = new HTMLPanel("");
 		this.ticketMessageLabel = new Label("Ticket Message");
+		this.ticketMessageLabel.setStyleName("sec-title");
 		this.ticketSubjectLabel = new Label("Subject:");
 		this.ticketQuestionLabel = new Label("Comment:");
 		this.ticketDateLabel = new Label("Date:");
@@ -193,17 +194,24 @@ public class TicketDetailsView {
 		// Adding ticket details
 		this.ticketContent.add(this.ticketMessageLabel);
 		
+		this.ticketDetailsContent.setStyleName("ticketDetailsContent");
 		this.ticketDetailsContent.add(this.ticketSubjectLabel);
+		this.ticketSubjectLabel.setStyleName("ticketDetailsLabel");
 		this.ticketSubject = new Label(this.ticket.getSubject());
 		this.ticketDetailsContent.add(this.ticketSubject);
+		this.ticketSubject.setStyleName("ticketDetailsInfo");
 		
 		this.ticketDetailsContent.add(this.ticketQuestionLabel);
 		this.ticketQuestion = new Label(this.ticket.getComment());
+		this.ticketQuestion.setStyleName("ticketDetailsLabel");
 		this.ticketDetailsContent.add(this.ticketQuestion);
+		this.ticketQuestion.setStyleName("ticketDetailsInfo");
 		
 		this.ticketDetailsContent.add(this.ticketDateLabel);
+		this.ticketDateLabel.setStyleName("ticketDetailsLabel");
 		DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
 		this.ticketDate = new Label(formatter.format(this.ticket.getDate()));
+		this.ticketDate.setStyleName("ticketDetailsInfo");
 		this.ticketDetailsContent.add(this.ticketDate);
 		
 		this.ticketContent.add(this.ticketDetailsContent);
@@ -220,9 +228,12 @@ public class TicketDetailsView {
 		
 		this.centerContent.add(this.ticketContent);
 		
+		this.ticketAnswersContent.setStyleName("ticketAnswersContent");
 		this.ticketAnswersContent.add(this.ticketAnswersLabel);
+		this.ticketAnswersLabel.setStyleName("ticketAnswersLabel");
 		loadTicketAnswers();
 		this.ticketAnswersContent.add(this.ticketAnswersDetailsContent);
+		this.ticketAnswersDetailsContent.setStyleName("ticketAnswersInfo");
 		
 		this.centerContent.add(this.ticketAnswersContent);
 		
@@ -247,6 +258,7 @@ public class TicketDetailsView {
 			
 			buttonPanel.add(clearButton);
 			this.ticketReplyContent.add(this.buttonPanel);
+			this.ticketReplyContent.setStyleName("ticketReplyButtons");
 			
 			this.centerContent.add(this.ticketReplyContent);
 		}

@@ -206,7 +206,7 @@ public class DeviceDailyRouteView {
 			deviceLoc = LatLng.newInstance(devLoc.getLatitude(),
 					devLoc.getLongitude());
 	    	Icon icon = Icon.newInstance(PCMapStyle.getMarkerImageURL(deviceCount));
-	    	icon.setIconSize(Size.newInstance(20, 34));
+	    	icon.setIconSize(Size.newInstance(24, 24));
 	    	MarkerOptions options = MarkerOptions.newInstance();
 	    	options.setIcon(icon);
 	    	this.map.addOverlay(new Marker(deviceLoc,options));	

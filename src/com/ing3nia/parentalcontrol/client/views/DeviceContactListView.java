@@ -309,7 +309,7 @@ public class DeviceContactListView {
 			}
 		});
 		
-
+		
 		contactTable.addColumn(allowColumn, "Access");
 		
 		// Add an edit column to show the edit button.
@@ -329,7 +329,7 @@ public class DeviceContactListView {
 		});
 		
 
-		contactTable.addColumn(viewColumn, "");
+		//contactTable.addColumn(viewColumn, "");
 
 		// Set the total row count. This isn't strictly necessary, but it
 		// affects paging calculations, so its good habit to keep the row

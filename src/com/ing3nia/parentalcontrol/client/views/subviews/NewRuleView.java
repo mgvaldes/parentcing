@@ -255,7 +255,7 @@ public class NewRuleView {
 		this.newRuleContent.setStyleName(VIEW_CONTENT_CLASSNAME);
 				
 		this.newRuleLabel = new Label("New Rule:");
-		this.newRuleLabel.setStyleName("sec-title", true);
+		this.newRuleLabel.addStyleName("sec-title");
 		
 		this.ruleTypePanel = new HTMLPanel("");
 		this.ruleTypeLabel = new Label("Rule Type:");		
@@ -387,6 +387,7 @@ public class NewRuleView {
 		SaveRuleClickHandler saveRuleClickHandler = new SaveRuleClickHandler(this);
 		saveButton.addClickHandler(saveRuleClickHandler);
 		
+		buttonPanel.setStyleName("buttonsContent");
 		buttonPanel.add(saveButton);
 		
 		clearButton.addClickHandler(new ClickHandler() {

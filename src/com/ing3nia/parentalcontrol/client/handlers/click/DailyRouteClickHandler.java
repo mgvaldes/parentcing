@@ -323,9 +323,9 @@ public class DailyRouteClickHandler implements ClickHandler{
 			
 			return deviceLocations;
 
-		}
+		}*/
 		
-		*/
+		
 		int smartphoneIndex = this.baseView.getClickedSmartphoneIndex();
 		SmartphoneModel smartphone = this.baseView.getUser().getSmartphones().get(smartphoneIndex);
 		ArrayList<RouteModel> routes = smartphone.getRoutes();

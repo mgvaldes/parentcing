@@ -50,7 +50,9 @@ public class DashboardDeviceMapClickHandler implements ClickHandler{
 		navHandler.setDashboardNavigation(baseView.getBaseBinder().getNavigationPanel());
 		
 		DeviceMapView view = new DeviceMapView(baseBinder,baseView);		
-		view.setDeviceLocations(this.deviceLocations);
+		view.setDeviceLocations(this.baseView.getUser().getDeviceLocations());
 		view.initDeviceLocationLoad();
+		
+		
 	}
 }

@@ -217,7 +217,7 @@ public class UserKeyResource {
 		} else {
 			userCacheModel = (UserModel)ident.getValue();
 			userKey = userCacheModel.getKey();
-			logger.severe("[User Key] User found in cache");
+			logger.info("[User Key] User found in cache");
 		}
 		
 		logger.info("[User Key] Ok Response.");

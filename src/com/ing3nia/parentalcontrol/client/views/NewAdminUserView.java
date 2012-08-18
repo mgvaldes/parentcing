@@ -55,6 +55,8 @@ public class NewAdminUserView {
 	 */
 	private TextBox usernameTextBox = new TextBox();
 	
+	private FlowPanel usernamePanel = new FlowPanel();
+	
 	/**
 	 * Password label.
 	 */
@@ -74,6 +76,10 @@ public class NewAdminUserView {
 	 * Confirgm Password text box.
 	 */
 	private PasswordTextBox confirmPasswordTextBox = new PasswordTextBox();
+	
+	private FlowPanel passwordPanel = new FlowPanel();
+	
+	private FlowPanel confirmPasswordPanel = new FlowPanel();
 	
 	/**
 	 * Panel containing view buttons.
@@ -114,13 +120,23 @@ public class NewAdminUserView {
 		this.centerContent = centerContent;
 		this.loggedUser = loggedUser;
 		
+		newUserLabel.addStyleName("sec-title");
 		viewContent.add(newUserLabel);
-		viewContent.add(usernameLabel);
-		viewContent.add(usernameTextBox);
-		viewContent.add(passwordLabel);
-		viewContent.add(passwordTextBox);
-		viewContent.add(confirmPasswordLabel);
-		viewContent.add(confirmPasswordTextBox);
+		
+		usernamePanel.setStyleName("usernameContent");
+		usernamePanel.add(usernameLabel);
+		usernamePanel.add(usernameTextBox);
+		viewContent.add(usernamePanel);
+		
+		passwordPanel.setStyleName("passwordContent");
+		passwordPanel.add(passwordLabel);
+		passwordPanel.add(passwordTextBox);
+		viewContent.add(passwordPanel);
+		
+		confirmPasswordPanel.setStyleName("confirmPasswordContent");
+		confirmPasswordPanel.add(confirmPasswordLabel);
+		confirmPasswordPanel.add(confirmPasswordTextBox);
+		viewContent.add(confirmPasswordPanel);
 		
 		saveButton.addClickHandler(new ClickHandler() {
 	    	public void onClick(ClickEvent event) {
@@ -138,6 +154,7 @@ public class NewAdminUserView {
 	    	}
 	    });
 		
+		buttonPanel.setStyleName("buttonsContent");
 		buttonPanel.add(clearButton);
 		viewContent.add(buttonPanel);
 	}

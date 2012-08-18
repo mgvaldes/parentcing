@@ -217,6 +217,7 @@ public class DeviceEmergencyNumberListView {
 		emergencyNumberTable.addColumn(editColumn, "");
 		
 		// Add an delete column to show the disallow button.
+		/*
 		ButtonCell deleteCell = new ButtonCell();
 		Column<EmergencyNumberModel, String> deleteColumn = new Column<EmergencyNumberModel, String>(deleteCell) {
 			@Override
@@ -242,7 +243,7 @@ public class DeviceEmergencyNumberListView {
 		
 
 		emergencyNumberTable.addColumn(deleteColumn, "");
-
+		*/
 	
 
 		// Set the total row count. This isn't strictly necessary, but it

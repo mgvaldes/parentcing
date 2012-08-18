@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.jdo.PersistenceManager;
 
+import org.eclipse.jdt.internal.core.util.KeyToSignature;
+
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.ing3nia.parentalcontrol.client.models.AddressModel;
@@ -11,6 +13,7 @@ import com.ing3nia.parentalcontrol.client.models.ContactModel;
 import com.ing3nia.parentalcontrol.client.models.OrganizationModel;
 import com.ing3nia.parentalcontrol.client.models.PhoneModel;
 import com.ing3nia.parentalcontrol.client.models.SimpleContactModel;
+import com.ing3nia.parentalcontrol.client.utils.ModelLogger;
 import com.ing3nia.parentalcontrol.models.PCAddress;
 import com.ing3nia.parentalcontrol.models.PCContact;
 import com.ing3nia.parentalcontrol.models.PCOrganization;
@@ -43,6 +46,45 @@ public class ContactModelUtils {
 				//continue
 			}
 		}
+
+		// getting and saving keys from every simple contact
+		/*
+		for(PCSimpleContact psc : pscList){
+			contactKeys.add(psc.getKey());
+		}*/
+		
+		pm.close();
+		return contactKeys;
+	}
+	
+
+	public static ArrayList<Key> saveAsPCSimpleContactAndSetCache(ContactModel contact,ArrayList<SimpleContactModel> cacheActiveContacts, ArrayList<SimpleContactModel> cacheOriginalContacts) {
+		ArrayList<Key> contactKeys = new ArrayList<Key>();
+		PCSimpleContact pcSimpleContact;
+		PersistenceManager pm = ServiceUtils.PMF.getPersistenceManager();
+		ArrayList<PCSimpleContact> pscList = new ArrayList<PCSimpleContact>();
+		
+		for (PhoneModel phone : contact.getPhones()) {
+			
+			PCPhone pcphone = PhoneModelUtils.convertToPCPhone(phone);
+			pm.makePersistent(pcphone);
+
+			pcSimpleContact = new PCSimpleContact(contact.getFirstName(), contact.getLastName(), pcphone.getKey());
+			pscList.add(pcSimpleContact);
+		}
+		//pm.makePersistentAll(pscList);
+		for(PCSimpleContact psc : pscList){
+			try{
+				pm.makePersistent(psc);
+				contactKeys.add(psc.getKey());
+				SimpleContactModel simpleContact = ContactModelUtils.contactModelToSimpleContact(contact, KeyFactory.keyToString(psc.getKey()));
+				cacheActiveContacts.add(simpleContact);
+				cacheOriginalContacts.add(simpleContact);
+			}catch(Exception e){
+				ModelLogger.logger.severe("Importante: No se pudo almacenar contacto en registro: "+e.getMessage());
+			}
+		}
+		
 
 		// getting and saving keys from every simple contact
 		/*
