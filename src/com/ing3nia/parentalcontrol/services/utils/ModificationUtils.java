@@ -897,7 +897,7 @@ public class ModificationUtils {
 			}
 			
 			rule.setEndDate(date);
-			
+			rule.setType(ruleModel.getType());
 			rule.setName(ruleModel.getName());
 			
 			logger.info("[ParentModifications - Cache Version] Setting new funcionalities to rules");

@@ -38,6 +38,7 @@ public class RuleModelUtils {
 		}
 		
 		ruleModel.setDisabledFunctionalities(disabledFunctionalityModels);
+		ruleModel.setType(rule.getType());
 		
 		pm.close();
 		
@@ -69,7 +70,7 @@ public class RuleModelUtils {
 		}
 		
 		ruleModel.setDisabledFunctionalities(disabledFunctionalityModels);
-		
+		ruleModel.setType(rule.getType());
 		ruleModel.setName(rule.getName());
 		
 		pm.close();

@@ -486,7 +486,15 @@ public class NewRuleView {
 				newRule.setEndDate(auxDate);
 			}
 			
-			newRule.setType(ruleTypeListBox.getSelectedIndex());
+			//newRule.setType(ruleTypeListBox.getSelectedIndex());
+			String typeText = ruleTypeListBox.getValue(ruleTypeListBox.getSelectedIndex());
+			if(typeText.equals("Speed Limit")){
+				newRule.setType(1);
+			}else if(typeText.equals("Normal")){
+				newRule.setType(0);
+			}else{
+				newRule.setType(-1);
+			}
 			
 			Image loadingImage = new Image("/media/images/loading.gif");
 			LoadingView.setLoadingView(baseViewHandler.getBaseBinder(), "Saving Rule", loadingImage);
