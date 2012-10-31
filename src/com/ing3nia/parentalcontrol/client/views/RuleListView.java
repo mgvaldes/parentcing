@@ -1,11 +1,13 @@
 package com.ing3nia.parentalcontrol.client.views;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.SimplePager;
@@ -87,7 +89,10 @@ public class RuleListView {
 		TextColumn<RuleModel> startDateColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return object.getStartDate();
+				DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+				Date startDate = formatter.parse(object.getStartDate());
+				DateTimeFormat formatterMonth = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+				return formatterMonth.format(startDate);
 			}
 		};
 		
@@ -97,7 +102,11 @@ public class RuleListView {
 		TextColumn<RuleModel> endDateColumn = new TextColumn<RuleModel>() {
 			@Override
 			public String getValue(RuleModel object) {
-				return object.getEndDate();
+				DateTimeFormat formatter = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+				Date endDate = formatter.parse(object.getEndDate());
+				DateTimeFormat formatterMonth = DateTimeFormat.getFormat("dd/MM/yyyy hh:mm:ss a");
+				return formatterMonth.format(endDate);
+				//return 
 			}
 		};
 		

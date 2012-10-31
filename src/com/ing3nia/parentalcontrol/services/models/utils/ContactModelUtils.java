@@ -71,20 +71,26 @@ public class ContactModelUtils {
 
 			pcSimpleContact = new PCSimpleContact(contact.getFirstName(), contact.getLastName(), pcphone.getKey());
 			pscList.add(pcSimpleContact);
-		}
-		//pm.makePersistentAll(pscList);
-		for(PCSimpleContact psc : pscList){
+			
 			try{
-				pm.makePersistent(psc);
-				contactKeys.add(psc.getKey());
-				SimpleContactModel simpleContact = ContactModelUtils.contactModelToSimpleContact(contact, KeyFactory.keyToString(psc.getKey()));
-				cacheActiveContacts.add(simpleContact);
-				cacheOriginalContacts.add(simpleContact);
+				pm.makePersistent(pcSimpleContact);
+				contactKeys.add(pcSimpleContact.getKey());
 			}catch(Exception e){
 				ModelLogger.logger.severe("Importante: No se pudo almacenar contacto en registro: "+e.getMessage());
+				continue;
 			}
+			
+			SimpleContactModel simpleContact = ContactModelUtils.contactModelToSimpleContact(contact.getFirstName(),contact.getLastName(), phone.getPhoneNumber(), KeyFactory.keyToString(pcSimpleContact.getKey()));
+			cacheActiveContacts.add(simpleContact);
+			cacheOriginalContacts.add(simpleContact);
+			
 		}
-		
+		/*
+		//pm.makePersistentAll(pscList);
+		for(PCSimpleContact psc : pscList){
+
+		}
+		*/
 
 		// getting and saving keys from every simple contact
 		/*
@@ -189,6 +195,24 @@ public class ContactModelUtils {
 		return contact;
 	}
 	
+	public static SimpleContactModel contactModelToSimpleContact(String firstName, String lastName,String phone, String contactKey){
+	
+		SimpleContactModel simpleContact = new SimpleContactModel();
+		simpleContact.setFirstName(firstName);
+		simpleContact.setLastName(lastName);
+		simpleContact.setKeyId(contactKey);
+		ArrayList<PhoneModel> phones = new ArrayList<PhoneModel>();
+		
+		PhoneModel phoneModel = new PhoneModel();
+		phoneModel.setPhoneNumber(phone);
+		phoneModel.setType(1);
+		
+		phones.add(phoneModel);
+		simpleContact.setPhones(phones);
+		
+		return simpleContact;	
+	}
+	/*
 	public static SimpleContactModel contactModelToSimpleContact(ContactModel contact, String contactKey){
 		SimpleContactModel simpleContact = new SimpleContactModel();
 		simpleContact.setFirstName(contact.getFirstName());
@@ -208,7 +232,6 @@ public class ContactModelUtils {
 		phones.add(phoneModel);
 		simpleContact.setPhones(phones);
 		
-		return simpleContact;
-		
-	}
+		return simpleContact;	
+	}*/
 }
